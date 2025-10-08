@@ -18,9 +18,10 @@ export async function generateStaticParams() {
 /**
  * (Optional) SEO – pull title from the document
  */
-export async function generateMetadata({ params }: { params: { uid: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ uid: string }> }) {
+  const { uid } = await params;
   const client = createClient();
-  const doc = await client.getByUID("case_study", params.uid).catch(() => null);
+  const doc = await client.getByUID("case_study", uid).catch(() => null);
   const title = doc?.data?.hero_title?.[0]?.text || doc?.uid || "Case Study";
   return {
     title: `${title} | Lunim`,
@@ -33,9 +34,10 @@ export async function generateMetadata({ params }: { params: { uid: string } }) 
   };
 }
 
-export default async function CaseStudyPage({ params }: { params: { uid: string } }) {
+export default async function CaseStudyPage({ params }: { params: Promise<{ uid: string }> }) {
   const client = createClient();
-  const doc = await client.getByUID("case_study", params.uid).catch(() => null);
+  const { uid } = await params;
+  const doc = await client.getByUID("case_study", uid).catch(() => null);
   if (!doc) return notFound();
 
   const d = doc.data as any;
