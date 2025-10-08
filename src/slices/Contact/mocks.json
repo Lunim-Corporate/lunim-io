@@ -1,0 +1,173 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"main_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Inside"
+						}
+					}
+				]
+			},
+			"subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Known"
+						}
+					}
+				]
+			},
+			"info_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Palace"
+						}
+					}
+				]
+			},
+			"hours_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Dollar"
+						}
+					}
+				]
+			},
+			"form_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Another"
+						}
+					}
+				]
+			},
+			"full_name_label": {
+				"__TYPE__": "FieldContent",
+				"value": "hunt",
+				"type": "Text"
+			},
+			"email_label": {
+				"__TYPE__": "FieldContent",
+				"value": "bag",
+				"type": "Text"
+			},
+			"company_label": {
+				"__TYPE__": "FieldContent",
+				"value": "machine",
+				"type": "Text"
+			},
+			"budget_label": {
+				"__TYPE__": "FieldContent",
+				"value": "exercise",
+				"type": "Text"
+			},
+			"goals_label": {
+				"__TYPE__": "FieldContent",
+				"value": "saw",
+				"type": "Text"
+			},
+			"button_label": {
+				"__TYPE__": "FieldContent",
+				"value": "zero",
+				"type": "Text"
+			},
+			"budget_options": {
+				"__TYPE__": "FieldContent",
+				"value": "bridge",
+				"type": "Text"
+			},
+			"section_id": {
+				"__TYPE__": "FieldContent",
+				"value": "girl",
+				"type": "Text"
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"item_type",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "Office Hour",
+							"type": "Select"
+						}
+					],
+					[
+						"icon_name",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "mother",
+							"type": "Text"
+						}
+					],
+					[
+						"info_item_title",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "same",
+							"type": "Text"
+						}
+					],
+					[
+						"info_item_description",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "four",
+							"type": "Text"
+						}
+					],
+					[
+						"days",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "famous",
+							"type": "Text"
+						}
+					],
+					[
+						"hours",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "molecular",
+							"type": "Text"
+						}
+					],
+					[
+						"is_closed",
+						{
+							"__TYPE__": "BooleanContent",
+							"value": true
+						}
+					],
+					[
+						"link_type",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "Email",
+							"type": "Select"
+						}
+					]
+				]
+			}
+		]
+	}
+]

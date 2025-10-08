@@ -1,0 +1,63 @@
+{
+  "id": "Herosection",
+  "type": "SharedSlice",
+  "name": "Herosection",
+  "legacyPaths": {
+    "homepage::body::herosection": "default"
+  },
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Default",
+      "imageUrl": "",
+      "docURL": "",
+      "version": "initial",
+      "primary": {
+        "hero_title_part1": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1",
+            "label": "hero_title_part1"
+          }
+        },
+        "hero_title_part2": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1",
+            "label": "hero_title_part2"
+          }
+        },
+        "hero_description": {
+          "type": "StructuredText",
+          "config": {
+            "single": "paragraph",
+            "label": "hero_description"
+          }
+        },
+        "button_1_link": {
+          "type": "Link",
+          "config": {
+            "label": "button_1_link",
+            "select": null
+          }
+        },
+        "button_1_label": {
+          "type": "Text",
+          "config": {
+            "label": "button_1_label"
+          }
+        },
+        "background_image": {
+          "type": "Image",
+          "config": {
+            "constraint": {},
+            "thumbnails": [],
+            "label": "background_image"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

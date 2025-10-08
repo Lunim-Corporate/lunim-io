@@ -1,0 +1,47 @@
+{
+  "id": "team_page",
+  "label": "Team Page",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "body": {
+        "type": "Slices",
+        "fieldset": "Slice zone",
+        "config": {
+          "labels": {},
+          "choices": {}
+        }
+      }
+    },
+    "Team Hero": {
+      "body1": {
+        "type": "Slices",
+        "fieldset": "Slice zone",
+        "config": {
+          "labels": null,
+          "choices": {
+            "TeamHero": {
+              "type": "SharedSlice"
+            }
+          }
+        }
+      }
+    },
+    "Team Members": {
+      "body2": {
+        "type": "Slices",
+        "fieldset": "Slice zone",
+        "config": {
+          "labels": null,
+          "choices": {
+            "TeamMembers": {
+              "type": "SharedSlice"
+            }
+          }
+        }
+      }
+    }
+  },
+  "format": "custom"
+}

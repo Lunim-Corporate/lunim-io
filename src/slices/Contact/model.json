@@ -1,0 +1,156 @@
+{
+  "id": "Contact",
+  "type": "SharedSlice",
+  "name": "Contact",
+  "legacyPaths": {
+    "homepage::body::contact": "default"
+  },
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Default",
+      "imageUrl": "",
+      "docURL": "",
+      "version": "initial",
+      "primary": {
+        "main_title": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+            "label": "main_title"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+            "label": "subtitle"
+          }
+        },
+        "info_title": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+            "label": "info_title"
+          }
+        },
+        "hours_title": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+            "label": "hours_title"
+          }
+        },
+        "form_title": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+            "label": "form_title"
+          }
+        },
+        "full_name_label": {
+          "type": "Text",
+          "config": {
+            "label": "full_name_label"
+          }
+        },
+        "email_label": {
+          "type": "Text",
+          "config": {
+            "label": "email_label"
+          }
+        },
+        "company_label": {
+          "type": "Text",
+          "config": {
+            "label": "company_label"
+          }
+        },
+        "budget_label": {
+          "type": "Text",
+          "config": {
+            "label": "budget_label"
+          }
+        },
+        "goals_label": {
+          "type": "Text",
+          "config": {
+            "label": "goals_label"
+          }
+        },
+        "button_label": {
+          "type": "Text",
+          "config": {
+            "label": "button_label"
+          }
+        },
+        "budget_options": {
+          "type": "Text",
+          "config": {
+            "label": "budget_options"
+          }
+        },
+        "section_id": {
+          "type": "Text",
+          "config": {
+            "label": "section_id"
+          }
+        }
+      },
+      "items": {
+        "item_type": {
+          "type": "Select",
+          "config": {
+            "options": ["Contact Info", "Office Hour", "Contact Form"],
+            "label": "item_type"
+          }
+        },
+        "icon_name": {
+          "type": "Text",
+          "config": {
+            "label": "icon_name"
+          }
+        },
+        "info_item_title": {
+          "type": "Text",
+          "config": {
+            "label": "info_item_title"
+          }
+        },
+        "info_item_description": {
+          "type": "Text",
+          "config": {
+            "label": "info_item_description"
+          }
+        },
+        "days": {
+          "type": "Text",
+          "config": {
+            "label": "days"
+          }
+        },
+        "hours": {
+          "type": "Text",
+          "config": {
+            "label": "hours"
+          }
+        },
+        "is_closed": {
+          "type": "Boolean",
+          "config": {
+            "default_value": false,
+            "label": "is_closed"
+          }
+        },
+        "link_type": {
+          "type": "Select",
+          "config": {
+            "options": ["None", "Email", "Phone"],
+            "label": "link_type"
+          }
+        }
+      }
+    }
+  ]
+}

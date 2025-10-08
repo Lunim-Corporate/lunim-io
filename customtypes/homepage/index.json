@@ -1,0 +1,47 @@
+{
+  "id": "homepage",
+  "label": "Homepage",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "body": {
+        "type": "Slices",
+        "fieldset": "Slice zone",
+        "config": {
+          "labels": {},
+          "choices": {
+            "Herosection": {
+              "type": "SharedSlice"
+            },
+            "Expertisegroup": {
+              "type": "SharedSlice"
+            },
+            "Expertiseareas": {
+              "type": "SharedSlice"
+            },
+            "ServiceGrid": {
+              "type": "SharedSlice"
+            },
+            "Imageandtext": {
+              "type": "SharedSlice"
+            },
+            "Process": {
+              "type": "SharedSlice"
+            },
+            "ProjectShowcase": {
+              "type": "SharedSlice"
+            },
+            "Faq": {
+              "type": "SharedSlice"
+            },
+            "Contact": {
+              "type": "SharedSlice"
+            }
+          }
+        }
+      }
+    }
+  },
+  "format": "custom"
+}

@@ -1,0 +1,70 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Paragraph"
+						}
+					}
+				]
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"icon_text",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "lion",
+							"type": "Text"
+						}
+					],
+					[
+						"item_title",
+						{
+							"__TYPE__": "StructuredTextContent",
+							"value": [
+								{
+									"type": "heading1",
+									"content": {
+										"text": "Depth"
+									}
+								}
+							]
+						}
+					],
+					[
+						"weeks",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "meant",
+							"type": "Text"
+						}
+					],
+					[
+						"item_description",
+						{
+							"__TYPE__": "StructuredTextContent",
+							"value": [
+								{
+									"type": "paragraph",
+									"content": {
+										"text": "Eiusmod nostrud irure aliquip officia anim veniam aliquip."
+									}
+								}
+							]
+						}
+					]
+				]
+			}
+		]
+	}
+]
