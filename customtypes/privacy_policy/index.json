@@ -3,7 +3,7 @@
   "label": "Privacy Policy",
   "repeatable": false,
   "status": true,
-  "json": {
+  "json":{
   "Main" : {
     "title" : {
       "type" : "StructuredText",

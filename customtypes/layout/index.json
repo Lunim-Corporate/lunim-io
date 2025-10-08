@@ -3,7 +3,7 @@
   "label": "Layout",
   "repeatable": false,
   "status": true,
-  "json": {
+  "json":{
   "Main" : {
     "header_logo" : {
       "type" : "Image",

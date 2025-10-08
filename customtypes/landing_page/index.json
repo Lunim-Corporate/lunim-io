@@ -3,7 +3,7 @@
   "label": "Landing Page",
   "repeatable": true,
   "status": true,
-  "json": {
+  "json":{
   "Main" : { }
 }
 }
