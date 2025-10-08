@@ -1,5 +1,5 @@
 {
-  "id": "Contact",
+  "id": "contact",
   "type": "SharedSlice",
   "name": "Contact",
   "legacyPaths": {

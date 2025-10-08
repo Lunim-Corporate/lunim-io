@@ -1,5 +1,5 @@
 {
-  "id": "Faq",
+  "id": "faq",
   "type": "SharedSlice",
   "name": "Faq",
   "legacyPaths": {

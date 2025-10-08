@@ -1,5 +1,5 @@
 {
-  "id": "ProjectShowcase",
+  "id": "project_showcase",
   "type": "SharedSlice",
   "name": "ProjectShowcase",
   "legacyPaths": {

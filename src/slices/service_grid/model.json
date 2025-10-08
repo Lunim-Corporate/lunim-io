@@ -1,5 +1,5 @@
 {
-  "id": "ServiceGrid",
+  "id": "service_grid",
   "type": "SharedSlice",
   "name": "ServiceGrid",
   "legacyPaths": {

@@ -1,7 +1,7 @@
 {
-  "id": "Herosection",
+  "id": "Hero",
   "type": "SharedSlice",
-  "name": "Herosection",
+  "name": "Hero",
   "legacyPaths": {
     "homepage::body::herosection": "default"
   },

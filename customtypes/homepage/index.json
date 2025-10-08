@@ -11,31 +11,31 @@
         "config": {
           "labels": {},
           "choices": {
-            "Herosection": {
+            "Hero": {
               "type": "SharedSlice"
             },
-            "Expertisegroup": {
+            "expertisegroup": {
               "type": "SharedSlice"
             },
-            "Expertiseareas": {
+            "expertiseareas": {
               "type": "SharedSlice"
             },
-            "ServiceGrid": {
+            "service_grid": {
               "type": "SharedSlice"
             },
-            "Imageandtext": {
+            "imageandtext": {
               "type": "SharedSlice"
             },
-            "Process": {
+            "process": {
               "type": "SharedSlice"
             },
-            "ProjectShowcase": {
+            "project_showcase": {
               "type": "SharedSlice"
             },
-            "Faq": {
+            "faq": {
               "type": "SharedSlice"
             },
-            "Contact": {
+            "contact": {
               "type": "SharedSlice"
             }
           }

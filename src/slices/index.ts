@@ -3,15 +3,15 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  Contact: dynamic(() => import("./Contact")),
-  Expertiseareas: dynamic(() => import("./Expertiseareas")),
-  Expertisegroup: dynamic(() => import("./Expertisegroup")),
-  Faq: dynamic(() => import("./Faq")),
-  Herosection: dynamic(() => import("./Herosection")),
-  Imageandtext: dynamic(() => import("./Imageandtext")),
-  Process: dynamic(() => import("./Process")),
-  ProjectShowcase: dynamic(() => import("./ProjectShowcase")),
-  ServiceGrid: dynamic(() => import("./ServiceGrid")),
+  Contact: dynamic(() => import("./contact")),
+  Expertiseareas: dynamic(() => import("./expertiseareas")),
+  Expertisegroup: dynamic(() => import("./expertisegroup")),
+  Faq: dynamic(() => import("./faq")),
+  Herosection: dynamic(() => import("./Hero")),
+  Imageandtext: dynamic(() => import("./imageandtext")),
+  Process: dynamic(() => import("./process")),
+  ProjectShowcase: dynamic(() => import("./project_showcase")),
+  ServiceGrid: dynamic(() => import("./service_grid")),
   TeamHero: dynamic(() => import("./TeamHero")),
   TeamMembers: dynamic(() => import("./TeamMembers")),
 };

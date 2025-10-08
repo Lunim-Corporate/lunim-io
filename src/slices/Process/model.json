@@ -1,5 +1,5 @@
 {
-  "id": "Process",
+  "id": "process",
   "type": "SharedSlice",
   "name": "Process",
   "legacyPaths": {
