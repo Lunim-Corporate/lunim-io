@@ -1,0 +1,9 @@
+{
+  "id": "landing_page",
+  "label": "Landing Page",
+  "repeatable": true,
+  "status": true,
+  "json":{
+  "Main" : { }
+}
+}

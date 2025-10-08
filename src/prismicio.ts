@@ -22,6 +22,22 @@ const routes: Route[] = [
   // Examples:
   // { type: "homepage", path: "/" },
   // { type: "page", path: "/:uid" },
+  { type: "homepage", path: "/" },
+
+  { type: "homepage", path: "/tech" },
+
+  // If you modelled Tech/Film/Tabb/Academy as "landing_page" documents,
+  // give each a UID and route them generically:
+  { type: "landing_page", path: "/:uid" },
+
+  // Team page:
+  { type: "team_page", path: "/our-team" },
+
+  // Case studies under /tech/casestudies/:uid
+  { type: "case_study", path: "/tech/casestudies/:uid" },
+
+  // Privacy policy:
+  { type: "privacy_policy", path: "/privacy-policy" },
 ];
 
 /**
