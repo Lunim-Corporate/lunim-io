@@ -10,7 +10,7 @@ export default async function Page() {
 
   if (!doc || !Array.isArray(doc.data.body)) {
     return (
-      <main className="p-6 text-white bg-black">Homepage not published.</main>
+      <main className="p-6 text-white bg-black">Tech Page not published.</main>
     );
   }
 
