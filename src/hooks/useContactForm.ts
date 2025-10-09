@@ -42,8 +42,9 @@ export const useContactForm = () => {
       setCompany('');
       setProjectBudget('');
       setProjectGoals('');
-    } catch (error: any) {
-      setErrorMessage(`Failed to submit form: ${error.message || 'Unknown error occurred.'}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error occurred.';
+      setErrorMessage(`Failed to submit form: ${message}`);
       setFormStatus('error');
     }
   };
