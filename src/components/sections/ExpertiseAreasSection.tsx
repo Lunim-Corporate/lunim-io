@@ -1,6 +1,7 @@
 import React from "react";
-import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { HomepageDocumentDataBodyExpertiseareasSlice } from "../../../prismicio-types";
 import { asText } from "@prismicio/helpers";
 
 // Import the icons
@@ -21,9 +22,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Network: NetworkIcon,
 };
 
-interface ExpertiseAreasSectionProps {
-  slice: Content.ExpertiseareasSlice;
-}
+type ExpertiseAreasSectionProps = SliceComponentProps<HomepageDocumentDataBodyExpertiseareasSlice>;
 
 const ExpertiseAreasSection: React.FC<ExpertiseAreasSectionProps> = ({
   slice,

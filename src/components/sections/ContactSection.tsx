@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { HomepageDocumentDataBodyContactSlice } from "../../../prismicio-types";
 import { asText } from "@prismicio/helpers";
 import { Clock, Mail, Phone, LucideProps } from "lucide-react";
 import ContactForm from "./ContactForm";
@@ -12,11 +13,9 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Phone: Phone,
 };
 
-interface ContactSectionProps {
-  slice: Content.ContactSlice;
-}
+type ContactSectionProps = SliceComponentProps<HomepageDocumentDataBodyContactSlice>;
 
-const ContactSection: React.FC<ContactSectionProps> = ({ slice }) => {
+const ContactSection = ({ slice }: ContactSectionProps) => {
   const contactItems = slice.items.filter(
     (item) => item.item_type === "Contact Info"
   );
@@ -141,13 +140,13 @@ const ContactSection: React.FC<ContactSectionProps> = ({ slice }) => {
 
           <ContactForm
             title={slice.primary.form_title}
-            fullNameLabel={slice.primary.full_name_label}
-            emailLabel={slice.primary.email_label}
-            companyLabel={slice.primary.company_label}
-            budgetLabel={slice.primary.budget_label}
-            goalsLabel={slice.primary.goals_label}
-            buttonLabel={slice.primary.button_label}
-            budgetOptions={slice.primary.budget_options}
+            fullNameLabel={slice.primary.full_name_label ?? undefined}
+            emailLabel={slice.primary.email_label ?? undefined}
+            companyLabel={slice.primary.company_label ?? undefined}
+            budgetLabel={slice.primary.budget_label ?? undefined}
+            goalsLabel={slice.primary.goals_label ?? undefined}
+            buttonLabel={slice.primary.button_label ?? undefined}
+            budgetOptions={slice.primary.budget_options ?? undefined}
           />
         </div>
       </div>

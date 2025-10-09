@@ -1,12 +1,11 @@
 'use client';
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { Content } from '@prismicio/client';
 import { PrismicRichText } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import type { HomepageDocumentDataBodyFaqSlice } from '../../../prismicio-types';
 
-interface FAQSectionProps {
-  slice: Content.FaqSlice; 
-}
+type FAQSectionProps = SliceComponentProps<HomepageDocumentDataBodyFaqSlice>;
 
 const FAQSection: React.FC<FAQSectionProps> = ({ slice }) => (
   <section className="bg-[#0f172a] py-20">
