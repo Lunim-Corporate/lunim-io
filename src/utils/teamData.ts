@@ -1,3 +1,4 @@
+import type { StaticImageData } from "next/image";
 import peterPonton from "../assets/Peter-headshot.png";
 import peteFrancomb from "../assets/pete-headshot.png";
 import nickCurum from "../assets/nick-headshot.png";
@@ -10,7 +11,7 @@ export interface SocialLink {
 export interface TeamMember {
   name: string;
   role: string;
-  image: string;
+  image: string | StaticImageData;
   bio: string;
   details: string[];
   social: SocialLink[];

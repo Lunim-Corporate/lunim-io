@@ -1,23 +1,28 @@
-import React from 'react';
-import { Content } from '@prismicio/client';
-import { PrismicRichText } from '@prismicio/react';
-import { asText } from '@prismicio/helpers';
+import React from "react";
+import Image from "next/image";
+import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { HomepageDocumentDataBodyImageandtextSlice } from "../../../prismicio-types";
+import { asText } from "@prismicio/helpers";
 
-interface ImageTextSectionProps {
-  slice: Content.ImageAndTextSlice; 
-}
+type ImageTextSectionProps = SliceComponentProps<HomepageDocumentDataBodyImageandtextSlice>;
 
 const ImageTextSection: React.FC<ImageTextSectionProps> = ({ slice }) => (
   <section className="bg-black py-20">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center md:items-start gap-10">
       
       {/* Image is sourced from Prismic */}
-      <div className="bg-[#1e293b] rounded-lg w-full md:w-1/2 flex justify-center items-center h-64 overflow-hidden">
-        <img
-          src={slice.primary.image.url}
-          alt={slice.primary.image.alt || 'Content image'}
-          className="w-full h-full object-cover rounded-lg"
-        />
+      <div className="bg-[#1e293b] rounded-lg w-full md:w-1/2 flex justify-center items-center h-64 overflow-hidden relative">
+        {slice.primary.image?.url ? (
+          <Image
+            src={slice.primary.image.url}
+            alt={slice.primary.image.alt || "Content image"}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover rounded-lg"
+            unoptimized
+          />
+        ) : null}
       </div>
 
       <div className="w-full md:w-1/2 text-white">

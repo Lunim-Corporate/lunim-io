@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { HomepageDocumentDataBodyProcessSlice } from "../../../prismicio-types";
 import { asText } from "@prismicio/helpers";
 import { LucideProps, HelpCircle } from "lucide-react";
 import Xarrow, { Xwrapper } from "react-xarrows";
@@ -12,9 +13,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   // Example: 'Star': StarIcon
 };
 
-interface ProcessSectionProps {
-  slice: Content.ProcessSlice;
-}
+type ProcessSectionProps = SliceComponentProps<HomepageDocumentDataBodyProcessSlice>;
 
 const ProcessSection: React.FC<ProcessSectionProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);

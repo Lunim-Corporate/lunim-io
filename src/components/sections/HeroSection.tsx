@@ -1,12 +1,11 @@
 'use client';
 import React from 'react';
-import { Content } from '@prismicio/client';
 import { PrismicRichText, PrismicLink } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import type { HomepageDocumentDataBodyHerosectionSlice } from '../../../prismicio-types';
 import { asText } from '@prismicio/helpers';
 
-interface HeroSectionProps {
-  slice: Content.HerosectionSlice;
-}
+type HeroSectionProps = SliceComponentProps<HomepageDocumentDataBodyHerosectionSlice>;
 
 const HeroSection: React.FC<HeroSectionProps> = ({ slice }) => {
   const backgroundImageUrl = slice.primary.background_image.url;

@@ -1,12 +1,11 @@
 'use client';
 import React from 'react';
-import { Content } from '@prismicio/client';
 import { PrismicRichText, PrismicLink } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import type { HomepageDocumentDataBodyProjectShowcaseSlice } from '../../../prismicio-types';
 import { asText } from '@prismicio/helpers';
 
-interface ProjectShowcaseSectionProps {
-  slice: Content.ProjectShowcaseSlice; 
-}
+type ProjectShowcaseSectionProps = SliceComponentProps<HomepageDocumentDataBodyProjectShowcaseSlice>;
 
 const ProjectShowcaseSection: React.FC<ProjectShowcaseSectionProps> = ({ slice }) => (
   <section id={slice.primary.section_id || undefined} className="bg-[#0f172a] py-20">

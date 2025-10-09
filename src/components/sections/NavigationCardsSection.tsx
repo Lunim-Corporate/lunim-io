@@ -29,7 +29,7 @@ const NavigationCardsSection: React.FC = () => {
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -40,7 +40,7 @@ const NavigationCardsSection: React.FC = () => {
       scale: 1.02,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -74,7 +74,7 @@ const NavigationCardsSection: React.FC = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
-          {navigationCardsData.map((card, index) => (
+          {navigationCardsData.map((card) => (
             <motion.div
               key={card.path}
               variants={cardVariants}

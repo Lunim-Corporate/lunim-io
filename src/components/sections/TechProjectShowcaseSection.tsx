@@ -1,20 +1,19 @@
 "use client";
 
 import React from "react";
-import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { HomepageDocumentDataBodyProjectShowcaseSlice } from "../../../prismicio-types";
 import Link from "next/link";
 import { asText } from "@prismicio/helpers";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
-interface TechProjectShowcaseSectionProps {
-  slice: Content.ProjectShowcaseSlice;
-}
+type TechProjectShowcaseSectionProps = SliceComponentProps<HomepageDocumentDataBodyProjectShowcaseSlice>;
 
 const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
   slice,
 }) => {
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -25,7 +24,7 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: {
       opacity: 0,
       y: 30,
@@ -37,7 +36,7 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -59,7 +58,7 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
             </span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Discover how we've transformed businesses with cutting-edge
+            Discover how we&apos;ve transformed businesses with cutting-edge
             technology solutions and innovative approaches.
           </p>
         </motion.div>

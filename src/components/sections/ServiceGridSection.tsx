@@ -1,6 +1,7 @@
 import React from 'react';
-import { Content } from '@prismicio/client';
 import { PrismicRichText } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import type { HomepageDocumentDataBodyServiceGridSlice } from '../../../prismicio-types';
 import { asText } from '@prismicio/helpers';
 
 // Import the icons 
@@ -21,9 +22,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Images: Images,
 };
 
-interface ServiceGridSectionProps {
-  slice: Content.ServiceGridSlice;
-}
+type ServiceGridSectionProps = SliceComponentProps<HomepageDocumentDataBodyServiceGridSlice>;
 
 const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
   const columns = slice.primary.columns || 4;
