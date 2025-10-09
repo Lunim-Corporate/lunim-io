@@ -1,51 +1,60 @@
-import { useState } from 'react';
-import { supabase } from '@/supabaseClient';
+import { useState } from "react";
+
+type ContactFormStatus = "idle" | "submitting" | "success" | "error";
 
 export const useContactForm = () => {
-  const [fullName, setFullName] = useState('');
-  const [workEmail, setWorkEmail] = useState('');
-  const [company, setCompany] = useState('');
-  const [projectBudget, setProjectBudget] = useState('');
-  const [projectGoals, setProjectGoals] = useState('');
-  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [workEmail, setWorkEmail] = useState("");
+  const [company, setCompany] = useState("");
+  const [projectBudget, setProjectBudget] = useState("");
+  const [projectGoals, setProjectGoals] = useState("");
+  const [formStatus, setFormStatus] = useState<ContactFormStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormStatus('submitting');
-    setErrorMessage('');
+    setFormStatus("submitting");
+    setErrorMessage("");
 
     if (!fullName || !workEmail || !projectGoals) {
-      setErrorMessage('Please fill in all required fields (Full Name, Work Email, Project Goals).');
-      setFormStatus('error');
+      setErrorMessage(
+        "Please fill in all required fields (Full Name, Work Email, Project Goals)."
+      );
+      setFormStatus("error");
       return;
     }
 
     try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .insert([{
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           full_name: fullName,
           work_email: workEmail,
-          company: company,
+          company,
           project_budget: projectBudget,
           project_goals: projectGoals,
-        }])
-        .select();
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Unable to submit contact form.");
+      }
 
-      console.log('Contact form submitted successfully:', data);
-      setFormStatus('success');
-      setFullName('');
-      setWorkEmail('');
-      setCompany('');
-      setProjectBudget('');
-      setProjectGoals('');
+      setFormStatus("success");
+      setFullName("");
+      setWorkEmail("");
+      setCompany("");
+      setProjectBudget("");
+      setProjectGoals("");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown error occurred.';
+      const message =
+        error instanceof Error ? error.message : "Unknown error occurred.";
       setErrorMessage(`Failed to submit form: ${message}`);
-      setFormStatus('error');
+      setFormStatus("error");
     }
   };
 
@@ -62,6 +71,6 @@ export const useContactForm = () => {
     setProjectGoals,
     formStatus,
     errorMessage,
-    handleSubmit
+    handleSubmit,
   };
 };
