@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PrismicNextLink } from "@prismicio/next";
+import type { Content } from "@prismicio/client";
 import { Menu, X } from "lucide-react";
+import { asLink } from "@prismicio/helpers";
 import { useLayoutData } from "../contexts/LayoutContext";
 import logoFallback from "../assets/lunim-logo.png";
 
@@ -34,8 +36,10 @@ const Header: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  // Prismic navigation items (fallback to empty array)
-  const menuItems = (layout?.data as any)?.header_navigation || [];
+  const layoutData = layout?.data;
+  const menuItems =
+    layoutData?.header_navigation ??
+    ([] as Content.LayoutDocumentDataHeaderNavigationItem[]);
 
   const isActive = (href?: string) => {
     if (!href) return false;
@@ -58,7 +62,9 @@ const Header: React.FC = () => {
     return null;
   }
 
-  const headerLogo = (layout.data as any)?.header_logo;
+  const headerLogo = layoutData?.header_logo;
+  const headerCtaLink = layoutData?.header_cta_link;
+  const headerCtaLabel = layoutData?.header_cta_label ?? "";
 
   return (
     <header
@@ -96,10 +102,10 @@ const Header: React.FC = () => {
           {/* Desktop nav */}
           <nav className="hidden md:flex relative" ref={navRef}>
             <div className="flex space-x-1">
-              {menuItems.map((item: any, index: number) => {
+              {menuItems.map((item, index) => {
                 const field = item.link_object;
-                const label = item.link_label;
-                const active = isActive(field?.url);
+                const label = item.link_label ?? "";
+                const active = isActive(asLink(field) || undefined);
                 return (
                   <PrismicNextLink
                     key={index}
@@ -123,13 +129,13 @@ const Header: React.FC = () => {
 
           {/* CTA + Mobile toggle */}
           <div className="flex items-center">
-            {(layout.data as any)?.header_cta_link ? (
+            {headerCtaLink ? (
               <PrismicNextLink
-                field={(layout.data as any).header_cta_link}
+                field={headerCtaLink}
                 className="hidden md:block relative overflow-hidden group px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all duration-500 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-400/40"
               >
                 <span className="relative z-10 font-bold text-black">
-                  {(layout.data as any).header_cta_label}
+                  {headerCtaLabel}
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 -skew-x-12" />
               </PrismicNextLink>
@@ -160,18 +166,18 @@ const Header: React.FC = () => {
             : "opacity-0 -translate-y-full pointer-events-none"
         }`}
       >
-        {(layout.data as any)?.header_cta_link ? (
+        {headerCtaLink ? (
           <PrismicNextLink
-            field={(layout.data as any).header_cta_link}
+            field={headerCtaLink}
             className="w-full max-w-xs mb-8 text-center px-6 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-semibold text-black"
             onClick={() => setIsMenuOpen(false)}
           >
-            {(layout.data as any).header_cta_label}
+            {headerCtaLabel}
           </PrismicNextLink>
         ) : null}
 
         <div className="w-full max-w-xs space-y-2 relative z-10">
-          {menuItems.map((item: any, index: number) => (
+          {menuItems.map((item, index) => (
             <PrismicNextLink
               key={index}
               field={item.link_object}
