@@ -37,9 +37,9 @@ const WebsiteCard: FC<WebsiteCardProps> = ({ slice }) => {
             />
               <div className="bg-[#1f2937] p-6 flex-1 flex flex-col"> 
                 <div className="flex-1">
-                  <h3 className="text-white font-bold text-xl mb-2 text-left">
+                  <div className="text-white font-bold text-xl mb-2 text-left">
                     <PrismicRichText field={cardItem.title} />
-                  </h3>
+                  </div>
                   <div className="text-gray-200 text-base text-left">
                     <p>{cardItem.description}</p>
                   </div>
@@ -49,7 +49,7 @@ const WebsiteCard: FC<WebsiteCardProps> = ({ slice }) => {
           )
         })}
         </div>
-        </div>
+      </div>
     </section>
   );
 };
