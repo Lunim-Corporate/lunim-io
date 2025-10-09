@@ -1,6 +1,7 @@
 import { createClient } from "@/prismicio";
 import Link from "next/link";
 import Image from "next/image";
+import { asText } from "@prismicio/helpers";
 
 export const revalidate = 60;
 
@@ -34,7 +35,7 @@ export default async function CaseStudiesIndex() {
                   ) : null}
                   <div className="p-5">
                     <h2 className="text-xl font-semibold mb-2">
-                      {cs.data.hero_title?.[0]?.text ?? cs.uid}
+                      {asText(cs.data.hero_title) ?? cs.uid}
                     </h2>
                   </div>
                 </Link>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { PrismicRichText } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
+import type { Content } from "@prismicio/client";
 
 export const revalidate = 60;
 
@@ -11,7 +12,9 @@ export const revalidate = 60;
  */
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType("case_study").catch(() => []);
+  const docs = await client
+    .getAllByType<Content.CaseStudyDocument>("case_study")
+    .catch(() => [] as Content.CaseStudyDocument[]);
   return docs.map((d) => ({ uid: d.uid! }));
 }
 
@@ -21,14 +24,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ uid: string }> }) {
   const { uid } = await params;
   const client = createClient();
-  const doc = await client.getByUID("case_study", uid).catch(() => null);
-  const title = doc?.data?.hero_title?.[0]?.text || doc?.uid || "Case Study";
+  const doc = await client
+    .getByUID<Content.CaseStudyDocument>("case_study", uid)
+    .catch(() => null);
+  const title = asText(doc?.data?.hero_title) || doc?.uid || "Case Study";
   return {
     title: `${title} | Lunim`,
-    description: doc?.data?.challenge_content?.[0]?.text ?? "Case study by Lunim",
+    description: asText(doc?.data?.challenge_content) ?? "Case study by Lunim",
     openGraph: {
       title,
-      description: doc?.data?.challenge_content?.[0]?.text ?? "",
+      description: asText(doc?.data?.challenge_content) ?? "",
       images: doc?.data?.hero_image?.url ? [{ url: doc.data.hero_image.url }] : undefined,
     },
   };
@@ -37,20 +42,22 @@ export async function generateMetadata({ params }: { params: Promise<{ uid: stri
 export default async function CaseStudyPage({ params }: { params: Promise<{ uid: string }> }) {
   const client = createClient();
   const { uid } = await params;
-  const doc = await client.getByUID("case_study", uid).catch(() => null);
+  const doc = await client
+    .getByUID<Content.CaseStudyDocument>("case_study", uid)
+    .catch(() => null);
   if (!doc) return notFound();
 
-  const d = doc.data as any;
+  const data = doc.data;
 
   return (
     <main className="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen">
       {/* Hero */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-black">
-        {d.hero_image?.url && (
+        {data.hero_image?.url && (
           <>
             <Image
-              src={d.hero_image.url}
-              alt={d.hero_image.alt || ""}
+              src={data.hero_image.url}
+              alt={data.hero_image.alt || ""}
               fill
               priority
               className="object-cover"
@@ -60,7 +67,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ uid:
         )}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight text-white drop-shadow-lg">
-            {asText(d.hero_title) || doc.uid}
+            {asText(data.hero_title) || doc.uid}
           </h1>
         </div>
       </section>
@@ -70,10 +77,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ uid:
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-3xl font-bold mb-8 text-[#BBFEFF]">
             {/* Rich text is fine here; it renders its own headings inside a div */}
-            <PrismicRichText field={d.challenge_title} />
+            <PrismicRichText field={data.challenge_title} />
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed">
-            <PrismicRichText field={d.challenge_content} />
+            <PrismicRichText field={data.challenge_content} />
           </div>
         </div>
       </section>
@@ -82,10 +89,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ uid:
       <section className="py-8 bg-black">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-3xl font-bold mb-8 text-[#BBFEFF]">
-            <PrismicRichText field={d.solution_title} />
+            <PrismicRichText field={data.solution_title} />
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed">
-            <PrismicRichText field={d.solution_content} />
+            <PrismicRichText field={data.solution_content} />
           </div>
         </div>
       </section>
@@ -94,10 +101,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ uid:
       <section className="py-8 bg-gray-900">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-3xl font-bold mb-8 text-[#BBFEFF]">
-            <PrismicRichText field={d.impact_title} />
+            <PrismicRichText field={data.impact_title} />
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed">
-            <PrismicRichText field={d.impact_content} />
+            <PrismicRichText field={data.impact_content} />
           </div>
         </div>
       </section>
