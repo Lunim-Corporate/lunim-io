@@ -1,23 +1,24 @@
-import { 
-  Search, 
-  Rocket, 
-  Target, 
-  UserStar, 
-  Cpu, 
-  Kanban, 
-  Images, 
-  Telescope as TelescopeIcon, 
-  Brain as BrainIcon, 
-  Network as NetworkIcon, 
-  PersonStanding 
-} from 'lucide-react';
+import {
+  Search,
+  Rocket,
+  Target,
+  UserStar,
+  Cpu,
+  Kanban,
+  Images,
+  Telescope as TelescopeIcon,
+  Brain as BrainIcon,
+  Network as NetworkIcon,
+  PersonStanding
+} from "lucide-react";
+import type { StaticImageData } from "next/image";
 
-import aiAgentImage from '../assets/ai-agent-listing.png'; 
-import aiWhatsAppImage from '../assets/ai-whatsapp-listing.png'; 
-import nftCollectionImage from '../assets/nft-collection-listing.png'; 
-import pizzaHutImage from '../assets/pizza-hut-listing.png'; 
-import toucanBoxImage from '../assets/toucanbox-listing.png'; 
-import winnerTakesAllImage from '../assets/winner-takes-all-listing.png'; 
+import aiAgentImage from "../assets/ai-agent-listing.png";
+import aiWhatsAppImage from "../assets/ai-whatsapp-listing.png";
+import nftCollectionImage from "../assets/nft-collection-listing.png";
+import pizzaHutImage from "../assets/pizza-hut-listing.png";
+import toucanBoxImage from "../assets/toucanbox-listing.png";
+import winnerTakesAllImage from "../assets/winner-takes-all-listing.png";
 
 
 // Shared data structures
@@ -43,7 +44,7 @@ export interface ProjectItem {
   tags: string[];
   bgColor: string;
   path: string;
-  image: string;
+  image: string | StaticImageData;
 }
 
 export interface FAQItem {

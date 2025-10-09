@@ -1,21 +1,16 @@
 // src/utils/aboutData.ts
-import { 
-   Rocket, 
-  Users, 
-  Globe, 
-  Code, 
-  Layout, 
+import {
+  Rocket,
+  Globe,
   Award,
   Lightbulb,
   BookOpen,
-  Handshake,
-  BarChart3,
   CircleDashed,
   HeartPulse,
   Sparkles
-} from 'lucide-react';
+} from "lucide-react";
 
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from "lucide-react";
 
 export interface JourneyItem {
   year: number;
