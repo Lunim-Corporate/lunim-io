@@ -1,15 +1,17 @@
-import React, { useRef } from 'react';
-import './PageNotFound.css';
-import { motion } from 'framer-motion';
-import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
-import type { Engine } from 'tsparticles-engine';
-import { Link } from 'react-router-dom';
-import logo from '../../assets/lunim-logo.png';
+import React from "react";
+import "./PageNotFound.css";
+import { motion } from "framer-motion";
+import Particles from "react-tsparticles";
+import { loadSlim } from "@tsparticles/slim";
+import type { Engine as SlimEngine } from "@tsparticles/engine";
+import type { Engine as ParticlesEngine } from "tsparticles-engine";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "../../assets/lunim-logo.png";
 
 const PageNotFound: React.FC = () => {
-  const particlesInit = async (engine: Engine) => {
-    await loadSlim(engine);
+  const particlesInit = async (engine: ParticlesEngine) => {
+    await loadSlim(engine as unknown as SlimEngine);
   };
 
   // Create stars for background
@@ -183,7 +185,7 @@ const PageNotFound: React.FC = () => {
       
       {/* Logo */}
       <div className="absolute top-8 left-8 z-50">
-        <img src={logo} alt="lunim logo" className="h-12 w-auto" />
+        <Image src={logo} alt="lunim logo" className="h-12 w-auto" priority />
       </div>
 
       {/* Main content */}
@@ -268,8 +270,8 @@ const PageNotFound: React.FC = () => {
             }}
             className="max-w-2xl text-lg text-lunar-mist mb-10 leading-relaxed"
           >
-            Houston, we have a problem. The page you're trying to reach is not in our orbit. 
-            It may have drifted into deep space or been pulled by the moon's gravity.
+            Houston, we have a problem. The page you&apos;re trying to reach is not in our orbit. 
+            It may have drifted into deep space or been pulled by the moon&apos;s gravity.
           </motion.p>
           
           <motion.div
@@ -282,7 +284,7 @@ const PageNotFound: React.FC = () => {
             }}
           >
             <Link 
-              to="/" 
+              href="/" 
               className="font-orbitron bg-transparent border-2 border-lunar-blue text-lunar-blue px-8 py-3 rounded-full text-lg uppercase tracking-wider relative overflow-hidden group inline-block"
             >
               <span className="relative z-10">Return to Home Base</span>
