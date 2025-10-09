@@ -10,7 +10,6 @@ export default async function Page() {
   const doc = await client
     .getSingle<Content.MainpageDocument>("mainpage")
     .catch(() => null);
-  console.log("✅ Document:", doc);
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
       <main className="p-6 text-white bg-black">Homepage not published.</main>
