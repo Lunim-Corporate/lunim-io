@@ -19,26 +19,20 @@ export const repositoryName =
  */
 // TODO: Update the routes array to match your project's route structure.
 const routes: Route[] = [
-  // Examples:
-  // { type: "homepage", path: "/" },
-  // { type: "page", path: "/:uid" },
-  // { type: "homepage", path: "/" },
   { type: "mainpage", path: "/" },
+  { type: "our_team_page", path: "/our-team" },
 
   { type: "homepage", path: "/tech" },
 
   // If you modelled Tech/Film/Tabb/Academy as "landing_page" documents,
   // give each a UID and route them generically:
-  { type: "landing_page", path: "/:uid" },
-
-  // Team page:
-  { type: "team_page", path: "/our-team" },
+  // { type: "landing_page", path: "/:uid" },
 
   // Case studies under /tech/casestudies/:uid
   { type: "case_study", path: "/tech/casestudies/:uid" },
 
   // Privacy policy:
-  { type: "privacy_policy", path: "/privacy-policy" },
+  // { type: "privacy_policy", path: "/privacy-policy" },
 ];
 
 /**
