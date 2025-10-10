@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+import type { CaseStudySmDocumentWithLegacy } from "../types";
 
 type Params = { uid: string };
 
@@ -12,10 +13,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
   const client = createClient();
-  const doc = await client.getByUID("case_study_sm", uid).catch(() => null);
+  const doc = await client
+    .getByUID<CaseStudySmDocumentWithLegacy>("case_study_sm", uid)
+    .catch(() => null);
   if (!doc) notFound();
 
-  const slices: any[] = (doc.data as any).slices ?? [];
+  const slices = doc.data.slices;
 
   return (
     <main className="bg-black text-white min-h-screen">
@@ -31,19 +34,21 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { uid } = await params;
   const client = createClient();
-  const doc = await client.getByUID("case_study_sm", uid).catch(() => null);
+  const doc = await client
+    .getByUID<CaseStudySmDocumentWithLegacy>("case_study_sm", uid)
+    .catch(() => null);
   if (!doc) {
     return { title: "Case Study | Lunim" };
   }
   return {
-    title: (doc.data as any).meta_title || `${doc.uid} | Case Study`,
-    description: (doc.data as any).meta_description || "Project case study by Lunim.",
+    title: doc.data.meta_title || `${doc.uid} | Case Study`,
+    description: doc.data.meta_description || "Project case study by Lunim.",
   };
 }
 
 // Static generation for known UIDs (optional)
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType("case_study_sm");
+  const docs = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
   return docs.map((d) => ({ uid: d.uid! }));
 }

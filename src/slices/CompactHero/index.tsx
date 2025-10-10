@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import { Content } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
@@ -11,17 +11,36 @@ import { asText } from "@prismicio/helpers";
  */
 export type CompactHeroProps = SliceComponentProps<Content.CompactHeroSlice>;
 
+type LegacyHomepageHeroFields = Partial<
+  Pick<
+    Content.HomepageDocumentDataBodyHerosectionSlicePrimary,
+    | "background_image"
+    | "hero_title_part1"
+    | "hero_title_part2"
+    | "hero_description"
+    | "button_1_link"
+    | "button_1_label"
+  >
+>;
+
+type CompactHeroPrimary = Content.CompactHeroSlice["primary"] & LegacyHomepageHeroFields;
+
 /**
  * Helper to extract metadata (OG image & title) from this slice.
  */
 export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
-  const p: any = slice.primary || {};
+  const primary: CompactHeroPrimary = slice.primary;
+  const heroTitleText = asText(primary.hero_title).trim();
+  const splitTitleText = [asText(primary.hero_title_part1), asText(primary.hero_title_part2)]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
   const ogImage =
-    p.hero_image?.url || p.background_image?.url || "";
+    primary.hero_image?.url || primary.background_image?.url || "";
 
   const titleFromHero =
-    (p.hero_title && Array.isArray(p.hero_title) && p.hero_title[0]?.text) ||
-    [asText(p.hero_title_part1), asText(p.hero_title_part2)].filter(Boolean).join(" ").trim() ||
+    heroTitleText ||
+    splitTitleText ||
     "";
 
   return { ogImage, titleFromHero };
@@ -36,16 +55,16 @@ export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
  *  - background_image, hero_title_part1, hero_title_part2, hero_description, button_1_link, button_1_label
  */
 const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
-  const p: any = slice.primary || {};
+  const primary: CompactHeroPrimary = slice.primary;
 
   // Prefer new schema fields
-  const bg = p.hero_image?.url || p.background_image?.url;
-  const titleNew = p.hero_title; // StructuredText
-  const title1Old = p.hero_title_part1;
-  const title2Old = p.hero_title_part2;
-  const description = p.hero_description;
-  const ctaLink = p.button_1_link;
-  const ctaLabel = p.button_1_label;
+  const bg = primary.hero_image?.url || primary.background_image?.url;
+  const titleNew = primary.hero_title; // StructuredText
+  const title1Old = primary.hero_title_part1;
+  const title2Old = primary.hero_title_part2;
+  const description = primary.hero_description;
+  const ctaLink = primary.button_1_link;
+  const ctaLabel = primary.button_1_label;
 
   return (
     <section
