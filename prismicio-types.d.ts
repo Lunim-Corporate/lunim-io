@@ -1041,8 +1041,8 @@ export type LayoutDocument<Lang extends string = string> =
   >;
 
 type MainpageDocumentDataSlicesSlice =
-  | ContactSlice
   | WebsiteCardSlice
+  | ContactSlice
   | HeroSlice;
 
 /**
@@ -1105,6 +1105,71 @@ export type MainpageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<
     Simplify<MainpageDocumentData>,
     "mainpage",
+    Lang
+  >;
+
+type OurTeamPageDocumentDataSlicesSlice = OurTeamSlice;
+
+/**
+ * Content for page documents
+ */
+interface OurTeamPageDocumentData {
+  /**
+   * Slice Zone field in *page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<OurTeamPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: our_team_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: our_team_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * page document from Prismic
+ *
+ * - **API ID**: `our_team_page`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type OurTeamPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<OurTeamPageDocumentData>,
+    "our_team_page",
     Lang
   >;
 
@@ -1359,6 +1424,7 @@ export type AllDocumentTypes =
   | LandingPageDocument
   | LayoutDocument
   | MainpageDocument
+  | OurTeamPageDocument
   | PrivacyPolicyDocument
   | TeamPageDocument;
 
@@ -1709,6 +1775,118 @@ type HeroSliceVariation = HeroSliceDefault;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
+ * Item in *OurTeam → Default → Primary → team member*
+ */
+export interface OurTeamSliceDefaultPrimaryTeamMemberItem {
+  /**
+   * headshot field in *OurTeam → Default → Primary → team member*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.team_member[].headshot
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  headshot: prismic.ImageField<never>;
+
+  /**
+   * name field in *OurTeam → Default → Primary → team member*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.team_member[].name
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  name: prismic.RichTextField;
+
+  /**
+   * role field in *OurTeam → Default → Primary → team member*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.team_member[].role
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  role: prismic.KeyTextField;
+
+  /**
+   * description field in *OurTeam → Default → Primary → team member*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.team_member[].description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  description: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *OurTeam → Default → Primary*
+ */
+export interface OurTeamSliceDefaultPrimary {
+  /**
+   * title field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * description field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  description: prismic.KeyTextField;
+
+  /**
+   * team member field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team.default.primary.team_member[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  team_member: prismic.GroupField<
+    Simplify<OurTeamSliceDefaultPrimaryTeamMemberItem>
+  >;
+}
+
+/**
+ * Default variation for OurTeam Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type OurTeamSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<OurTeamSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *OurTeam*
+ */
+type OurTeamSliceVariation = OurTeamSliceDefault;
+
+/**
+ * OurTeam Shared Slice
+ *
+ * - **API ID**: `our_team`
+ * - **Description**: OurTeam
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type OurTeamSlice = prismic.SharedSlice<
+  "our_team",
+  OurTeamSliceVariation
+>;
+
+/**
  * Item in *WebsiteCard → Default → Primary → card*
  */
 export interface WebsiteCardSliceDefaultPrimaryCardItem {
@@ -1733,14 +1911,24 @@ export interface WebsiteCardSliceDefaultPrimaryCardItem {
   title: prismic.RichTextField;
 
   /**
-   * description field in *WebsiteCard → Default → Primary → card*
+   * primary description field in *WebsiteCard → Default → Primary → card*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].description
+   * - **API ID Path**: website_card.default.primary.card[].primary_description
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
-  description: prismic.KeyTextField;
+  primary_description: prismic.KeyTextField;
+
+  /**
+   * secondary description field in *WebsiteCard → Default → Primary → card*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: website_card.default.primary.card[].secondary_description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  secondary_description: prismic.KeyTextField;
 
   /**
    * link to website field in *WebsiteCard → Default → Primary → card*
@@ -1763,6 +1951,26 @@ export interface WebsiteCardSliceDefaultPrimaryCardItem {
  * Primary content in *WebsiteCard → Default → Primary*
  */
 export interface WebsiteCardSliceDefaultPrimary {
+  /**
+   * main title field in *WebsiteCard → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: website_card.default.primary.main_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  main_title: prismic.RichTextField;
+
+  /**
+   * subtitle field in *WebsiteCard → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: website_card.default.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  subtitle: prismic.RichTextField;
+
   /**
    * card field in *WebsiteCard → Default → Primary*
    *
@@ -1852,6 +2060,9 @@ declare module "@prismicio/client" {
       MainpageDocument,
       MainpageDocumentData,
       MainpageDocumentDataSlicesSlice,
+      OurTeamPageDocument,
+      OurTeamPageDocumentData,
+      OurTeamPageDocumentDataSlicesSlice,
       PrivacyPolicyDocument,
       PrivacyPolicyDocumentData,
       TeamPageDocument,
@@ -1872,6 +2083,11 @@ declare module "@prismicio/client" {
       HeroSliceDefaultPrimary,
       HeroSliceVariation,
       HeroSliceDefault,
+      OurTeamSlice,
+      OurTeamSliceDefaultPrimaryTeamMemberItem,
+      OurTeamSliceDefaultPrimary,
+      OurTeamSliceVariation,
+      OurTeamSliceDefault,
       WebsiteCardSlice,
       WebsiteCardSliceDefaultPrimaryCardItem,
       WebsiteCardSliceDefaultPrimary,
