@@ -46,7 +46,7 @@ const WebsiteCard: FC<WebsiteCardProps> = ({ slice }) => {
                     <PrismicRichText field={cardItem.title} />
                   </div>
                   <div className="text-gray-200 text-base text-left">
-                    <p style={}>{cardItem.primary_description}</p>
+                    <p>{cardItem.primary_description}</p>
                     <p className="italic">{cardItem.secondary_description}</p>
                   </div>
                 </div>
