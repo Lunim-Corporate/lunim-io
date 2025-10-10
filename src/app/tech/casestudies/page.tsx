@@ -2,26 +2,27 @@ import { createClient } from "@/prismicio";
 import Link from "next/link";
 import Image from "next/image";
 import { asText } from "@prismicio/helpers";
+import type { HeroLikeSlice, CaseStudySmDocumentWithLegacy } from "./types";
 
 export const revalidate = 60;
 
 // Try to find a hero-like slice and return its image + title
-function extractHeroFromSlices(slices: any[] | undefined) {
+function extractHeroFromSlices(slices: ReadonlyArray<HeroLikeSlice> | null | undefined) {
   if (!Array.isArray(slices)) return { img: undefined, title: undefined };
   const hero =
     slices.find((s) => s.slice_type === "compact_hero") ||
     slices.find((s) => s.slice_type === "case_study_hero") ||
     slices.find((s) => s.slice_type === "herosection");
 
-  const p = hero?.primary ?? {};
+  const primary = hero?.primary;
   const img =
-    p?.hero_image?.url ||
-    p?.background_image?.url ||
+    primary?.hero_image?.url ||
+    primary?.background_image?.url ||
     undefined;
 
   const title =
-    p?.hero_title ||
-    p?.hero_title_part1 ||
+    primary?.hero_title ||
+    primary?.hero_title_part1 ||
     undefined;
 
   return { img, title };
@@ -29,7 +30,7 @@ function extractHeroFromSlices(slices: any[] | undefined) {
 
 export default async function CaseStudiesIndex() {
   const client = createClient();
-  const cases = await client.getAllByType("case_study_sm", {
+  const cases = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm", {
     orderings: [{ field: "document.first_publication_date", direction: "desc" }],
   });
 
@@ -43,14 +44,14 @@ export default async function CaseStudiesIndex() {
         ) : (
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {cases.map((cs) => {
-              const slices = (cs.data as any)?.slices;
+              const slices = cs.data.slices;
               // Prefer top-level hero_image (if present), else look inside hero-like slices
               const fromSlices = extractHeroFromSlices(slices);
               const imageUrl =
-                (cs.data as any)?.hero_image?.url || fromSlices.img;
+                cs.data.hero_image?.url || fromSlices.img;
 
               const titleText =
-                asText((cs.data as any)?.hero_title) ||
+                asText(cs.data.hero_title) ||
                 asText(fromSlices.title) ||
                 cs.uid;
 
