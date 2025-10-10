@@ -16,10 +16,11 @@ const WebsiteCard: FC<WebsiteCardProps> = ({ slice }) => {
     // Structure of the website card section
     <section className="bg-[#0f172a] py-20">
        <div className="text-3xl font-bold text-white mb-4 text-center">
-          <PrismicRichText field={slice.primary.main_title} />
+        <PrismicRichText field={slice.primary.main_title} />
         </div>
         <div className="text-lg text-gray-300 mb-12 text-center">
-        <PrismicRichText field={slice.primary.subtitle}/></div>
+        <PrismicRichText field={slice.primary.subtitle} />
+        </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {/* End website card structure */}

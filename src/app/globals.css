@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -23,4 +23,120 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+/* * CODE IS FROM V2 LUNIM WEBSITE: see index.css in V2 */
+/* @import '@fontsource/noto-sans-display/variable.css'; */
+/* @import '@fontsource/inter/variable.css'; */
+
+/* @import "tailwindcss/preflight"; */
+/* Below are no longer supported */
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
+/* Set up font variables */
+:root {
+  --font-primary: 'Noto Sans Display Variable', sans-serif;
+  --font-secondary: 'Inter Variable', sans-serif;
+}
+
+/* Base typography styles */
+body {
+  font-family: var(--font-primary);
+  font-size: 14pt;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Paragraph styles */
+p {
+  font-family: var(--font-primary);
+  font-size: 14pt;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* Span/inline text styles */
+span {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Heading styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-secondary);
+  font-style: normal;
+  margin: 1.5rem 0 0.75rem;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 22pt;
+}
+
+h2 {
+  font-size: 18pt;
+}
+
+h3 {
+  font-size: 16pt;
+  font-style: normal;
+}
+
+/* Caption styles */
+.caption {
+  font-family: var(--font-secondary);
+  font-weight: 300;
+  font-size: 12pt;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Utility classes */
+.min-text-size {
+  font-size: 12pt !important;
+}
+
+.max-text-size {
+  font-size: 96pt !important;
+}
+
+.text-light {
+  font-weight: 300;
+}
+
+/* Remove default marker styles */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::marker {
+  display: none;
+}
+
+/* Custom arrow styles */
+.archer-container path {
+  animation: draw 1.5s ease-in-out forwards;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .archer-container {
+    display: none;
+  }
 }
