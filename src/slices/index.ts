@@ -7,5 +7,6 @@ export const components = {
   compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),
   hero: dynamic(() => import("./Hero")),
+  our_team: dynamic(() => import("./OurTeam")),
   website_card: dynamic(() => import("./WebsiteCard")),
 };

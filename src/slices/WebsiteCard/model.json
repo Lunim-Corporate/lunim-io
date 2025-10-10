@@ -12,6 +12,24 @@
       "description": "Default",
       "imageUrl": "",
       "primary": {
+        "main_title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "main title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "subtitle",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+          }
+        },
         "card": {
           "type": "Group",
           "config": {
@@ -38,10 +56,17 @@
                   "multi": "heading2,heading3,heading4,heading5,strong,heading6,em"
                 }
               },
-              "description": {
+              "primary_description": {
                 "type": "Text",
                 "config": {
-                  "label": "description",
+                  "label": "primary description",
+                  "placeholder": ""
+                }
+              },
+              "secondary_description": {
+                "type": "Text",
+                "config": {
+                  "label": "secondary description",
                   "placeholder": ""
                 }
               },

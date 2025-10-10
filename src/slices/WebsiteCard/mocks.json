@@ -50,26 +50,56 @@
 								}
 							],
 							[
-								"description",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "prevent",
-									"type": "Text"
-								}
-							],
-							[
 								"link_to_website",
 								{
-									"__TYPE__": "LinkContent",
 									"key": "04ad522f-56da-4a3a-bdc3-39c0ecec611f",
+									"__TYPE__": "LinkContent",
 									"value": {
 										"__TYPE__": "ExternalLink",
 										"url": "https://slicemachine.dev",
 										"text": "part"
 									}
 								}
+							],
+							[
+								"primary_description",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "control",
+									"type": "Text"
+								}
+							],
+							[
+								"secondary_description",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "mixture",
+									"type": "Text"
+								}
 							]
 						]
+					}
+				]
+			},
+			"main_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Bigger"
+						}
+					}
+				]
+			},
+			"subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Piano"
+						}
 					}
 				]
 			}
