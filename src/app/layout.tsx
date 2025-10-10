@@ -1,4 +1,5 @@
-import { createClient } from "@/prismicio";
+import { createClient, repositoryName } from "@/prismicio";
+import { PrismicPreview } from "@prismicio/next";
 import { LayoutProvider } from "@/contexts/LayoutContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -15,11 +16,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black">
-        <LayoutProvider initialData={layout}>
-          <Header />
-          {children}
-          <Footer />
-        </LayoutProvider>
+        <PrismicPreview repositoryName={repositoryName}>
+          <LayoutProvider initialData={layout}>
+            <Header />
+            {children}
+            <Footer />
+          </LayoutProvider>
+        </PrismicPreview>
       </body>
     </html>
   );

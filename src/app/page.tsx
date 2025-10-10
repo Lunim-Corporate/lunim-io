@@ -8,10 +8,9 @@ export const revalidate = 60;
 export default async function Page() {
   const client = createClient();
   const doc = await client
-    .getSingle<Content.HomepageDocument>("homepage")
+    .getSingle<Content.MainpageDocument>("mainpage")
     .catch(() => null);
-
-  if (!doc || !Array.isArray(doc.data.body)) {
+  if (!doc || !Array.isArray(doc.data.slices)) {
     return (
       <main className="p-6 text-white bg-black">Homepage not published.</main>
     );
@@ -19,11 +18,11 @@ export default async function Page() {
 
   console.log(
     "✅ Slices:",
-    doc.data.body.map((slice) => slice.slice_type)
+    doc.data.slices.map((slice) => slice.slice_type)
   );
   return (
     <main className="bg-black">
-      <SliceZone slices={doc.data.body} components={components} />
+      <SliceZone slices={doc.data.slices} components={components} />
     </main>
   );
 }

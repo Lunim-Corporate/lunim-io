@@ -14,7 +14,7 @@ interface ContactFormProps {
   budgetLabel?: string;
   goalsLabel?: string;
   buttonLabel?: string;
-  budgetOptions?: string;
+  budgetOptions?: string[];
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({
@@ -43,11 +43,6 @@ const ContactForm: React.FC<ContactFormProps> = ({
     errorMessage,
     handleSubmit,
   } = useContactForm();
-
-  // Create the budget options array from the comma-separated string from Prismic
-  const optionsArray = budgetOptions
-    ? budgetOptions.split(",")
-    : ["Estimated Budget"];
 
   return (
     <div
@@ -103,14 +98,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
               onChange={(e) => setProjectBudget(e.target.value)}
               className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white appearance-none focus:outline-none focus:border-blue-500"
             >
-              {optionsArray.map((option, index) => (
-                <option
-                  key={index}
-                  value={
-                    option.trim() === "Estimated Budget" ? "" : option.trim()
-                  }
-                >
-                  {option.trim()}
+              {budgetOptions?.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
                 </option>
               ))}
             </select>

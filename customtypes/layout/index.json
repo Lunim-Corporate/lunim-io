@@ -3,132 +3,133 @@
   "label": "Layout",
   "repeatable": false,
   "status": true,
-  "json":{
-  "Main" : {
-    "header_logo" : {
-      "type" : "Image",
-      "config" : {
-        "constraint" : { },
-        "thumbnails" : [ ],
-        "label" : "header_logo"
-      }
-    },
-    "header_cta_label" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "header_cta_label"
-      }
-    },
-    "header_cta_link" : {
-      "type" : "Link",
-      "config" : {
-        "label" : "header_cta_link",
-        "select" : null
-      }
-    },
-    "header_navigation" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "link_label" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "link_label"
+  "json": {
+    "Main": {
+      "header_logo": {
+        "type": "Image",
+        "config": {
+          "constraint": {},
+          "thumbnails": [],
+          "label": "header_logo"
+        }
+      },
+      "header_cta_label": {
+        "type": "Text",
+        "config": {
+          "label": "header_cta_label"
+        }
+      },
+      "header_cta_link": {
+        "type": "Link",
+        "config": {
+          "label": "header_cta_link",
+          "select": null
+        }
+      },
+      "header_navigation": {
+        "type": "Group",
+        "config": {
+          "fields": {
+            "link_label": {
+              "type": "Text",
+              "config": {
+                "label": "link_label"
+              }
+            },
+            "link_object": {
+              "type": "Link",
+              "config": {
+                "label": "link_object",
+                "select": null
+              }
             }
           },
-          "link_object" : {
-            "type" : "Link",
-            "config" : {
-              "label" : "link_object",
-              "select" : null
-            }
-          }
-        },
-        "label" : "header_navigation"
-      }
-    },
-    "footer_company_name" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_company_name"
-      }
-    },
-    "footer_tagline" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "paragraph,heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_tagline"
-      }
-    },
-    "footer_quick_links_title" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "paragraph,heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_quick_links_title"
-      }
-    },
-    "footer_quick_links" : {
-      "type" : "Group",
-      "config" : {
-        "fields" : {
-          "link_label" : {
-            "type" : "Text",
-            "config" : {
-              "label" : "link_label"
+          "label": "header_navigation"
+        }
+      },
+      "footer_company_name": {
+        "type": "StructuredText",
+        "config": {
+          "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_company_name"
+        }
+      },
+      "footer_tagline": {
+        "type": "StructuredText",
+        "config": {
+          "single": "paragraph,heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_tagline"
+        }
+      },
+      "footer_quick_links_title": {
+        "type": "StructuredText",
+        "config": {
+          "single": "paragraph,heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_quick_links_title"
+        }
+      },
+      "footer_quick_links": {
+        "type": "Group",
+        "config": {
+          "fields": {
+            "link_label": {
+              "type": "Text",
+              "config": {
+                "label": "link_label"
+              }
+            },
+            "link_object": {
+              "type": "Link",
+              "config": {
+                "label": "link_object",
+                "select": null
+              }
             }
           },
-          "link_object" : {
-            "type" : "Link",
-            "config" : {
-              "label" : "link_object",
-              "select" : null
-            }
-          }
-        },
-        "label" : "footer_quick_links"
-      }
-    },
-    "footer_contact_title" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_contact_title"
-      }
-    },
-    "footer_email" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "footer_email"
-      }
-    },
-    "footer_phone" : {
-      "type" : "Text",
-      "config" : {
-        "label" : "footer_phone"
-      }
-    },
-    "footer_address" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_address"
-      }
-    },
-    "footer_copyright_text" : {
-      "type" : "StructuredText",
-      "config" : {
-        "single" : "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-        "label" : "footer_copyright_text"
-      }
-    },
-    "footer_privacy_policy_link" : {
-      "type" : "Link",
-      "config" : {
-        "label" : "footer_privacy_policy_link",
-        "select" : null
+          "label": "footer_quick_links"
+        }
+      },
+      "footer_contact_title": {
+        "type": "StructuredText",
+        "config": {
+          "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_contact_title"
+        }
+      },
+      "footer_email": {
+        "type": "Text",
+        "config": {
+          "label": "footer_email"
+        }
+      },
+      "footer_phone": {
+        "type": "Text",
+        "config": {
+          "label": "footer_phone"
+        }
+      },
+      "footer_address": {
+        "type": "StructuredText",
+        "config": {
+          "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_address"
+        }
+      },
+      "footer_copyright_text": {
+        "type": "StructuredText",
+        "config": {
+          "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
+          "label": "footer_copyright_text"
+        }
+      },
+      "footer_privacy_policy_link": {
+        "type": "Link",
+        "config": {
+          "label": "footer_privacy_policy_link",
+          "select": null
+        }
       }
     }
-  }
-}
+  },
+  "format": "custom"
 }
