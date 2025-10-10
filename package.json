@@ -12,11 +12,14 @@
     "codegen": "npx @prismicio/codegen"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/noto-sans-display": "^5.2.10",
     "@prismicio/client": "^7.20.1",
     "@prismicio/helpers": "^2.3.9",
     "@prismicio/next": "^2.0.1",
     "@prismicio/react": "^3.2.1",
     "@supabase/supabase-js": "^2.74.0",
+    "boring-avatars": "^2.0.4",
     "framer-motion": "^12.23.22",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
