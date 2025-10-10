@@ -178,6 +178,73 @@ export type CaseStudyDocument<Lang extends string = string> =
     Lang
   >;
 
+type CaseStudySmDocumentDataSlicesSlice =
+  | CaseStudyTextPanelSlice
+  | CompactHeroSlice;
+
+/**
+ * Content for Case Study SM documents
+ */
+interface CaseStudySmDocumentData {
+  /**
+   * Slice Zone field in *Case Study SM*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<CaseStudySmDocumentDataSlicesSlice> /**
+   * Meta Title field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: case_study_sm.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: case_study_sm.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Case Study SM*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Case Study SM document from Prismic
+ *
+ * - **API ID**: `case_study_sm`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CaseStudySmDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CaseStudySmDocumentData>,
+    "case_study_sm",
+    Lang
+  >;
+
 /**
  * Primary content in *Homepage → Slice zone → Hero → Primary*
  */
@@ -1355,12 +1422,221 @@ export type TeamPageDocument<Lang extends string = string> =
 
 export type AllDocumentTypes =
   | CaseStudyDocument
+  | CaseStudySmDocument
   | HomepageDocument
   | LandingPageDocument
   | LayoutDocument
   | MainpageDocument
   | PrivacyPolicyDocument
   | TeamPageDocument;
+
+/**
+ * Primary content in *CaseStudyTextPanel → Challenge → Primary*
+ */
+export interface CaseStudyTextPanelSliceDefaultPrimary {
+  /**
+   * challenge_title field in *CaseStudyTextPanel → Challenge → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.default.primary.challenge_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  challenge_title: prismic.RichTextField;
+
+  /**
+   * challenge_content field in *CaseStudyTextPanel → Challenge → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.default.primary.challenge_content
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  challenge_content: prismic.RichTextField;
+}
+
+/**
+ * Challenge variation for CaseStudyTextPanel Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CaseStudyTextPanelSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<CaseStudyTextPanelSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Primary content in *CaseStudyTextPanel → Solution Text Panel → Primary*
+ */
+export interface CaseStudyTextPanelSliceSolutionTextPanelPrimary {
+  /**
+   * solution_title field in *CaseStudyTextPanel → Solution Text Panel → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.solutionTextPanel.primary.solution_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  solution_title: prismic.RichTextField;
+
+  /**
+   * solution_content field in *CaseStudyTextPanel → Solution Text Panel → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.solutionTextPanel.primary.solution_content
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  solution_content: prismic.RichTextField;
+}
+
+/**
+ * Solution Text Panel variation for CaseStudyTextPanel Slice
+ *
+ * - **API ID**: `solutionTextPanel`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CaseStudyTextPanelSliceSolutionTextPanel =
+  prismic.SharedSliceVariation<
+    "solutionTextPanel",
+    Simplify<CaseStudyTextPanelSliceSolutionTextPanelPrimary>,
+    never
+  >;
+
+/**
+ * Primary content in *CaseStudyTextPanel → Impact Text Panel → Primary*
+ */
+export interface CaseStudyTextPanelSliceImpactTextPanelPrimary {
+  /**
+   * impact_title field in *CaseStudyTextPanel → Impact Text Panel → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.impactTextPanel.primary.impact_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  impact_title: prismic.RichTextField;
+
+  /**
+   * impact_content field in *CaseStudyTextPanel → Impact Text Panel → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_text_panel.impactTextPanel.primary.impact_content
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  impact_content: prismic.RichTextField;
+}
+
+/**
+ * Impact Text Panel variation for CaseStudyTextPanel Slice
+ *
+ * - **API ID**: `impactTextPanel`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CaseStudyTextPanelSliceImpactTextPanel =
+  prismic.SharedSliceVariation<
+    "impactTextPanel",
+    Simplify<CaseStudyTextPanelSliceImpactTextPanelPrimary>,
+    never
+  >;
+
+/**
+ * Slice variation for *CaseStudyTextPanel*
+ */
+type CaseStudyTextPanelSliceVariation =
+  | CaseStudyTextPanelSliceDefault
+  | CaseStudyTextPanelSliceSolutionTextPanel
+  | CaseStudyTextPanelSliceImpactTextPanel;
+
+/**
+ * CaseStudyTextPanel Shared Slice
+ *
+ * - **API ID**: `case_study_text_panel`
+ * - **Description**: CaseStudyTextPanel
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CaseStudyTextPanelSlice = prismic.SharedSlice<
+  "case_study_text_panel",
+  CaseStudyTextPanelSliceVariation
+>;
+
+/**
+ * Item in *CompactHero → Default → Primary → CaseStudyContentFields*
+ */
+export interface CompactHeroSliceDefaultPrimaryCasestudycontentfieldsItem {}
+
+/**
+ * Primary content in *CompactHero → Default → Primary*
+ */
+export interface CompactHeroSliceDefaultPrimary {
+  /**
+   * hero_image field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.hero_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  hero_image: prismic.ImageField<never>;
+
+  /**
+   * hero_title field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.hero_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  hero_title: prismic.RichTextField;
+
+  /**
+   * CaseStudyContentFields field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.casestudycontentfields[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  casestudycontentfields: prismic.GroupField<
+    Simplify<CompactHeroSliceDefaultPrimaryCasestudycontentfieldsItem>
+  >;
+}
+
+/**
+ * Default variation for CompactHero Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CompactHeroSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<CompactHeroSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *CompactHero*
+ */
+type CompactHeroSliceVariation = CompactHeroSliceDefault;
+
+/**
+ * CompactHero Shared Slice
+ *
+ * - **API ID**: `compact_hero`
+ * - **Description**: CompactHero
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CompactHeroSlice = prismic.SharedSlice<
+  "compact_hero",
+  CompactHeroSliceVariation
+>;
 
 /**
  * Item in *Contact → Default → Primary → contact info*
@@ -1827,6 +2103,9 @@ declare module "@prismicio/client" {
     export type {
       CaseStudyDocument,
       CaseStudyDocumentData,
+      CaseStudySmDocument,
+      CaseStudySmDocumentData,
+      CaseStudySmDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataBodyHerosectionSlicePrimary,
@@ -1862,6 +2141,19 @@ declare module "@prismicio/client" {
       TeamPageDocumentDataBody2TeamMembersSliceItem,
       TeamPageDocumentDataBody2Slice,
       AllDocumentTypes,
+      CaseStudyTextPanelSlice,
+      CaseStudyTextPanelSliceDefaultPrimary,
+      CaseStudyTextPanelSliceSolutionTextPanelPrimary,
+      CaseStudyTextPanelSliceImpactTextPanelPrimary,
+      CaseStudyTextPanelSliceVariation,
+      CaseStudyTextPanelSliceDefault,
+      CaseStudyTextPanelSliceSolutionTextPanel,
+      CaseStudyTextPanelSliceImpactTextPanel,
+      CompactHeroSlice,
+      CompactHeroSliceDefaultPrimaryCasestudycontentfieldsItem,
+      CompactHeroSliceDefaultPrimary,
+      CompactHeroSliceVariation,
+      CompactHeroSliceDefault,
       ContactSlice,
       ContactSliceDefaultPrimaryContactInfoItem,
       ContactSliceDefaultPrimaryOfficeInfoItem,

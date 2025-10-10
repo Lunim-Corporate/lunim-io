@@ -1,0 +1,44 @@
+{
+  "id": "compact_hero",
+  "type": "SharedSlice",
+  "name": "CompactHero",
+  "description": "CompactHero",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "hero_image": {
+          "type": "Image",
+          "config": {
+            "label": "hero_image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "hero_title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "hero_title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em"
+          }
+        },
+        "casestudycontentfields": {
+          "type": "Group",
+          "config": {
+            "label": "CaseStudyContentFields",
+            "repeat": true,
+            "fields": {}
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

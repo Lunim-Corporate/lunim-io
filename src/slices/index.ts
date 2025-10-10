@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),
+  compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),
   hero: dynamic(() => import("./Hero")),
   website_card: dynamic(() => import("./WebsiteCard")),
