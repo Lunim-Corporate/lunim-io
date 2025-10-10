@@ -3,6 +3,7 @@
   "label": "Case Study",
   "repeatable": true,
   "status": true,
+  "format": "custom",
   "json": {
     "Main": {
       "uid": {
@@ -69,6 +70,5 @@
         }
       }
     }
-  },
-  "format": "custom"
+  }
 }
