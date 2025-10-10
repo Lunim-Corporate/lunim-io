@@ -1,7 +1,7 @@
 {
   "format": "page",
-  "id": "mainpage",
-  "label": "Mainpage",
+  "id": "our_team_page",
+  "label": "page",
   "repeatable": false,
   "status": true,
   "json": {
@@ -11,13 +11,7 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "website_card": {
-              "type": "SharedSlice"
-            },
-            "contact": {
-              "type": "SharedSlice"
-            },
-            "hero": {
+            "our_team": {
               "type": "SharedSlice"
             }
           }
