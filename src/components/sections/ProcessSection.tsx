@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { HomepageDocumentDataBodyProcessSlice } from "../../../prismicio-types";
+import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 import { LucideProps, HelpCircle } from "lucide-react";
 import Xarrow, { Xwrapper } from "react-xarrows";
@@ -13,10 +13,11 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   // Example: 'Star': StarIcon
 };
 
-type ProcessSectionProps = SliceComponentProps<HomepageDocumentDataBodyProcessSlice>;
+type ProcessSectionProps = SliceComponentProps<Content.ProcessSlice>;
 
 const ProcessSection: React.FC<ProcessSectionProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const items = slice.items as Content.ProcessSliceDefaultItem[];
 
   // This hook checks the screen size to decide whether to show the arrows
   useEffect(() => {
@@ -39,7 +40,7 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({ slice }) => {
 
         <Xwrapper>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 relative">
-            {slice.items.map((item, index) => {
+            {items.map((item, index) => {
               const iconContent = item.icon_text || "";
               const isNumber = !isNaN(parseInt(iconContent));
               const IconComponent = iconComponents[iconContent] || HelpCircle;
@@ -76,8 +77,8 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({ slice }) => {
 
             {/* This code maps over your Prismic items to draw the arrows, but only on desktop */}
             {!isMobile &&
-              slice.items.map((_, index) =>
-                index < slice.items.length - 1 ? (
+              items.map((_, index) =>
+                index < items.length - 1 ? (
                   <Xarrow
                     key={index}
                     start={`process-circle-${index}`}

@@ -2,10 +2,10 @@
 import React from 'react';
 import { PrismicRichText, PrismicLink } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
-import type { HomepageDocumentDataBodyProjectShowcaseSlice } from '../../../prismicio-types';
+import type { Content } from '@prismicio/client';
 import { asText } from '@prismicio/helpers';
 
-type ProjectShowcaseSectionProps = SliceComponentProps<HomepageDocumentDataBodyProjectShowcaseSlice>;
+type ProjectShowcaseSectionProps = SliceComponentProps<Content.ProjectShowcaseSlice>;
 
 const ProjectShowcaseSection: React.FC<ProjectShowcaseSectionProps> = ({ slice }) => (
   <section id={slice.primary.section_id || undefined} className="bg-[#0f172a] py-20">
@@ -15,9 +15,10 @@ const ProjectShowcaseSection: React.FC<ProjectShowcaseSectionProps> = ({ slice }
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        {slice.items.map((project, index) => {
+        {(slice.items as Content.ProjectShowcaseSliceDefaultItem[]).map((project, index) => {
           // Split the comma-separated tags string into an array
           const tagsArray = project.tags ? project.tags.split(',').map(tag => tag.trim()) : [];
+          const projectImageUrl = project.project_image?.url ?? undefined;
 
           return (
             <PrismicLink
@@ -27,11 +28,15 @@ const ProjectShowcaseSection: React.FC<ProjectShowcaseSectionProps> = ({ slice }
             >
               <div 
                 className="bg-gray-800 h-48 flex items-center justify-center" // Fallback bg color
-                style={{
-                  backgroundImage: `url(${project.project_image.url})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
+                style={
+                  projectImageUrl
+                    ? {
+                        backgroundImage: `url(${projectImageUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }
+                    : {}
+                }
               >
               </div>
               

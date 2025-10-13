@@ -2,10 +2,10 @@ import React from "react";
 import Image from "next/image";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { HomepageDocumentDataBodyImageandtextSlice } from "../../../prismicio-types";
+import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 
-type ImageTextSectionProps = SliceComponentProps<HomepageDocumentDataBodyImageandtextSlice>;
+type ImageTextSectionProps = SliceComponentProps<Content.ImageandtextSlice>;
 
 const ImageTextSection: React.FC<ImageTextSectionProps> = ({ slice }) => (
   <section className="bg-black py-20">
