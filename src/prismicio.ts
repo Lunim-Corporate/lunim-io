@@ -59,7 +59,7 @@ const routes: Route[] = [
   // { type: "landing_page", path: "/:uid" },
 
   // Case studies under /tech/casestudies/:uid
-  { type: "case_study", path: "/tech/casestudies/:uid" },
+  { type: "case_study_sm", path: "/tech/casestudies/:uid" },
 
   // Privacy policy:
    { type: "privacy_policy_sm", path: "/privacy-policy" },
