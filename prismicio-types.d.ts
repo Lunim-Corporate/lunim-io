@@ -136,7 +136,7 @@ interface AcademyDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type AcademyDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<AcademyDocumentData>,
     "academy",
     Lang
@@ -385,7 +385,7 @@ interface FilmDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type FilmDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<Simplify<FilmDocumentData>, "film", Lang>;
+  prismic.PrismicDocumentWithUID<Simplify<FilmDocumentData>, "film", Lang>;
 
 type HomepageDocumentDataBodySlice =
   | CompactHeroSlice
@@ -762,7 +762,7 @@ interface MainpageDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type MainpageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<MainpageDocumentData>,
     "mainpage",
     Lang
@@ -827,7 +827,7 @@ interface OurTeamPageDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type OurTeamPageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<OurTeamPageDocumentData>,
     "our_team_page",
     Lang
@@ -1008,7 +1008,7 @@ interface TabbDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type TabbDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<Simplify<TabbDocumentData>, "tabb", Lang>;
+  prismic.PrismicDocumentWithUID<Simplify<TabbDocumentData>, "tabb", Lang>;
 
 type TeamPageDocumentDataBodySlice = never;
 
