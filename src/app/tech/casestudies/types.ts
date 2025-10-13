@@ -11,7 +11,7 @@ export type HeroPrimaryFields =
   > &
   Partial<
     Pick<
-      Content.HomepageDocumentDataBodyHerosectionSlicePrimary,
+      Content.HerosectionSliceDefaultPrimary,
       "background_image" | "hero_title_part1"
     >
   > &
@@ -21,4 +21,3 @@ export type HeroLikeSlice = {
   slice_type?: string | null;
   primary?: HeroPrimaryFields | null;
 };
-

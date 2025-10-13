@@ -3,16 +3,18 @@
 import React from "react";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { HomepageDocumentDataBodyProjectShowcaseSlice } from "../../../prismicio-types";
+import type { Content } from "@prismicio/client";
 import Link from "next/link";
 import { asText } from "@prismicio/helpers";
 import { motion, type Variants } from "framer-motion";
 
-type TechProjectShowcaseSectionProps = SliceComponentProps<HomepageDocumentDataBodyProjectShowcaseSlice>;
+type TechProjectShowcaseSectionProps = SliceComponentProps<Content.ProjectShowcaseSlice>;
 
 const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
   slice,
 }) => {
+  const items = slice.items as Content.ProjectShowcaseSliceDefaultItem[];
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -70,11 +72,12 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
-          {slice.items.map((project, index) => {
+          {items.map((project, index) => {
             // Split the comma-separated tags string into an array
             const tagsArray = project.tags
               ? project.tags.split(",").map((tag) => tag.trim())
               : [];
+            const projectImageUrl = project.project_image?.url ?? undefined;
 
             // Create the tech case study URL
             const projectSlug = asText(project.project_title)
@@ -91,9 +94,9 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
                   <div
                     className="h-48 md:h-56 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 flex items-center justify-center relative overflow-hidden"
                     style={
-                      project.project_image.url
+                      projectImageUrl
                         ? {
-                            backgroundImage: `url(${project.project_image.url})`,
+                            backgroundImage: `url(${projectImageUrl})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                           }
@@ -104,7 +107,7 @@ const TechProjectShowcaseSection: React.FC<TechProjectShowcaseSectionProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
                     {/* Tech icon overlay */}
-                    {!project.project_image.url && (
+                    {!projectImageUrl && (
                       <div className="text-6xl opacity-20">💻</div>
                     )}
                   </div>

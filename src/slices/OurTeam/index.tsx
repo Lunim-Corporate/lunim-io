@@ -46,7 +46,7 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
         {/* Team Section */}
         <section className="max-w-6xl mx-auto px-4">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {slice.primary.team_member.map((member, i) => {
+            {(slice.primary.team_member as Content.OurTeamSliceDefaultPrimaryTeamMemberItem[]).map((member, i) => {
               const memberName = asText(member?.name);
               return (
                 <div
@@ -81,13 +81,16 @@ export default OurTeam;
  * Team Member Component
  */
 const TeamMember: FC<{
-  member: Content.OurTeamSlice["primary"]["team_member"][0];
+  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
   isActive: boolean;
   setActive: (name: string | null) => void;
   isMobile: boolean;
 }> = ({ member, isActive, setActive, isMobile }) => {
   const [imageError, setImageError] = useState(false);
-  const memberName = asText(member?.name)
+  const memberName = asText(member?.name);
+  const headshotUrl = member.headshot?.url ?? null;
+  const showAvatar = imageError || !headshotUrl;
+  const altText = member.headshot?.alt || memberName || "Team member";
 
   return (
     <div
@@ -99,7 +102,7 @@ const TeamMember: FC<{
     >
       {/* Background Image */}
       <div className="h-80 sm:h-96 relative">
-        {imageError ? (
+        {showAvatar ? (
           <div className="w-full h-full bg-gray-800 flex items-center justify-center">
             <Avatar
               size={300}
@@ -108,15 +111,15 @@ const TeamMember: FC<{
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
           </div>
-        ) : (
+        ) : headshotUrl ? (
             // Update with Next Image
           <img
-            src={member.headshot.url}
-            alt={member?.name}
+            src={headshotUrl}
+            alt={altText}
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
-        )}
+        ) : null}
 
         {/* Overlay with Name */}
         <div
@@ -136,7 +139,7 @@ const TeamMember: FC<{
  * Bio Card Component
  */
 const BioCard: FC<{
-  member: Content.OurTeamSlice["primary"]["team_member"][0];
+  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
   isMobile: boolean;
 }> = ({ member, isMobile }) => {
   return (
