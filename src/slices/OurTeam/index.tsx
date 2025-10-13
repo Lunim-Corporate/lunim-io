@@ -102,7 +102,7 @@ const TeamMember: FC<{
     >
       {/* Background Image */}
       <div className="h-80 sm:h-96 relative">
-        {showAvatar ? (
+        {imageError ? (
           <div className="w-full h-full bg-gray-800 flex items-center justify-center">
             <Avatar
               size={300}
@@ -111,7 +111,7 @@ const TeamMember: FC<{
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
           </div>
-        ) : headshotUrl ? (
+        ) : (
             // Update with Next Image
           <Image
             src={imageUrl}
@@ -120,7 +120,7 @@ const TeamMember: FC<{
             fill
             onError={() => setImageError(true)}
           />
-        ) : null}
+        )}
 
         {/* Overlay with Name */}
         <div
