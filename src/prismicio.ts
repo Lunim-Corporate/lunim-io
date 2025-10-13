@@ -52,6 +52,7 @@ export const repositoryName = envRepositoryName || sm.repositoryName;
 const routes: Route[] = [
   { type: "mainpage", path: "/" },
   { type: "homepage", path: "/tech" },
+  { type: "our_team_page", path: "/our-team" },
 
   // If you modelled Tech/Film/Tabb/Academy as "landing_page" documents,
   // give each a UID and route them generically:
