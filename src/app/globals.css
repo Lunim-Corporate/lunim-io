@@ -5,11 +5,6 @@
 /* @import '@fontsource-variable/noto-sans-display'; */
 /* @import '@fontsource-variable/inter'; */
 
-/* TODO: Below are no longer available in v4  */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Set up font variables */
 /* :root {
   --font-primary: 'Noto Sans Display Variable', sans-serif;
@@ -19,7 +14,7 @@
 /* Base typography styles */
 body {
   font-family: var(--font-primary);
-  font-size: 14pt;
+  font-size: 1.167rem;
   font-weight: 400;
   line-height: 1.5;
 }
@@ -27,7 +22,7 @@ body {
 /* Paragraph styles */
 p {
   font-family: var(--font-primary);
-  font-size: 14pt;
+  font-size: 1.167rem;
   font-weight: 400;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -54,15 +49,15 @@ h6 {
 }
 
 h1 {
-  font-size: 22pt;
+  font-size: 1.833rem
 }
 
 h2 {
-  font-size: 18pt;
+  font-size: 1.5rem;
 }
 
 h3 {
-  font-size: 16pt;
+  font-size: 1.333rem;
   font-style: normal;
 }
 
@@ -70,18 +65,18 @@ h3 {
 .caption {
   font-family: var(--font-secondary);
   font-weight: 300;
-  font-size: 12pt;
+  font-size: 1rem;
   line-height: 1;
   display: inline-block;
 }
 
 /* Utility classes */
 .min-text-size {
-  font-size: 12pt !important;
+  font-size: 1rem !important;
 }
 
 .max-text-size {
-  font-size: 96pt !important;
+  font-size: 8rem !important;
 }
 
 .text-light {
