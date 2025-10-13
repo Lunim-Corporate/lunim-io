@@ -1,53 +1,69 @@
-import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import React from 'react';
+import { PrismicRichText } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import type { Content } from '@prismicio/client';
+import { asText } from '@prismicio/helpers';
 
-/**
- * Props for `ServiceGrid`.
- */
-export type ServiceGridProps = SliceComponentProps<Content.ServiceGridSlice>;
+// Import the icons 
+import { 
+  UserStar, 
+  Cpu, 
+  Kanban, 
+  Images,
+  LucideProps,
+  HelpCircle 
+} from 'lucide-react';
 
-/**
- * Component for "ServiceGrid" Slices.
- */
-const ServiceGrid: FC<ServiceGridProps> = ({ slice }) => {
+// Map the text from Prismic to the actual icon components
+const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
+  UserStar: UserStar,
+  Cpu: Cpu,
+  Kanban: Kanban,
+  Images: Images,
+};
+
+type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
+
+const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
+  const columns = slice.primary.columns || 4;
+  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${columns === 4 ? 'md:grid-cols-4' : ''} gap-10`;
+  const items = slice.items as Content.ServiceGridSliceDefaultItem[];
+  
   return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
-      Placeholder component for ServiceGrid (variation: {slice.variation})
-      slices.
-      <br />
-      <strong>You can edit this slice directly in your code editor.</strong>
-      {/**
-       * 💡 Use Prismic MCP with your code editor
-       *
-       * Get AI-powered help to build your slice components — based on your actual model.
-       *
-       * ▶️ Setup:
-       * 1. Add a new MCP Server in your code editor:
-       *
-       * {
-       *   "mcpServers": {
-       *     "Prismic MCP": {
-       *       "command": "npx",
-       *       "args": ["-y", "@prismicio/mcp-server@latest"]
-       *     }
-       *   }
-       * }
-       *
-       * 2. Select a model optimized for coding (e.g. Claude 3.7 Sonnet or similar)
-       *
-       * ✅ Then open your slice file and ask your code editor:
-       *    "Code this slice"
-       *
-       * Your code editor reads your slice model and helps you code faster ⚡
-       * 🎙️ Give your feedback: https://community.prismic.io/t/help-us-shape-the-future-of-slice-creation/19505
-       * 📚 Documentation: https://prismic.io/docs/ai#code-with-prismics-mcp-server
-       */}
+    // Use the section_id directly from the Key Text field
+    <section id={slice.primary.section_id || undefined} className="py-20 bg-[#0f172a]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="text-3xl font-bold text-white mb-12">
+            <PrismicRichText field={slice.primary.title} />
+        </div>
+        <div className={gridClass}>
+          {items.map((item, index) => {
+            const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
+            
+            return (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center group"
+              >
+                <div 
+                    className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+                    style={{ backgroundColor: item.icon_background_color || '#BBFEFF' }}
+                >
+                  <Icon className="w-7 h-7 text-black" />
+                </div>
+                <h3 className="text-[#BBFEFF] font-semibold text-lg mb-1">
+                    {asText(item.item_title)}
+                </h3>
+                <div className="text-gray-200 text-base max-w-xs">
+                    <PrismicRichText field={item.item_description} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 };
 
-export default ServiceGrid;
+export default ServiceGridSection;
