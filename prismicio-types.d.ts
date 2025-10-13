@@ -734,6 +734,71 @@ export type PrivacyPolicyDocument<Lang extends string = string> =
     Lang
   >;
 
+type PrivacyPolicySmDocumentDataSlicesSlice = PrivacyTextBoxSlice;
+
+/**
+ * Content for Privacy Policy SM documents
+ */
+interface PrivacyPolicySmDocumentData {
+  /**
+   * Slice Zone field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PrivacyPolicySmDocumentDataSlicesSlice> /**
+   * Meta Title field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: privacy_policy_sm.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: privacy_policy_sm.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Privacy Policy SM document from Prismic
+ *
+ * - **API ID**: `privacy_policy_sm`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PrivacyPolicySmDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<PrivacyPolicySmDocumentData>,
+    "privacy_policy_sm",
+    Lang
+  >;
+
 type TeamPageDocumentDataBodySlice = never;
 
 /**
@@ -945,6 +1010,7 @@ export type AllDocumentTypes =
   | MainpageDocument
   | OurTeamPageDocument
   | PrivacyPolicyDocument
+  | PrivacyPolicySmDocument
   | TeamPageDocument;
 
 /**
@@ -2328,6 +2394,61 @@ export type OurTeamSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *PrivacyTextBox → Default → Primary*
+ */
+export interface PrivacyTextBoxSliceDefaultPrimary {
+  /**
+   * title field in *PrivacyTextBox → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_text_box.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * page_content field in *PrivacyTextBox → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_text_box.default.primary.page_content
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  page_content: prismic.RichTextField;
+}
+
+/**
+ * Default variation for PrivacyTextBox Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PrivacyTextBoxSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<PrivacyTextBoxSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *PrivacyTextBox*
+ */
+type PrivacyTextBoxSliceVariation = PrivacyTextBoxSliceDefault;
+
+/**
+ * PrivacyTextBox Shared Slice
+ *
+ * - **API ID**: `privacy_text_box`
+ * - **Description**: PrivacyTextBox
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PrivacyTextBoxSlice = prismic.SharedSlice<
+  "privacy_text_box",
+  PrivacyTextBoxSliceVariation
+>;
+
+/**
  * Item in *WebsiteCard → Default → Primary → card*
  */
 export interface WebsiteCardSliceDefaultPrimaryCardItem {
@@ -2496,6 +2617,9 @@ declare module "@prismicio/client" {
       OurTeamPageDocumentDataSlicesSlice,
       PrivacyPolicyDocument,
       PrivacyPolicyDocumentData,
+      PrivacyPolicySmDocument,
+      PrivacyPolicySmDocumentData,
+      PrivacyPolicySmDocumentDataSlicesSlice,
       TeamPageDocument,
       TeamPageDocumentData,
       TeamPageDocumentDataBodySlice,
@@ -2569,6 +2693,10 @@ declare module "@prismicio/client" {
       OurTeamSliceDefaultPrimary,
       OurTeamSliceVariation,
       OurTeamSliceDefault,
+      PrivacyTextBoxSlice,
+      PrivacyTextBoxSliceDefaultPrimary,
+      PrivacyTextBoxSliceVariation,
+      PrivacyTextBoxSliceDefault,
       WebsiteCardSlice,
       WebsiteCardSliceDefaultPrimaryCardItem,
       WebsiteCardSliceDefaultPrimary,

@@ -62,7 +62,7 @@ const routes: Route[] = [
   { type: "case_study", path: "/tech/casestudies/:uid" },
 
   // Privacy policy:
-  // { type: "privacy_policy", path: "/privacy-policy" },
+   { type: "privacy_policy_sm", path: "/privacy-policy" },
 ];
 
 /**
