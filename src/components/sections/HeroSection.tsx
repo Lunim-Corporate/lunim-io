@@ -2,10 +2,10 @@
 import React from 'react';
 import { PrismicRichText, PrismicLink } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
-import type { HomepageDocumentDataBodyHerosectionSlice } from '../../../prismicio-types';
+import type { Content } from '@prismicio/client';
 import { asText } from '@prismicio/helpers';
 
-type HeroSectionProps = SliceComponentProps<HomepageDocumentDataBodyHerosectionSlice>;
+type HeroSectionProps = SliceComponentProps<Content.HerosectionSlice>;
 
 const HeroSection: React.FC<HeroSectionProps> = ({ slice }) => {
   const backgroundImageUrl = slice.primary.background_image.url;

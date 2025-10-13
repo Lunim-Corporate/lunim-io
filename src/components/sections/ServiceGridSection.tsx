@@ -1,7 +1,7 @@
 import React from 'react';
 import { PrismicRichText } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
-import type { HomepageDocumentDataBodyServiceGridSlice } from '../../../prismicio-types';
+import type { Content } from '@prismicio/client';
 import { asText } from '@prismicio/helpers';
 
 // Import the icons 
@@ -22,11 +22,12 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Images: Images,
 };
 
-type ServiceGridSectionProps = SliceComponentProps<HomepageDocumentDataBodyServiceGridSlice>;
+type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
 
 const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
   const columns = slice.primary.columns || 4;
   const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${columns === 4 ? 'md:grid-cols-4' : ''} gap-10`;
+  const items = slice.items as Content.ServiceGridSliceDefaultItem[];
   
   return (
     // Use the section_id directly from the Key Text field
@@ -36,7 +37,7 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
             <PrismicRichText field={slice.primary.title} />
         </div>
         <div className={gridClass}>
-          {slice.items.map((item, index) => {
+          {items.map((item, index) => {
             const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
             
             return (

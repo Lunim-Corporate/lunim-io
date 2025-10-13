@@ -1,7 +1,7 @@
 import React from "react";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { HomepageDocumentDataBodyExpertiseareasSlice } from "../../../prismicio-types";
+import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 
 // Import the icons
@@ -22,16 +22,18 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Network: NetworkIcon,
 };
 
-type ExpertiseAreasSectionProps = SliceComponentProps<HomepageDocumentDataBodyExpertiseareasSlice>;
+type ExpertiseAreasSectionProps = SliceComponentProps<Content.ExpertiseareasSlice>;
 
 const ExpertiseAreasSection: React.FC<ExpertiseAreasSectionProps> = ({
   slice,
 }) => {
+  const items = slice.items as Content.ExpertiseareasSliceDefaultItem[];
+
   return (
     <section className="py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {slice.items.map((item, index) => {
+          {items.map((item, index) => {
             const Icon = iconComponents[item.icon_name || ""] || HelpCircle;
 
             return (

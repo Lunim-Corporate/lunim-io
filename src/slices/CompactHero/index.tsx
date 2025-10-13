@@ -13,7 +13,7 @@ export type CompactHeroProps = SliceComponentProps<Content.CompactHeroSlice>;
 
 type LegacyHomepageHeroFields = Partial<
   Pick<
-    Content.HomepageDocumentDataBodyHerosectionSlicePrimary,
+    Content.HerosectionSliceDefaultPrimary,
     | "background_image"
     | "hero_title_part1"
     | "hero_title_part2"
