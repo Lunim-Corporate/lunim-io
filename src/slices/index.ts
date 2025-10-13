@@ -16,5 +16,6 @@ export const components = {
   contact: dynamic(() => import("./Contact")),
   hero: dynamic(() => import("./Hero")),
   our_team: dynamic(() => import("./OurTeam")),
+  privacy_text_box: dynamic(() => import("./PrivacyTextBox")),
   website_card: dynamic(() => import("./WebsiteCard")),
 };
