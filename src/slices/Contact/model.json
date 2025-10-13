@@ -18,7 +18,7 @@
             "label": "main title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,heading1"
           }
         },
         "subtitle": {

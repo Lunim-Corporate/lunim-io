@@ -69,6 +69,79 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
+type AcademyDocumentDataSlicesSlice =
+  | PrivacyTextBoxSlice
+  | HeroSlice
+  | ProjectShowcaseSlice
+  | ServiceGridSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | FaqSlice
+  | ExpertiseareasSlice;
+
+/**
+ * Content for Academy documents
+ */
+interface AcademyDocumentData {
+  /**
+   * Slice Zone field in *Academy*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AcademyDocumentDataSlicesSlice> /**
+   * Meta Title field in *Academy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: academy.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Academy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: academy.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Academy*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Academy document from Prismic
+ *
+ * - **API ID**: `academy`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AcademyDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<AcademyDocumentData>,
+    "academy",
+    Lang
+  >;
+
 /**
  * Content for Case Study documents
  */
@@ -244,6 +317,75 @@ export type CaseStudySmDocument<Lang extends string = string> =
     "case_study_sm",
     Lang
   >;
+
+type FilmDocumentDataSlicesSlice =
+  | FaqSlice
+  | PrivacyTextBoxSlice
+  | HeroSlice
+  | ProcessSlice
+  | ServiceGridSlice
+  | ImageandtextSlice
+  | ProjectShowcaseSlice
+  | ExpertiseareasSlice;
+
+/**
+ * Content for Film documents
+ */
+interface FilmDocumentData {
+  /**
+   * Slice Zone field in *Film*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FilmDocumentDataSlicesSlice> /**
+   * Meta Title field in *Film*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: film.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Film*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: film.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Film*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Film document from Prismic
+ *
+ * - **API ID**: `film`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FilmDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<FilmDocumentData>, "film", Lang>;
 
 type HomepageDocumentDataBodySlice =
   | CompactHeroSlice
@@ -629,11 +771,11 @@ export type MainpageDocument<Lang extends string = string> =
 type OurTeamPageDocumentDataSlicesSlice = OurTeamSlice;
 
 /**
- * Content for page documents
+ * Content for Our Team documents
  */
 interface OurTeamPageDocumentData {
   /**
-   * Slice Zone field in *page*
+   * Slice Zone field in *Our Team*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
@@ -642,7 +784,7 @@ interface OurTeamPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<OurTeamPageDocumentDataSlicesSlice> /**
-   * Meta Title field in *page*
+   * Meta Title field in *Our Team*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
@@ -653,7 +795,7 @@ interface OurTeamPageDocumentData {
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *page*
+   * Meta Description field in *Our Team*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
@@ -664,7 +806,7 @@ interface OurTeamPageDocumentData {
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *page*
+   * Meta Image field in *Our Team*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
@@ -676,7 +818,7 @@ interface OurTeamPageDocumentData {
 }
 
 /**
- * page document from Prismic
+ * Our Team document from Prismic
  *
  * - **API ID**: `our_team_page`
  * - **Repeatable**: `false`
@@ -798,6 +940,75 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
     "privacy_policy_sm",
     Lang
   >;
+
+type TabbDocumentDataSlicesSlice =
+  | FaqSlice
+  | ProjectShowcaseSlice
+  | ProcessSlice
+  | ImageandtextSlice
+  | ExpertiseareasSlice
+  | ServiceGridSlice
+  | HeroSlice
+  | PrivacyTextBoxSlice;
+
+/**
+ * Content for Tabb documents
+ */
+interface TabbDocumentData {
+  /**
+   * Slice Zone field in *Tabb*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<TabbDocumentDataSlicesSlice> /**
+   * Meta Title field in *Tabb*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: tabb.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Tabb*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: tabb.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Tabb*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Tabb document from Prismic
+ *
+ * - **API ID**: `tabb`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type TabbDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<TabbDocumentData>, "tabb", Lang>;
 
 type TeamPageDocumentDataBodySlice = never;
 
@@ -1002,8 +1213,10 @@ export type TeamPageDocument<Lang extends string = string> =
   >;
 
 export type AllDocumentTypes =
+  | AcademyDocument
   | CaseStudyDocument
   | CaseStudySmDocument
+  | FilmDocument
   | HomepageDocument
   | LandingPageDocument
   | LayoutDocument
@@ -1011,6 +1224,7 @@ export type AllDocumentTypes =
   | OurTeamPageDocument
   | PrivacyPolicyDocument
   | PrivacyPolicySmDocument
+  | TabbDocument
   | TeamPageDocument;
 
 /**
@@ -2595,11 +2809,17 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
+      AcademyDocument,
+      AcademyDocumentData,
+      AcademyDocumentDataSlicesSlice,
       CaseStudyDocument,
       CaseStudyDocumentData,
       CaseStudySmDocument,
       CaseStudySmDocumentData,
       CaseStudySmDocumentDataSlicesSlice,
+      FilmDocument,
+      FilmDocumentData,
+      FilmDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataBodySlice,
@@ -2620,6 +2840,9 @@ declare module "@prismicio/client" {
       PrivacyPolicySmDocument,
       PrivacyPolicySmDocumentData,
       PrivacyPolicySmDocumentDataSlicesSlice,
+      TabbDocument,
+      TabbDocumentData,
+      TabbDocumentDataSlicesSlice,
       TeamPageDocument,
       TeamPageDocumentData,
       TeamPageDocumentDataBodySlice,

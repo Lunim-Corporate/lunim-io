@@ -17,15 +17,19 @@
         "hero_title_part1": {
           "type": "StructuredText",
           "config": {
-            "single": "heading1",
-            "label": "hero_title_part1"
+            "label": "hero_title_part1",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading1,strong,em"
           }
         },
         "hero_title_part2": {
           "type": "StructuredText",
           "config": {
-            "single": "heading1",
-            "label": "hero_title_part2"
+            "label": "hero_title_part2",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6,em,strong"
           }
         },
         "hero_description": {

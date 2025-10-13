@@ -9,7 +9,7 @@
 					{
 						"type": "heading1",
 						"content": {
-							"text": "Press"
+							"text": "Rapidly"
 						}
 					}
 				]
@@ -27,7 +27,6 @@
 					[
 						"project_image",
 						{
-							"__TYPE__": "ImageContent",
 							"origin": {
 								"id": "main",
 								"url": "https://images.unsplash.com/photo-1600804931749-2da4ce26c869",
@@ -46,6 +45,8 @@
 								"background": "transparent"
 							},
 							"alt": "men",
+							"credits": null,
+							"__TYPE__": "ImageContent",
 							"thumbnails": {}
 						}
 					],
@@ -80,8 +81,8 @@
 					[
 						"project_link",
 						{
-							"__TYPE__": "LinkContent",
 							"key": "02c4ac13-37b2-4991-822c-b2c375179ad4",
+							"__TYPE__": "LinkContent",
 							"value": {
 								"__TYPE__": "ExternalLink",
 								"url": "https://slicemachine.dev"
