@@ -3,6 +3,7 @@ import { FC, useState, useEffect } from "react";
 import { asText, Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import Avatar from "boring-avatars";
+import Image from "next/image";
 
 /**
  * Props for `OurTeam`.
@@ -87,10 +88,9 @@ const TeamMember: FC<{
   isMobile: boolean;
 }> = ({ member, isActive, setActive, isMobile }) => {
   const [imageError, setImageError] = useState(false);
-  const memberName = asText(member?.name);
-  const headshotUrl = member.headshot?.url ?? null;
-  const showAvatar = imageError || !headshotUrl;
-  const altText = member.headshot?.alt || memberName || "Team member";
+  const memberName = asText(member?.name)
+   // Fallback image if `member.headshot.url` is null or undefined
+  const imageUrl = member?.headshot?.url || "/placeholder-image.png";
 
   return (
     <div
@@ -113,10 +113,11 @@ const TeamMember: FC<{
           </div>
         ) : headshotUrl ? (
             // Update with Next Image
-          <img
-            src={headshotUrl}
-            alt={altText}
+          <Image
+            src={imageUrl}
+            alt={asText(member?.name) || "Team Member"}
             className="w-full h-full object-cover"
+            fill
             onError={() => setImageError(true)}
           />
         ) : null}
