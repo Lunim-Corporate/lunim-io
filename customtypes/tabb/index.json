@@ -1,7 +1,7 @@
 {
   "format": "page",
-  "id": "our_team_page",
-  "label": "Our Team",
+  "id": "tabb",
+  "label": "Tabb",
   "repeatable": false,
   "status": true,
   "json": {
@@ -11,7 +11,28 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "our_team": {
+            "Faq": {
+              "type": "SharedSlice"
+            },
+            "ProjectShowcase": {
+              "type": "SharedSlice"
+            },
+            "Process": {
+              "type": "SharedSlice"
+            },
+            "Imageandtext": {
+              "type": "SharedSlice"
+            },
+            "Expertiseareas": {
+              "type": "SharedSlice"
+            },
+            "ServiceGrid": {
+              "type": "SharedSlice"
+            },
+            "hero": {
+              "type": "SharedSlice"
+            },
+            "privacy_text_box": {
               "type": "SharedSlice"
             }
           }
