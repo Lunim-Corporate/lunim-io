@@ -9,7 +9,7 @@
 					{
 						"type": "heading1",
 						"content": {
-							"text": "Sweet"
+							"text": "Reach"
 						}
 					}
 				]
@@ -20,7 +20,7 @@
 					{
 						"type": "heading1",
 						"content": {
-							"text": "Shelf"
+							"text": "Smooth"
 						}
 					}
 				]
@@ -37,8 +37,8 @@
 				]
 			},
 			"button_1_link": {
-				"__TYPE__": "LinkContent",
 				"key": "04012fdc-bfa5-4cac-b6b6-74dae20cc571",
+				"__TYPE__": "LinkContent",
 				"value": {
 					"__TYPE__": "ExternalLink",
 					"url": "https://slicemachine.dev"
@@ -50,7 +50,6 @@
 				"type": "Text"
 			},
 			"background_image": {
-				"__TYPE__": "ImageContent",
 				"origin": {
 					"id": "main",
 					"url": "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5",
@@ -69,6 +68,8 @@
 					"background": "transparent"
 				},
 				"alt": "shoulder",
+				"credits": null,
+				"__TYPE__": "ImageContent",
 				"thumbnails": {}
 			}
 		},
