@@ -3,6 +3,13 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  Expertiseareas: dynamic(() => import("./Expertiseareas")),
+  Expertisegroup: dynamic(() => import("./Expertisegroup")),
+  Faq: dynamic(() => import("./Faq")),
+  Imageandtext: dynamic(() => import("./Imageandtext")),
+  Process: dynamic(() => import("./Process")),
+  ProjectShowcase: dynamic(() => import("./ProjectShowcase")),
+  ServiceGrid: dynamic(() => import("./ServiceGrid")),
   case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),
   compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),

@@ -3,13 +3,13 @@
   "label": "Homepage",
   "repeatable": false,
   "status": true,
+  "format": "page",
   "json": {
     "Main": {
       "body": {
         "type": "Slices",
-        "fieldset": "Slice zone",
+        "fieldset": "Slice Zone",
         "config": {
-          "labels": {},
           "choices": {
             "herosection": {
               "type": "Slice",
@@ -63,314 +63,30 @@
               },
               "repeat": {}
             },
-            "expertisegroup": {
-              "type": "Slice",
-              "fieldset": "CoreExpertise",
-              "description": "A group of expertise area cards",
-              "icon": "next_week",
-              "display": "list",
-              "non-repeat": {},
-              "repeat": {
-                "icon_name": {
-                  "type": "Text",
-                  "config": {
-                    "label": "icon_name"
-                  }
-                },
-                "title": {
-                  "type": "Text",
-                  "config": {
-                    "label": "title"
-                  }
-                },
-                "description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph",
-                    "label": "description"
-                  }
-                }
-              }
+            "Expertisegroup": {
+              "type": "SharedSlice"
             },
-            "expertiseareas": {
-              "type": "Slice",
-              "fieldset": "ExpertiseAreas",
-              "description": "Expertise descrption",
-              "icon": "account_box",
-              "display": "list",
-              "non-repeat": {
-                "heading": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "heading1",
-                    "label": "heading"
-                  }
-                },
-                "paragraph": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "paragraph",
-                    "label": "paragraph"
-                  }
-                }
-              },
-              "repeat": {
-                "icon_name": {
-                  "type": "Text",
-                  "config": {
-                    "label": "icon_name"
-                  }
-                },
-                "item_title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading2",
-                    "label": "item_title"
-                  }
-                },
-                "item_description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph",
-                    "label": "item_description"
-                  }
-                }
-              }
+            "Expertiseareas": {
+              "type": "SharedSlice"
             },
-            "service_grid": {
-              "type": "Slice",
-              "fieldset": "service_grid",
-              "description": "service_grid",
-              "icon": "add",
-              "display": "grid",
-              "non-repeat": {
-                "title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-                    "label": "title"
-                  }
-                },
-                "columns": {
-                  "type": "Number",
-                  "config": {
-                    "label": "columns",
-                    "placeholder": "4"
-                  }
-                },
-                "section_id": {
-                  "type": "Text",
-                  "config": {
-                    "label": "section_id"
-                  }
-                }
-              },
-              "repeat": {
-                "item_title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6",
-                    "label": "item_title"
-                  }
-                },
-                "icon_name": {
-                  "type": "Text",
-                  "config": {
-                    "label": "icon_name"
-                  }
-                },
-                "item_description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph",
-                    "label": "item_description"
-                  }
-                },
-                "icon_background_color": {
-                  "type": "Color",
-                  "config": {
-                    "label": "icon_background_color"
-                  }
-                }
-              }
+            "ServiceGrid": {
+              "type": "SharedSlice"
             },
-            "imageandtext": {
-              "type": "Slice",
-              "fieldset": "ImageAndText",
-              "description": "Image And Text",
-              "icon": "aspect_ratio",
-              "display": "list",
-              "non-repeat": {
-                "image": {
-                  "type": "Image",
-                  "config": {
-                    "constraint": {},
-                    "thumbnails": [],
-                    "label": "image"
-                  }
-                },
-                "title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,embed,list-item,o-list-item,rtl",
-                    "label": "title"
-                  }
-                },
-                "subtitle": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
-                    "label": "subtitle"
-                  }
-                },
-                "description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "paragraph,preformatted,strong,em,embed,list-item,o-list-item,rtl",
-                    "label": "description"
-                  }
-                }
-              },
-              "repeat": {}
+            "Imageandtext": {
+              "type": "SharedSlice"
             },
-            "process": {
-              "type": "Slice",
-              "fieldset": "process",
-              "description": "process",
-              "icon": "arrow_forward",
-              "display": "grid",
-              "non-repeat": {
-                "title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,embed,list-item,o-list-item,rtl",
-                    "label": "title"
-                  }
-                }
-              },
-              "repeat": {
-                "icon_text": {
-                  "type": "Text",
-                  "config": {
-                    "label": "icon_text"
-                  }
-                },
-                "item_title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,embed",
-                    "label": "item_title"
-                  }
-                },
-                "weeks": {
-                  "type": "Text",
-                  "config": {
-                    "label": "weeks"
-                  }
-                },
-                "item_description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph,strong,em,list-item,o-list-item",
-                    "label": "item_description"
-                  }
-                }
-              }
+            "Process": {
+              "type": "SharedSlice"
             },
-            "project_showcase": {
-              "type": "Slice",
-              "fieldset": "project_showcase",
-              "description": "project and showcase",
-              "icon": "airplay",
-              "display": "list",
-              "non-repeat": {
-                "title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6",
-                    "label": "title"
-                  }
-                },
-                "section_id": {
-                  "type": "Text",
-                  "config": {
-                    "label": "section_id"
-                  }
-                }
-              },
-              "repeat": {
-                "project_image": {
-                  "type": "Image",
-                  "config": {
-                    "constraint": {},
-                    "thumbnails": [],
-                    "label": "project_image"
-                  }
-                },
-                "project_title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item,rtl",
-                    "label": "project_title"
-                  }
-                },
-                "project_description": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph,list-item,o-list-item",
-                    "label": "project_description"
-                  }
-                },
-                "project_link": {
-                  "type": "Link",
-                  "config": {
-                    "label": "project_link",
-                    "select": null
-                  }
-                },
-                "tags": {
-                  "type": "Text",
-                  "config": {
-                    "label": "tags"
-                  }
-                }
-              }
+            "ProjectShowcase": {
+              "type": "SharedSlice"
             },
-            "faq": {
-              "type": "Slice",
-              "fieldset": "faq",
-              "description": "frequently asked questions",
-              "icon": "autorenew",
-              "display": "list",
-              "non-repeat": {
-                "title": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em",
-                    "label": "title"
-                  }
-                }
-              },
-              "repeat": {
-                "question": {
-                  "type": "Text",
-                  "config": {
-                    "label": "question"
-                  }
-                },
-                "answer": {
-                  "type": "StructuredText",
-                  "config": {
-                    "single": "paragraph,strong,em,list-item,o-list-item",
-                    "label": "answer"
-                  }
-                }
-              }
+            "Faq": {
+              "type": "SharedSlice"
             }
           }
         }
       }
     }
-  },
-  "format": "custom"
+  }
 }
