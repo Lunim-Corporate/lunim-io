@@ -1,6 +1,8 @@
-import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import Image from "next/image";
+import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 
 /**
  * Props for `Imageandtext`.
@@ -10,44 +12,37 @@ export type ImageandtextProps = SliceComponentProps<Content.ImageandtextSlice>;
 /**
  * Component for "Imageandtext" Slices.
  */
-const Imageandtext: FC<ImageandtextProps> = ({ slice }) => {
-  return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
-      Placeholder component for Imageandtext (variation: {slice.variation})
-      slices.
-      <br />
-      <strong>You can edit this slice directly in your code editor.</strong>
-      {/**
-       * 💡 Use Prismic MCP with your code editor
-       *
-       * Get AI-powered help to build your slice components — based on your actual model.
-       *
-       * ▶️ Setup:
-       * 1. Add a new MCP Server in your code editor:
-       *
-       * {
-       *   "mcpServers": {
-       *     "Prismic MCP": {
-       *       "command": "npx",
-       *       "args": ["-y", "@prismicio/mcp-server@latest"]
-       *     }
-       *   }
-       * }
-       *
-       * 2. Select a model optimized for coding (e.g. Claude 3.7 Sonnet or similar)
-       *
-       * ✅ Then open your slice file and ask your code editor:
-       *    "Code this slice"
-       *
-       * Your code editor reads your slice model and helps you code faster ⚡
-       * 🎙️ Give your feedback: https://community.prismic.io/t/help-us-shape-the-future-of-slice-creation/19505
-       * 📚 Documentation: https://prismic.io/docs/ai#code-with-prismics-mcp-server
-       */}
-    </section>
-  );
-};
+const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => (
+  <section className="bg-black py-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center md:items-start gap-10">
+      
+      <div className="bg-[#1e293b] rounded-lg w-full md:w-1/2 flex justify-center items-center h-64 overflow-hidden relative">
+        {slice.primary.image?.url ? (
+          <Image
+            src={slice.primary.image.url}
+            alt={slice.primary.image.alt || "Content image"}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover rounded-lg"
+            unoptimized
+          />
+        ) : null}
+      </div>
+
+      <div className="w-full md:w-1/2 text-white">
+        <h2 className="text-3xl font-bold mb-4">
+          {asText(slice.primary.title)}
+        </h2>
+        <p className="text-xl font-medium mb-4">
+          {asText(slice.primary.subtitle)}
+        </p>
+        <div className="text-gray-200">
+          <PrismicRichText field={slice.primary.description} />
+        </div>
+      </div>
+
+    </div>
+  </section>
+);
 
 export default Imageandtext;

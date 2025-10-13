@@ -1,44 +1,20 @@
 @import "tailwindcss";
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
-
 /* * CODE IS FROM V2 LUNIM WEBSITE: see index.css in V2 */
-/* @import '@fontsource/noto-sans-display/variable.css'; */
-/* @import '@fontsource/inter/variable.css'; */
+/* TODO: Check import statements work */
+/* @import '@fontsource-variable/noto-sans-display'; */
+/* @import '@fontsource-variable/inter'; */
 
-/* @import "tailwindcss/preflight"; */
-/* Below are no longer supported */
-/* @tailwind base; */
-/* @tailwind components; */
-/* @tailwind utilities; */
+/* TODO: Below are no longer available in v4  */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Set up font variables */
-:root {
+/* :root {
   --font-primary: 'Noto Sans Display Variable', sans-serif;
   --font-secondary: 'Inter Variable', sans-serif;
-}
+} */
 
 /* Base typography styles */
 body {
@@ -120,6 +96,7 @@ summary::-webkit-details-marker {
 summary::marker {
   display: none;
 }
+
 
 /* Custom arrow styles */
 .archer-container path {

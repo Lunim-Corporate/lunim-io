@@ -1,50 +1,108 @@
-import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+"use client";
+import { useState, useEffect } from "react";
+import { PrismicRichText } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
+import { LucideProps, HelpCircle } from "lucide-react";
+import Xarrow, { Xwrapper } from "react-xarrows";
 
 /**
  * Props for `Process`.
  */
 export type ProcessProps = SliceComponentProps<Content.ProcessSlice>;
 
-/**
- * Component for "Process" Slices.
- */
-const Process: FC<ProcessProps> = ({ slice }) => {
+// Icon components mapping (add more icons as needed)
+const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
+  // Example: 'Star': StarIcon
+};
+
+const Process: React.FC<ProcessProps> = ({ slice }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const items = slice.items as Content.ProcessSliceDefaultItem[];
+
+  // Check if the screen size is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
   return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
-      Placeholder component for Process (variation: {slice.variation}) slices.
-      <br />
-      <strong>You can edit this slice directly in your code editor.</strong>
-      {/**
-       * 💡 Use Prismic MCP with your code editor
-       *
-       * Get AI-powered help to build your slice components — based on your actual model.
-       *
-       * ▶️ Setup:
-       * 1. Add a new MCP Server in your code editor:
-       *
-       * {
-       *   "mcpServers": {
-       *     "Prismic MCP": {
-       *       "command": "npx",
-       *       "args": ["-y", "@prismicio/mcp-server@latest"]
-       *     }
-       *   }
-       * }
-       *
-       * 2. Select a model optimized for coding (e.g. Claude 3.7 Sonnet or similar)
-       *
-       * ✅ Then open your slice file and ask your code editor:
-       *    "Code this slice"
-       *
-       * Your code editor reads your slice model and helps you code faster ⚡
-       * 🎙️ Give your feedback: https://community.prismic.io/t/help-us-shape-the-future-of-slice-creation/19505
-       * 📚 Documentation: https://prismic.io/docs/ai#code-with-prismics-mcp-server
-       */}
+    <section className="bg-[#0f172a] py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Title */}
+        <div className="text-3xl font-bold text-white mb-12">
+          <PrismicRichText field={slice.primary.title} />
+        </div>
+
+        <Xwrapper>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 relative">
+            {items.map((item, index) => {
+              const iconContent = item.icon_text || "";
+              const isNumber = !isNaN(parseInt(iconContent));
+              const IconComponent = iconComponents[iconContent] || HelpCircle;
+
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center relative"
+                >
+                  {/* Circle with icon or number */}
+                  <div
+                    id={`process-circle-${index}`}
+                    className="bg-[#BBFEFF] w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shadow-xl"
+                  >
+                    {isNumber ? (
+                      <span className="text-black text-xl md:text-2xl font-bold">
+                        {iconContent}
+                      </span>
+                    ) : (
+                      <IconComponent className="w-6 h-6 md:w-8 md:h-8 text-black" />
+                    )}
+                  </div>
+
+                  {/* Item Title */}
+                  <h3 className="text-[#BBFEFF] font-semibold text-lg mt-4 mb-1">
+                    {asText(item.item_title)}
+                  </h3>
+
+                  {/* Weeks */}
+                  <p className="text-gray-400 text-base">{item.weeks}</p>
+
+                  {/* Item Description */}
+                  <div className="text-gray-200 text-base max-w-xs mt-2">
+                    <PrismicRichText field={item.item_description} />
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Draw arrows between circles (desktop only) */}
+            {!isMobile &&
+              items.map((_, index) =>
+                index < items.length - 1 ? (
+                  <Xarrow
+                    key={index}
+                    start={`process-circle-${index}`}
+                    end={`process-circle-${index + 1}`}
+                    strokeWidth={2.5}
+                    color="#BBFEFF"
+                    headSize={6}
+                    curveness={0.4}
+                    path="smooth"
+                    animateDrawing={1.5}
+                  />
+                ) : null
+              )}
+          </div>
+        </Xwrapper>
+      </div>
     </section>
   );
 };
