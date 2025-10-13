@@ -1,17 +1,22 @@
-'use client';
-import React, { FC } from 'react';
-import { PrismicRichText, PrismicLink, type SliceComponentProps } from '@prismicio/react';
-import { Content } from '@prismicio/client';
-import { asText } from '@prismicio/helpers';
+"use client";
+import React, { FC } from "react";
+import {
+  PrismicRichText,
+  PrismicLink,
+  type SliceComponentProps,
+} from "@prismicio/react";
+import { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 
 type ProjectShowcaseProps = SliceComponentProps<Content.ProjectShowcaseSlice>;
 
 const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
-  const projects = slice.items as ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>;
+  const projects =
+    slice.items as ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>;
 
   return (
     <section
-      id={slice.primary.section_id || undefined}
+      id={slice.primary.section_id || "case-studies"}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="bg-[#0f172a] py-20"
@@ -26,9 +31,10 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {projects.map((project, index) => {
             const tagsArray: string[] = project.tags
-              ? project.tags.split(',').map(tag => tag.trim())
+              ? project.tags.split(",").map((tag) => tag.trim())
               : [];
-            const projectImageUrl: string | undefined = project.project_image?.url ?? undefined;
+            const projectImageUrl: string | undefined =
+              project.project_image?.url ?? undefined;
 
             return (
               <PrismicLink
@@ -42,8 +48,8 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                     projectImageUrl
                       ? {
                           backgroundImage: `url(${projectImageUrl})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
                         }
                       : {}
                   }

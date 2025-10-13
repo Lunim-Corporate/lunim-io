@@ -18,6 +18,49 @@ const Header: React.FC = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Smooth-scroll to hash targets when the link resolves to the current page.
+   * Falls back to normal navigation otherwise.
+   */
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string | null | undefined,
+    after?: () => void
+  ) => {
+    if (!href) return;
+
+    try {
+      // Support plain hash (e.g. "#case-studies") and full paths (e.g. "/tech#case-studies")
+      const isHashOnly = href.startsWith("#");
+      const base =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : "https://lunim.io";
+      const full = isHashOnly ? `${pathname || "/"}${href}` : href;
+      const url = new URL(full, base);
+
+      const targetPath = url.pathname.replace(/\/+$/, "") || "/";
+      const currentPath = (pathname || "/").replace(/\/+$/, "") || "/";
+      const hash = url.hash.replace(/^#/, "");
+
+      // If we're already on the same page and there is a hash target, smooth-scroll
+      if (hash && targetPath === currentPath) {
+        e.preventDefault();
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          // Optionally update the hash in the URL without jumping
+          if (typeof window !== "undefined") {
+            window.history.replaceState({}, "", `#${hash}`);
+          }
+        }
+        if (after) after();
+      }
+    } catch {
+      // no-op: fall through to default behavior
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => setIsAtTop(window.scrollY < 10);
     window.addEventListener("scroll", handleScroll);
@@ -105,11 +148,13 @@ const Header: React.FC = () => {
               {menuItems.map((item, index) => {
                 const field = item.link_object;
                 const label = item.link_label ?? "";
-                const active = isActive(asLink(field) || undefined);
+                const href = asLink(field) || undefined;
+                const active = isActive(href);
                 return (
                   <PrismicNextLink
                     key={index}
                     field={field}
+                    onClick={(e) => handleNavClick(e, href)}
                     className={`relative z-10 px-6 py-3 font-medium text-lg transition-all duration-300 ${
                       active
                         ? "text-cyan-300"
@@ -177,18 +222,21 @@ const Header: React.FC = () => {
         ) : null}
 
         <div className="w-full max-w-xs space-y-2 relative z-10">
-          {menuItems.map((item, index) => (
-            <PrismicNextLink
-              key={index}
-              field={item.link_object}
-              className="block px-6 py-5 text-xl text-white/90 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                <span>{item.link_label}</span>
-              </div>
-            </PrismicNextLink>
-          ))}
+          {menuItems.map((item, index) => {
+            const href = asLink(item.link_object) || undefined;
+            return (
+              <PrismicNextLink
+                key={index}
+                field={item.link_object}
+                className="block px-6 py-5 text-xl text-white/90 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10"
+                onClick={(e) => handleNavClick(e, href, () => setIsMenuOpen(false))}
+              >
+                <div className="flex items-center">
+                  <span>{item.link_label}</span>
+                </div>
+              </PrismicNextLink>
+            );
+          })}
         </div>
       </div>
     </header>
