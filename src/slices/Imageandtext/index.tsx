@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
