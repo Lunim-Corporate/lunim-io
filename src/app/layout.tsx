@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createClient, repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { LayoutProvider } from "@/contexts/LayoutContext";
@@ -17,7 +18,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black">
-        <SmoothScroll />
+        <Suspense fallback={null}>
+          <SmoothScroll />
+        </Suspense>
         <PrismicPreview repositoryName={repositoryName}>
           <LayoutProvider initialData={layout}>
             <Header />
