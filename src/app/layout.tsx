@@ -17,6 +17,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <script
+          async
+          defer
+          src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
+        ></script>
+      </head>
       <body className="bg-black">
         <Suspense fallback={null}>
           <SmoothScroll />

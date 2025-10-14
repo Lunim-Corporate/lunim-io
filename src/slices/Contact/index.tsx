@@ -1,3 +1,4 @@
+"use client";
 import { FC } from "react";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";

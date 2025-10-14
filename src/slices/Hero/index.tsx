@@ -1,3 +1,4 @@
+"use client";
 import { FC } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
