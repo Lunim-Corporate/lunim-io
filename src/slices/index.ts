@@ -14,6 +14,7 @@ export const components = {
   case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),
   compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),
+  footer: dynamic(() => import("./Footer")),
   hero: dynamic(() => import("./Hero")),
   navigation_menu: dynamic(() => import("./NavigationMenu")),
   our_team: dynamic(() => import("./OurTeam")),
