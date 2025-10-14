@@ -18,6 +18,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "navigation_menu": {
+              "type": "SharedSlice"
+            },
             "website_card": {
               "type": "SharedSlice"
             },
