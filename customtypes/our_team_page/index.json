@@ -18,6 +18,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "navigation_menu": {
+              "type": "SharedSlice"
+            },
             "our_team": {
               "type": "SharedSlice"
             }
