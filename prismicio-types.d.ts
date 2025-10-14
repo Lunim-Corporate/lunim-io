@@ -70,6 +70,7 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | NavigationMenuSlice
   | PrivacyTextBoxSlice
   | HeroSlice
   | ProjectShowcaseSlice
@@ -319,6 +320,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | NavigationMenuSlice
   | FaqSlice
   | PrivacyTextBoxSlice
   | HeroSlice
@@ -388,6 +390,7 @@ export type FilmDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<FilmDocumentData>, "film", Lang>;
 
 type HomepageDocumentDataBodySlice =
+  | NavigationMenuSlice
   | CompactHeroSlice
   | ExpertisegroupSlice
   | ExpertiseareasSlice
@@ -701,6 +704,7 @@ export type LayoutDocument<Lang extends string = string> =
   >;
 
 type MainpageDocumentDataSlicesSlice =
+  | NavigationMenuSlice
   | WebsiteCardSlice
   | ContactSlice
   | HeroSlice;
@@ -768,7 +772,7 @@ export type MainpageDocument<Lang extends string = string> =
     Lang
   >;
 
-type OurTeamPageDocumentDataSlicesSlice = OurTeamSlice;
+type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
 
 /**
  * Content for Our Team documents
@@ -976,6 +980,7 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | NavigationMenuSlice
   | FaqSlice
   | ProjectShowcaseSlice
   | ProcessSlice
