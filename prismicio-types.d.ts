@@ -704,6 +704,7 @@ export type LayoutDocument<Lang extends string = string> =
   >;
 
 type MainpageDocumentDataSlicesSlice =
+  | ProjectShowcaseSlice
   | NavigationMenuSlice
   | WebsiteCardSlice
   | ContactSlice
