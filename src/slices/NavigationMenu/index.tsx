@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
 import type { Content } from "@prismicio/client";
+import { FC } from "react";
+import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 
 /**

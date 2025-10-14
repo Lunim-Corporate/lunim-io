@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createClient, repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 // import { LayoutProvider } from "@/contexts/LayoutContext";
@@ -6,6 +7,7 @@ import Footer from "@/components/Footer";
 import "./globals.css";
 import NavigationMenu from "@/slices/NavigationMenu";
 import { Content } from "@prismicio/client";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export default async function RootLayout({
   children,
@@ -25,7 +27,17 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <script
+          async
+          defer
+          src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
+        ></script>
+      </head>
       <body className="bg-black">
+        <Suspense fallback={null}>
+          <SmoothScroll />
+        </Suspense>
         <PrismicPreview repositoryName={repositoryName}>
           {/* <LayoutProvider initialData={layout}> */}
           {navigationMenu && (
