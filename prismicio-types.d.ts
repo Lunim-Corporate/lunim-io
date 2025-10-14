@@ -833,6 +833,40 @@ export type OurTeamPageDocument<Lang extends string = string> =
     Lang
   >;
 
+type PrimaryNavigationDocumentDataSlicesSlice = NavigationMenuSlice;
+
+/**
+ * Content for Primary Navigation documents
+ */
+interface PrimaryNavigationDocumentData {
+  /**
+   * Slice Zone field in *Primary Navigation*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: primary_navigation.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PrimaryNavigationDocumentDataSlicesSlice>;
+}
+
+/**
+ * Primary Navigation document from Prismic
+ *
+ * - **API ID**: `primary_navigation`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PrimaryNavigationDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<PrimaryNavigationDocumentData>,
+    "primary_navigation",
+    Lang
+  >;
+
 /**
  * Content for Privacy Policy documents
  */
@@ -1222,6 +1256,7 @@ export type AllDocumentTypes =
   | LayoutDocument
   | MainpageDocument
   | OurTeamPageDocument
+  | PrimaryNavigationDocument
   | PrivacyPolicyDocument
   | PrivacyPolicySmDocument
   | TabbDocument
@@ -2496,6 +2531,92 @@ type HeroSliceVariation = HeroSliceDefault;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
+ * Item in *NavigationMenu → Default → Primary → menu*
+ */
+export interface NavigationMenuSliceDefaultPrimaryMenuItem {
+  /**
+   * link label field in *NavigationMenu → Default → Primary → menu*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.menu[].link_label
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  link_label: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+}
+
+/**
+ * Primary content in *NavigationMenu → Default → Primary*
+ */
+export interface NavigationMenuSliceDefaultPrimary {
+  /**
+   * logo field in *NavigationMenu → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  logo: prismic.ImageField<never>;
+
+  /**
+   * menu field in *NavigationMenu → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.menu[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  menu: prismic.GroupField<Simplify<NavigationMenuSliceDefaultPrimaryMenuItem>>;
+
+  /**
+   * cta label field in *NavigationMenu → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.cta_label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cta_label: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for NavigationMenu Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type NavigationMenuSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<NavigationMenuSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *NavigationMenu*
+ */
+type NavigationMenuSliceVariation = NavigationMenuSliceDefault;
+
+/**
+ * NavigationMenu Shared Slice
+ *
+ * - **API ID**: `navigation_menu`
+ * - **Description**: NavigationMenu
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type NavigationMenuSlice = prismic.SharedSlice<
+  "navigation_menu",
+  NavigationMenuSliceVariation
+>;
+
+/**
  * Item in *OurTeam → Default → Primary → team member*
  */
 export interface OurTeamSliceDefaultPrimaryTeamMemberItem {
@@ -2835,6 +2956,9 @@ declare module "@prismicio/client" {
       OurTeamPageDocument,
       OurTeamPageDocumentData,
       OurTeamPageDocumentDataSlicesSlice,
+      PrimaryNavigationDocument,
+      PrimaryNavigationDocumentData,
+      PrimaryNavigationDocumentDataSlicesSlice,
       PrivacyPolicyDocument,
       PrivacyPolicyDocumentData,
       PrivacyPolicySmDocument,
@@ -2911,6 +3035,11 @@ declare module "@prismicio/client" {
       HeroSliceDefaultPrimary,
       HeroSliceVariation,
       HeroSliceDefault,
+      NavigationMenuSlice,
+      NavigationMenuSliceDefaultPrimaryMenuItem,
+      NavigationMenuSliceDefaultPrimary,
+      NavigationMenuSliceVariation,
+      NavigationMenuSliceDefault,
       OurTeamSlice,
       OurTeamSliceDefaultPrimaryTeamMemberItem,
       OurTeamSliceDefaultPrimary,
