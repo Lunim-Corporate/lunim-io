@@ -389,6 +389,40 @@ interface FilmDocumentData {
 export type FilmDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<FilmDocumentData>, "film", Lang>;
 
+type FooterDocumentDataSlicesSlice = FooterSlice;
+
+/**
+ * Content for Footer documents
+ */
+interface FooterDocumentData {
+  /**
+   * Slice Zone field in *Footer*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FooterDocumentDataSlicesSlice>;
+}
+
+/**
+ * Footer document from Prismic
+ *
+ * - **API ID**: `footer`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FooterDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FooterDocumentData>,
+    "footer",
+    Lang
+  >;
+
 type HomepageDocumentDataBodySlice =
   | NavigationMenuSlice
   | CompactHeroSlice
@@ -1257,6 +1291,7 @@ export type AllDocumentTypes =
   | CaseStudyDocument
   | CaseStudySmDocument
   | FilmDocument
+  | FooterDocument
   | HomepageDocument
   | LandingPageDocument
   | LayoutDocument
@@ -2449,6 +2484,169 @@ export type ContactSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *Footer → Default → Primary → Links*
+ */
+export interface FooterSliceDefaultPrimaryLinksItem {
+  /**
+   * Link Label field in *Footer → Default → Primary → Links*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.links[].link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+}
+
+/**
+ * Primary content in *Footer → Default → Primary*
+ */
+export interface FooterSliceDefaultPrimary {
+  /**
+   * Company Name field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.company_name
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  company_name: prismic.RichTextField;
+
+  /**
+   * Navigation Links Title field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.navigation_links_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  navigation_links_title: prismic.RichTextField;
+
+  /**
+   * Contact Information Title field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.contact_information_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  contact_information_title: prismic.RichTextField;
+
+  /**
+   * Tagline field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.tagline
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  tagline: prismic.KeyTextField;
+
+  /**
+   * Links field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.links[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  links: prismic.GroupField<Simplify<FooterSliceDefaultPrimaryLinksItem>>;
+
+  /**
+   * Company Email field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.company_email
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  company_email: prismic.KeyTextField;
+
+  /**
+   * Company Phone Number field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.company_phone_number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  company_phone_number: prismic.KeyTextField;
+
+  /**
+   * Company Address field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.company_address
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  company_address: prismic.KeyTextField;
+
+  /**
+   * Copyright Text field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.copyright_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  copyright_text: prismic.KeyTextField;
+
+  /**
+   * Privacy Policy field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.privacy_policy
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  privacy_policy: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Back To Top Text field in *Footer → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.default.primary.back_to_top_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  back_to_top_text: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Footer Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FooterSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<FooterSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Footer*
+ */
+type FooterSliceVariation = FooterSliceDefault;
+
+/**
+ * Footer Shared Slice
+ *
+ * - **API ID**: `footer`
+ * - **Description**: Footer
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FooterSlice = prismic.SharedSlice<"footer", FooterSliceVariation>;
+
+/**
  * Primary content in *Hero → Default → Primary*
  */
 export interface HeroSliceDefaultPrimary {
@@ -2947,6 +3145,9 @@ declare module "@prismicio/client" {
       FilmDocument,
       FilmDocumentData,
       FilmDocumentDataSlicesSlice,
+      FooterDocument,
+      FooterDocumentData,
+      FooterDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataBodySlice,
@@ -3037,6 +3238,11 @@ declare module "@prismicio/client" {
       ContactSliceDefaultPrimary,
       ContactSliceVariation,
       ContactSliceDefault,
+      FooterSlice,
+      FooterSliceDefaultPrimaryLinksItem,
+      FooterSliceDefaultPrimary,
+      FooterSliceVariation,
+      FooterSliceDefault,
       HeroSlice,
       HeroSliceDefaultPrimary,
       HeroSliceVariation,
