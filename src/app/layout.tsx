@@ -4,6 +4,7 @@ import { LayoutProvider } from "@/contexts/LayoutContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export default async function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black">
+        <SmoothScroll />
         <PrismicPreview repositoryName={repositoryName}>
           <LayoutProvider initialData={layout}>
             <Header />

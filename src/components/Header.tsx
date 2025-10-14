@@ -177,6 +177,9 @@ const Header: React.FC = () => {
             {headerCtaLink ? (
               <PrismicNextLink
                 field={headerCtaLink}
+                onClick={(e) =>
+                  handleNavClick(e, asLink(headerCtaLink) || "#contact")
+                }
                 className="hidden md:block relative overflow-hidden group px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all duration-500 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-400/40"
               >
                 <span className="relative z-10 font-bold text-black">
@@ -229,7 +232,9 @@ const Header: React.FC = () => {
                 key={index}
                 field={item.link_object}
                 className="block px-6 py-5 text-xl text-white/90 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10"
-                onClick={(e) => handleNavClick(e, href, () => setIsMenuOpen(false))}
+                onClick={(e) =>
+                  handleNavClick(e, href, () => setIsMenuOpen(false))
+                }
               >
                 <div className="flex items-center">
                   <span>{item.link_label}</span>

@@ -10,10 +10,11 @@ import model from "@/slices/Contact/model.json";
 
 /**
  * Props for `Contact`.
-*/
+ */
 export type ContactProps = SliceComponentProps<Content.ContactSlice>;
 
-const budgetOptions: string[] = model.variations[0].primary.budget_options.config.options;
+const budgetOptions: string[] =
+  model.variations[0].primary.budget_options.config.options;
 const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Clock: Clock,
   Mail: Mail,
@@ -28,9 +29,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   const officeHourItems = slice.primary.office_info || [];
 
   return (
-    <section
-      className="bg-[#0f172a] py-20"
-    >
+    <section className="bg-[#0f172a] py-20" id="get-in-touch">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Title */}
         <div className="text-3xl font-bold text-white mb-4 text-center">
@@ -39,7 +38,8 @@ const Contact: FC<ContactProps> = ({ slice }) => {
 
         {/* Subtitle */}
         <div className="text-lg text-gray-300 mb-12 text-center">
-        <PrismicRichText field={slice.primary.subtitle}/></div>
+          <PrismicRichText field={slice.primary.subtitle} />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* Contact Info */}
