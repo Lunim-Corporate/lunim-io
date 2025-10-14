@@ -18,6 +18,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "ProjectShowcase": {
+              "type": "SharedSlice"
+            },
             "navigation_menu": {
               "type": "SharedSlice"
             },
