@@ -51,16 +51,13 @@ export const repositoryName = envRepositoryName || sm.repositoryName;
 // TODO: Update the routes array to match your project's route structure.
 const routes: Route[] = [
   { type: "mainpage", path: "/" },
-  { type: "homepage", path: "/tech" },
   { type: "our_team_page", path: "/our-team" },
-
-  // If you modelled Tech/Film/Tabb/Academy as "landing_page" documents,
-  // give each a UID and route them generically:
-  // { type: "landing_page", path: "/:uid" },
-
+  { type: "homepage", path: "/tech" },
+  { type: "academy", path: "/academy" },
+  { type: "film", path: "/film" },
+  { type: "tabb", path: "/tabb" },
   // Case studies under /tech/casestudies/:uid
   { type: "case_study_sm", path: "/tech/casestudies/:uid" },
-
   // Privacy policy:
    { type: "privacy_policy_sm", path: "/privacy-policy" },
 ];
