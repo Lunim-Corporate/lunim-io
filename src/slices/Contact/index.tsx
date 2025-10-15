@@ -4,7 +4,7 @@ import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
 import { Clock, Mail, Phone, LucideProps } from "lucide-react";
-import ContactForm from "@/components/sections/ContactForm";
+import ContactForm from "@/components/ContactForm";
 import { Content } from "@prismicio/client";
 // Budget options
 import model from "@/slices/Contact/model.json";
