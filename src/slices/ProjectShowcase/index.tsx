@@ -40,7 +40,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
               <PrismicLink
                 field={project.project_link}
                 key={index}
-                className="block rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 flex flex-col h-full"
+                className="rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 flex flex-col h-full"
               >
                 <div
                   className="bg-gray-800 h-48 flex items-center justify-center"

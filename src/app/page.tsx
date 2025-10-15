@@ -16,10 +16,10 @@ export default async function Page() {
     );
   }
 
-  console.log(
-    "✅ Slices:",
-    doc.data.slices.map((slice) => slice.slice_type)
-  );
+  // console.log(
+  //   "✅ Slices:",
+  //   doc.data.slices.map((slice) => slice.slice_type)
+  // );
   return (
     <main className="bg-black">
       <SliceZone slices={doc.data.slices} components={components} />
