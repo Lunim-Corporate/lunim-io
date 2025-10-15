@@ -32,6 +32,7 @@
 
 .text-lunar-glow {
   background: linear-gradient(to right, #a3d9ff, #ffffff, #d4e6f1);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 20px rgba(163, 217, 255, 0.5);
