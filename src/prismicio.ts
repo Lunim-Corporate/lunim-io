@@ -60,8 +60,9 @@ const routes: Route[] = [
   { type: "case_study_sm", path: "/tech/casestudies/:uid" },
   // Privacy policy:
   { type: "privacy_policy_sm", path: "/privacy-policy" },
-  { type: "blog_home_page", path: "/blog" },
-  { type: "blog_post", path: "/blog/:uid" },
+  // ! ADD WHEN PAGE DATA IS AVAILABLE
+  // { type: "blog_home_page", path: "/blog" },
+  // { type: "blog_post", path: "/blog/:uid" },
 ];
 
 /**
