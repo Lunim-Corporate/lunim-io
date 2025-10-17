@@ -166,6 +166,7 @@ const Footer: FC<FooterProps> = ({ slice }) => {
               onClick={scrollToTop}
               className="text-gray-500 hover:text-cyan-400 transition-colors duration-300 flex items-center group"
               aria-label="Scroll to top"
+              style={{ cursor: "pointer" }}
             >
               {back_to_top_text || "Back to top"}
               <ArrowUp className="w-4 h-4 ml-2 group-hover:animate-bounce" />
