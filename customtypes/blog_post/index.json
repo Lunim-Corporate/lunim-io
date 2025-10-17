@@ -1,0 +1,293 @@
+{
+  "format": "page",
+  "id": "blog_post",
+  "label": "Blog Post",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "UID"
+        }
+      },
+      "category": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Category",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,list-item,o-list-item"
+        }
+      },
+      "publication_date": {
+        "type": "Date",
+        "config": {
+          "label": "Publication Date",
+          "placeholder": ""
+        }
+      },
+      "article_length": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Article Length",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item"
+        }
+      },
+      "blog_article_heading": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Blog Article Heading",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading1,strong,em"
+        }
+      },
+      "author_image": {
+        "type": "Image",
+        "config": {
+          "label": "Author Image",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
+      "author_name": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Author Name",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "strong,em,paragraph"
+        }
+      },
+      "article_views": {
+        "type": "Number",
+        "config": {
+          "label": "Article Views",
+          "placeholder": ""
+        }
+      },
+      "article_main_image": {
+        "type": "Image",
+        "config": {
+          "label": "Article Main Image",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
+      "table_of_contents_heading": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Table Of Contents Heading",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,paragraph"
+        }
+      },
+      "table_of_contents": {
+        "type": "Group",
+        "config": {
+          "label": "Table Of Contents",
+          "repeat": true,
+          "fields": {
+            "is_section_heading": {
+              "type": "Boolean",
+              "config": {
+                "label": "Is Section Heading",
+                "placeholder_false": "false",
+                "placeholder_true": "true",
+                "default_value": false
+              }
+            },
+            "heading_text": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Heading Text",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "heading3,heading4,heading5,heading6,strong,em"
+              }
+            }
+          }
+        }
+      },
+      "share_article_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Share Article Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph"
+        }
+      },
+      "icons": {
+        "type": "Group",
+        "config": {
+          "label": "Icons",
+          "repeat": true,
+          "fields": {
+            "icon_text": {
+              "type": "Text",
+              "config": {
+                "label": "Icon Text",
+                "placeholder": ""
+              }
+            }
+          }
+        }
+      },
+      "main_article_content": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Main Article Content",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,preformatted,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "faq_heading": {
+        "type": "StructuredText",
+        "config": {
+          "label": "FAQ Heading",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading2,heading3,heading4,paragraph,heading5,heading6,strong,em"
+        }
+      },
+      "faqs": {
+        "type": "Group",
+        "config": {
+          "label": "FAQs",
+          "repeat": true,
+          "fields": {
+            "question": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Question",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+              }
+            },
+            "answer": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Answer",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "paragraph,strong,em"
+              }
+            }
+          }
+        }
+      },
+      "article_written_by_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Article Written By Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
+        }
+      },
+      "more_about_author_text": {
+        "type": "Text",
+        "config": {
+          "label": "More About Author Text",
+          "placeholder": ""
+        }
+      },
+      "more_posts_link_text": {
+        "type": "Link",
+        "config": {
+          "label": "More Posts Link Text",
+          "placeholder": "",
+          "select": null,
+          "allowTargetBlank": true,
+          "allowText": true,
+          "repeat": false
+        }
+      },
+      "join_the_discussion_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Join the Discussion Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,paragraph"
+        }
+      },
+      "email_form_field_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Email Form Field Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
+        }
+      },
+      "name_form_field_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Name Form Field Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
+        }
+      },
+      "comment_form_field_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Comment Form Field Text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
+        }
+      },
+      "send_button_text": {
+        "type": "Text",
+        "config": {
+          "label": "Send Button Text",
+          "placeholder": ""
+        }
+      },
+      "slices": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
+        "config": {
+          "choices": {}
+        }
+      }
+    },
+    "SEO & Metadata": {
+      "meta_title": {
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "A title of the page used for social media and search engines"
+        },
+        "type": "Text"
+      },
+      "meta_description": {
+        "config": {
+          "label": "Meta Description",
+          "placeholder": "A brief summary of the page"
+        },
+        "type": "Text"
+      },
+      "meta_image": {
+        "config": {
+          "constraint": {
+            "height": 1260,
+            "width": 2400
+          },
+          "label": "Meta Image",
+          "thumbnails": []
+        },
+        "type": "Image"
+      }
+    }
+  }
+}
