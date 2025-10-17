@@ -11,6 +11,7 @@ export const components = {
   Process: dynamic(() => import("./Process")),
   ProjectShowcase: dynamic(() => import("./ProjectShowcase")),
   ServiceGrid: dynamic(() => import("./ServiceGrid")),
+  blog_article_card: dynamic(() => import("./BlogArticleCard")),
   case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),
   compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),
