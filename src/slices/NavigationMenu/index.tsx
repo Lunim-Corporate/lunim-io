@@ -67,7 +67,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ slice }) => {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex relative">
+          <nav className="hidden md:flex relative" aria-label="primary">
             <div className="flex space-x-1">
               {menu.map((item, index) => (
                 <PrismicNextLink
