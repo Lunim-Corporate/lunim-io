@@ -157,33 +157,6 @@
           "multi": "heading2,heading3,heading4,paragraph,heading5,heading6,strong,em"
         }
       },
-      "faqs": {
-        "type": "Group",
-        "config": {
-          "label": "FAQs",
-          "repeat": true,
-          "fields": {
-            "question": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Question",
-                "placeholder": "",
-                "allowTargetBlank": true,
-                "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
-              }
-            },
-            "answer": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Answer",
-                "placeholder": "",
-                "allowTargetBlank": true,
-                "multi": "paragraph,strong,em"
-              }
-            }
-          }
-        }
-      },
       "article_written_by_text": {
         "type": "StructuredText",
         "config": {
@@ -211,54 +184,15 @@
           "repeat": false
         }
       },
-      "join_the_discussion_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Join the Discussion Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,paragraph"
-        }
-      },
-      "email_form_field_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Email Form Field Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
-        }
-      },
-      "name_form_field_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Name Form Field Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
-        }
-      },
-      "comment_form_field_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Comment Form Field Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
-        }
-      },
-      "send_button_text": {
-        "type": "Text",
-        "config": {
-          "label": "Send Button Text",
-          "placeholder": ""
-        }
-      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {}
+          "choices": {
+            "Faq": {
+              "type": "SharedSlice"
+            }
+          }
         }
       }
     },
