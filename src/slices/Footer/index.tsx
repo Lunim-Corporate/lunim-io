@@ -99,7 +99,8 @@ const Footer: FC<FooterProps> = ({ slice }) => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          {/* NOT NECESSARY as primary navigation is always showing */}
+          {/* <div>
             <div className="text-lg font-semibold mb-4 text-cyan-400">
               <PrismicRichText field={navigation_links_title} />
             </div>
@@ -116,7 +117,7 @@ const Footer: FC<FooterProps> = ({ slice }) => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact Info */}
           <div>

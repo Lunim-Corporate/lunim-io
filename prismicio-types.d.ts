@@ -297,32 +297,7 @@ export interface BlogPostDocumentDataIconsItem {
   icon_text: prismic.KeyTextField;
 }
 
-/**
- * Item in *Blog Post → FAQs*
- */
-export interface BlogPostDocumentDataFaqsItem {
-  /**
-   * Question field in *Blog Post → FAQs*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.faqs[].question
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  question: prismic.RichTextField;
-
-  /**
-   * Answer field in *Blog Post → FAQs*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.faqs[].answer
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  answer: prismic.RichTextField;
-}
-
-type BlogPostDocumentDataSlicesSlice = never;
+type BlogPostDocumentDataSlicesSlice = FaqSlice;
 
 /**
  * Content for Blog Post documents
@@ -485,17 +460,6 @@ interface BlogPostDocumentData {
   faq_heading: prismic.RichTextField;
 
   /**
-   * FAQs field in *Blog Post*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.faqs[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  faqs: prismic.GroupField<Simplify<BlogPostDocumentDataFaqsItem>>;
-
-  /**
    * Article Written By Text field in *Blog Post*
    *
    * - **Field Type**: Rich Text
@@ -533,61 +497,6 @@ interface BlogPostDocumentData {
     prismic.FieldState,
     never
   >;
-
-  /**
-   * Join the Discussion Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.join_the_discussion_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  join_the_discussion_text: prismic.RichTextField;
-
-  /**
-   * Email Form Field Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.email_form_field_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  email_form_field_text: prismic.RichTextField;
-
-  /**
-   * Name Form Field Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.name_form_field_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  name_form_field_text: prismic.RichTextField;
-
-  /**
-   * Comment Form Field Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.comment_form_field_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  comment_form_field_text: prismic.RichTextField;
-
-  /**
-   * Send Button Text field in *Blog Post*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.send_button_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  send_button_text: prismic.KeyTextField;
 
   /**
    * Slice Zone field in *Blog Post*
@@ -3574,7 +3483,6 @@ declare module "@prismicio/client" {
       BlogPostDocumentData,
       BlogPostDocumentDataTableOfContentsItem,
       BlogPostDocumentDataIconsItem,
-      BlogPostDocumentDataFaqsItem,
       BlogPostDocumentDataSlicesSlice,
       CaseStudyDocument,
       CaseStudyDocumentData,
