@@ -949,6 +949,99 @@ export type MainpageDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Navigation Section → Child Links (Dropdown)*
+ */
+export interface NavSectionDocumentDataChildLinksItem {
+  /**
+   * Child Label field in *Navigation Section → Child Links (Dropdown)*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: nav_section.child_links[].child_label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  child_label: prismic.KeyTextField;
+
+  /**
+   * Child Link field in *Navigation Section → Child Links (Dropdown)*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: nav_section.child_links[].child_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  child_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+}
+
+/**
+ * Content for Navigation Section documents
+ */
+interface NavSectionDocumentData {
+  /**
+   * Section Label field in *Navigation Section*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: nav_section.section_label
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_label: prismic.KeyTextField;
+
+  /**
+   * Top-Level Link field in *Navigation Section*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: nav_section.section_link
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  section_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Child Links (Dropdown) field in *Navigation Section*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: nav_section.child_links[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  child_links: prismic.GroupField<
+    Simplify<NavSectionDocumentDataChildLinksItem>
+  >;
+}
+
+/**
+ * Navigation Section document from Prismic
+ *
+ * - **API ID**: `nav_section`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type NavSectionDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<NavSectionDocumentData>,
+    "nav_section",
+    Lang
+  >;
+
 type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
 
 /**
@@ -1438,6 +1531,7 @@ export type AllDocumentTypes =
   | FooterDocument
   | HomepageDocument
   | MainpageDocument
+  | NavSectionDocument
   | OurTeamPageDocument
   | PrimaryNavigationDocument
   | PrivacyPolicyDocument
@@ -2906,23 +3000,28 @@ type HeroSliceVariation = HeroSliceDefault;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
- * Item in *NavigationMenu → Default → Primary → menu*
+ * Item in *NavigationMenu → Default → Primary → Menu sections*
  */
-export interface NavigationMenuSliceDefaultPrimaryMenuItem {
+export interface NavigationMenuSliceDefaultPrimarySectionsItem {
   /**
-   * link label field in *NavigationMenu → Default → Primary → menu*
+   * Link to a nav_section document field in *NavigationMenu → Default → Primary → Menu sections*
    *
-   * - **Field Type**: Link
+   * - **Field Type**: Content Relationship
    * - **Placeholder**: *None*
-   * - **API ID Path**: navigation_menu.default.primary.menu[].link_label
-   * - **Documentation**: https://prismic.io/docs/fields/link
+   * - **API ID Path**: navigation_menu.default.primary.sections[].section_ref
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
    */
-  link_label: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
+  section_ref: ContentRelationshipFieldWithData<
+    [
+      {
+        id: "nav_section";
+        fields: [
+          "section_label",
+          "section_link",
+          { id: "child_links"; fields: ["child_label", "child_link"] },
+        ];
+      },
+    ]
   >;
 }
 
@@ -2941,16 +3040,6 @@ export interface NavigationMenuSliceDefaultPrimary {
   logo: prismic.ImageField<never>;
 
   /**
-   * menu field in *NavigationMenu → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: navigation_menu.default.primary.menu[]
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  menu: prismic.GroupField<Simplify<NavigationMenuSliceDefaultPrimaryMenuItem>>;
-
-  /**
    * cta label field in *NavigationMenu → Default → Primary*
    *
    * - **Field Type**: Text
@@ -2959,6 +3048,34 @@ export interface NavigationMenuSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   cta_label: prismic.KeyTextField;
+
+  /**
+   * CTA link field in *NavigationMenu → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.cta_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  cta_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Menu sections field in *NavigationMenu → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_menu.default.primary.sections[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  sections: prismic.GroupField<
+    Simplify<NavigationMenuSliceDefaultPrimarySectionsItem>
+  >;
 }
 
 /**
@@ -3334,6 +3451,9 @@ declare module "@prismicio/client" {
       MainpageDocument,
       MainpageDocumentData,
       MainpageDocumentDataSlicesSlice,
+      NavSectionDocument,
+      NavSectionDocumentData,
+      NavSectionDocumentDataChildLinksItem,
       OurTeamPageDocument,
       OurTeamPageDocumentData,
       OurTeamPageDocumentDataSlicesSlice,
@@ -3420,7 +3540,7 @@ declare module "@prismicio/client" {
       HeroSliceVariation,
       HeroSliceDefault,
       NavigationMenuSlice,
-      NavigationMenuSliceDefaultPrimaryMenuItem,
+      NavigationMenuSliceDefaultPrimarySectionsItem,
       NavigationMenuSliceDefaultPrimary,
       NavigationMenuSliceVariation,
       NavigationMenuSliceDefault,
