@@ -1,12 +1,29 @@
 // app/blog/[uid]/page.tsx
+// Next
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-// import { SliceZone } from "@prismicio/react";
+// Prismicio
 import { createClient } from "@/prismicio";
-// import { components } from "@/slices";
-import type { Content } from "@prismicio/client";
+import { asText, type Content } from "@prismicio/client";
+import { PrismicImage, PrismicRichText } from "@prismicio/react";
+// Icons
+import { Eye } from "lucide-react";
+// Types
+import { Simplify } from "../../../../prismicio-types";
 
 type Params = { uid: string };
+
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return "";
+  
+  const date = new Date(dateString);
+  // Display as "Month Day, Year" format
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
@@ -17,10 +34,48 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     .catch(() => null);
   if (!doc) notFound();
 
-  const slices = doc.data.slices;
+  const docData: Simplify<Content.BlogPostDocumentData> = doc.data;
 
   return (
-    <main className="bg-black text-white min-h-screen">
+    <main className="bg-black text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen mt-50">
+        <article>
+          <div className="container grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Hero text content wrapper */}
+            <div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div>{asText(docData.category)}</div>
+                <div className="flex gap-2">
+                  <div>
+                    <time dateTime={`${docData.publication_date}`}>{formatDate(docData.publication_date)}</time>
+                  </div>
+                  &#8226;
+                  <div>
+                    <span>{asText(docData.article_length)}</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <PrismicRichText field={docData.blog_article_heading} />
+              </div>
+              <div className="flex gap-10">
+                <div className="flex items-center">
+                  <PrismicImage field={docData.author_image} className="rounded-full w-[40] aspect-[1] inline-block mr-2" />
+                  <span>By {asText(docData.author_name)}</span>
+                </div>
+                <div className="flex items-center">
+                  <Eye className="mr-1" />
+                  <span>{docData.article_views}</span>
+                </div>
+              </div>
+            </div>
+            {/* Hero Image Wrapper */}
+            <div>
+              <PrismicImage field={docData.article_main_image} className="rounded-2xl" />
+            </div>
+          </div>
+        </article>
+      </div>
     </main>
   );
 }
