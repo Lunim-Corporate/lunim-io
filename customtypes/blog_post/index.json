@@ -18,7 +18,7 @@
           "label": "Category",
           "placeholder": "",
           "allowTargetBlank": true,
-          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph,hyperlink"
+          "multi": "strong,em,hyperlink"
         }
       },
       "publication_date": {
@@ -34,7 +34,7 @@
           "label": "Article Length",
           "placeholder": "",
           "allowTargetBlank": true,
-          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph,hyperlink"
+          "multi": "strong,em,hyperlink"
         }
       },
       "blog_article_heading": {
