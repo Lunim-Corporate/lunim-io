@@ -1,20 +1,13 @@
 import type { Content } from "@prismicio/client";
 
+type LegacyHeroFields = Partial<Pick<Content.CaseStudyDocumentData, "hero_image" | "hero_title">>;
+
 export type CaseStudySmDocumentWithLegacy = Content.CaseStudySmDocument & {
-  data: Content.CaseStudySmDocument["data"] &
-    Partial<Pick<Content.CaseStudyDocumentData, "hero_image" | "hero_title">>;
+  data: Content.CaseStudySmDocument["data"] & LegacyHeroFields;
 };
 
 export type HeroPrimaryFields =
-  Partial<
-    Pick<Content.CaseStudyDocumentData, "hero_image" | "hero_title">
-  > &
-  Partial<
-    Pick<
-      Content.HerosectionSliceDefaultPrimary,
-      "background_image" | "hero_title_part1"
-    >
-  > &
+  LegacyHeroFields &
   Record<string, unknown>;
 
 export type HeroLikeSlice = {

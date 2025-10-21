@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import type { Content } from "@prismicio/client";
+import type { Content, ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
@@ -11,17 +11,14 @@ import { asText } from "@prismicio/helpers";
  */
 export type CompactHeroProps = SliceComponentProps<Content.CompactHeroSlice>;
 
-type LegacyHomepageHeroFields = Partial<
-  Pick<
-    Content.HerosectionSliceDefaultPrimary,
-    | "background_image"
-    | "hero_title_part1"
-    | "hero_title_part2"
-    | "hero_description"
-    | "button_1_link"
-    | "button_1_label"
-  >
->;
+type LegacyHomepageHeroFields = Partial<{
+  background_image: ImageField;
+  hero_title_part1: RichTextField;
+  hero_title_part2: RichTextField;
+  hero_description: RichTextField;
+  button_1_link: LinkField;
+  button_1_label: KeyTextField;
+}>;
 
 type CompactHeroPrimary = Content.CompactHeroSlice["primary"] & LegacyHomepageHeroFields;
 
