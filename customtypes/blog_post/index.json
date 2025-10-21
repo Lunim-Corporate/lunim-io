@@ -18,7 +18,7 @@
           "label": "Category",
           "placeholder": "",
           "allowTargetBlank": true,
-          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,list-item,o-list-item"
+          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph,hyperlink"
         }
       },
       "publication_date": {
@@ -34,7 +34,7 @@
           "label": "Article Length",
           "placeholder": "",
           "allowTargetBlank": true,
-          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item"
+          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph,hyperlink"
         }
       },
       "blog_article_heading": {
@@ -102,13 +102,15 @@
                 "default_value": false
               }
             },
-            "heading_text": {
-              "type": "StructuredText",
+            "heading": {
+              "type": "Link",
               "config": {
-                "label": "Heading Text",
+                "label": "Heading",
                 "placeholder": "",
+                "select": null,
                 "allowTargetBlank": true,
-                "multi": "heading3,heading4,heading5,heading6,strong,em"
+                "allowText": true,
+                "repeat": false
               }
             }
           }
@@ -146,15 +148,6 @@
           "placeholder": "",
           "allowTargetBlank": true,
           "multi": "paragraph,preformatted,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-        }
-      },
-      "faq_heading": {
-        "type": "StructuredText",
-        "config": {
-          "label": "FAQ Heading",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "heading2,heading3,heading4,paragraph,heading5,heading6,strong,em"
         }
       },
       "article_written_by_text": {

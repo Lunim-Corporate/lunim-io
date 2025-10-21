@@ -62,7 +62,7 @@ const routes: Route[] = [
   { type: "privacy_policy_sm", path: "/privacy-policy" },
   // ! ADD WHEN PAGE DATA IS AVAILABLE
   // { type: "blog_home_page", path: "/blog" },
-  // { type: "blog_post", path: "/blog/:uid" },
+  { type: "blog_post", path: "/blog/:uid" },
 ];
 
 /**

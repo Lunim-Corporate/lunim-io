@@ -272,14 +272,20 @@ export interface BlogPostDocumentDataTableOfContentsItem {
   is_section_heading: prismic.BooleanField;
 
   /**
-   * Heading Text field in *Blog Post → Table Of Contents*
+   * Heading field in *Blog Post → Table Of Contents*
    *
-   * - **Field Type**: Rich Text
+   * - **Field Type**: Link
    * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.table_of_contents[].heading_text
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   * - **API ID Path**: blog_post.table_of_contents[].heading
+   * - **Documentation**: https://prismic.io/docs/fields/link
    */
-  heading_text: prismic.RichTextField;
+  heading: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
@@ -447,17 +453,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   main_article_content: prismic.RichTextField;
-
-  /**
-   * FAQ Heading field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.faq_heading
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  faq_heading: prismic.RichTextField;
 
   /**
    * Article Written By Text field in *Blog Post*
