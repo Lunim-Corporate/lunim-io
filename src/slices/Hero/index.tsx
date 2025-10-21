@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -15,8 +15,10 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
   const backgroundImageUrl = slice.primary.background_image.url;
+  const sectionRef = useRef<HTMLElement | null>(null);
   return (
     <section
+      ref={sectionRef}
       className="min-h-screen flex items-center relative overflow-hidden bg-black"
       id="mainpage"
       style={{
@@ -50,6 +52,35 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           </div>
         </div>
       </div>
+      {/* Scroll-down chevron (absolute, bottom-centered) */}
+      <button
+        onClick={() => {
+          const current = sectionRef.current;
+          if (!current) return;
+          // Prefer the next sibling section if present
+          const next = current.nextElementSibling as HTMLElement | null;
+          if (next) {
+            next.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+          }
+          // Fallback: scroll one viewport
+          window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+        }}
+        aria-label="Scroll down"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-full p-3 text-cyan-400 hover:text-cyan-300 ring-1 ring-white/15 bg-black/30 backdrop-blur-md shadow-lg animate-bounce"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-7 h-7"
+          aria-hidden
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
     </section>
   );
 };
