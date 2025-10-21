@@ -40,9 +40,9 @@ const Footer: FC<FooterProps> = ({ slice }) => {
   const {
     company_name,
     tagline,
-    navigation_links_title,
+    // navigation_links_title,
     contact_information_title,
-    links,
+    // links,
     company_email,
     company_phone_number,
     company_address,
