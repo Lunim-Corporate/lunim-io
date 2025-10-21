@@ -26,32 +26,40 @@
 				"__TYPE__": "ImageContent",
 				"thumbnails": {}
 			},
-			"menu": {
+			"cta_label": {
+				"__TYPE__": "FieldContent",
+				"value": "dry",
+				"type": "Text"
+			},
+			"cta_link": {
+				"key": "618eb1f8-064a-41bf-9a68-a66c94c8c328",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://slicemachine.dev",
+					"text": "play"
+				}
+			},
+			"sections": {
 				"__TYPE__": "GroupContentType",
 				"value": [
 					{
 						"__TYPE__": "GroupItemContent",
 						"value": [
 							[
-								"link_label",
+								"section_ref",
 								{
-									"key": "cb2eec90-3a7f-4a5d-a222-68f5010a4d09",
 									"__TYPE__": "LinkContent",
+									"key": "d7433adc-113c-4c29-9da6-d5ee4d95b2c1",
 									"value": {
-										"__TYPE__": "ExternalLink",
-										"url": "http://twitter.com",
-										"text": "sentence"
+										"__TYPE__": "DocumentLink",
+										"id": "mock_document_id"
 									}
 								}
 							]
 						]
 					}
 				]
-			},
-			"cta_label": {
-				"__TYPE__": "FieldContent",
-				"value": "dry",
-				"type": "Text"
 			}
 		},
 		"items": []
