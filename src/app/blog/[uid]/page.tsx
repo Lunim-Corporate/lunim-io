@@ -1,9 +1,9 @@
 // app/blog/[uid]/page.tsx
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { SliceZone } from "@prismicio/react";
+// import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
-import { components } from "@/slices";
+// import { components } from "@/slices";
 import type { Content } from "@prismicio/client";
 
 type Params = { uid: string };
@@ -21,7 +21,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   return (
     <main className="bg-black text-white min-h-screen">
-      <SliceZone slices={slices} components={components} />
     </main>
   );
 }

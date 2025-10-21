@@ -18,7 +18,7 @@
             "label": "challenge_title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em"
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
           }
         },
         "challenge_content": {
@@ -47,7 +47,7 @@
             "label": "solution_title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em"
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
           }
         },
         "solution_content": {
@@ -76,7 +76,7 @@
             "label": "impact_title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em"
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
           }
         },
         "impact_content": {

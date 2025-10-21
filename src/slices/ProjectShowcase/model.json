@@ -20,7 +20,7 @@
             "label": "title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em"
+            "single": "heading2,heading3,heading4,heading5,heading6,strong,em"
           }
         },
         "section_id": {
@@ -42,8 +42,10 @@
         "project_title": {
           "type": "StructuredText",
           "config": {
-            "single": "heading1,heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item,rtl",
-            "label": "project_title"
+            "label": "project_title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item,rtl"
           }
         },
         "project_description": {
