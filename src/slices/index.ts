@@ -4,9 +4,7 @@ import dynamic from "next/dynamic";
 
 export const components = {
   Expertiseareas: dynamic(() => import("./Expertiseareas")),
-  Expertisegroup: dynamic(() => import("./Expertisegroup")),
   Faq: dynamic(() => import("./Faq")),
-  Herosection: dynamic(() => import("./Herosection")),
   Imageandtext: dynamic(() => import("./Imageandtext")),
   Process: dynamic(() => import("./Process")),
   ProjectShowcase: dynamic(() => import("./ProjectShowcase")),

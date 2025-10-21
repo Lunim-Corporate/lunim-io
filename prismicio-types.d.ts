@@ -840,7 +840,6 @@ export type FooterDocument<Lang extends string = string> =
 type HomepageDocumentDataBodySlice =
   | NavigationMenuSlice
   | CompactHeroSlice
-  | ExpertisegroupSlice
   | ExpertiseareasSlice
   | ServiceGridSlice
   | ImageandtextSlice
@@ -1537,71 +1536,6 @@ export type ExpertiseareasSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *Expertisegroup → Items*
- */
-export interface ExpertisegroupSliceDefaultItem {
-  /**
-   * icon_name field in *Expertisegroup → Items*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Expertisegroup.items[].icon_name
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  icon_name: prismic.KeyTextField;
-
-  /**
-   * title field in *Expertisegroup → Items*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Expertisegroup.items[].title
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  title: prismic.KeyTextField;
-
-  /**
-   * description field in *Expertisegroup → Items*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Expertisegroup.items[].description
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  description: prismic.RichTextField;
-}
-
-/**
- * Default variation for Expertisegroup Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type ExpertisegroupSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Record<string, never>,
-  Simplify<ExpertisegroupSliceDefaultItem>
->;
-
-/**
- * Slice variation for *Expertisegroup*
- */
-type ExpertisegroupSliceVariation = ExpertisegroupSliceDefault;
-
-/**
- * Expertisegroup Shared Slice
- *
- * - **API ID**: `Expertisegroup`
- * - **Description**: *None*
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type ExpertisegroupSlice = prismic.SharedSlice<
-  "Expertisegroup",
-  ExpertisegroupSliceVariation
->;
-
-/**
  * Primary content in *Faq → Default → Primary*
  */
 export interface FaqSliceDefaultPrimary {
@@ -1667,107 +1601,6 @@ type FaqSliceVariation = FaqSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type FaqSlice = prismic.SharedSlice<"Faq", FaqSliceVariation>;
-
-/**
- * Primary content in *Herosection → Default → Primary*
- */
-export interface HerosectionSliceDefaultPrimary {
-  /**
-   * hero_title_part1 field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.hero_title_part1
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  hero_title_part1: prismic.RichTextField;
-
-  /**
-   * hero_title_part2 field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.hero_title_part2
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  hero_title_part2: prismic.RichTextField;
-
-  /**
-   * hero_description field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.hero_description
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  hero_description: prismic.RichTextField;
-
-  /**
-   * button_1_link field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.button_1_link
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  button_1_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-
-  /**
-   * button_1_label field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.button_1_label
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  button_1_label: prismic.KeyTextField;
-
-  /**
-   * background_image field in *Herosection → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: Herosection.default.primary.background_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  background_image: prismic.ImageField<never>;
-}
-
-/**
- * Default variation for Herosection Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type HerosectionSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<HerosectionSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Herosection*
- */
-type HerosectionSliceVariation = HerosectionSliceDefault;
-
-/**
- * Herosection Shared Slice
- *
- * - **API ID**: `Herosection`
- * - **Description**: *None*
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type HerosectionSlice = prismic.SharedSlice<
-  "Herosection",
-  HerosectionSliceVariation
->;
 
 /**
  * Primary content in *Imageandtext → Default → Primary*
@@ -3528,19 +3361,11 @@ declare module "@prismicio/client" {
       ExpertiseareasSliceDefaultItem,
       ExpertiseareasSliceVariation,
       ExpertiseareasSliceDefault,
-      ExpertisegroupSlice,
-      ExpertisegroupSliceDefaultItem,
-      ExpertisegroupSliceVariation,
-      ExpertisegroupSliceDefault,
       FaqSlice,
       FaqSliceDefaultPrimary,
       FaqSliceDefaultItem,
       FaqSliceVariation,
       FaqSliceDefault,
-      HerosectionSlice,
-      HerosectionSliceDefaultPrimary,
-      HerosectionSliceVariation,
-      HerosectionSliceDefault,
       ImageandtextSlice,
       ImageandtextSliceDefaultPrimary,
       ImageandtextSliceVariation,

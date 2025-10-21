@@ -17,9 +17,6 @@
             "compact_hero": {
               "type": "SharedSlice"
             },
-            "Expertisegroup": {
-              "type": "SharedSlice"
-            },
             "Expertiseareas": {
               "type": "SharedSlice"
             },
