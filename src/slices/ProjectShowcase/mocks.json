@@ -7,9 +7,9 @@
 				"__TYPE__": "StructuredTextContent",
 				"value": [
 					{
-						"type": "heading1",
+						"type": "heading2",
 						"content": {
-							"text": "Rapidly"
+							"text": "Melted"
 						}
 					}
 				]
@@ -56,9 +56,9 @@
 							"__TYPE__": "StructuredTextContent",
 							"value": [
 								{
-									"type": "heading1",
+									"type": "heading2",
 									"content": {
-										"text": "Already"
+										"text": "Action"
 									}
 								}
 							]

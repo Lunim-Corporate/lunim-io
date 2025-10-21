@@ -7,9 +7,9 @@
 				"__TYPE__": "StructuredTextContent",
 				"value": [
 					{
-						"type": "heading1",
+						"type": "heading2",
 						"content": {
-							"text": "Condition"
+							"text": "Except"
 						}
 					}
 				]
@@ -36,9 +36,9 @@
 				"__TYPE__": "StructuredTextContent",
 				"value": [
 					{
-						"type": "heading1",
+						"type": "heading2",
 						"content": {
-							"text": "Entirely"
+							"text": "Search"
 						}
 					}
 				]
@@ -70,9 +70,9 @@
 				"__TYPE__": "StructuredTextContent",
 				"value": [
 					{
-						"type": "heading1",
+						"type": "heading2",
 						"content": {
-							"text": "Driver"
+							"text": "Truth"
 						}
 					}
 				]
