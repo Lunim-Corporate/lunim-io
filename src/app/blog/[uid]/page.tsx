@@ -2,16 +2,17 @@
 // Next
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 // Prismicio
 import { createClient } from "@/prismicio";
 import { asText, type Content } from "@prismicio/client";
-import { PrismicImage, PrismicRichText } from "@prismicio/react";
+import { PrismicRichText } from "@prismicio/react";
+import { RichTextField, SliceZone } from "@prismicio/types";
+import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 // Icons
 import { ChevronDown, Eye } from "lucide-react";
 // Types
 import { Simplify } from "../../../../prismicio-types";
-import Link from "next/link";
-import { RichTextField, SliceZone } from "@prismicio/types";
 
 type Params = { uid: string };
 
@@ -19,7 +20,7 @@ function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return "";
   
   const date = new Date(dateString);
-  // Display as "Month Day, Year" format
+  // Display as "Month Day, Year" format e.g., "January 1, 2030"
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -40,6 +41,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqSlice: SliceZone<Content.FaqSlice> = docData.slices
   const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
+  const authorName = asText(docData.author_name);
 
   return (
     <main className="bg-black text-white mb-15">
@@ -60,13 +62,15 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   </div>
                 </div>
               </div>
-              <div>
-                <PrismicRichText field={docData.blog_article_heading} />
+              <div className="mb-10">
+                <PrismicRichText
+                  field={docData.blog_article_heading}
+                  components={{heading1: ({children}) => <h1 className="text-6xl">{children}</h1>}}/>
               </div>
               <div className="flex gap-10">
                 <div className="flex items-center">
-                  <PrismicImage field={docData.author_image} className="rounded-full w-[40] aspect-[1] inline-block mr-2" />
-                  <span>By {asText(docData.author_name)}</span>
+                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[40] aspect-[1] inline-block mr-2" />
+                  <span>By {authorName} </span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1" />
@@ -76,7 +80,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </div>
             {/* Hero Image Wrapper */}
             <div>
-              <PrismicImage field={docData.article_main_image} className="rounded-2xl" />
+              <PrismicNextImage field={docData.article_main_image} className="rounded-2xl" />
             </div>
           </div>
           {/* Table of Contents and Main content */}
@@ -111,7 +115,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 <PrismicRichText field={docData.main_article_content} />
               </div>
               {/* FAQs: see `faq/index.ts` */}
-              <div>
+              <div className="mb-16">
                 <div className="mx-auto">
                   <div className="text-3xl font-bold text-white mb-12">
                     <PrismicRichText field={faqHeading} />
@@ -138,6 +142,22 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   ))}
                 </div>
               </div>
+              </div>
+              {/* Article written by section */}
+              <div className="flex p-6 bg-[#1f2937] rounded-lg">
+                <div>
+                  <PrismicRichText
+                    field={docData.article_written_by_text}
+                    components={{
+                      paragraph: ({ children }) => <p className="mb-0!">{children}</p>
+                    }} />
+                  <h3 className="mt-0! font-bold">{authorName}</h3>
+                  <p>{docData.more_about_author_text}</p>
+                  <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" />
+                </div>
+                <div>
+                  <PrismicNextImage field={docData.author_image} className="rounded-full w-2xl" />
+                </div>
               </div>
             </div>
           </div>
