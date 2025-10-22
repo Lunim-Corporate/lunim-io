@@ -143,60 +143,15 @@ export type AcademyDocument<Lang extends string = string> =
     Lang
   >;
 
-/**
- * Item in *Blog Home Page → Tags*
- */
-export interface BlogHomePageDocumentDataTagsItem {
-  /**
-   * Tag Text field in *Blog Home Page → Tags*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_home_page.tags[].tag_text
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  tag_text: prismic.RichTextField;
-}
-
-type BlogHomePageDocumentDataSlicesSlice = BlogArticleCardSlice;
+type BlogHomePageDocumentDataSlicesSlice =
+  | BlogFiltersSlice
+  | BlogListSlice
+  | CompactHeroSlice;
 
 /**
  * Content for Blog Home Page documents
  */
 interface BlogHomePageDocumentData {
-  /**
-   * Heading field in *Blog Home Page*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_home_page.heading
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  heading: prismic.RichTextField;
-
-  /**
-   * Filter By Tag Text field in *Blog Home Page*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_home_page.filter_by_tag_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  filter_by_tag_text: prismic.RichTextField;
-
-  /**
-   * Tags field in *Blog Home Page*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_home_page.tags[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  tags: prismic.GroupField<Simplify<BlogHomePageDocumentDataTagsItem>>;
-
   /**
    * Slice Zone field in *Blog Home Page*
    *
@@ -2278,6 +2233,158 @@ export type BlogArticleCardSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *BlogFilters → Default → Primary*
+ */
+export interface BlogFiltersSliceDefaultPrimary {
+  /**
+   * Heading field in *BlogFilters → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_filters.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  heading: prismic.KeyTextField;
+
+  /**
+   * Helper text field in *BlogFilters → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_filters.default.primary.helper_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  helper_text: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for BlogFilters Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BlogFiltersSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<BlogFiltersSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BlogFilters*
+ */
+type BlogFiltersSliceVariation = BlogFiltersSliceDefault;
+
+/**
+ * BlogFilters Shared Slice
+ *
+ * - **API ID**: `blog_filters`
+ * - **Description**: BlogFilters
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BlogFiltersSlice = prismic.SharedSlice<
+  "blog_filters",
+  BlogFiltersSliceVariation
+>;
+
+/**
+ * Primary content in *BlogList → Default → Primary*
+ */
+export interface BlogListSliceDefaultPrimary {
+  /**
+   * Heading field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_list.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Intro field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_list.default.primary.intro
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  intro: prismic.RichTextField;
+
+  /**
+   * Page size field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: 12
+   * - **API ID Path**: blog_list.default.primary.page_size
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  page_size: prismic.NumberField;
+
+  /**
+   * Category filter field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_list.default.primary.category_filter
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  category_filter: prismic.KeyTextField;
+
+  /**
+   * Show Author field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: blog_list.default.primary.show_author
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_author: prismic.BooleanField;
+
+  /**
+   * Show Date field in *BlogList → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: blog_list.default.primary.show_date
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_date: prismic.BooleanField;
+}
+
+/**
+ * Default variation for BlogList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BlogListSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<BlogListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BlogList*
+ */
+type BlogListSliceVariation = BlogListSliceDefault;
+
+/**
+ * BlogList Shared Slice
+ *
+ * - **API ID**: `blog_list`
+ * - **Description**: BlogList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BlogListSlice = prismic.SharedSlice<
+  "blog_list",
+  BlogListSliceVariation
+>;
+
+/**
  * Primary content in *CaseStudyTextPanel → Challenge → Primary*
  */
 export interface CaseStudyTextPanelSliceDefaultPrimary {
@@ -3422,7 +3529,6 @@ declare module "@prismicio/client" {
       AcademyDocumentDataSlicesSlice,
       BlogHomePageDocument,
       BlogHomePageDocumentData,
-      BlogHomePageDocumentDataTagsItem,
       BlogHomePageDocumentDataSlicesSlice,
       BlogPostDocument,
       BlogPostDocumentData,
@@ -3506,6 +3612,14 @@ declare module "@prismicio/client" {
       BlogArticleCardSliceVariation,
       BlogArticleCardSliceDefault,
       BlogArticleCardSlicePastBlogArticles,
+      BlogFiltersSlice,
+      BlogFiltersSliceDefaultPrimary,
+      BlogFiltersSliceVariation,
+      BlogFiltersSliceDefault,
+      BlogListSlice,
+      BlogListSliceDefaultPrimary,
+      BlogListSliceVariation,
+      BlogListSliceDefault,
       CaseStudyTextPanelSlice,
       CaseStudyTextPanelSliceDefaultPrimary,
       CaseStudyTextPanelSliceSolutionTextPanelPrimary,
