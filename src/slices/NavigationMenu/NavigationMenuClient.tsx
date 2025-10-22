@@ -8,7 +8,12 @@ import { Menu, X, ChevronDown, Circle } from "lucide-react";
 import type { LinkField } from "@prismicio/client";
 
 type ChildLink = { label: string; link: LinkField };
-type Section = { id: string; label: string; link: LinkField | null; children: ChildLink[] };
+type Section = {
+  id: string;
+  label: string;
+  link: LinkField | null;
+  children: ChildLink[];
+};
 
 export function NavigationMenuClient({
   data,
@@ -53,7 +58,11 @@ export function NavigationMenuClient({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
         {/* Logo */}
-        <Link href="/" className="relative z-10 block h-12" aria-label="Go to homepage">
+        <Link
+          href="/"
+          className="relative z-10 block h-12"
+          aria-label="Go to homepage"
+        >
           {data.logoUrl ? (
             <Image
               src={data.logoUrl}
@@ -71,11 +80,13 @@ export function NavigationMenuClient({
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-2">
           {data.sections.map((section) => {
-            const hasChildren = section.children.length > 0;
             const children = section.children.filter((c) => {
-              const hasLabel = typeof c.label === "string" && c.label.trim().length > 0;
+              const hasLabel =
+                typeof c.label === "string" && c.label.trim().length > 0;
               // some Prismic groups may include an empty row; treat missing/empty link as falsy
-              const hasLink = (c.link as unknown) !== null && (c.link as unknown) !== undefined;
+              const hasLink =
+                (c.link as unknown) !== null &&
+                (c.link as unknown) !== undefined;
               return hasLabel && hasLink;
             });
             const hasRealChildren = children.length > 0;
@@ -90,7 +101,9 @@ export function NavigationMenuClient({
                       {section.label}
                     </PrismicNextLink>
                   ) : (
-                    <span className="px-4 py-3 text-white/80">{section.label}</span>
+                    <span className="px-4 py-3 text-white/80">
+                      {section.label}
+                    </span>
                   )}
                   {hasRealChildren && (
                     <ChevronDown className="w-4 h-4 ml-1 text-white/70 group-hover:text-white transition-colors" />
@@ -132,7 +145,11 @@ export function NavigationMenuClient({
             onClick={() => setIsMenuOpen((v) => !v)}
             className="md:hidden ml-4 p-3 rounded-full bg-black/30 border border-cyan-500/30"
           >
-            {isMenuOpen ? <X className="w-6 h-6 text-cyan-400" /> : <Menu className="w-6 h-6 text-cyan-400" />}
+            {isMenuOpen ? (
+              <X className="w-6 h-6 text-cyan-400" />
+            ) : (
+              <Menu className="w-6 h-6 text-cyan-400" />
+            )}
           </button>
         </div>
       </div>
@@ -141,7 +158,9 @@ export function NavigationMenuClient({
       <div
         ref={menuRef}
         className={`md:hidden fixed inset-0 bg-[#0a0a1a]/90 backdrop-blur-lg pt-24 pb-12 z-40 flex flex-col items-center transition-all duration-500 ${
-          isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
+          isMenuOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-full pointer-events-none"
         }`}
       >
         <div className="absolute top-4 right-4">
@@ -157,13 +176,19 @@ export function NavigationMenuClient({
         <div className="w-full max-w-xs space-y-2">
           {data.sections.map((section) => {
             const children = section.children.filter((c) => {
-              const hasLabel = typeof c.label === "string" && c.label.trim().length > 0;
-              const hasLink = (c.link as unknown) !== null && (c.link as unknown) !== undefined;
+              const hasLabel =
+                typeof c.label === "string" && c.label.trim().length > 0;
+              const hasLink =
+                (c.link as unknown) !== null &&
+                (c.link as unknown) !== undefined;
               return hasLabel && hasLink;
             });
             const hasRealChildren = children.length > 0;
             return (
-              <div key={section.id} className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+              <div
+                key={section.id}
+                className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
+              >
                 <div className="px-6 py-4">
                   {section.link ? (
                     <PrismicNextLink
@@ -174,7 +199,9 @@ export function NavigationMenuClient({
                       {section.label}
                     </PrismicNextLink>
                   ) : (
-                    <span className="text-white/90 font-medium">{section.label}</span>
+                    <span className="text-white/90 font-medium">
+                      {section.label}
+                    </span>
                   )}
                 </div>
                 {hasRealChildren && (
