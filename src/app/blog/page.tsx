@@ -28,7 +28,7 @@ export default async function Page({ searchParams }: PageProps) {
     </main>
   );
 }
-
+ 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
   const doc = await client.getSingle("blog_home_page").catch(() => null);
