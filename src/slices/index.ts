@@ -10,7 +10,6 @@ export const components = {
   ProjectShowcase: dynamic(() => import("./ProjectShowcase")),
   ServiceGrid: dynamic(() => import("./ServiceGrid")),
   blog_article_card: dynamic(() => import("./BlogArticleCard")),
-  blog_filters: dynamic(() => import("./BlogFilters")),
   blog_list: dynamic(() => import("./BlogList")),
   case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),
   compact_hero: dynamic(() => import("./CompactHero")),
