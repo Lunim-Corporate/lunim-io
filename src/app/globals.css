@@ -45,7 +45,7 @@ h6 {
   font-family: var(--font-secondary);
   font-style: normal;
   margin: 1.5rem 0 0.75rem;
-  line-height: 1.3;
+  /* line-height: 1.3; */
 }
 
 /* h1 {
