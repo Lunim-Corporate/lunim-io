@@ -89,7 +89,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             <aside>
               <div className="sticky top-40">
                 <div>
-                  <PrismicRichText field={docData.table_of_contents_heading} />
+                  <PrismicRichText
+                    field={docData.table_of_contents_heading}
+                    components={{
+                      heading4: ({children}) => <h4 className="mt-[0]!">{children}</h4>
+                    }}
+                  />
                 </div>
                 <div className="flex gap-3">
                   <div>
