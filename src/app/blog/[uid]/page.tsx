@@ -10,6 +10,7 @@ import { PrismicImage, PrismicRichText } from "@prismicio/react";
 import { Eye } from "lucide-react";
 // Types
 import { Simplify } from "../../../../prismicio-types";
+import Link from "next/link";
 
 type Params = { uid: string };
 
@@ -73,6 +74,35 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             <div>
               <PrismicImage field={docData.article_main_image} className="rounded-2xl" />
             </div>
+          </div>
+          {/* Table of Contents and Main content */}
+          <div className="container grid grid-cols-1 md:grid-cols-2 gap-10 mt-20">
+            {/* Table of Contents and share links */}
+            <aside className="border">
+              <div className="sticky top-40">
+                <div>
+                  <PrismicRichText field={docData.table_of_contents_heading} />
+                </div>
+                <div className="flex gap-3">
+                  <div>
+                    <PrismicRichText
+                      field={docData.share_article_text}
+                      components={{
+                        heading4: ({ children }) => <h4 className="m-[0]!">{children}</h4>
+                      }}
+                    /></div>
+                  <div className="flex gap-4">
+                    {/* TODO: Some icons from lucide-react are deprecated */}
+                    {docData.icons.map((icon, i) => {
+                      return (
+                        <Link href="/" key={i}>{icon.icon_text}</Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </aside>
+            <div className="border"><PrismicRichText field={docData.main_article_content} /></div>
           </div>
         </article>
       </div>
