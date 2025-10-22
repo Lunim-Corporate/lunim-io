@@ -143,10 +143,7 @@ export type AcademyDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogHomePageDocumentDataSlicesSlice =
-  | BlogFiltersSlice
-  | BlogListSlice
-  | CompactHeroSlice;
+type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
 
 /**
  * Content for Blog Home Page documents
@@ -2233,61 +2230,6 @@ export type BlogArticleCardSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *BlogFilters → Default → Primary*
- */
-export interface BlogFiltersSliceDefaultPrimary {
-  /**
-   * Heading field in *BlogFilters → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_filters.default.primary.heading
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  heading: prismic.KeyTextField;
-
-  /**
-   * Helper text field in *BlogFilters → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_filters.default.primary.helper_text
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  helper_text: prismic.KeyTextField;
-}
-
-/**
- * Default variation for BlogFilters Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type BlogFiltersSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<BlogFiltersSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *BlogFilters*
- */
-type BlogFiltersSliceVariation = BlogFiltersSliceDefault;
-
-/**
- * BlogFilters Shared Slice
- *
- * - **API ID**: `blog_filters`
- * - **Description**: BlogFilters
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type BlogFiltersSlice = prismic.SharedSlice<
-  "blog_filters",
-  BlogFiltersSliceVariation
->;
-
-/**
  * Primary content in *BlogList → Default → Primary*
  */
 export interface BlogListSliceDefaultPrimary {
@@ -3612,10 +3554,6 @@ declare module "@prismicio/client" {
       BlogArticleCardSliceVariation,
       BlogArticleCardSliceDefault,
       BlogArticleCardSlicePastBlogArticles,
-      BlogFiltersSlice,
-      BlogFiltersSliceDefaultPrimary,
-      BlogFiltersSliceVariation,
-      BlogFiltersSliceDefault,
       BlogListSlice,
       BlogListSliceDefaultPrimary,
       BlogListSliceVariation,
