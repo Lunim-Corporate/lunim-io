@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     <main className="bg-black text-white mb-15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen mt-50">
         <article>
-          <div className="container grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="container grid grid-cols-1 lg:grid-cols-2 gap-10">
             {/* Hero text content wrapper */}
             <div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -84,7 +84,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </div>
           </div>
           {/* Table of Contents and Main content */}
-          <div className="container grid grid-cols-1 md:grid-cols-2 gap-26 md:gap-10 mt-20">
+          <div className="container grid grid-cols-1 gap-20 lg:grid-cols-[1fr_1.5fr_5%] lg:gap-10 mt-20">
             {/* Table of Contents and share links */}
             <aside>
               <div className="sticky top-40">
