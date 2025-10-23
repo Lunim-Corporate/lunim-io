@@ -1,3 +1,5 @@
+'use client';
+
 // Prismic
 import { PrismicRichText } from "@prismicio/react"
 import { RichTextField } from "@prismicio/types"
@@ -5,8 +7,12 @@ import { GroupField } from "@prismicio/client";
 import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
 // Next
 import Link from "next/link"
+// React
+import { useState } from "react";
 // Utils
 import { createID } from "@/utils/createId"
+// Icons
+import { ChevronDown } from "lucide-react";
 
 type TableOfContentsProps = {
 mainArticleContent: RichTextField; // docData.main_article_content
@@ -22,6 +28,7 @@ export default function TableOfContents({
     icons = [],
 } : TableOfContentsProps
 ) {
+    const [isOpen, setIsOpen] = useState(false);
 
     // Get heading type and text from main article content
     const headingLinks = mainArticleContent?.map(item => {
@@ -38,33 +45,40 @@ export default function TableOfContents({
     <aside>
         <div className="sticky top-40">
             {/* Table of contents section */}
-            <div className="rounded-2xl p-4 mb-10 border">
-                <div>
+            <div className={`rounded-2xl p-6 mb-10 border transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-[200px]'}`}>
+                <div className="flex justify-between mb-5">
                     <PrismicRichText
                     field={tableOfContentsHeading}
                     components={{
-                        heading4: ({children}) => <h4 className="mt-[0]!">{children}</h4>
+                        heading4: ({children}) => <h4 className="mt-[0]! text-2xl">{children}</h4>
                     }}
-                    />
+                        />
+                    <button 
+                        aria-label="Toggle Table of contents" 
+                        className="cursor-pointer"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        <ChevronDown className={`w-6 h-6 text-white flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
                 </div>
                 <div>
                     <menu>
                         {/* Show heading text and increase indentation for subheadings */}
                         {headingLinks.map((val, idx) => {
                             if (val?.type === "heading2") {
-                                return <li key={idx} className="mb-2 text-base"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
+                                return <li key={idx} className="mb-2 text-base hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
                             }
                             if (val?.type === "heading3") {
-                                return <li key={idx} className="ml-2 text-[0.975rem] mb-2"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
+                                return <li key={idx} className="ml-2 text-[0.975rem] mb-2"><Link href={`#${createID(val.text)}`} className="hover:text-[#1f2937] transition-colours duration-300">{val.text}</Link></li>
                             }
                             if (val?.type === "heading4") {
-                                return <li key={idx} className="ml-4 text-[0.95rem] mb-2"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
+                                return <li key={idx} className="ml-4 text-[0.95rem] mb-2"><Link href={`#${createID(val.text)}`} className="hover:text-[#1f2937] transition-colours duration-300">{val.text}</Link></li>
                             }
                             if (val?.type === "heading5") {
-                                return <li key={idx} className="ml-6 text-[0.925rem]"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
+                                return <li key={idx} className="ml-6 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
                             }
                             if (val?.type === "heading6") {
-                                return <li key={idx} className="ml-8 text-[0.9rem]"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
+                                return <li key={idx} className="ml-8 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
                             }
                         })}
                     </menu>
