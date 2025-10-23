@@ -87,35 +87,6 @@
           "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,paragraph"
         }
       },
-      "table_of_contents": {
-        "type": "Group",
-        "config": {
-          "label": "Table Of Contents",
-          "repeat": true,
-          "fields": {
-            "is_section_heading": {
-              "type": "Boolean",
-              "config": {
-                "label": "Is Section Heading",
-                "placeholder_false": "false",
-                "placeholder_true": "true",
-                "default_value": false
-              }
-            },
-            "heading": {
-              "type": "Link",
-              "config": {
-                "label": "Heading",
-                "placeholder": "",
-                "select": null,
-                "allowTargetBlank": true,
-                "allowText": true,
-                "repeat": false
-              }
-            }
-          }
-        }
-      },
       "share_article_text": {
         "type": "StructuredText",
         "config": {
