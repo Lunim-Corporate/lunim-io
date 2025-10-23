@@ -209,38 +209,6 @@ export type BlogHomePageDocument<Lang extends string = string> =
   >;
 
 /**
- * Item in *Blog Post → Table Of Contents*
- */
-export interface BlogPostDocumentDataTableOfContentsItem {
-  /**
-   * Is Section Heading field in *Blog Post → Table Of Contents*
-   *
-   * - **Field Type**: Boolean
-   * - **Placeholder**: *None*
-   * - **Default Value**: false
-   * - **API ID Path**: blog_post.table_of_contents[].is_section_heading
-   * - **Documentation**: https://prismic.io/docs/fields/boolean
-   */
-  is_section_heading: prismic.BooleanField;
-
-  /**
-   * Heading field in *Blog Post → Table Of Contents*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.table_of_contents[].heading
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  heading: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-}
-
-/**
  * Item in *Blog Post → Icons*
  */
 export interface BlogPostDocumentDataIconsItem {
@@ -359,19 +327,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   table_of_contents_heading: prismic.RichTextField;
-
-  /**
-   * Table Of Contents field in *Blog Post*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.table_of_contents[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  table_of_contents: prismic.GroupField<
-    Simplify<BlogPostDocumentDataTableOfContentsItem>
-  >;
 
   /**
    * Share Article Text field in *Blog Post*
@@ -3474,7 +3429,6 @@ declare module "@prismicio/client" {
       BlogHomePageDocumentDataSlicesSlice,
       BlogPostDocument,
       BlogPostDocumentData,
-      BlogPostDocumentDataTableOfContentsItem,
       BlogPostDocumentDataIconsItem,
       BlogPostDocumentDataSlicesSlice,
       CaseStudyDocument,

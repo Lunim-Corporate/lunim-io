@@ -2,7 +2,6 @@
 // Next
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
 // Prismicio
 import { createClient } from "@/prismicio";
 import { asText, type Content } from "@prismicio/client";
@@ -15,6 +14,8 @@ import { ChevronDown, Eye } from "lucide-react";
 import { Simplify } from "../../../../prismicio-types";
 // Utils
 import { createID } from "@/utils/createId";
+// Components
+import TableOfContents from "@/components/TableOfContents";
 
 type Params = { uid: string };
 
@@ -88,46 +89,24 @@ export default async function Page({ params }: { params: Promise<Params> }) {
           {/* Table of Contents and Main content */}
           <div className="container grid grid-cols-1 gap-20 lg:grid-cols-[1fr_1.5fr_5%] lg:gap-10 mt-20">
             {/* Table of Contents and share links */}
-            <aside>
-              <div className="sticky top-40">
-                <div>
-                  <PrismicRichText
-                    field={docData.table_of_contents_heading}
-                    components={{
-                      heading4: ({children}) => <h4 className="mt-[0]!">{children}</h4>
-                    }}
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <div>
-                    <PrismicRichText
-                      field={docData.share_article_text}
-                      components={{
-                        heading4: ({ children }) => <h4 className="m-[0]!">{children}</h4>
-                      }}
-                    /></div>
-                  <div className="flex gap-4">
-                    {/* TODO: Some icons from lucide-react are deprecated */}
-                    {docData.icons.map((icon, i) => {
-                      return (
-                        <Link href="/" key={i}>{icon.icon_text}</Link>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-            </aside>
+            <TableOfContents
+              mainArticleContent={docData.main_article_content}
+              tableOfContentsHeading={docData.table_of_contents_heading}
+              shareArticleText={docData.share_article_text}
+              icons={docData.icons}
+            />
             <div>
               <div className="mb-20">
                 <PrismicRichText
                   field={docData.main_article_content}
                   // Add ids to headings for linking from TOC
+                  // Define scroll offset for headings
                   components={{
-                    heading2: ({ text, children}) => <h2 id={createID(text || "")}>{children}</h2>,
-                    heading3: ({ text, children}) => <h3 id={createID(text || "")}>{children}</h3>,
-                    heading4: ({ text, children}) => <h4 id={createID(text || "")}>{children}</h4>,
-                    heading5: ({ text, children}) => <h5 id={createID(text || "")}>{children}</h5>,
-                    heading6: ({ text, children}) => <h6 id={createID(text || "")}>{children}</h6>
+                    heading2: ({ text, children}) => <h2 className="scroll-mt-28" id={createID(text || "")}>{children}</h2>,
+                    heading3: ({ text, children}) => <h3 className="scroll-mt-28" id={createID(text || "")}>{children}</h3>,
+                    heading4: ({ text, children}) => <h4 className="scroll-mt-28" id={createID(text || "")}>{children}</h4>,
+                    heading5: ({ text, children}) => <h5 className="scroll-mt-28" id={createID(text || "")}>{children}</h5>,
+                    heading6: ({ text, children}) => <h6 className="scroll-mt-28" id={createID(text || "")}>{children}</h6>
                   }}/>
               </div>
               {/* FAQs: see `faq/index.ts` */}
