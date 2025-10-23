@@ -13,6 +13,8 @@ import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { ChevronDown, Eye } from "lucide-react";
 // Types
 import { Simplify } from "../../../../prismicio-types";
+// Utils
+import { createID } from "@/utils/createId";
 
 type Params = { uid: string };
 
@@ -117,7 +119,16 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </aside>
             <div>
               <div className="mb-20">
-                <PrismicRichText field={docData.main_article_content} />
+                <PrismicRichText
+                  field={docData.main_article_content}
+                  // Add ids to headings for linking from TOC
+                  components={{
+                    heading2: ({ text, children}) => <h2 id={createID(text || "")}>{children}</h2>,
+                    heading3: ({ text, children}) => <h3 id={createID(text || "")}>{children}</h3>,
+                    heading4: ({ text, children}) => <h4 id={createID(text || "")}>{children}</h4>,
+                    heading5: ({ text, children}) => <h5 id={createID(text || "")}>{children}</h5>,
+                    heading6: ({ text, children}) => <h6 id={createID(text || "")}>{children}</h6>
+                  }}/>
               </div>
               {/* FAQs: see `faq/index.ts` */}
               <div className="mb-16">
