@@ -30,6 +30,8 @@ export default function TableOfContents({
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [activeId, setActiveId] = useState<string | null>(null);
     const activeItemRef = useRef<HTMLLIElement>(null);
+    // See parent div `[uid]/page.tsx` for breakpoint details
+    const changeLayoutBreakpoint = 1024; // Tailwind 'lg' breakpoint
 
     // Get heading type and text from main article content
     const headingLinks = mainArticleContent?.map(item => {
@@ -97,6 +99,11 @@ export default function TableOfContents({
     // Auto-scroll the active TOC item to the top when it changes
     useEffect(() => {
         if (!activeId || !activeItemRef.current) return;
+        
+        // Only auto-scroll if the TOC is in desktop/sticky mode
+        // Check if screen is large enough (Tailwind lg breakpoint = 1024px)
+        const isDesktop = window.innerWidth >= changeLayoutBreakpoint;
+        if (!isDesktop) return;
         
         // Scroll the active item into view at the top of the TOC
         activeItemRef.current.scrollIntoView({
