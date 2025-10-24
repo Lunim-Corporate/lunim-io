@@ -7,7 +7,7 @@ import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
 // Next
 import Link from "next/link"
 // React
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // Utils
 import { createID } from "@/utils/createId"
 // Icons
@@ -29,6 +29,7 @@ export default function TableOfContents({
 ) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const activeItemRef = useRef<HTMLLIElement>(null);
 
     // Get heading type and text from main article content
     const headingLinks = mainArticleContent?.map(item => {
@@ -41,6 +42,7 @@ export default function TableOfContents({
         }
     }).filter(Boolean)
 
+    // Observe headings in the document to update active TOC item
     useEffect(() => {
         if (!headingLinks.length) return;
 
@@ -91,12 +93,24 @@ export default function TableOfContents({
             observer.disconnect();
         };
     }, [headingLinks]);
+
+    // Auto-scroll the active TOC item to the top when it changes
+    useEffect(() => {
+        if (!activeId || !activeItemRef.current) return;
+        
+        // Scroll the active item into view at the top of the TOC
+        activeItemRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest'
+        });
+    }, [activeId]);
     
     return (
     <aside>
         <div className="sticky top-40">
             {/* Table of contents section */}
-            <div className={`rounded-2xl p-6 mb-10 border transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-[200px]'}`}>
+            <div className={`rounded-2xl p-6 mb-10 border shadow-cyan-400 shadow-md/50`}>
                 <div className="flex justify-between mb-5">
                     <PrismicRichText
                     field={tableOfContentsHeading}
@@ -112,16 +126,21 @@ export default function TableOfContents({
                         <ChevronDown className={`w-6 h-6 text-white flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                     </button>
                 </div>
-                <div>
+                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-[50px]'}`}>
                     <nav>
                         <menu>
                             {/* Show heading text and increase indentation for subheadings */}
                             {headingLinks.map((val, idx) => {
+                                if (!val) return null;
+                                const itemId = createID(val.text);
+                                const isActive = activeId === itemId;
+                                
                                 if (val?.type === "heading2") {
                                     return <li
                                         key={idx}
-                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
-                                        <Link href={`#${createID(val.text)}`}>
+                                        ref={isActive ? activeItemRef : null}
+                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
+                                        <Link href={`#${itemId}`}>
                                             {val.text}
                                         </Link>
                                     </li>
@@ -129,8 +148,9 @@ export default function TableOfContents({
                                 if (val?.type === "heading3") {
                                     return <li
                                         key={idx}
-                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
-                                        <Link href={`#${createID(val.text)}`}>
+                                        ref={isActive ? activeItemRef : null}
+                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
+                                        <Link href={`#${itemId}`}>
                                             {val.text}
                                         </Link>
                                     </li>
@@ -138,8 +158,9 @@ export default function TableOfContents({
                                 if (val?.type === "heading4") {
                                     return <li
                                         key={idx}
-                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
-                                        <Link href={`#${createID(val.text)}`}>
+                                        ref={isActive ? activeItemRef : null}
+                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
+                                        <Link href={`#${itemId}`}>
                                             {val.text}
                                         </Link>
                                     </li>
@@ -147,8 +168,9 @@ export default function TableOfContents({
                                 if (val?.type === "heading5") {
                                     return <li
                                         key={idx}
-                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
-                                        <Link href={`#${createID(val.text)}`}>
+                                        ref={isActive ? activeItemRef : null}
+                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
+                                        <Link href={`#${itemId}`}>
                                             {val.text}
                                         </Link>
                                     </li>
@@ -156,8 +178,9 @@ export default function TableOfContents({
                                 if (val?.type === "heading6") {
                                     return <li
                                         key={idx}
-                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
-                                        <Link href={`#${createID(val.text)}`}>
+                                        ref={isActive ? activeItemRef : null}
+                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
+                                        <Link href={`#${itemId}`}>
                                             {val.text}
                                         </Link>
                                     </li>
