@@ -221,6 +221,22 @@ export interface BlogPostDocumentDataIconsItem {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   icon_text: prismic.KeyTextField;
+
+  /**
+   * Icon Link field in *Blog Post → Icons*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.icons[].icon_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  icon_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 type BlogPostDocumentDataSlicesSlice = FaqSlice;

@@ -1,7 +1,6 @@
 'use client';
-
 // Prismic
-import { PrismicRichText } from "@prismicio/react"
+import { PrismicLink, PrismicRichText } from "@prismicio/react"
 import { RichTextField } from "@prismicio/types"
 import { GroupField } from "@prismicio/client";
 import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
@@ -91,7 +90,7 @@ export default function TableOfContents({
         return () => {
             observer.disconnect();
         };
-}, [headingLinks]);
+    }, [headingLinks]);
     
     return (
     <aside>
@@ -180,10 +179,8 @@ export default function TableOfContents({
                 /></div>
                 <div className="flex gap-4">
                 {/* TODO: Some icons from lucide-react are deprecated */}
-                {icons?.map((icon, i) => {
-                    return (
-                    <Link href="/blog/test-blog" key={i}>{icon.icon_text}</Link>
-                    )
+                {icons?.map((icon, idx) => {
+                    return <PrismicLink key={idx} field={icon.icon_link}>{icon.icon_text}</PrismicLink>
                 })}
                 </div>
             </div>
