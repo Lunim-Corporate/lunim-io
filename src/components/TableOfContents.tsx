@@ -1,17 +1,18 @@
 'use client';
 // Prismic
-import { PrismicLink, PrismicRichText } from "@prismicio/react"
+import { PrismicRichText } from "@prismicio/react"
 import { RichTextField } from "@prismicio/types"
 import { GroupField } from "@prismicio/client";
 import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
-// Next
-import Link from "next/link"
 // React
 import { useEffect, useRef, useState } from "react";
 // Utils
 import { createID } from "@/utils/createId"
 // Icons
 import { ChevronDown } from "lucide-react";
+// Components
+import TableOfContentsMenu from "./TableOfContentsMenu";
+import Icon from "./Icon";
 
 type TableOfContentsProps = {
 mainArticleContent: RichTextField; // docData.main_article_content
@@ -134,72 +135,16 @@ export default function TableOfContents({
                     </button>
                 </div>
                 <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-[50px]'}`}>
-                    <nav>
-                        <menu>
-                            {/* Show heading text and increase indentation for subheadings */}
-                            {headingLinks.map((val, idx) => {
-                                if (!val) return null;
-                                const itemId = createID(val.text);
-                                const isActive = activeId === itemId;
-                                
-                                if (val?.type === "heading2") {
-                                    return <li
-                                        key={idx}
-                                        ref={isActive ? activeItemRef : null}
-                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
-                                        <Link href={`#${itemId}`}>
-                                            {val.text}
-                                        </Link>
-                                    </li>
-                                }
-                                if (val?.type === "heading3") {
-                                    return <li
-                                        key={idx}
-                                        ref={isActive ? activeItemRef : null}
-                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
-                                        <Link href={`#${itemId}`}>
-                                            {val.text}
-                                        </Link>
-                                    </li>
-                                }
-                                if (val?.type === "heading4") {
-                                    return <li
-                                        key={idx}
-                                        ref={isActive ? activeItemRef : null}
-                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
-                                        <Link href={`#${itemId}`}>
-                                            {val.text}
-                                        </Link>
-                                    </li>
-                                }
-                                if (val?.type === "heading5") {
-                                    return <li
-                                        key={idx}
-                                        ref={isActive ? activeItemRef : null}
-                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
-                                        <Link href={`#${itemId}`}>
-                                            {val.text}
-                                        </Link>
-                                    </li>
-                                }
-                                if (val?.type === "heading6") {
-                                    return <li
-                                        key={idx}
-                                        ref={isActive ? activeItemRef : null}
-                                        className={`${isActive ? "text-cyan-400" : ""} mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
-                                        <Link href={`#${itemId}`}>
-                                            {val.text}
-                                        </Link>
-                                    </li>
-                                }
-                            })}
-                        </menu>
-                    </nav>
+                    <TableOfContentsMenu
+                        headingLinks={headingLinks}
+                        activeId={activeId}
+                        activeItemRef={activeItemRef}
+                    />
                 </div>
                 {/* End Table of contents section */}
             </div>
             {/* Share article section */}
-            <div className="flex gap-3">
+            <div className="flex gap-6">
                 <div>
                 <PrismicRichText
                     field={shareArticleText}
@@ -207,15 +152,13 @@ export default function TableOfContents({
                     heading4: ({ children }) => <h4 className="m-[0]!">{children}</h4>
                     }}
                 /></div>
-                <div className="flex gap-4">
-                {/* TODO: Some icons from lucide-react are deprecated */}
-                {icons?.map((icon, idx) => {
-                    return <PrismicLink key={idx} field={icon.icon_link}>{icon.icon_text}</PrismicLink>
-                })}
+                <div className="flex gap-4 justify-between">
+                    {icons?.map((icon, idx) => {
+                        return <Icon key={idx} icon={icon} />
+                    })}
                 </div>
             </div>
             {/* End Share article section */}
         </div>
      </aside>
-  )
-}
+  )}
