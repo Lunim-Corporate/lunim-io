@@ -7,7 +7,7 @@ import { createClient } from "@/prismicio";
 import { asText, type Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
 import { RichTextField, SliceZone } from "@prismicio/types";
-import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
+import { PrismicNextImage } from "@prismicio/next";
 // Icons
 import { ChevronDown, Eye } from "lucide-react";
 // Types
@@ -56,13 +56,14 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div>{asText(docData.category)}</div>
                 <div className="flex gap-2">
-                  <div>
+                  <div className="italic">
                     <time dateTime={`${docData.publication_date}`}>{formatDate(docData.publication_date)}</time>
                   </div>
-                  &#8226;
+                  {/* TODO: Implement later */}
+                  {/* &#8226;
                   <div>
                     <span>{asText(docData.article_length)}</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="mb-10">
@@ -149,7 +150,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                     }} />
                   <h3 className="mt-0! font-bold">{authorName}</h3>
                   <p>{docData.more_about_author_text}</p>
-                  <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" />
+                  {/* TODO: Implement later */}
+                  {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
                 </div>
                 <div>
                   <PrismicNextImage field={docData.author_image} className="rounded-full w-2xl" />
