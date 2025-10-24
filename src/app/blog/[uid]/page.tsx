@@ -14,6 +14,7 @@ import { ChevronDown, Eye } from "lucide-react";
 import { Simplify } from "../../../../prismicio-types";
 // Utils
 import { createID } from "@/utils/createId";
+import { calculateReadingTime } from "@/utils/calcReadingTime";
 // Components
 import TableOfContents from "@/components/TableOfContents";
 
@@ -45,13 +46,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
   const authorName = asText(docData.author_name);
+  const readingTime: number = calculateReadingTime(docData.main_article_content);
   
-  // Calculate reading time based on main article content
-  const averageNumOfWordsHumanReadsPerMinute: number = 250;
-  const mainArticleContentWordCount: number = asText(docData.main_article_content).split(/\s+/).length;
-  // Never show less than 1 minute reading time
-  const readingTime: number = Math.max(1, Math.ceil(mainArticleContentWordCount / averageNumOfWordsHumanReadsPerMinute));
-
   return (
     <main className="bg-black text-white mb-15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen mt-50">
