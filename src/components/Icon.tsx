@@ -2,6 +2,7 @@
 import { PrismicNextLink } from "@prismicio/next"
 import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types"
 
+// Add more icons as needed
 export default function Icon({ icon }: { icon: Simplify<BlogPostDocumentDataIconsItem> }) {
     const fillColour = "currentColor";
     if (icon.icon_text?.toLowerCase() === "x") {

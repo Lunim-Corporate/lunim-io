@@ -45,6 +45,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
   const authorName = asText(docData.author_name);
+  
+  // Calculate reading time based on main article content
+  const averageNumOfWordsHumanReadsPerMinute: number = 250;
+  const mainArticleContentWordCount: number = asText(docData.main_article_content).split(/\s+/).length;
+  // Never show less than 1 minute reading time
+  const readingTime: number = Math.max(1, Math.ceil(mainArticleContentWordCount / averageNumOfWordsHumanReadsPerMinute));
 
   return (
     <main className="bg-black text-white mb-15">
@@ -59,11 +65,10 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   <div className="italic">
                     <time dateTime={`${docData.publication_date}`}>{formatDate(docData.publication_date)}</time>
                   </div>
-                  {/* TODO: Implement later */}
-                  {/* &#8226;
+                  <span aria-hidden="true">&#8226;</span>
                   <div>
-                    <span>{asText(docData.article_length)}</span>
-                  </div> */}
+                    <span>{readingTime >= 10 ? `${readingTime}+` : readingTime} min read</span>
+                  </div>
                 </div>
               </div>
               <div className="mb-10">

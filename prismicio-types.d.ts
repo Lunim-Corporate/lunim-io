@@ -268,17 +268,6 @@ interface BlogPostDocumentData {
   publication_date: prismic.DateField;
 
   /**
-   * Article Length field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.article_length
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  article_length: prismic.RichTextField;
-
-  /**
    * Blog Article Heading field in *Blog Post*
    *
    * - **Field Type**: Rich Text
