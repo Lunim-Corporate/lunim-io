@@ -138,6 +138,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 </div>
               </div>
               </div>
+              {/* End FAQs section */}
               {/* Article written by section */}
               <div className="flex p-6 bg-[#1f2937] rounded-lg">
                 <div>
@@ -154,6 +155,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   <PrismicNextImage field={docData.author_image} className="rounded-full w-2xl" />
                 </div>
               </div>
+               {/* End Article written by section */}
             </div>
           </div>
         </article>

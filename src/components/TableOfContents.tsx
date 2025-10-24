@@ -8,7 +8,7 @@ import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
 // Next
 import Link from "next/link"
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Utils
 import { createID } from "@/utils/createId"
 // Icons
@@ -28,7 +28,8 @@ export default function TableOfContents({
     icons = [],
 } : TableOfContentsProps
 ) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [activeId, setActiveId] = useState<string | null>(null);
 
     // Get heading type and text from main article content
     const headingLinks = mainArticleContent?.map(item => {
@@ -40,6 +41,57 @@ export default function TableOfContents({
             return { type: item.type, text: item.text };
         }
     }).filter(Boolean)
+
+    useEffect(() => {
+        if (!headingLinks.length) return;
+
+        const headingIds = headingLinks.map(h => createID(h?.text || ""));
+        // Find IDS of headings in the document
+        const headings = headingIds
+            .map(id => document.getElementById(id))
+            .filter(Boolean) as HTMLElement[];
+
+        if (!headings.length) return;
+
+        // Local cache to avoid redundant state updates when the active id is unchanged
+        let lastActiveId: string | null = null;
+
+        // Watches when headings enter/leave viewport
+        const observer = new window.IntersectionObserver(
+            (entries) => {
+            // Find all visible headings
+            const visible = entries
+                .filter(e => e.isIntersecting && e.intersectionRatio > 0)
+                .map(e => ({
+                id: e.target.id,
+                top: e.boundingClientRect.top
+                }))
+                // Ignore headings that are above the viewport
+                .filter(e => e.top >= 0);
+
+            // Pick the one closest to the top, if any headings are visible
+            if (visible.length > 0) {
+                visible.sort((a, b) => a.top - b.top);
+                const newActiveId = visible[0].id;
+                if (newActiveId !== lastActiveId) {
+                lastActiveId = newActiveId;
+                setActiveId(newActiveId);
+                }
+            }
+            },
+            {
+            root: null,
+            rootMargin: "0px 0px -80% 0px", // triggers when heading is in top 20% of viewport
+            threshold: [0, 1]
+            }
+        );
+
+        headings.forEach(h => observer.observe(h));
+
+        return () => {
+            observer.disconnect();
+        };
+}, [headingLinks]);
     
     return (
     <aside>
@@ -62,26 +114,58 @@ export default function TableOfContents({
                     </button>
                 </div>
                 <div>
-                    <menu>
-                        {/* Show heading text and increase indentation for subheadings */}
-                        {headingLinks.map((val, idx) => {
-                            if (val?.type === "heading2") {
-                                return <li key={idx} className="mb-2 text-base hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
-                            }
-                            if (val?.type === "heading3") {
-                                return <li key={idx} className="ml-2 text-[0.975rem] mb-2"><Link href={`#${createID(val.text)}`} className="hover:text-[#1f2937] transition-colours duration-300">{val.text}</Link></li>
-                            }
-                            if (val?.type === "heading4") {
-                                return <li key={idx} className="ml-4 text-[0.95rem] mb-2"><Link href={`#${createID(val.text)}`} className="hover:text-[#1f2937] transition-colours duration-300">{val.text}</Link></li>
-                            }
-                            if (val?.type === "heading5") {
-                                return <li key={idx} className="ml-6 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
-                            }
-                            if (val?.type === "heading6") {
-                                return <li key={idx} className="ml-8 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300"><Link href={`#${createID(val.text)}`}>{val.text}</Link></li>
-                            }
-                        })}
-                    </menu>
+                    <nav>
+                        <menu>
+                            {/* Show heading text and increase indentation for subheadings */}
+                            {headingLinks.map((val, idx) => {
+                                if (val?.type === "heading2") {
+                                    return <li
+                                        key={idx}
+                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
+                                        <Link href={`#${createID(val.text)}`}>
+                                            {val.text}
+                                        </Link>
+                                    </li>
+                                }
+                                if (val?.type === "heading3") {
+                                    return <li
+                                        key={idx}
+                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
+                                        <Link href={`#${createID(val.text)}`}>
+                                            {val.text}
+                                        </Link>
+                                    </li>
+                                }
+                                if (val?.type === "heading4") {
+                                    return <li
+                                        key={idx}
+                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
+                                        <Link href={`#${createID(val.text)}`}>
+                                            {val.text}
+                                        </Link>
+                                    </li>
+                                }
+                                if (val?.type === "heading5") {
+                                    return <li
+                                        key={idx}
+                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
+                                        <Link href={`#${createID(val.text)}`}>
+                                            {val.text}
+                                        </Link>
+                                    </li>
+                                }
+                                if (val?.type === "heading6") {
+                                    return <li
+                                        key={idx}
+                                        className={`${activeId === createID(val.text) ? "text-cyan-400" : ""} mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
+                                        <Link href={`#${createID(val.text)}`}>
+                                            {val.text}
+                                        </Link>
+                                    </li>
+                                }
+                            })}
+                        </menu>
+                    </nav>
                 </div>
                 {/* End Table of contents section */}
             </div>
@@ -98,11 +182,12 @@ export default function TableOfContents({
                 {/* TODO: Some icons from lucide-react are deprecated */}
                 {icons?.map((icon, i) => {
                     return (
-                    <Link href="/" key={i}>{icon.icon_text}</Link>
+                    <Link href="/blog/test-blog" key={i}>{icon.icon_text}</Link>
                     )
                 })}
                 </div>
             </div>
+            {/* End Share article section */}
         </div>
      </aside>
   )
