@@ -118,7 +118,7 @@ export default function TableOfContents({
     <aside>
         <div className="sticky top-40">
             {/* Table of contents section */}
-            <div className={`rounded-2xl p-6 mb-10 border shadow-cyan-400 shadow-md/50`}>
+            <div className={`rounded-2xl p-6 mb-10 border shadow-cyan-400 shadow-md`}>
                 <div className="flex justify-between mb-5">
                     <PrismicRichText
                     field={tableOfContentsHeading}
