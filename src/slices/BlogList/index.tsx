@@ -6,6 +6,8 @@ import type { Content, KeyTextField, RichTextField } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 
 import { createClient } from "@/prismicio";
+// Utils
+import { calculateReadingTime } from "@/utils/calcReadingTime";
 
 /** Slice context passed from the page (we read search params here). */
 type BlogListSliceContext = {
@@ -45,6 +47,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
     d.author_image && !d.author_image.alt
       ? { ...d.author_image, alt: asText(d.author_name) || "Author" }
       : d.author_image ?? null;
+  const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
     <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
@@ -65,7 +68,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
             </time>
           ) : null}
           {d.category ? <span>• {asText(d.category)}</span> : null}
-          {d.article_length ? <span>• {asText(d.article_length)}</span> : null}
+          {readingTime ? <span>• {readingTime >= 10 ? `${readingTime}+` : readingTime} min read</span> : null}
         </div>
 
         {(d.author_name?.length || d.author_image?.url) ? (
