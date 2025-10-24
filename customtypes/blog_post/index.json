@@ -28,15 +28,6 @@
           "placeholder": ""
         }
       },
-      "article_length": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Article Length",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "strong,em,hyperlink"
-        }
-      },
       "blog_article_heading": {
         "type": "StructuredText",
         "config": {
