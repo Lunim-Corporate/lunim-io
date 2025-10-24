@@ -108,6 +108,17 @@
                 "label": "Icon Text",
                 "placeholder": ""
               }
+            },
+            "icon_link": {
+              "type": "Link",
+              "config": {
+                "label": "Icon Link",
+                "placeholder": "",
+                "select": null,
+                "allowTargetBlank": true,
+                "allowText": true,
+                "repeat": false
+              }
             }
           }
         }
