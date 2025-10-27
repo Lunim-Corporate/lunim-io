@@ -108,7 +108,11 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                     heading3: ({ text, children}) => <h3 className="scroll-mt-28" id={createID(text || "")}>{children}</h3>,
                     heading4: ({ text, children}) => <h4 className="scroll-mt-28" id={createID(text || "")}>{children}</h4>,
                     heading5: ({ text, children}) => <h5 className="scroll-mt-28" id={createID(text || "")}>{children}</h5>,
-                    heading6: ({ text, children}) => <h6 className="scroll-mt-28" id={createID(text || "")}>{children}</h6>
+                    heading6: ({ text, children}) => <h6 className="scroll-mt-28" id={createID(text || "")}>{children}</h6>,
+                    list: ({ children }) => <ul className="ms-8 my-8 list-inside list-disc">{children}</ul>,
+                    oList: ({ children }) => <ol className="ms-8 my-8 list-inside list-decimal">{children}</ol>,
+                    listItem: ({ children }) => <li className="my-5 first:my-0 last:my-0">{children}</li>,
+                    oListItem: ({ children }) => <li className="my-5 first:my-0 last:my-0">{children}</li>,
                   }}/>
               </div>
               {/* FAQs: see `faq/index.ts` */}
