@@ -1,6 +1,9 @@
+// Utils
 import { createID } from "@/utils/createId";
-import Link from "next/link";
+// React
 import { RefObject } from "react";
+// Next
+import Link from "next/link";
 
 type HeadingLink = {
   type: string;
@@ -11,6 +14,15 @@ type TableOfContentsMenuProps = {
   headingLinks: (HeadingLink | undefined)[];
   activeId: string | null;
   activeItemRef: RefObject<HTMLLIElement | null>;
+};
+
+type TableOfContentsListItemProps = {
+  isActive: boolean;
+  activeItemRef: RefObject<HTMLLIElement | null>;
+  itemId: string;
+  val: HeadingLink;
+  marginStartVal: string;
+  textSize: string;
 };
 
 export default function TableOfContentsMenu({ headingLinks, activeId, activeItemRef }: TableOfContentsMenuProps) {
@@ -24,57 +36,75 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                 const isActive = activeId === itemId;
                 
                 if (val?.type === "heading2") {
-                    return <li
+                    return <TableOfContentsListItem
                         key={idx}
-                        ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
-                        <Link href={`#${itemId}`}>
-                            {val.text}
-                        </Link>
-                    </li>
+                        isActive={isActive}
+                        activeItemRef={activeItemRef}
+                        itemId={itemId}
+                        val={val}
+                        marginStartVal={""}
+                        textSize={"text-base"}
+                    />
                 }
                 if (val?.type === "heading3") {
-                    return <li
+                    return <TableOfContentsListItem
                         key={idx}
-                        ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
-                        <Link href={`#${itemId}`}>
-                            {val.text}
-                        </Link>
-                    </li>
+                        isActive={isActive}
+                        activeItemRef={activeItemRef}
+                        itemId={itemId}
+                        val={val}
+                        marginStartVal={"ms-2"}
+                        textSize={"text-[0.975rem]"}
+                    />
                 }
                 if (val?.type === "heading4") {
-                    return <li
+                    return <TableOfContentsListItem
                         key={idx}
-                        ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
-                        <Link href={`#${itemId}`}>
-                            {val.text}
-                        </Link>
-                    </li>
+                        isActive={isActive}
+                        activeItemRef={activeItemRef}
+                        itemId={itemId}
+                        val={val}
+                        marginStartVal={"ms-4"}
+                        textSize={"text-[0.95rem]"}
+                    />
                 }
                 if (val?.type === "heading5") {
-                    return <li
+                    return <TableOfContentsListItem
                         key={idx}
-                        ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
-                        <Link href={`#${itemId}`}>
-                            {val.text}
-                        </Link>
-                    </li>
+                        isActive={isActive}
+                        activeItemRef={activeItemRef}
+                        itemId={itemId}
+                        val={val}
+                        marginStartVal={"ms-6"}
+                        textSize={"text-[0.925rem]"}
+                    />
                 }
                 if (val?.type === "heading6") {
-                    return <li
+                    return <TableOfContentsListItem
                         key={idx}
-                        ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
-                        <Link href={`#${itemId}`}>
-                            {val.text}
-                        </Link>
-                    </li>
+                        isActive={isActive}
+                        activeItemRef={activeItemRef}
+                        itemId={itemId}
+                        val={val}
+                        marginStartVal={"ms-8"}
+                        textSize={"text-[0.9rem]"}
+                    />
                 }
             })}
         </menu>
     </nav>
+  )
+}
+
+
+function TableOfContentsListItem({isActive, activeItemRef, itemId, val, marginStartVal, textSize} : TableOfContentsListItemProps) {
+  return (
+    <li
+      ref={isActive ? activeItemRef : null}
+      className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 last:mb-0 ${textSize} hover:text-[#1f2937] transition-colours duration-300 ${marginStartVal}`}>
+      <Link href={`#${itemId}`}>
+          {val.text}
+      </Link>
+    </li>
   )
 }
