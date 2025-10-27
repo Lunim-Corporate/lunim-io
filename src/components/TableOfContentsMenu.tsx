@@ -27,7 +27,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                     return <li
                         key={idx}
                         ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 b-s-current-400 border-s-1" : ""} ps-2 mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
+                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-base hover:text-[#1f2937] transition-colours duration-300`}>
                         <Link href={`#${itemId}`}>
                             {val.text}
                         </Link>
@@ -37,7 +37,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                     return <li
                         key={idx}
                         ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 b-s-current-400 border-s-1" : ""} ps-2 mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
+                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.975rem] hover:text-[#1f2937] transition-colours duration-300 ml-2`}>
                         <Link href={`#${itemId}`}>
                             {val.text}
                         </Link>
@@ -47,7 +47,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                     return <li
                         key={idx}
                         ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 b-s-current-400 border-s-1" : ""} ps-2 mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
+                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.95rem] hover:text-[#1f2937] transition-colours duration-300 ml-4`}>
                         <Link href={`#${itemId}`}>
                             {val.text}
                         </Link>
@@ -57,7 +57,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                     return <li
                         key={idx}
                         ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 b-s-current-400 border-s-1" : ""} ps-2 mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
+                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.925rem] hover:text-[#1f2937] transition-colours duration-300 ml-6`}>
                         <Link href={`#${itemId}`}>
                             {val.text}
                         </Link>
@@ -67,7 +67,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                     return <li
                         key={idx}
                         ref={isActive ? activeItemRef : null}
-                        className={`${isActive ? "text-cyan-400 b-s-current-400 border-s-1" : ""} ps-2 mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
+                        className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 text-[0.9rem] hover:text-[#1f2937] transition-colours duration-300 ml-8`}>
                         <Link href={`#${itemId}`}>
                             {val.text}
                         </Link>
