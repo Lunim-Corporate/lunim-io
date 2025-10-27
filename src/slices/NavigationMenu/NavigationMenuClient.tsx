@@ -30,6 +30,9 @@ export function NavigationMenuClient({
   const [isAtTop, setIsAtTop] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
+  const toggleMobileSection = (id: string) => setOpenMobileSections((prev) => ({ ...prev, [id]: !prev[id] }));
+
   useEffect(() => {
     const handleScroll = () => setIsAtTop(window.scrollY < 10);
     window.addEventListener("scroll", handleScroll);
@@ -111,7 +114,7 @@ export function NavigationMenuClient({
                 </div>
                 {hasRealChildren && (
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute left-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-[#0a0a1a] shadow-xl transition-all duration-200">
-                    <ul className="py-2">
+                    <ul className="py-2 list-none m-0">
                       {children.map((child, idx) => (
                         <li key={`${section.id}-${idx}`}>
                           <PrismicNextLink
@@ -189,32 +192,44 @@ export function NavigationMenuClient({
                 key={section.id}
                 className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
               >
-                <div className="px-6 py-4">
-                  {section.link ? (
-                    <PrismicNextLink
-                      field={section.link}
-                      className="text-white/90 hover:text-white font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {section.label}
-                    </PrismicNextLink>
-                  ) : (
-                    <span className="text-white/90 font-medium">
-                      {section.label}
-                    </span>
-                  )}
+                <div className="px-2">
+                  <button
+                    type="button"
+                    onClick={() => (hasRealChildren ? toggleMobileSection(section.id) : undefined)}
+                    className="w-full flex items-center justify-between px-4 py-4 rounded-lg hover:bg-white/10 transition-colors"
+                    aria-expanded={hasRealChildren ? !!openMobileSections[section.id] : undefined}
+                  >
+                    {section.link && !hasRealChildren ? (
+                      <PrismicNextLink
+                        field={section.link}
+                        className="text-white/90 hover:text-white font-medium w-full text-left"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {section.label}
+                      </PrismicNextLink>
+                    ) : (
+                      <span className="text-white/90 font-medium">{section.label}</span>
+                    )}
+                    {hasRealChildren && (
+                      <ChevronDown
+                        className={`w-5 h-5 text-white/70 transition-transform ${
+                          openMobileSections[section.id] ? 'rotate-180' : ''
+                        }`}
+                      />
+                    )}
+                  </button>
                 </div>
-                {hasRealChildren && (
-                  <ul className="px-2 pb-3 space-y-1">
+                {hasRealChildren && openMobileSections[section.id] && (
+                  <ul className="list-none m-0 px-3 pb-4 space-y-1">
                     {children.map((child, idx) => (
                       <li key={`${section.id}-m-${idx}`}>
                         <PrismicNextLink
                           field={child.link}
-                          className="flex items-center gap-2 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg pl-8"
+                          className="flex items-center gap-3 px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg ml-3"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          <Circle className="w-2 h-2 text-white/40" />
-                          {child.label}
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/50" />
+                          <span className="text-sm">{child.label}</span>
                         </PrismicNextLink>
                       </li>
                     ))}
