@@ -8,9 +8,9 @@ export const revalidate = 60;
 export default async function Page() {
   const client = createClient();
   const doc = await client
-    .getSingle<Content.MainpageDocument>("mainpage")
+    .getSingle<Content.HomepageDocument>("homepage")
     .catch(() => null);
-  if (!doc || !Array.isArray(doc.data.slices)) {
+  if (!doc) {
     return (
       <main className="p-6 text-white bg-black">Homepage not published.</main>
     );

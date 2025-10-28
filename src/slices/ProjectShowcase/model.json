@@ -45,7 +45,7 @@
             "label": "project_title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "single": "heading2,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item,rtl"
+            "single": "heading2,heading3,heading4,heading5,heading6,strong,em,rtl"
           }
         },
         "project_description": {
