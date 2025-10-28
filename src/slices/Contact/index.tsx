@@ -114,8 +114,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                       <Icon className="w-6 h-6 text-[#BBFEFF] flex-shrink-0" />
                       <div>
                         {hasLabel && (
-                          <p className="text-white mb-1 font-semibold">{displayTitle}</p>
-                        )}
+                          <p className="text-white mb-1 font-semibold">{displayTitle}
                         {hasDesc &&
                           (isQuickResponse ? (
                             <a
@@ -124,11 +123,13 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                               rel="noopener noreferrer"
                               className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100 transition-colors"
                             >
-                              Book a meeting with us now
+                              <br/>Book a meeting with us now
                             </a>
                           ) : (
-                            <p className="text-gray-200 text-base">{rawDescription}</p>
+                            <span><br/>{rawDescription}</span>
                           ))}
+                          </p>
+                        )}
                       </div>
                     </li>
                   );
