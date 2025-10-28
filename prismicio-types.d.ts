@@ -74,6 +74,7 @@ type AcademyDocumentDataSlicesSlice =
   | NavigationMenuSlice
   | PrivacyTextBoxSlice
   | HeroSlice
+  | CompactHeroSlice
   | ProjectShowcaseSlice
   | ServiceGridSlice
   | ImageandtextSlice
@@ -647,6 +648,7 @@ type FilmDocumentDataSlicesSlice =
   | FaqSlice
   | PrivacyTextBoxSlice
   | HeroSlice
+  | CompactHeroSlice
   | ProcessSlice
   | ServiceGridSlice
   | ImageandtextSlice
@@ -747,9 +749,18 @@ export type FooterDocument<Lang extends string = string> =
   >;
 
 type HomepageDocumentDataSlicesSlice =
-  | ProjectShowcaseSlice
+  | ContactSlice
+  | NavigationMenuSlice
+  | PrivacyTextBoxSlice
   | HeroSlice
-  | ContactSlice;
+  | CompactHeroSlice
+  | ProjectShowcaseSlice
+  | ServiceGridSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | FaqSlice
+  | ExpertiseareasSlice;
+
 
 /**
  * Content for Homepage documents
@@ -1124,6 +1135,7 @@ type TabbDocumentDataSlicesSlice =
   | ExpertiseareasSlice
   | ServiceGridSlice
   | HeroSlice
+  | CompactHeroSlice
   | PrivacyTextBoxSlice;
 
 /**
@@ -1394,6 +1406,7 @@ type TechDocumentDataSlicesSlice =
   | ImageandtextSlice
   | ServiceGridSlice
   | ExpertiseareasSlice
+  | HeroSlice
   | CompactHeroSlice
   | NavigationMenuSlice
   | ContactSlice;
