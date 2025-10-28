@@ -28,6 +28,7 @@
     "react-dom": "19.1.0",
     "react-tsparticles": "^2.12.2",
     "react-xarrows": "^2.0.2",
+    "stripe": "^19.1.0",
     "tsparticles": "^3.9.1"
   },
   "devDependencies": {

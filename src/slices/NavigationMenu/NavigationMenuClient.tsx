@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PrismicNextLink } from "@prismicio/next";
 import { Menu, X, ChevronDown, Circle } from "lucide-react";
 import type { LinkField } from "@prismicio/client";
+import { asLink } from "@prismicio/helpers";
+import { usePathname } from "next/navigation";
 
 type ChildLink = { label: string; link: LinkField };
 type Section = {
@@ -29,6 +31,7 @@ export function NavigationMenuClient({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
   const toggleMobileSection = (id: string) => setOpenMobileSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -50,6 +53,86 @@ export function NavigationMenuClient({
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
+
+  const resolveLinkField = (link: LinkField | null): string | null => {
+    if (!link) return null;
+    try {
+      const url = asLink(link);
+      if (!url) return null;
+      const clean = url.split("#")[0]?.split("?")[0] ?? url;
+      if (!clean) return "/";
+      if (clean === "/") return "/";
+      return clean.replace(/\/+$/, "");
+    } catch {
+      return null;
+    }
+  };
+
+  const normalizePath = (value: string | null): string | null => {
+    if (!value) return null;
+    if (value === "/") return "/";
+    return value.replace(/\/+$/, "");
+  };
+
+  const rawCtaLink = resolveLinkField(data.ctaLink);
+
+  const computedCtaHref = useMemo(() => {
+    const anchor = "#get-in-touch";
+    const currentPath = normalizePath(pathname) ?? "/";
+
+    type MatchCandidate = { topLevel: string; length: number };
+    const matches: MatchCandidate[] = [];
+
+    data.sections.forEach((section) => {
+      const sectionPath = normalizePath(resolveLinkField(section.link));
+      section.children.forEach((child) => {
+        const childPath = normalizePath(resolveLinkField(child.link));
+        if (!childPath) return;
+        const topLevel = sectionPath ?? childPath;
+        if (
+          currentPath === childPath ||
+          currentPath.startsWith(`${childPath}/`)
+        ) {
+          matches.push({ topLevel, length: childPath.length });
+        }
+      });
+
+      if (
+        sectionPath &&
+        (currentPath === sectionPath ||
+          currentPath.startsWith(`${sectionPath}/`))
+      ) {
+        matches.push({ topLevel: sectionPath, length: sectionPath.length });
+      }
+    });
+
+    const bestMatch = matches
+      .sort((a, b) => b.length - a.length)
+      .map((candidate) => candidate.topLevel)[0];
+
+    let destination = normalizePath(bestMatch) ?? rawCtaLink ?? "/";
+
+    if (destination === "/academy" || destination === "/tabb" || destination === "/our-team") {
+      destination = "/";
+    }
+
+    if (!destination.startsWith("/")) {
+      return destination;
+    }
+
+    if (destination === "/") {
+      return `/${anchor}`;
+    }
+
+    return `${destination}${anchor}`;
+  }, [data.sections, pathname, rawCtaLink]);
+
+  const finalCtaHref = useMemo(() => {
+    if (computedCtaHref) return computedCtaHref;
+    if (!rawCtaLink) return "/#get-in-touch";
+    if (!rawCtaLink.startsWith("/")) return rawCtaLink;
+    return rawCtaLink === "/" ? "/#get-in-touch" : `${rawCtaLink}#get-in-touch`;
+  }, [computedCtaHref, rawCtaLink]);
 
   return (
     <header
@@ -136,13 +219,13 @@ export function NavigationMenuClient({
 
         {/* CTA + Mobile toggle */}
         <div className="flex items-center">
-          {data.ctaLink && data.ctaLabel && (
-            <PrismicNextLink
-              field={data.ctaLink}
+          {data.ctaLabel && finalCtaHref && (
+            <Link
+              href={finalCtaHref}
               className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg"
             >
               {data.ctaLabel}
-            </PrismicNextLink>
+            </Link>
           )}
           <button
             onClick={() => setIsMenuOpen((v) => !v)}
