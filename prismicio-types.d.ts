@@ -70,6 +70,7 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | ContactSlice
   | NavigationMenuSlice
   | PrivacyTextBoxSlice
   | HeroSlice
@@ -641,6 +642,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | ContactSlice
   | NavigationMenuSlice
   | FaqSlice
   | PrivacyTextBoxSlice
@@ -745,6 +747,7 @@ export type FooterDocument<Lang extends string = string> =
   >;
 
 type HomepageDocumentDataBodySlice =
+  | ContactSlice
   | NavigationMenuSlice
   | CompactHeroSlice
   | ExpertiseareasSlice
@@ -1157,6 +1160,7 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | ContactSlice
   | NavigationMenuSlice
   | FaqSlice
   | ProjectShowcaseSlice
