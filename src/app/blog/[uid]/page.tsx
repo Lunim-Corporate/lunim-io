@@ -17,6 +17,7 @@ import { createID } from "@/utils/createId";
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 // Components
 import TableOfContents from "@/components/TableOfContents";
+import ViewCounter from "@/components/ViewCounter";
 
 type Params = { uid: string };
 
@@ -79,7 +80,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1" />
-                  <span>{docData.article_views}</span>
+                  <ViewCounter articleUid={uid} />
                 </div>
               </div>
             </div>
