@@ -1432,6 +1432,76 @@ export type TeamPageDocument<Lang extends string = string> =
     Lang
   >;
 
+type TechDocumentDataSlicesSlice =
+  | FaqSlice
+  | ProjectShowcaseSlice
+  | ProcessSlice
+  | ImageandtextSlice
+  | ServiceGridSlice
+  | ExpertiseareasSlice
+  | CompactHeroSlice
+  | NavigationMenuSlice
+  | ContactSlice;
+
+/**
+ * Content for Tech documents
+ */
+interface TechDocumentData {
+  /**
+   * Slice Zone field in *Tech*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<TechDocumentDataSlicesSlice> /**
+   * Meta Title field in *Tech*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: tech.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Tech*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: tech.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Tech*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Tech document from Prismic
+ *
+ * - **API ID**: `tech`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type TechDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<TechDocumentData>, "tech", Lang>;
+
 export type AllDocumentTypes =
   | AcademyDocument
   | BlogHomePageDocument
@@ -1448,7 +1518,8 @@ export type AllDocumentTypes =
   | PrivacyPolicyDocument
   | PrivacyPolicySmDocument
   | TabbDocument
-  | TeamPageDocument;
+  | TeamPageDocument
+  | TechDocument;
 
 /**
  * Primary content in *Expertiseareas → Default → Primary*
@@ -3481,6 +3552,9 @@ declare module "@prismicio/client" {
       TeamPageDocumentDataBody1Slice,
       TeamPageDocumentDataBody2TeamMembersSliceItem,
       TeamPageDocumentDataBody2Slice,
+      TechDocument,
+      TechDocumentData,
+      TechDocumentDataSlicesSlice,
       AllDocumentTypes,
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
