@@ -3,8 +3,8 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { isValidUidServer } from "@/utils/validators";
 
 // Rate limiter config
-const RATE_LIMIT_WINDOW = Number(process.env.VIEW_RATE_LIMIT_WINDOW_MS) || 60_000; // ms
-const MAX_REQUESTS = Number(process.env.VIEW_RATE_LIMIT_MAX) || 10;
+const RATE_LIMIT_WINDOW = 60_000; // ms
+const MAX_REQUESTS = 10;
 
 // In-memory per-key timestamp arrays.
 const rateMap = new Map<string, number[]>();
