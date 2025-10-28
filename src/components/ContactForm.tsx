@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { Loader2 } from "lucide-react";
-import { useContactForm } from "../hooks/useContactForm";
+import { useContactForm, type ContactVariant } from "../hooks/useContactForm";
 import { asText } from "@prismicio/helpers";
-import { RichTextField } from "@prismicio/client";
+import type { RichTextField } from "@prismicio/client";
 
-// Define the props the component will accept from its parent
 interface ContactFormProps {
   title?: RichTextField;
   fullNameLabel?: string;
@@ -15,6 +14,8 @@ interface ContactFormProps {
   goalsLabel?: string;
   buttonLabel?: string;
   budgetOptions?: string[];
+  variant?: ContactVariant; // NEW
+  source?: string; // NEW (page title + path from slice)
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({
@@ -26,8 +27,38 @@ const ContactForm: React.FC<ContactFormProps> = ({
   goalsLabel,
   buttonLabel,
   budgetOptions,
+  variant = "default",
+  source = "",
 }) => {
-  // Form logic and state management are untouched and fully functional
+  const resolvedTitle = title ? asText(title) : "Get In Touch";
+  const isTabb = variant === "tabb";
+  const formHook = useContactForm({ variant, source });
+
+  if (isTabb) {
+    const tabbHref = "https://tabb.cc/";
+    const tabbLabel = buttonLabel || "Visit Tabb";
+    return (
+      <div
+        className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white text-center space-y-6"
+        style={{ scrollMarginTop: "5rem" }}
+      >
+        <h3 className="text-xl font-bold text-white mt-1">{resolvedTitle}</h3>
+        <p className="text-gray-300">
+          Continue your journey with{" "}
+          <span className="text-white font-semibold">Tabb</span>.
+        </p>
+        <a
+          href={tabbHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-semibold bg-[#BBFEFF] text-black hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+        >
+          {tabbLabel}
+        </a>
+      </div>
+    );
+  }
+
   const {
     fullName,
     setFullName,
@@ -42,7 +73,21 @@ const ContactForm: React.FC<ContactFormProps> = ({
     formStatus,
     errorMessage,
     handleSubmit,
-  } = useContactForm();
+  } = formHook;
+
+  const messageVariants = variant === "home" || variant === "film" || variant === "tech";
+  const showBudget: boolean = false;
+  const showGoalsField = variant !== "academy";
+  const computedGoalsLabel: string =
+    messageVariants
+      ? "Message *"
+      : `${goalsLabel || "Project Goals *"}`;
+  const computedButton: string =
+    variant === "academy" ? "Book Course" : buttonLabel || "Send Enquiry";
+  const placeholderMsg: string =
+    messageVariants
+      ? "What would you like to talk about?"
+      : "Tell us about your idea…";
 
   return (
     <div
@@ -51,12 +96,18 @@ const ContactForm: React.FC<ContactFormProps> = ({
       style={{ scrollMarginTop: "5rem" }}
     >
       <h3 className="text-xl font-bold text-white mt-1 mb-6 text-center">
-        {title ? asText(title) : "Get In Touch"}
+        {resolvedTitle}
       </h3>
+
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left"
       >
+        <input type="hidden" name="source" value={source} />
+        {variant === "academy" && (
+          <input type="hidden" name="order_status" value="pending" />
+        )}
+
         <FormField
           id="fullName"
           label={fullNameLabel || "Your full name *"}
@@ -73,66 +124,96 @@ const ContactForm: React.FC<ContactFormProps> = ({
           value={workEmail}
           onChange={setWorkEmail}
           placeholder="Your Email Address"
+          required
         />
 
+        {/* Company is optional everywhere */}
         <FormField
-          id="companyname"
-          label={companyLabel || "Company Name*"}
+          id="company"
+          label={
+            companyLabel
+              ? `${companyLabel} (optional)`
+              : "Company Name (optional)"
+          }
           value={company}
           onChange={setCompany}
           placeholder="Your Company Name"
         />
 
-        <div>
-          <label
-            htmlFor="projectBudget"
-            className="block text-gray-300 text-base font-semibold mb-2"
-          >
-            {budgetLabel || "Project Budget"}
-          </label>
-          <div className="relative">
-            <select
-              id="projectBudget"
-              name="projectBudget"
-              value={projectBudget}
-              onChange={(e) => setProjectBudget(e.target.value)}
-              className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white appearance-none focus:outline-none focus:border-blue-500"
+        {/* Budget: only on Tech page */}
+        {showBudget && (
+          <div>
+            <label
+              htmlFor="projectBudget"
+              className="block text-gray-300 text-base font-semibold mb-2"
             >
-              {budgetOptions?.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
-              <svg
-                className="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+              {budgetLabel || "Project Budget"}
+            </label>
+            <div className="relative">
+              <select
+                id="projectBudget"
+                name="projectBudget"
+                value={projectBudget}
+                onChange={(e) => setProjectBudget(e.target.value)}
+                className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white appearance-none focus:outline-none focus:border-blue-500"
               >
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
+                {(budgetOptions ?? []).map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="md:col-span-2">
-          <label
-            htmlFor="projectGoals"
-            className="block text-gray-300 text-base font-semibold mb-2"
-          >
-            {goalsLabel || "Project Goals *"}
-          </label>
-          <textarea
-            id="projectGoals"
-            name="projectGoals"
-            rows={5}
-            placeholder="Tell us about your idea…"
-            value={projectGoals}
-            onChange={(e) => setProjectGoals(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-          ></textarea>
-        </div>
+        {variant === "academy" && (
+          <div className="md:col-span-2 bg-[#0f172a] border border-white/10 rounded-lg p-6 space-y-3">
+            <h4 className="text-white font-semibold text-lg">Course Details</h4>
+            <p className="text-gray-200">
+              <span className="font-semibold text-white">Schedule:</span> Weekly live
+              sessions · Tuesdays &amp; Thursdays · 6:00&ndash;8:00pm GMT
+            </p>
+            <p className="text-gray-200">
+              <span className="font-semibold text-white">Next Cohort:</span> Starts 15
+              September 2025
+            </p>
+            <p className="text-gray-200">
+              <span className="font-semibold text-white">Cost:</span> £499 (VAT
+              inclusive)
+            </p>
+          </div>
+        )}
+
+        {showGoalsField && (
+          <div className="md:col-span-2">
+            <label
+              htmlFor="projectGoals"
+              className="block text-gray-300 text-base font-semibold mb-2"
+            >
+              {computedGoalsLabel}
+            </label>
+            <textarea
+              id="projectGoals"
+              name="projectGoals"
+              rows={5}
+              placeholder={placeholderMsg}
+              value={projectGoals}
+              onChange={(e) => setProjectGoals(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+        )}
 
         {formStatus === "submitting" && (
           <p className="md:col-span-2 text-center text-blue-400">
@@ -161,7 +242,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sending...
               </>
             ) : (
-              buttonLabel || "Send Enquiry"
+              computedButton
             )}
           </button>
         </div>
@@ -170,13 +251,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
   );
 };
 
-// This sub-component does not need any changes
 const FormField: React.FC<{
   id: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
-  type?: string;
+  type?: "text" | "email";
   placeholder?: string;
   required?: boolean;
 }> = ({
