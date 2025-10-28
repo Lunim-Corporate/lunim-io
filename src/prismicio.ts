@@ -52,7 +52,8 @@ export const repositoryName = envRepositoryName || sm.repositoryName;
 const routes: Route[] = [
   { type: "mainpage", path: "/" },
   { type: "our_team_page", path: "/our-team" },
-  { type: "homepage", path: "/tech" },
+  // { type: "homepage", path: "/tech" },
+  { type: "tech", path: "/tech" },
   { type: "academy", path: "/academy" },
   { type: "film", path: "/film" },
   { type: "tabb", path: "/tabb" },
