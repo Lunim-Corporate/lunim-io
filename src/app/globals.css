@@ -11,6 +11,10 @@
   --font-secondary: 'Inter Variable', sans-serif;
 } */
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Base typography styles */
 body {
   font-family: var(--font-primary);
@@ -84,14 +88,10 @@ h3 {
 }
 
 /* Remove default marker styles */
-summary::-webkit-details-marker {
-  display: none;
-}
-
+summary::-webkit-details-marker,
 summary::marker {
   display: none;
 }
-
 
 /* Custom arrow styles */
 .archer-container path {
@@ -111,8 +111,4 @@ summary::marker {
   .archer-container {
     display: none;
   }
-}
-
-html {
-  scroll-behavior: smooth;
 }

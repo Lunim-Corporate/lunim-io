@@ -112,7 +112,6 @@ const TeamMember: FC<{
             />
           </div>
         ) : (
-            // Update with Next Image
           <Image
             src={imageUrl}
             alt={asText(member?.name) || "Team Member"}
@@ -131,7 +130,8 @@ const TeamMember: FC<{
         </div>
       </div>
       {/* Expandable Bio Section */}
-      <BioCard member={member} isMobile={isMobile} />
+      {/* <BioCard member={member} isMobile={isMobile} /> */}
+      <BioCard member={member} />
     </div>
   );
 };
@@ -139,23 +139,29 @@ const TeamMember: FC<{
 /**
  * Bio Card Component
  */
+// const BioCard: FC<{
+//   member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
+//   isMobile: boolean;
+// }> = ({ member, isMobile }) => {
 const BioCard: FC<{
   member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
-  isMobile: boolean;
-}> = ({ member, isMobile }) => {
+}> = ({ member }) => {
   return (
+    // <div
+    //   className={`transition-all duration-500 ease-in-out overflow-hidden bg-slate-900/90 
+    //     rounded-b-xl shadow-lg max-h-[500px] opacity-100 p-5
+    //     ${isMobile ? "!max-h-[500px] !opacity-100 !p-5" : ""}`}
+    // >
     <div
-      className={`transition-all duration-500 ease-in-out overflow-hidden bg-slate-900/90 
-        rounded-b-xl shadow-lg max-h-[500px] opacity-100 p-5
-        ${isMobile ? "!max-h-[500px] !opacity-100 !p-5" : ""}`}
+      className={`bg-slate-900/90 p-5 text-start`}
     >
       <div className="mb-4">
-        <p className="text-sm text-slate-400 text-left">{member?.role}</p>
+        <span className="text-sm text-slate-400">{member?.role}</span>
       </div>
 
-      <div className="text-slate-200 text-start text-sm space-y-2 py-2">
+      <div className="text-slate-200 text-sm py-2">
         {/* Keeps the formatting the same as it is in Prismic */}
-        <p style={{ whiteSpace: "pre-wrap" }}>{member?.description}</p>
+        <p className="whitespace-pre-wrap">{member?.description}</p>
       </div>
     </div>
   );
