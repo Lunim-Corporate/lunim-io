@@ -1,8 +1,11 @@
 "use client"
+import Avatar from "boring-avatars";
+// React
 import { FC, useState, useEffect } from "react";
+// Prismic
 import { asText, Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
-import Avatar from "boring-avatars";
+// Next
 import Image from "next/image";
 
 /**
@@ -94,7 +97,7 @@ const TeamMember: FC<{
 
   return (
     <div
-      className={`relative rounded-xl shadow-xl overflow-hidden transition-all duration-500 
+      className={`relative rounded-xl shadow-xl overflow-hidden transition-all duration-500 h-full
         ${isActive && !isMobile ? "z-10 scale-[1.02]" : "hover:scale-[1.01]"} 
         ${!isActive && !isMobile ? "hover:z-5" : ""}`}
       onMouseEnter={() => !isMobile && setActive(memberName)}
@@ -153,7 +156,7 @@ const BioCard: FC<{
     //     ${isMobile ? "!max-h-[500px] !opacity-100 !p-5" : ""}`}
     // >
     <div
-      className={`bg-slate-900/90 p-5 text-start`}
+      className={`bg-slate-900/90 p-5 text-start h-full`}
     >
       <div className="mb-4">
         <span className="text-sm text-slate-400">{member?.role}</span>
