@@ -70,11 +70,12 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | WebsiteCardSlice
+  | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
   | PrivacyTextBoxSlice
   | HeroSlice
-  | CompactHeroSlice
   | ProjectShowcaseSlice
   | ServiceGridSlice
   | ImageandtextSlice
@@ -643,12 +644,13 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | WebsiteCardSlice
+  | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
   | FaqSlice
   | PrivacyTextBoxSlice
   | HeroSlice
-  | CompactHeroSlice
   | ProcessSlice
   | ServiceGridSlice
   | ImageandtextSlice
@@ -749,18 +751,16 @@ export type FooterDocument<Lang extends string = string> =
   >;
 
 type HomepageDocumentDataSlicesSlice =
-  | ContactSlice
-  | NavigationMenuSlice
-  | PrivacyTextBoxSlice
-  | HeroSlice
   | CompactHeroSlice
-  | ProjectShowcaseSlice
-  | ServiceGridSlice
   | ImageandtextSlice
+  | ExpertiseareasSlice
   | ProcessSlice
+  | ServiceGridSlice
   | FaqSlice
-  | ExpertiseareasSlice;
-
+  | WebsiteCardSlice
+  | ProjectShowcaseSlice
+  | HeroSlice
+  | ContactSlice;
 
 /**
  * Content for Homepage documents
@@ -1126,6 +1126,8 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | WebsiteCardSlice
+  | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
   | FaqSlice
@@ -1135,7 +1137,6 @@ type TabbDocumentDataSlicesSlice =
   | ExpertiseareasSlice
   | ServiceGridSlice
   | HeroSlice
-  | CompactHeroSlice
   | PrivacyTextBoxSlice;
 
 /**
@@ -1400,13 +1401,14 @@ export type TeamPageDocument<Lang extends string = string> =
   >;
 
 type TechDocumentDataSlicesSlice =
+  | HeroSlice
+  | WebsiteCardSlice
   | FaqSlice
   | ProjectShowcaseSlice
   | ProcessSlice
   | ImageandtextSlice
   | ServiceGridSlice
   | ExpertiseareasSlice
-  | HeroSlice
   | CompactHeroSlice
   | NavigationMenuSlice
   | ContactSlice;

@@ -18,6 +18,27 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "compact_hero": {
+              "type": "SharedSlice"
+            },
+            "Imageandtext": {
+              "type": "SharedSlice"
+            },
+            "Expertiseareas": {
+              "type": "SharedSlice"
+            },
+            "Process": {
+              "type": "SharedSlice"
+            },
+            "ServiceGrid": {
+              "type": "SharedSlice"
+            },
+            "Faq": {
+              "type": "SharedSlice"
+            },
+            "website_card": {
+              "type": "SharedSlice"
+            },
             "ProjectShowcase": {
               "type": "SharedSlice"
             },
