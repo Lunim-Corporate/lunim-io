@@ -746,16 +746,10 @@ export type FooterDocument<Lang extends string = string> =
     Lang
   >;
 
-type HomepageDocumentDataBodySlice =
-  | ContactSlice
-  | NavigationMenuSlice
-  | CompactHeroSlice
-  | ExpertiseareasSlice
-  | ServiceGridSlice
-  | ImageandtextSlice
-  | ProcessSlice
+type HomepageDocumentDataSlicesSlice =
   | ProjectShowcaseSlice
-  | FaqSlice;
+  | HeroSlice
+  | ContactSlice;
 
 /**
  * Content for Homepage documents
@@ -766,11 +760,42 @@ interface HomepageDocumentData {
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.body[]
+   * - **API ID Path**: homepage.slices[]
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/slices
    */
-  body: prismic.SliceZone<HomepageDocumentDataBodySlice>;
+  slices: prismic.SliceZone<HomepageDocumentDataSlicesSlice> /**
+   * Meta Title field in *Homepage*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: homepage.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Homepage*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: homepage.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Homepage*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
 }
 
 /**
@@ -783,79 +808,9 @@ interface HomepageDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type HomepageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<HomepageDocumentData>,
     "homepage",
-    Lang
-  >;
-
-type MainpageDocumentDataSlicesSlice =
-  | ProjectShowcaseSlice
-  | NavigationMenuSlice
-  | WebsiteCardSlice
-  | ContactSlice
-  | HeroSlice;
-
-/**
- * Content for Mainpage documents
- */
-interface MainpageDocumentData {
-  /**
-   * Slice Zone field in *Mainpage*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: mainpage.slices[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/slices
-   */
-  slices: prismic.SliceZone<MainpageDocumentDataSlicesSlice> /**
-   * Meta Title field in *Mainpage*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A title of the page used for social media and search engines
-   * - **API ID Path**: mainpage.meta_title
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */;
-  meta_title: prismic.KeyTextField;
-
-  /**
-   * Meta Description field in *Mainpage*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A brief summary of the page
-   * - **API ID Path**: mainpage.meta_description
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_description: prismic.KeyTextField;
-
-  /**
-   * Meta Image field in *Mainpage*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: mainpage.meta_image
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  meta_image: prismic.ImageField<never>;
-}
-
-/**
- * Mainpage document from Prismic
- *
- * - **API ID**: `mainpage`
- * - **Repeatable**: `false`
- * - **Documentation**: https://prismic.io/docs/content-modeling
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type MainpageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<
-    Simplify<MainpageDocumentData>,
-    "mainpage",
     Lang
   >;
 
@@ -1511,7 +1466,6 @@ export type AllDocumentTypes =
   | FilmDocument
   | FooterDocument
   | HomepageDocument
-  | MainpageDocument
   | NavSectionDocument
   | OurTeamPageDocument
   | PrimaryNavigationDocument
@@ -3524,10 +3478,7 @@ declare module "@prismicio/client" {
       FooterDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
-      HomepageDocumentDataBodySlice,
-      MainpageDocument,
-      MainpageDocumentData,
-      MainpageDocumentDataSlicesSlice,
+      HomepageDocumentDataSlicesSlice,
       NavSectionDocument,
       NavSectionDocumentData,
       NavSectionDocumentDataChildLinksItem,
