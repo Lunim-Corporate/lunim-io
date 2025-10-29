@@ -42,9 +42,9 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 order-2 lg:order-1 gap-8">
           {items.map((item, idx) => {
             const Icon =
               (item.icon_name && ICONS[item.icon_name]) || HelpCircle;
@@ -82,7 +82,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
         </div>
 
         {/* Right column text block */}
-        <div>
+        <div className="order-1 lg:order-2">
           {headingText && (
             <h2 className="text-4xl font-bold text-white mb-4">
               {headingText}
