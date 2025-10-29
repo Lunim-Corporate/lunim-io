@@ -304,17 +304,6 @@ interface BlogPostDocumentData {
   author_name: prismic.RichTextField;
 
   /**
-   * Article Views field in *Blog Post*
-   *
-   * - **Field Type**: Number
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.article_views
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/number
-   */
-  article_views: prismic.NumberField;
-
-  /**
    * Article Main Image field in *Blog Post*
    *
    * - **Field Type**: Image
@@ -324,28 +313,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   article_main_image: prismic.ImageField<never>;
-
-  /**
-   * Table Of Contents Heading field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.table_of_contents_heading
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  table_of_contents_heading: prismic.RichTextField;
-
-  /**
-   * Share Article Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.share_article_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  share_article_text: prismic.RichTextField;
 
   /**
    * Icons field in *Blog Post*
@@ -370,17 +337,6 @@ interface BlogPostDocumentData {
   main_article_content: prismic.RichTextField;
 
   /**
-   * Article Written By Text field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.article_written_by_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  article_written_by_text: prismic.RichTextField;
-
-  /**
    * More About Author Text field in *Blog Post*
    *
    * - **Field Type**: Text
@@ -390,23 +346,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   more_about_author_text: prismic.KeyTextField;
-
-  /**
-   * More Posts Link Text field in *Blog Post*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.more_posts_link_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  more_posts_link_text: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
 
   /**
    * Slice Zone field in *Blog Post*
