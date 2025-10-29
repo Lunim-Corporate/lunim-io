@@ -42,7 +42,7 @@ export default function TableOfContentsMenu({ headingLinks, activeId, activeItem
                         activeItemRef={activeItemRef}
                         itemId={itemId}
                         val={val}
-                        marginStartVal={""}
+                        marginStartVal={"ms-1"}
                         textSize={"text-base"}
                     />
                 }
