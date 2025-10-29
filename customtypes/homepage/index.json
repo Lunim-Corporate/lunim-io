@@ -36,9 +36,6 @@
             "Faq": {
               "type": "SharedSlice"
             },
-            "website_card": {
-              "type": "SharedSlice"
-            },
             "ProjectShowcase": {
               "type": "SharedSlice"
             },

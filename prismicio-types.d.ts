@@ -70,7 +70,6 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
-  | WebsiteCardSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -541,7 +540,6 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
-  | WebsiteCardSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -654,7 +652,6 @@ type HomepageDocumentDataSlicesSlice =
   | ProcessSlice
   | ServiceGridSlice
   | FaqSlice
-  | WebsiteCardSlice
   | ProjectShowcaseSlice
   | HeroSlice
   | ContactSlice;
@@ -1023,7 +1020,6 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
-  | WebsiteCardSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -1299,7 +1295,6 @@ export type TeamPageDocument<Lang extends string = string> =
 
 type TechDocumentDataSlicesSlice =
   | HeroSlice
-  | WebsiteCardSlice
   | FaqSlice
   | ProjectShowcaseSlice
   | ProcessSlice
@@ -3220,132 +3215,6 @@ export type PrivacyTextBoxSlice = prismic.SharedSlice<
   PrivacyTextBoxSliceVariation
 >;
 
-/**
- * Item in *WebsiteCard → Default → Primary → card*
- */
-export interface WebsiteCardSliceDefaultPrimaryCardItem {
-  /**
-   * background image field in *WebsiteCard → Default → Primary → card*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].background_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  background_image: prismic.ImageField<never>;
-
-  /**
-   * title field in *WebsiteCard → Default → Primary → card*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].title
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  title: prismic.RichTextField;
-
-  /**
-   * primary description field in *WebsiteCard → Default → Primary → card*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].primary_description
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  primary_description: prismic.KeyTextField;
-
-  /**
-   * secondary description field in *WebsiteCard → Default → Primary → card*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].secondary_description
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  secondary_description: prismic.KeyTextField;
-
-  /**
-   * link to website field in *WebsiteCard → Default → Primary → card*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[].link_to_website
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  link_to_website: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-}
-
-/**
- * Primary content in *WebsiteCard → Default → Primary*
- */
-export interface WebsiteCardSliceDefaultPrimary {
-  /**
-   * main title field in *WebsiteCard → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.main_title
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  main_title: prismic.RichTextField;
-
-  /**
-   * subtitle field in *WebsiteCard → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.subtitle
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  subtitle: prismic.RichTextField;
-
-  /**
-   * card field in *WebsiteCard → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: website_card.default.primary.card[]
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  card: prismic.GroupField<Simplify<WebsiteCardSliceDefaultPrimaryCardItem>>;
-}
-
-/**
- * Default variation for WebsiteCard Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type WebsiteCardSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<WebsiteCardSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *WebsiteCard*
- */
-type WebsiteCardSliceVariation = WebsiteCardSliceDefault;
-
-/**
- * WebsiteCard Shared Slice
- *
- * - **API ID**: `website_card`
- * - **Description**: WebsiteCard
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type WebsiteCardSlice = prismic.SharedSlice<
-  "website_card",
-  WebsiteCardSliceVariation
->;
-
 declare module "@prismicio/client" {
   interface CreateClient {
     (
@@ -3499,11 +3368,6 @@ declare module "@prismicio/client" {
       PrivacyTextBoxSliceDefaultPrimary,
       PrivacyTextBoxSliceVariation,
       PrivacyTextBoxSliceDefault,
-      WebsiteCardSlice,
-      WebsiteCardSliceDefaultPrimaryCardItem,
-      WebsiteCardSliceDefaultPrimary,
-      WebsiteCardSliceVariation,
-      WebsiteCardSliceDefault,
     };
   }
 }

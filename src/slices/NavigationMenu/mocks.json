@@ -49,8 +49,8 @@
 							[
 								"section_ref",
 								{
-									"__TYPE__": "LinkContent",
 									"key": "d7433adc-113c-4c29-9da6-d5ee4d95b2c1",
+									"__TYPE__": "LinkContent",
 									"value": {
 										"__TYPE__": "DocumentLink",
 										"id": "mock_document_id"
