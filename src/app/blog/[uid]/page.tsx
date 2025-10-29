@@ -133,16 +133,16 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               </div>
               {/* End FAQs section */}
               {/* Article written by section */}
-              <div className="grid grid-cols-[3fr_1fr] p-6 bg-[#1f2937] rounded-lg">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-[3fr_1fr] sm:gap-x-2 p-6 bg-[#1f2937] rounded-lg">
+                <div className="order-2 sm:order-1">
                   <h4 className="mb-0!">Article Written by</h4>
                   <h3 className="mt-0! font-bold">{authorName}</h3>
                   <p>{docData.more_about_author_text}</p>
                   {/* TODO: Implement later */}
                   {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
                 </div>
-                <div>
-                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[150] aspect-[1] ms-auto" />
+                <div className="order-1 sm:order-2">
+                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[150] aspect-[1] sm:ms-auto" />
                 </div>
               </div>
                {/* End Article written by section */}
