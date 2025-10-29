@@ -18,9 +18,6 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "website_card": {
-              "type": "SharedSlice"
-            },
             "compact_hero": {
               "type": "SharedSlice"
             },

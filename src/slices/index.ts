@@ -19,5 +19,4 @@ export const components = {
   navigation_menu: dynamic(() => import("./NavigationMenu")),
   our_team: dynamic(() => import("./OurTeam")),
   privacy_text_box: dynamic(() => import("./PrivacyTextBox")),
-  website_card: dynamic(() => import("./WebsiteCard")),
 };
