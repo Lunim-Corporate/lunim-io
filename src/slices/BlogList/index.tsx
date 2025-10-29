@@ -8,6 +8,7 @@ import { asText } from "@prismicio/helpers";
 import { createClient } from "@/prismicio";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
+import { formatDate } from "@/utils/formatDate";
 
 /** Slice context passed from the page (we read search params here). */
 type BlogListSliceContext = {
@@ -64,7 +65,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
         <div className="flex flex-wrap gap-3 text-sm text-gray-300 mb-4">
           {d.publication_date ? (
             <time dateTime={d.publication_date}>
-              {new Date(d.publication_date).toLocaleDateString()}
+              {formatDate(d.publication_date)}
             </time>
           ) : null}
           {d.category ? <span>• {asText(d.category)}</span> : null}
