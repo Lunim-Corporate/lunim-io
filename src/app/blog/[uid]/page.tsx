@@ -94,8 +94,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             {/* Table of Contents and share links */}
             <TableOfContents
               mainArticleContent={docData.main_article_content}
-              tableOfContentsHeading={docData.table_of_contents_heading}
-              shareArticleText={docData.share_article_text}
               icons={docData.icons}
             />
             <div>
@@ -149,11 +147,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               {/* Article written by section */}
               <div className="flex p-6 bg-[#1f2937] rounded-lg">
                 <div>
-                  <PrismicRichText
-                    field={docData.article_written_by_text}
-                    components={{
-                      paragraph: ({ children }) => <p className="mb-0!">{children}</p>
-                    }} />
+                  <h4 className="mb-0!">Article Written by</h4>
                   <h3 className="mt-0! font-bold">{authorName}</h3>
                   <p>{docData.more_about_author_text}</p>
                   {/* TODO: Implement later */}

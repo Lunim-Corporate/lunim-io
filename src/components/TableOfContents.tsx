@@ -1,6 +1,5 @@
 'use client';
 // Prismic
-import { PrismicRichText } from "@prismicio/react"
 import { RichTextField } from "@prismicio/types"
 import { GroupField } from "@prismicio/client";
 import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
@@ -16,15 +15,11 @@ import Icon from "./Icon";
 
 type TableOfContentsProps = {
 mainArticleContent: RichTextField; // docData.main_article_content
-tableOfContentsHeading: RichTextField; // docData.table_of_contents_heading
-shareArticleText: RichTextField; // docData.share_article_text
 icons: GroupField<Simplify<BlogPostDocumentDataIconsItem>>; // docData.icons
 };
 
 export default function TableOfContents({
     mainArticleContent,
-    tableOfContentsHeading,
-    shareArticleText,
     icons = [],
 } : TableOfContentsProps
 ) {
@@ -120,12 +115,7 @@ export default function TableOfContents({
             {/* Table of contents section */}
             <div className={`rounded-2xl p-6 mb-10 border shadow-cyan-400 shadow-md`}>
                 <div className="flex justify-between mb-5">
-                    <PrismicRichText
-                    field={tableOfContentsHeading}
-                    components={{
-                        heading4: ({children}) => <h4 className="mt-[0]! text-2xl">{children}</h4>
-                    }}
-                        />
+                   <h4 className="mt-[0]! text-2xl">Table Of Contents</h4>
                     <button 
                         aria-label="Toggle Table of contents" 
                         className="cursor-pointer"
@@ -146,12 +136,8 @@ export default function TableOfContents({
             {/* Share article section */}
             <div className="flex gap-6">
                 <div>
-                <PrismicRichText
-                    field={shareArticleText}
-                    components={{
-                    heading4: ({ children }) => <h4 className="m-[0]!">{children}</h4>
-                    }}
-                /></div>
+                    <h4 className="m-[0]!">Share Article</h4>
+                </div>
                 <div className="flex gap-4 justify-between">
                     {icons?.map((icon, idx) => {
                         return <Icon key={idx} icon={icon} />

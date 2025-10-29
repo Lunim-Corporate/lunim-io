@@ -54,37 +54,12 @@
           "multi": "strong,em,paragraph"
         }
       },
-      "article_views": {
-        "type": "Number",
-        "config": {
-          "label": "Article Views",
-          "placeholder": ""
-        }
-      },
       "article_main_image": {
         "type": "Image",
         "config": {
           "label": "Article Main Image",
           "constraint": {},
           "thumbnails": []
-        }
-      },
-      "table_of_contents_heading": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Table Of Contents Heading",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "heading2,heading3,heading4,heading5,heading6,strong,em,paragraph"
-        }
-      },
-      "share_article_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Share Article Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "heading3,heading4,heading5,heading6,strong,em,paragraph"
         }
       },
       "icons": {
@@ -123,31 +98,11 @@
           "multi": "paragraph,preformatted,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
-      "article_written_by_text": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Article Written By Text",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,heading2,heading3,heading4,heading5,heading6,strong,em"
-        }
-      },
       "more_about_author_text": {
         "type": "Text",
         "config": {
           "label": "More About Author Text",
           "placeholder": ""
-        }
-      },
-      "more_posts_link_text": {
-        "type": "Link",
-        "config": {
-          "label": "More Posts Link Text",
-          "placeholder": "",
-          "select": null,
-          "allowTargetBlank": true,
-          "allowText": true,
-          "repeat": false
         }
       },
       "slices": {
