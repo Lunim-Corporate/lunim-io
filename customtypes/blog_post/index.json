@@ -62,33 +62,6 @@
           "thumbnails": []
         }
       },
-      "icons": {
-        "type": "Group",
-        "config": {
-          "label": "Icons",
-          "repeat": true,
-          "fields": {
-            "icon_text": {
-              "type": "Text",
-              "config": {
-                "label": "Icon Text",
-                "placeholder": ""
-              }
-            },
-            "icon_link": {
-              "type": "Link",
-              "config": {
-                "label": "Icon Link",
-                "placeholder": "",
-                "select": null,
-                "allowTargetBlank": true,
-                "allowText": true,
-                "repeat": false
-              }
-            }
-          }
-        }
-      },
       "main_article_content": {
         "type": "StructuredText",
         "config": {
