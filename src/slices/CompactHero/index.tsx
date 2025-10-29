@@ -81,7 +81,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
       {/* dark overlay to ensure text contrast */}
       <div className="absolute inset-0 bg-black/60" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+      <div className="relative z-10 max-w-4xl px-4 sm:px-6 lg:px-8 mx-auto py-16">
         <div className="text-center">
           <div role="heading" aria-level={1} className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             {/* New single-title field (may already render an <h1>) */}
