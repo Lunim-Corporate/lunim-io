@@ -211,37 +211,6 @@ export type BlogHomePageDocument<Lang extends string = string> =
     Lang
   >;
 
-/**
- * Item in *Blog Post → Icons*
- */
-export interface BlogPostDocumentDataIconsItem {
-  /**
-   * Icon Text field in *Blog Post → Icons*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.icons[].icon_text
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  icon_text: prismic.KeyTextField;
-
-  /**
-   * Icon Link field in *Blog Post → Icons*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.icons[].icon_link
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  icon_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-}
-
 type BlogPostDocumentDataSlicesSlice = FaqSlice;
 
 /**
@@ -313,17 +282,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   article_main_image: prismic.ImageField<never>;
-
-  /**
-   * Icons field in *Blog Post*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.icons[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-   */
-  icons: prismic.GroupField<Simplify<BlogPostDocumentDataIconsItem>>;
 
   /**
    * Main Article Content field in *Blog Post*
@@ -3417,7 +3375,6 @@ declare module "@prismicio/client" {
       BlogHomePageDocumentDataSlicesSlice,
       BlogPostDocument,
       BlogPostDocumentData,
-      BlogPostDocumentDataIconsItem,
       BlogPostDocumentDataSlicesSlice,
       CaseStudyDocument,
       CaseStudyDocumentData,
