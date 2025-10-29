@@ -83,7 +83,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             {/* Table of Contents and share links */}
             <TableOfContents
               mainArticleContent={docData.main_article_content}
-              icons={docData.icons}
             />
             <div>
               <div className="mb-20">

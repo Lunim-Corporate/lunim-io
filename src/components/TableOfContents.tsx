@@ -1,8 +1,6 @@
 'use client';
 // Prismic
 import { RichTextField } from "@prismicio/types"
-import { GroupField } from "@prismicio/client";
-import { BlogPostDocumentDataIconsItem, Simplify } from "../../prismicio-types";
 // React
 import { useEffect, useRef, useState } from "react";
 // Utils
@@ -15,12 +13,17 @@ import Icon from "./Icon";
 
 type TableOfContentsProps = {
 mainArticleContent: RichTextField; // docData.main_article_content
-icons: GroupField<Simplify<BlogPostDocumentDataIconsItem>>; // docData.icons
 };
+
+const iconData = [
+    // Add more social platform icon mappings as needed
+    { iconText: "x", iconShareLink: "/"},
+    { iconText: "LinkedIn", iconShareLink: "/"},
+    { iconText: "Mail", iconShareLink: "/" },
+]
 
 export default function TableOfContents({
     mainArticleContent,
-    icons = [],
 } : TableOfContentsProps
 ) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -139,7 +142,7 @@ export default function TableOfContents({
                     <h4 className="m-[0]!">Share Article</h4>
                 </div>
                 <div className="flex gap-4 justify-between">
-                    {icons?.map((icon, idx) => {
+                    {iconData?.map((icon, idx) => {
                         return <Icon key={idx} icon={icon} />
                     })}
                 </div>
