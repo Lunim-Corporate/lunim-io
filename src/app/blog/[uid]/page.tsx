@@ -15,23 +15,12 @@ import { Simplify } from "../../../../prismicio-types";
 // Utils
 import { createID } from "@/utils/createId";
 import { calculateReadingTime } from "@/utils/calcReadingTime";
+import { formatDate } from "@/utils/formatDate";
 // Components
 import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 
 type Params = { uid: string };
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return "";
-  
-  const date = new Date(dateString);
-  // Display as "Month Day, Year" format e.g., "January 1, 2030"
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
