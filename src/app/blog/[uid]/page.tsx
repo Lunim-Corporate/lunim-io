@@ -133,7 +133,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               </div>
               {/* End FAQs section */}
               {/* Article written by section */}
-              <div className="flex p-6 bg-[#1f2937] rounded-lg">
+              <div className="grid grid-cols-[3fr_1fr] p-6 bg-[#1f2937] rounded-lg">
                 <div>
                   <h4 className="mb-0!">Article Written by</h4>
                   <h3 className="mt-0! font-bold">{authorName}</h3>
@@ -142,7 +142,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
                 </div>
                 <div>
-                  <PrismicNextImage field={docData.author_image} className="rounded-full w-2xl" />
+                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[150] aspect-[1] ms-auto" />
                 </div>
               </div>
                {/* End Article written by section */}
