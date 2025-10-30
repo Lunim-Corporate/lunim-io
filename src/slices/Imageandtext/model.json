@@ -42,6 +42,17 @@
             "multi": "paragraph,preformatted,strong,em,embed,list-item,o-list-item,rtl",
             "label": "description"
           }
+        },
+        "buttonlink": {
+          "type": "Link",
+          "config": {
+            "label": "button link",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": false
+          }
         }
       },
       "items": {}
