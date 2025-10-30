@@ -32,14 +32,17 @@ const Contact: FC<ContactProps> = ({ slice }) => {
     if (p === "/tabb" || p.startsWith("/tabb/")) return "tabb";
     if (p === "/tech" || p.startsWith("/tech/")) return "tech";
     if (p === "/film" || p.startsWith("/film/")) return "film";
-    if (p === "/academy" || p.startsWith("/academy/")) return "academy";
-    return "default";
-  }, [pathname]);
+  if (p === "/academy" || p.startsWith("/academy/")) return "academy";
+  return "default";
+}, [pathname]);
+
+  const isTech = variant === "tech";
 
   // Title overrides per page
   const computedMainTitle = (() => {
     if (variant === "home" || variant === "film") return "Ready to Go?";
     if (variant === "academy") return "Ready to Learn?";
+    if (isTech) return "Ready to Innovate?";
     return asText(slice.primary.main_title) || "Get in Touch";
   })();
 
@@ -48,12 +51,16 @@ const Contact: FC<ContactProps> = ({ slice }) => {
       return "Let’s discuss how we can help you take your next giant leap.";
     if (variant === "academy")
       return "Let’s get you on the road to powering up your workflow.";
+    if (isTech)
+      return "Let's discuss your project and how we can bring it to life.";
     return asText(slice.primary.subtitle) || "";
   })();
 
   // Left panels content adjustments:
-  const waysTitle = "Ways to Contact Us";
-  const waysSubtitle = "We respond to all queries within 24 hours";
+  const waysTitle = isTech ? "Why Contact Us?" : "Ways to Contact Us";
+  const waysSubtitle = isTech
+    ? ""
+    : "We respond to all queries within 24 hours";
 
   const contactItems = slice.primary.contact_info || [];
   const officeHourItems = slice.primary.office_info || [];
@@ -65,16 +72,34 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   }, [pathname]);
 
   return (
-    <section className="bg-[#0f172a] py-20" id="get-in-touch">
+    <section
+      className={`py-20 ${
+        isTech
+          ? "relative overflow-hidden bg-gradient-to-b from-[#040a18] via-[#071327] to-[#03070f]"
+          : "bg-[#0f172a]"
+      }`}
+      id="get-in-touch"
+    >
+      {isTech && (
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(88,214,255,0.22),transparent_60%)]" />
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Title */}
-        <div className="text-3xl font-bold text-white mb-4 text-center">
+        <div
+          className={`${
+            isTech ? "text-4xl md:text-5xl" : "text-3xl"
+          } font-bold text-white mb-4 text-center`}
+        >
           <span>{computedMainTitle}</span>
         </div>
 
         {/* Subtitle */}
         {computedSubtitle && (
-          <div className="text-lg text-gray-300 mb-12 text-center">
+          <div
+            className={`${
+              isTech ? "text-lg md:text-xl text-white/70" : "text-lg text-gray-300"
+            } mb-12 text-center`}
+          >
             <span>{computedSubtitle}</span>
           </div>
         )}
@@ -83,72 +108,133 @@ const Contact: FC<ContactProps> = ({ slice }) => {
           className={
             variant === "tabb"
               ? "flex justify-center"
+              : isTech
+              ? "grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-10 items-start relative"
               : "grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
           }
         >
           {/* Left column: Ways to Contact + Office Hours */}
           {variant !== "tabb" && (
-            <div className="space-y-8">
-              <div className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white">
-                <h3 className="text-xl font-bold text-white mt-1">{waysTitle}</h3>
-                <p className="text-gray-300 mb-6">{waysSubtitle}</p>
-                <ul className="space-y-4 list-none">
-                {contactItems.map((item, index) => {
-                  const Icon = iconComponents[item.icon_name || ""] || Clock;
-                  const rawTitle =
-                    typeof item.title === "string" ? item.title.trim() : "";
-                  const isQuickResponse = rawTitle.toLowerCase() === "quick response";
-                  const displayTitle = isQuickResponse ? "Want to Meet?" : rawTitle;
-                  const hasLabel = displayTitle.length > 0;
-                  const rawDescription =
-                    typeof item.description === "string"
-                      ? item.description.trim()
-                      : "";
-                  const hasDesc = isQuickResponse
-                    ? true
-                    : rawDescription.length > 0;
-                  if (!hasLabel && !hasDesc) return null;
+            <div className="space-y-8 relative">
+              <div
+                className={
+                  isTech
+                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
+                    : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
+                }
+              >
+                <h3
+                  className={`${
+                    isTech ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white mt-1"
+                  }`}
+                >
+                  {waysTitle}
+                </h3>
+                {!isTech && waysSubtitle && (
+                  <p className="text-gray-300 mb-6">{waysSubtitle}</p>
+                )}
+                <ul className="space-y-5 list-none">
+                  {contactItems.map((item, index) => {
+                    const Icon = iconComponents[item.icon_name || ""] || Clock;
+                    const rawTitle =
+                      typeof item.title === "string" ? item.title.trim() : "";
+                    const isQuickResponse =
+                      rawTitle.toLowerCase() === "quick response";
+                    const displayTitle =
+                      !isTech && isQuickResponse ? "Want to Meet?" : rawTitle;
+                    const hasLabel = displayTitle.length > 0;
+                    const rawDescription =
+                      typeof item.description === "string"
+                        ? item.description.trim()
+                        : "";
+                    const hasDesc = rawDescription.length > 0;
+                    if (!hasLabel && !hasDesc) return null;
 
-                  return (
-                    <li key={index} className="flex items-start space-x-3 pl-0">
-                      <Icon className="w-6 h-6 text-[#BBFEFF] flex-shrink-0" />
-                      <div>
-                        {hasLabel && (
-                          <p className="text-white mb-1 font-semibold">{displayTitle}
-                        {hasDesc &&
-                          (isQuickResponse ? (
-                            <a
-                              href="https://calendly.com/hello-lunim/30min"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100 transition-colors"
+                    const descriptionContent =
+                      isQuickResponse && !isTech ? (
+                        <a
+                          href="https://calendly.com/hello-lunim/30min"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100 transition-colors"
+                        >
+                          Book a meeting with us now
+                        </a>
+                      ) : hasDesc ? (
+                        <span className={isTech ? "text-white/60" : "text-gray-300"}>
+                          {rawDescription}
+                        </span>
+                      ) : null;
+
+                    return (
+                      <li
+                        key={index}
+                        className="flex items-start gap-4 pl-0"
+                      >
+                        <span
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            isTech
+                              ? "bg-white/5 text-[#8df6ff] shadow-[0_0_20px_rgba(101,225,255,0.35)]"
+                              : "bg-white/10 text-[#BBFEFF]"
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <div className="space-y-1">
+                          {hasLabel && (
+                            <p
+                              className={`font-semibold text-white ${
+                                isTech ? "text-lg" : "text-base"
+                              }`}
                             >
-                              <br/>Book a meeting with us now
-                            </a>
-                          ) : (
-                            <span><br/>{rawDescription}</span>
-                          ))}
-                          </p>
-                        )}
-                      </div>
-                    </li>
-                  );
-                })}
+                              {displayTitle}
+                            </p>
+                          )}
+                          {descriptionContent}
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
-              <div className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white">
-                <h3 className="text-xl font-bold text-white mt-1 mb-6">
+              <div
+                className={
+                  isTech
+                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
+                    : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
+                }
+              >
+                <h3
+                  className={`${
+                    isTech
+                      ? "text-2xl font-semibold text-white mb-6"
+                      : "text-xl font-bold text-white mt-1 mb-6"
+                  }`}
+                >
                   {asText(slice.primary.office_hours_title) || "Office Hours"}
                 </h3>
-                <ul className="space-y-3 text-gray-300">
+                <ul
+                  className={`space-y-3 ${
+                    isTech ? "text-white/70" : "text-gray-300"
+                  }`}
+                >
                   {officeHourItems.map((hour, index) => (
-                    <li key={index} className="flex justify-between items-center">
-                      <span className="font-semibold">{hour.days}</span>
+                    <li
+                      key={index}
+                      className="flex justify-between items-center border-b border-white/5 pb-3 last:border-b-0 last:pb-0"
+                    >
+                      <span
+                        className={`font-semibold ${
+                          isTech ? "text-white" : ""
+                        }`}
+                      >
+                        {hour.days}
+                      </span>
                       {hour.is_closed ? (
                         <span className="text-red-400">Closed</span>
                       ) : (
-                        <span>{hour.hours}</span>
+                        <span className="text-white/70">{hour.hours}</span>
                       )}
                     </li>
                   ))}
