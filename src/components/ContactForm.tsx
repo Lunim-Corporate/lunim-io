@@ -76,7 +76,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   } = formHook;
 
   const messageVariants = variant === "home" || variant === "film" || variant === "tech";
-  const showBudget: boolean = false;
+  const showBudget: boolean =
+    variant === "tech" && Array.isArray(budgetOptions) && budgetOptions.length > 0;
   const showGoalsField = variant !== "academy";
   const computedGoalsLabel: string =
     messageVariants
@@ -153,23 +154,29 @@ const ContactForm: React.FC<ContactFormProps> = ({
               <select
                 id="projectBudget"
                 name="projectBudget"
-                value={projectBudget}
+                value={projectBudget || ""}
                 onChange={(e) => setProjectBudget(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white appearance-none focus:outline-none focus:border-blue-500"
+                className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white appearance-none focus:outline-none focus:border-blue-500 pr-10"
               >
+                <option value="" disabled hidden>
+                  Select a budget range
+                </option>
                 {(budgetOptions ?? []).map((option, index) => (
                   <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
+              <div
+                className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-200"
+              >
                 <svg
-                  className="fill-current h-4 w-4"
+                  className="h-4 w-4"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
+                  fill="currentColor"
                 >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  <path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" />
                 </svg>
               </div>
             </div>
@@ -221,7 +228,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </p>
         )}
         {formStatus === "success" && (
-          <p className="md:col-span-2 text-center text-green-400">Submitted!</p>
+          <p className="md:col-span-2 text-center text-green-400">
+            Submitted!
+          </p>
         )}
         {formStatus === "error" && (
           <p className="md:col-span-2 text-center text-red-400">
