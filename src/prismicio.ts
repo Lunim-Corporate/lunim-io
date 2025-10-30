@@ -52,11 +52,11 @@ export const repositoryName = envRepositoryName || sm.repositoryName;
 const routes: Route[] = [
   { type: "homepage", path: "/" },
   { type: "our_team_page", path: "/our-team" },
-  { type: "tech", path: "/tech" },
+  { type: "tech", path: "/digital" },
   { type: "academy", path: "/academy" },
   { type: "film", path: "/film" },
   { type: "tabb", path: "/tabb" },
-  { type: "case_study_sm", path: "/tech/casestudies/:uid" },
+  { type: "case_study_sm", path: "/digital/casestudies/:uid" },
   { type: "privacy_policy_sm", path: "/privacy-policy" },
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
