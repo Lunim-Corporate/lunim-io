@@ -222,10 +222,10 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                   {officeHourItems.map((hour, index) => (
                     <li
                       key={index}
-                      className="flex justify-between items-center border-b border-white/5 pb-3 last:border-b-0 last:pb-0"
+                      className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-white/5 pb-3 last:border-b-0 last:pb-0"
                     >
                       <span
-                        className={`font-semibold ${
+                        className={`font-semibold mb-1.5 sm:mb-0 ${
                           isTech ? "text-white" : ""
                         }`}
                       >

@@ -1306,11 +1306,11 @@ type TechDocumentDataSlicesSlice =
   | ContactSlice;
 
 /**
- * Content for Tech documents
+ * Content for Digital documents
  */
 interface TechDocumentData {
   /**
-   * Slice Zone field in *Tech*
+   * Slice Zone field in *Digital*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
@@ -1319,7 +1319,7 @@ interface TechDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<TechDocumentDataSlicesSlice> /**
-   * Meta Title field in *Tech*
+   * Meta Title field in *Digital*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
@@ -1330,7 +1330,7 @@ interface TechDocumentData {
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *Tech*
+   * Meta Description field in *Digital*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
@@ -1341,7 +1341,7 @@ interface TechDocumentData {
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *Tech*
+   * Meta Image field in *Digital*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
@@ -1353,7 +1353,7 @@ interface TechDocumentData {
 }
 
 /**
- * Tech document from Prismic
+ * Digital document from Prismic
  *
  * - **API ID**: `tech`
  * - **Repeatable**: `false`
