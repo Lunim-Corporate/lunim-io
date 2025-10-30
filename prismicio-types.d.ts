@@ -145,6 +145,79 @@ export type AcademyDocument<Lang extends string = string> =
     Lang
   >;
 
+type AcademyCourseDocumentDataSlicesSlice =
+  | ContactSlice
+  | CompactHeroSlice
+  | ProjectShowcaseSlice
+  | ProcessSlice
+  | ServiceGridSlice
+  | ImageandtextSlice
+  | FaqSlice
+  | ExpertiseareasSlice;
+
+/**
+ * Content for Academy Course documents
+ */
+interface AcademyCourseDocumentData {
+  /**
+   * Slice Zone field in *Academy Course*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AcademyCourseDocumentDataSlicesSlice> /**
+   * Meta Title field in *Academy Course*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: academy_course.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Academy Course*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: academy_course.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Academy Course*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Academy Course document from Prismic
+ *
+ * - **API ID**: `academy_course`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AcademyCourseDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<AcademyCourseDocumentData>,
+    "academy_course",
+    Lang
+  >;
+
 type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
 
 /**
@@ -536,6 +609,79 @@ export type CaseStudySmDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<
     Simplify<CaseStudySmDocumentData>,
     "case_study_sm",
+    Lang
+  >;
+
+type DigitalPageDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ContactSlice
+  | ProjectShowcaseSlice
+  | ServiceGridSlice
+  | ExpertiseareasSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | FaqSlice;
+
+/**
+ * Content for Digital Page documents
+ */
+interface DigitalPageDocumentData {
+  /**
+   * Slice Zone field in *Digital Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<DigitalPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *Digital Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: digital_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Digital Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: digital_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Digital Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Digital Page document from Prismic
+ *
+ * - **API ID**: `digital_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type DigitalPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<DigitalPageDocumentData>,
+    "digital_page",
     Lang
   >;
 
@@ -1366,10 +1512,12 @@ export type TechDocument<Lang extends string = string> =
 
 export type AllDocumentTypes =
   | AcademyDocument
+  | AcademyCourseDocument
   | BlogHomePageDocument
   | BlogPostDocument
   | CaseStudyDocument
   | CaseStudySmDocument
+  | DigitalPageDocument
   | FilmDocument
   | FooterDocument
   | HomepageDocument
@@ -3255,6 +3403,9 @@ declare module "@prismicio/client" {
       AcademyDocument,
       AcademyDocumentData,
       AcademyDocumentDataSlicesSlice,
+      AcademyCourseDocument,
+      AcademyCourseDocumentData,
+      AcademyCourseDocumentDataSlicesSlice,
       BlogHomePageDocument,
       BlogHomePageDocumentData,
       BlogHomePageDocumentDataSlicesSlice,
@@ -3266,6 +3417,9 @@ declare module "@prismicio/client" {
       CaseStudySmDocument,
       CaseStudySmDocumentData,
       CaseStudySmDocumentDataSlicesSlice,
+      DigitalPageDocument,
+      DigitalPageDocumentData,
+      DigitalPageDocumentDataSlicesSlice,
       FilmDocument,
       FilmDocumentData,
       FilmDocumentDataSlicesSlice,
