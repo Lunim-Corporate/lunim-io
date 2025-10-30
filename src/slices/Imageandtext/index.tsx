@@ -1,19 +1,21 @@
 "use client";
+// Next
 import Image from "next/image";
+// Prismic
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content } from "@prismicio/client";
+import { isFilled, type Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
+import { PrismicNextLink } from "@prismicio/next";
 
-/**
- * Props for `Imageandtext`.
- */
 export type ImageandtextProps = SliceComponentProps<Content.ImageandtextSlice>;
 
-/**
- * Component for "Imageandtext" Slices.
- */
-const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => (
+const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => {
+
+  const buttonLinkField = slice.primary.buttonlink;
+  const buttonLinkFieldText = slice.primary.buttonlink?.text;
+
+  return (
   <section className="bg-black py-20">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center md:items-start gap-10">
       
@@ -40,10 +42,18 @@ const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => (
         <div className="text-gray-200">
           <PrismicRichText field={slice.primary.description} />
         </div>
+        {/* Show only if there is a link value AND text value */}
+        {isFilled.link(buttonLinkField) && buttonLinkFieldText && (
+          <PrismicNextLink field={buttonLinkField}>
+            <button
+              className="cursor-pointer bg-[#BBFEFF] text-black px-8 py-2.5 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300"
+            >{buttonLinkFieldText}</button>
+          </PrismicNextLink>
+        )}
       </div>
-
     </div>
   </section>
-);
+  )
+};
 
 export default Imageandtext;

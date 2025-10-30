@@ -1582,6 +1582,22 @@ export interface ImageandtextSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   description: prismic.RichTextField;
+
+  /**
+   * button link field in *Imageandtext → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Imageandtext.default.primary.buttonlink
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  buttonlink: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
