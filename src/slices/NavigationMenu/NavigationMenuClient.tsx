@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PrismicNextLink } from "@prismicio/next";
-import { Menu, X, ChevronDown, Circle } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import type { LinkField } from "@prismicio/client";
 import { asLink } from "@prismicio/helpers";
 import { usePathname } from "next/navigation";
@@ -178,23 +178,24 @@ export function NavigationMenuClient({
             const hasRealChildren = children.length > 0;
             return (
               <div key={section.id} className="relative group">
-                <div className="flex items-center">
-                  {section.link ? (
-                    <PrismicNextLink
-                      field={section.link}
-                      className="px-4 py-3 text-white/80 hover:text-white transition-colors"
-                    >
-                      {section.label}
-                    </PrismicNextLink>
-                  ) : (
-                    <span className="px-4 py-3 text-white/80">
-                      {section.label}
-                    </span>
-                  )}
-                  {hasRealChildren && (
-                    <ChevronDown className="w-4 h-4 ml-1 text-white/70 group-hover:text-white transition-colors" />
-                  )}
-                </div>
+                {section.link ? (
+                  <PrismicNextLink
+                    field={section.link}
+                    className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+                  >
+                    <span>{section.label}</span>
+                    {hasRealChildren && (
+                      <ChevronDown className="w-4 h-4 shrink-0 text-white/70 group-hover:text-white transition-colors" />
+                    )}
+                  </PrismicNextLink>
+                ) : (
+                  <span className="flex items-center gap-4 px-4 py-3 text-white/80">
+                    {section.label}
+                    {hasRealChildren && (
+                      <ChevronDown className="w-4 h-4 shrink-0 text-white/70 group-hover:text-white transition-colors" />
+                    )}
+                  </span>
+                )}
                 {hasRealChildren && (
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute left-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-[#0a0a1a] shadow-xl transition-all duration-200">
                     <ul className="py-2 list-none m-0">
@@ -202,9 +203,8 @@ export function NavigationMenuClient({
                         <li key={`${section.id}-${idx}`}>
                           <PrismicNextLink
                             field={child.link}
-                            className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors pl-6"
+                            className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors"
                           >
-                            <Circle className="w-2 h-2 text-white/40" />
                             {child.label}
                           </PrismicNextLink>
                         </li>
@@ -276,31 +276,45 @@ export function NavigationMenuClient({
                 className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
               >
                 <div className="px-2">
-                  <button
-                    type="button"
-                    onClick={() => (hasRealChildren ? toggleMobileSection(section.id) : undefined)}
-                    className="w-full flex items-center justify-between px-4 py-4 rounded-lg hover:bg-white/10 transition-colors"
-                    aria-expanded={hasRealChildren ? !!openMobileSections[section.id] : undefined}
+                  <div
+                    className={`flex items-center justify-between px-4 py-4 rounded-lg transition-colors ${
+                      openMobileSections[section.id] ? "bg-white/10" : "hover:bg-white/10"
+                    }`}
                   >
-                    {section.link && !hasRealChildren ? (
+                    {section.link ? (
                       <PrismicNextLink
                         field={section.link}
-                        className="text-white/90 hover:text-white font-medium w-full text-left"
+                        className="flex-1 text-white/90 hover:text-white font-medium text-left"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {section.label}
                       </PrismicNextLink>
                     ) : (
-                      <span className="text-white/90 font-medium">{section.label}</span>
+                      <button
+                        type="button"
+                        onClick={() => toggleMobileSection(section.id)}
+                        className="flex-1 text-left text-white/90 font-medium"
+                        aria-expanded={hasRealChildren ? !!openMobileSections[section.id] : undefined}
+                      >
+                        {section.label}
+                      </button>
                     )}
                     {hasRealChildren && (
-                      <ChevronDown
-                        className={`w-5 h-5 text-white/70 transition-transform ${
-                          openMobileSections[section.id] ? 'rotate-180' : ''
-                        }`}
-                      />
+                      <button
+                        type="button"
+                        onClick={() => toggleMobileSection(section.id)}
+                        className="ml-3 p-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+                        aria-expanded={!!openMobileSections[section.id]}
+                        aria-label={`Toggle ${section.label} submenu`}
+                      >
+                        <ChevronDown
+                          className={`w-5 h-5 transition-transform ${
+                            openMobileSections[section.id] ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
                     )}
-                  </button>
+                  </div>
                 </div>
                 {hasRealChildren && openMobileSections[section.id] && (
                   <ul className="list-none m-0 px-3 pb-4 space-y-1">
@@ -308,11 +322,10 @@ export function NavigationMenuClient({
                       <li key={`${section.id}-m-${idx}`}>
                         <PrismicNextLink
                           field={child.link}
-                          className="flex items-center gap-3 px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg ml-3"
+                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg ml-3 text-[14px]"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/50" />
-                          <span className="text-sm">{child.label}</span>
+                          {child.label}
                         </PrismicNextLink>
                       </li>
                     ))}
@@ -322,6 +335,17 @@ export function NavigationMenuClient({
             );
           })}
         </div>
+        {data.ctaLabel && finalCtaHref && (
+          <div className="w-full max-w-xs px-2 mt-6">
+            <Link
+              href={finalCtaHref}
+              onClick={() => setIsMenuOpen(false)}
+              className="block w-full px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black text-center shadow-lg md:hidden"
+            >
+              {data.ctaLabel}
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );
