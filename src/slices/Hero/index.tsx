@@ -67,7 +67,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
         }}
         aria-label="Scroll down"
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-full p-3 text-cyan-400 hover:text-cyan-300 ring-1 ring-white/15 bg-black/30 backdrop-blur-md shadow-lg animate-bounce"
+        className="cursor-pointer absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-full p-3 text-cyan-400 hover:text-cyan-300 ring-1 ring-white/15 bg-black/30 backdrop-blur-md shadow-lg animate-bounce"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
