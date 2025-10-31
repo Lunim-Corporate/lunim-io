@@ -35,8 +35,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     return { title: "Academy Course | Lunim" };
   }
 
+  const docName = doc.uid[0].toUpperCase() + doc.uid.slice(1);
+
   return {
-    title: doc.data.meta_title || `${doc.uid} | Academy Course`,
+    title: doc.data.meta_title || `${docName} | Academy Course`,
     description: doc.data.meta_description || "An academy course by Lunim.",
   };
 }
