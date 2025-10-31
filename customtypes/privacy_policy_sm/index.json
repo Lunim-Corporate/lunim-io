@@ -6,6 +6,13 @@
   "status": true,
   "json": {
     "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "uid",
+          "placeholder": ""
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
@@ -43,6 +50,29 @@
           "thumbnails": []
         },
         "type": "Image"
+      },
+      "meta_image_alt_text": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Image Alt Text",
+          "placeholder": ""
+        }
+      },
+      "meta_keywords": {
+        "type": "Group",
+        "config": {
+          "label": "Meta Keywords",
+          "repeat": true,
+          "fields": {
+            "meta_keywords_text": {
+              "type": "Text",
+              "config": {
+                "label": "Meta Keywords Text",
+                "placeholder": ""
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -83,6 +83,21 @@ type AcademyDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
+ * Item in *Academy → Meta Keywords*
+ */
+export interface AcademyDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Academy → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Academy documents
  */
 interface AcademyDocumentData {
@@ -127,6 +142,30 @@ interface AcademyDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Academy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Academy*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<AcademyDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -154,6 +193,21 @@ type AcademyCourseDocumentDataSlicesSlice =
   | ImageandtextSlice
   | FaqSlice
   | ExpertiseareasSlice;
+
+/**
+ * Item in *Academy Course → Meta Keywords*
+ */
+export interface AcademyCourseDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Academy Course → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
 
 /**
  * Content for Academy Course documents
@@ -200,6 +254,30 @@ interface AcademyCourseDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Academy Course*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Academy Course*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<AcademyCourseDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -316,6 +394,21 @@ export type AuthorDocument<Lang extends string = string> =
 type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
 
 /**
+ * Item in *Blog Home Page → Meta Keywords*
+ */
+export interface BlogHomePageDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Blog Home Page → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home_page.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Blog Home Page documents
  */
 interface BlogHomePageDocumentData {
@@ -360,6 +453,30 @@ interface BlogHomePageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Blog Home Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Blog Home Page*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home_page.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<BlogHomePageDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -379,6 +496,21 @@ export type BlogHomePageDocument<Lang extends string = string> =
   >;
 
 type BlogPostDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Item in *Blog Post → Meta Keywords*
+ */
+export interface BlogPostDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Blog Post → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
 
 /**
  * Content for Blog Post documents
@@ -503,6 +635,30 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Blog Post*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Blog Post*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<BlogPostDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -635,6 +791,21 @@ type CaseStudySmDocumentDataSlicesSlice =
   | CompactHeroSlice;
 
 /**
+ * Item in *Case Study SM → Meta Keywords*
+ */
+export interface CaseStudySmDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Case Study SM → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Case Study SM documents
  */
 interface CaseStudySmDocumentData {
@@ -679,6 +850,30 @@ interface CaseStudySmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Case Study SM*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<CaseStudySmDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -706,6 +901,21 @@ type DigitalPageDocumentDataSlicesSlice =
   | ImageandtextSlice
   | ProcessSlice
   | FaqSlice;
+
+/**
+ * Item in *Digital Page → Meta Keywords*
+ */
+export interface DigitalPageDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Digital Page → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
 
 /**
  * Content for Digital Page documents
@@ -752,6 +962,30 @@ interface DigitalPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Digital Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Digital Page*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<DigitalPageDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -782,6 +1016,21 @@ type FilmDocumentDataSlicesSlice =
   | ImageandtextSlice
   | ProjectShowcaseSlice
   | ExpertiseareasSlice;
+
+/**
+ * Item in *Film → Meta Keywords*
+ */
+export interface FilmDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Film → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
 
 /**
  * Content for Film documents
@@ -828,6 +1077,28 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Film*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Film*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<Simplify<FilmDocumentDataMetaKeywordsItem>>;
 }
 
 /**
@@ -888,6 +1159,21 @@ type HomepageDocumentDataSlicesSlice =
   | ContactSlice;
 
 /**
+ * Item in *Homepage → Meta Keywords*
+ */
+export interface HomepageDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Homepage → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Homepage documents
  */
 interface HomepageDocumentData {
@@ -932,6 +1218,30 @@ interface HomepageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Homepage*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Homepage*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<HomepageDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -1046,6 +1356,21 @@ export type NavSectionDocument<Lang extends string = string> =
 type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
 
 /**
+ * Item in *Our Team → Meta Keywords*
+ */
+export interface OurTeamPageDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Our Team → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Our Team documents
  */
 interface OurTeamPageDocumentData {
@@ -1090,6 +1415,30 @@ interface OurTeamPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Our Team*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Our Team*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<OurTeamPageDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -1188,6 +1537,21 @@ export type PrivacyPolicyDocument<Lang extends string = string> =
 type PrivacyPolicySmDocumentDataSlicesSlice = PrivacyTextBoxSlice;
 
 /**
+ * Item in *Privacy Policy SM → Meta Keywords*
+ */
+export interface PrivacyPolicySmDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Privacy Policy SM → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Privacy Policy SM documents
  */
 interface PrivacyPolicySmDocumentData {
@@ -1232,6 +1596,30 @@ interface PrivacyPolicySmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<PrivacyPolicySmDocumentDataMetaKeywordsItem>
+  >;
 }
 
 /**
@@ -1244,7 +1632,7 @@ interface PrivacyPolicySmDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type PrivacyPolicySmDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<PrivacyPolicySmDocumentData>,
     "privacy_policy_sm",
     Lang
@@ -1262,6 +1650,21 @@ type TabbDocumentDataSlicesSlice =
   | ServiceGridSlice
   | HeroSlice
   | PrivacyTextBoxSlice;
+
+/**
+ * Item in *Tabb → Meta Keywords*
+ */
+export interface TabbDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Tabb → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
 
 /**
  * Content for Tabb documents
@@ -1308,6 +1711,28 @@ interface TabbDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Tabb*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Tabb*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<Simplify<TabbDocumentDataMetaKeywordsItem>>;
 }
 
 /**
@@ -1537,6 +1962,21 @@ type TechDocumentDataSlicesSlice =
   | ContactSlice;
 
 /**
+ * Item in *Digital → Meta Keywords*
+ */
+export interface TechDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Digital → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Digital documents
  */
 interface TechDocumentData {
@@ -1581,6 +2021,28 @@ interface TechDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Digital*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Digital*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<Simplify<TechDocumentDataMetaKeywordsItem>>;
 }
 
 /**
@@ -3587,9 +4049,11 @@ declare module "@prismicio/client" {
       AcademyDocument,
       AcademyDocumentData,
       AcademyDocumentDataSlicesSlice,
+      AcademyDocumentDataMetaKeywordsItem,
       AcademyCourseDocument,
       AcademyCourseDocumentData,
       AcademyCourseDocumentDataSlicesSlice,
+      AcademyCourseDocumentDataMetaKeywordsItem,
       AuthorDocument,
       AuthorDocumentData,
       AuthorDocumentDataSocialMediaItem,
@@ -3597,32 +4061,39 @@ declare module "@prismicio/client" {
       BlogHomePageDocument,
       BlogHomePageDocumentData,
       BlogHomePageDocumentDataSlicesSlice,
+      BlogHomePageDocumentDataMetaKeywordsItem,
       BlogPostDocument,
       BlogPostDocumentData,
       BlogPostDocumentDataSlicesSlice,
+      BlogPostDocumentDataMetaKeywordsItem,
       CaseStudyDocument,
       CaseStudyDocumentData,
       CaseStudySmDocument,
       CaseStudySmDocumentData,
       CaseStudySmDocumentDataSlicesSlice,
+      CaseStudySmDocumentDataMetaKeywordsItem,
       DigitalPageDocument,
       DigitalPageDocumentData,
       DigitalPageDocumentDataSlicesSlice,
+      DigitalPageDocumentDataMetaKeywordsItem,
       FilmDocument,
       FilmDocumentData,
       FilmDocumentDataSlicesSlice,
+      FilmDocumentDataMetaKeywordsItem,
       FooterDocument,
       FooterDocumentData,
       FooterDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
+      HomepageDocumentDataMetaKeywordsItem,
       NavSectionDocument,
       NavSectionDocumentData,
       NavSectionDocumentDataChildLinksItem,
       OurTeamPageDocument,
       OurTeamPageDocumentData,
       OurTeamPageDocumentDataSlicesSlice,
+      OurTeamPageDocumentDataMetaKeywordsItem,
       PrimaryNavigationDocument,
       PrimaryNavigationDocumentData,
       PrimaryNavigationDocumentDataSlicesSlice,
@@ -3631,9 +4102,11 @@ declare module "@prismicio/client" {
       PrivacyPolicySmDocument,
       PrivacyPolicySmDocumentData,
       PrivacyPolicySmDocumentDataSlicesSlice,
+      PrivacyPolicySmDocumentDataMetaKeywordsItem,
       TabbDocument,
       TabbDocumentData,
       TabbDocumentDataSlicesSlice,
+      TabbDocumentDataMetaKeywordsItem,
       TeamPageDocument,
       TeamPageDocumentData,
       TeamPageDocumentDataBodySlice,
@@ -3644,6 +4117,7 @@ declare module "@prismicio/client" {
       TechDocument,
       TechDocumentData,
       TechDocumentDataSlicesSlice,
+      TechDocumentDataMetaKeywordsItem,
       AllDocumentTypes,
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
