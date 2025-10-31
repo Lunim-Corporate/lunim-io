@@ -187,7 +187,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                                 isDigital ? "text-lg" : "text-base"
                               }`}
                             >
-                              {displayTitle}xxx
+                              {displayTitle}
                             </p>
                           )}
                           {descriptionContent}
