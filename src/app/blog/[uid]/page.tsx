@@ -26,8 +26,11 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
   const client = createClient();
+  // Pass custom name of linked document type 'author'
   const doc = await client
-    .getByUID<Content.BlogPostDocument>("blog_post", uid)
+    .getByUID<Content.BlogPostDocument>("blog_post", uid, {
+      fetchLinks: ["author.author_name", "author.author_image", "author.author_bio"],
+    })
     .catch(() => null);
   if (!doc) notFound();
   const docData: Simplify<Content.BlogPostDocumentData> = doc.data;
@@ -35,9 +38,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqSlice: SliceZone<Content.FaqSlice> = docData.slices
   const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
-  const authorName = asText(docData.author_name);
   const readingTime: number = calculateReadingTime(docData.main_article_content);
-  
+  // Author info from linked document
+  const author = docData.author_info;
+  const authorName = author.data?.author_name;
+  const authorBio = author.data?.author_bio;
+  const authorImage = author.data?.author_image;
+
   return (
     <main className="bg-black text-white mb-15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen mt-50">
@@ -137,12 +144,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 <div className="order-2 sm:order-1">
                   <h4 className="mb-0!">Article Written by</h4>
                   <h3 className="mt-0! font-bold">{authorName}</h3>
-                  <p>{docData.more_about_author_text}</p>
+                  <p>{authorBio}</p>
                   {/* TODO: Implement later */}
                   {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
                 </div>
                 <div className="order-1 sm:order-2">
-                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[150] aspect-[1] sm:ms-auto" />
+                  <PrismicNextImage field={authorImage} className="rounded-full w-[150] aspect-[1] sm:ms-auto" />
                 </div>
               </div>
                {/* End Article written by section */}
