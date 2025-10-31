@@ -9,6 +9,7 @@ export const components = {
   Process: dynamic(() => import("./Process")),
   ProjectShowcase: dynamic(() => import("./ProjectShowcase")),
   ServiceGrid: dynamic(() => import("./ServiceGrid")),
+  author_info: dynamic(() => import("./AuthorInfo")),
   blog_article_card: dynamic(() => import("./BlogArticleCard")),
   blog_list: dynamic(() => import("./BlogList")),
   case_study_text_panel: dynamic(() => import("./CaseStudyTextPanel")),

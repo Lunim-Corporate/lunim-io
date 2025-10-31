@@ -78,6 +78,28 @@
           "placeholder": ""
         }
       },
+      "author_info": {
+        "type": "Link",
+        "config": {
+          "label": "Author info",
+          "select": "document",
+          "repeat": false,
+          "customtypes": [
+            {
+              "id": "author",
+              "fields": [
+                "author_name",
+                "author_image",
+                "author_bio",
+                {
+                  "id": "social_media",
+                  "fields": ["social_link"]
+                }
+              ]
+            }
+          ]
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
