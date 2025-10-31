@@ -60,17 +60,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
   const readingTime: number = calculateReadingTime(docData.main_article_content);
   // Author info from linked document
-<<<<<<< HEAD
-  const author = docData.author_info;
-
-  // Narrow the relationship union with an 'in' type-guard so TypeScript
-  // knows `data` exists (EmptyContentRelationshipField doesn't have `data`).
-  const authorData = author && "data" in author ? author.data : undefined;
-
-  const authorName = authorData?.author_name;
-  const authorBio = authorData?.author_bio;
-  const authorImage = authorData?.author_image;
-=======
   const authorInfo = docData.author_info;
   const authorData =
     authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
@@ -95,7 +84,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     authorImage,
     authorName || "Blog author portrait"
   );
->>>>>>> 795a3c859c97143ee386220cf8b893fcb0dd1d7d
 
   return (
     <main className="bg-black text-white mb-15">
@@ -123,10 +111,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               </div>
               <div className="flex gap-10">
                 <div className="flex items-center">
-<<<<<<< HEAD
-                  <PrismicNextImage field={authorImage} className="rounded-full w-[40] aspect-[1] inline-block mr-2" />
-                  <span>By {authorName} </span>
-=======
                   {authorImageWithAlt?.url ? (
                     <PrismicNextImage
                       field={authorImageWithAlt}
@@ -134,7 +118,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                     />
                   ) : null}
                   <span>By {authorDisplayName} </span>
->>>>>>> 795a3c859c97143ee386220cf8b893fcb0dd1d7d
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1" />
