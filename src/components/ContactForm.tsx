@@ -75,16 +75,16 @@ const ContactForm: React.FC<ContactFormProps> = ({
     handleSubmit,
   } = formHook;
 
-  const messageVariants = variant === "home" || variant === "film" || variant === "tech";
+  const messageVariants = variant === "home" || variant === "media" || variant === "academy";
   const showBudget: boolean =
-    variant === "tech" && Array.isArray(budgetOptions) && budgetOptions.length > 0;
-  const showGoalsField = variant !== "academy";
+    variant === "digital" && Array.isArray(budgetOptions) && budgetOptions.length > 0;
+  const showGoalsField = variant !== "academy_marketing";
   const computedGoalsLabel: string =
     messageVariants
       ? "Message *"
       : `${goalsLabel || "Project Goals *"}`;
   const computedButton: string =
-    variant === "academy" ? "Book Course" : buttonLabel || "Send Enquiry";
+    variant === "academy_marketing" ? "Book Course" : buttonLabel || "Send Enquiry";
   const placeholderMsg: string =
     messageVariants
       ? "What would you like to talk about?"
@@ -96,7 +96,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
       style={{ scrollMarginTop: "5rem" }}
     >
-      <h3 className="text-xl font-bold text-white mt-1 mb-6 text-center">
+      <h3 className="text-xl font-bold text-white !mt-1 !mb-6 text-center">
         {resolvedTitle}
       </h3>
 
@@ -105,7 +105,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left"
       >
         <input type="hidden" name="source" value={source} />
-        {variant === "academy" && (
+        {variant === "academy_marketing" && (
           <input type="hidden" name="order_status" value="pending" />
         )}
 
@@ -141,7 +141,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           placeholder="Your Company Name"
         />
 
-        {/* Budget: only on Tech page */}
+        {/* Budget: only on Digital page */}
         {showBudget && (
           <div>
             <label
@@ -183,7 +183,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </div>
         )}
 
-        {variant === "academy" && (
+        {variant === "academy_marketing" && (
           <div className="md:col-span-2 bg-[#0f172a] border border-white/10 rounded-lg p-6 space-y-3">
             <h4 className="text-white font-semibold text-lg">Course Details</h4>
             <p className="text-gray-200">

@@ -16,7 +16,7 @@ const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => {
   const buttonLinkFieldText = slice.primary.buttonlink?.text;
 
   return (
-  <section className="bg-black py-20">
+  <section className="bg-black py-16">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center md:items-start gap-10">
       
       <div className="bg-[#1e293b] rounded-lg w-full md:w-1/2 flex justify-center items-center h-64 overflow-hidden relative">

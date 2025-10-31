@@ -227,6 +227,14 @@ export function NavigationMenuClient({
               {data.ctaLabel}
             </Link>
           )}
+          {data.ctaLabel && finalCtaHref && (
+            <Link
+              href={finalCtaHref}
+              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+            >
+              {data.ctaLabel}
+            </Link>
+          )}
           <button
             onClick={() => setIsMenuOpen((v) => !v)}
             className="md:hidden ml-4 p-3 rounded-full bg-black/30 border border-cyan-500/30"
@@ -240,7 +248,7 @@ export function NavigationMenuClient({
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile nav */}
       <div
         ref={menuRef}
         className={`md:hidden fixed inset-0 bg-[#0a0a1a]/90 backdrop-blur-lg pt-24 pb-12 z-40 flex flex-col items-center transition-all duration-500 ${
@@ -275,16 +283,16 @@ export function NavigationMenuClient({
                 key={section.id}
                 className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
               >
-                <div className="px-2">
+                <div>
                   <div
-                    className={`flex items-center justify-between px-4 py-4 rounded-lg transition-colors ${
+                    className={`flex items-center justify-between rounded-lg transition-colors ${
                       openMobileSections[section.id] ? "bg-white/10" : "hover:bg-white/10"
                     }`}
                   >
                     {section.link ? (
                       <PrismicNextLink
                         field={section.link}
-                        className="flex-1 text-white/90 hover:text-white font-medium text-left"
+                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {section.label}
@@ -303,7 +311,7 @@ export function NavigationMenuClient({
                       <button
                         type="button"
                         onClick={() => toggleMobileSection(section.id)}
-                        className="ml-3 p-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+                        className="mx-3 my-2 p-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
                         aria-expanded={!!openMobileSections[section.id]}
                         aria-label={`Toggle ${section.label} submenu`}
                       >
@@ -317,12 +325,12 @@ export function NavigationMenuClient({
                   </div>
                 </div>
                 {hasRealChildren && openMobileSections[section.id] && (
-                  <ul className="list-none m-0 px-3 pb-4 space-y-1">
+                  <ul className="list-none m-0 px-2 pb-2 pt-2 space-y-1">
                     {children.map((child, idx) => (
                       <li key={`${section.id}-m-${idx}`}>
                         <PrismicNextLink
                           field={child.link}
-                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg ml-3 text-[14px]"
+                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px]"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {child.label}

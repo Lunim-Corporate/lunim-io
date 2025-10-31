@@ -19,7 +19,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
       id={slice.primary.section_id || "case-studies"}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="bg-[#0f172a] py-20"
+      className="bg-[#0f172a] py-16"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {slice.primary.title && (
