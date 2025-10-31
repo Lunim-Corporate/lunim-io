@@ -36,7 +36,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
   }, []);
 
   return (
-    <section className="bg-[#0f172a] py-20">
+    <section className="bg-[#0f172a] py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Title */}
         <div className="text-3xl font-bold text-white mb-12">

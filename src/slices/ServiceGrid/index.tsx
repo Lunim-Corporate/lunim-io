@@ -32,7 +32,7 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
   
   return (
     // Use the section_id directly from the Key Text field
-    <section id={slice.primary.section_id || undefined} className="py-20 bg-[#0f172a]">
+    <section id={slice.primary.section_id || undefined} className="py-16 bg-[#0f172a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="text-3xl font-bold text-white mb-12">
             <PrismicRichText field={slice.primary.title} />

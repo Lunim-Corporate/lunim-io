@@ -8,6 +8,7 @@ export type ContactVariant =
   | "digital"
   | "media"
   | "academy"
+  | "academy_marketing"
   | "tabb"
   | "default";
 
@@ -40,7 +41,8 @@ export const useContactForm = (opts?: {
     setErrorMessage("");
 
     // required fields: full name, email, goals/message
-    const requireGoals = variant !== "academy";
+    const requireGoals =
+      variant !== "academy" && variant !== "academy_marketing";
 
     const missingFields: string[] = [];
     if (!fullName) missingFields.push("Full Name");
@@ -68,7 +70,7 @@ export const useContactForm = (opts?: {
     }
 
     // Academy will later use Stripe; mark pending now
-    if (variant === "academy") {
+    if (variant === "academy" || variant === "academy_marketing") {
       payload.order_status = "pending";
     }
 
