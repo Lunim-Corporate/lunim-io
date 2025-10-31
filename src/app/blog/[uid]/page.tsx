@@ -1,5 +1,6 @@
 // app/blog/[uid]/page.tsx
 // Next
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 // Prismicio
@@ -60,6 +61,10 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const authorInfo = docData.author_info;
   const authorData =
     authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
+  const authorUid =
+    authorInfo && "uid" in authorInfo && typeof authorInfo.uid === "string"
+      ? authorInfo.uid
+      : null;
   const authorName =
     (typeof authorData?.author_name === "string"
       ? authorData.author_name.trim()
@@ -186,12 +191,18 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               <div className="grid grid-cols-1 sm:grid-cols-[3fr_1fr] sm:gap-x-2 p-6 bg-[#1f2937] rounded-lg">
                 <div className="order-2 sm:order-1">
                   <h4 className="mb-0!">Article Written by</h4>
-                  <h3 className="mt-0! font-bold">{authorDisplayName}</h3>
-                  <p>{authorBio}</p>
-                  {/* TODO: Implement later */}
-                  {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
+              <h3 className="mt-0! font-bold">{authorDisplayName}</h3>
+              <p>{authorBio}</p>
+              {authorUid ? (
+                <Link
+                  href={`/blog/authors/${authorUid}`}
+                  className="inline-flex items-center justify-center px-5 py-2 mt-4 text-sm font-semibold text-black bg-cyan-300 rounded-full hover:bg-cyan-200 transition-colors"
+                >
+                  More from {authorDisplayName}
+                </Link>
+              ) : null}
                 </div>
-                <div className="order-1 sm:order-2">
+              <div className="order-1 sm:order-2">
                   {authorImageWithAlt?.url ? (
                     <PrismicNextImage
                       field={authorImageWithAlt}
