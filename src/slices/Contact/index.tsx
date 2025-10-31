@@ -33,6 +33,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
     if (p === "/tabb" || p.startsWith("/tabb/")) return "tabb";
     if (p === "/digital" || p.startsWith("/digital/")) return "digital";
     if (p === "/media" || p.startsWith("/media/")) return "media";
+    if (p.startsWith("/academy/marketing")) return "academy_marketing";
     if (p === "/academy" || p.startsWith("/academy/")) return "academy";
     return "default";
   }, [pathname]);
@@ -44,7 +45,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
     if (variant === "home" || variant === "media") return "Ready to Go?";
     if (variant === "academy") return "Ready to Learn?";
     if (isDigital) return "Ready to Innovate?";
-    return asText(slice.primary.main_title) || "Get in Touch";
+    return asText(slice.primary.main_title) || "Get in Touch xxx";
   })();
 
   const computedSubtitle = (() => {
@@ -59,9 +60,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
 
   // Left panels content adjustments:
   const waysTitle = isDigital ? "Why Contact Us?" : "Ways to Contact Us";
-  const waysSubtitle = isDigital
-    ? ""
-    : "We respond to all queries within 24 hours";
+  const waysSubtitle = "We respond to all queries within 24 hours";
 
   const contactItems = slice.primary.contact_info || [];
   const officeHourItems = slice.primary.office_info || [];
@@ -131,7 +130,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                 >
                   {waysTitle}
                 </h3>
-                {!isDigital && waysSubtitle && (
+                {waysSubtitle && (
                   <p className="text-gray-300 mb-6">{waysSubtitle}</p>
                 )}
                 <ul className="space-y-5 list-none">
@@ -152,7 +151,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     if (!hasLabel && !hasDesc) return null;
 
                     const descriptionContent =
-                      isQuickResponse && !isDigital ? (
+                      isQuickResponse ? (
                         <a
                           href="https://calendly.com/hello-lunim/30min"
                           target="_blank"
