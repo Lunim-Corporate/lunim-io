@@ -1,15 +1,43 @@
+import AnalyticsProvider from "./AnalyticsProvider";
+import { GA_ID } from "@/lib/gtag";
+// React
 import { Suspense } from "react";
+// Next
 import Script from "next/script";
 import { draftMode } from "next/headers";
+import { Metadata } from "next";
+// Prismic
 import { createClient, repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
-import "./globals.css";
 import NavigationMenu from "@/slices/NavigationMenu";
 import Footer from "@/slices/Footer";
 import { Content } from "@prismicio/client";
+// Styles
+import "./globals.css";
+// Components
 import SmoothScroll from "@/components/SmoothScroll";
-import AnalyticsProvider from "./AnalyticsProvider";
-import { GA_ID } from "@/lib/gtag";
+
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Lunim",
+    default: "Lunim", // Fall back when no title is provided
+  },
+  // Default description
+  description: "Lunim website page",
+  keywords: "technology, innovation, software, development, lunim",
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    siteName: "Lunim",
+    // images: [
+    //   {
+    //     url: "",
+    //     alt: "Lunim",
+    //   }
+    // ]
+  }
+  }
 
 export default async function RootLayout({
   children,

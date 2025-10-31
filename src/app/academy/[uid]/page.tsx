@@ -2,12 +2,14 @@
 // Marketing, Engineering, Design, Filmmaking, HR
 // Next
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 // Prismic
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { AcademyCourseDocument } from "../../../../prismicio-types";
+// Utils
+import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string };
 
@@ -27,18 +29,50 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   );
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Promise<Params> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
   const { uid } = await params;
   const client = createClient();
-  const doc = await client.getByUID<AcademyCourseDocument>("academy_course", uid).catch(() => null);
+  const parentMetaData = await pickBaseMetadata(parent);
+  const doc = await client
+  .getByUID<AcademyCourseDocument>("academy_course", uid)
+  .catch(() => null);
   if (!doc) {
-    return { title: "Academy Course | Lunim" };
+    return {
+      title: "Lunim Academy Course",
+      description: "Welcome to Lunim's Academy Course Page."
+    };
   }
 
-  const docName = doc.uid[0].toUpperCase() + doc.uid.slice(1);
+
+  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
+  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
+  const parentKeywords = parentMetaData.keywords || "";
+  // Ensure each keyword is separated by a comma and space
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
+  const title = doc.data?.meta_title || parentMetaData.title;
+  const description = doc.data?.meta_description || parentMetaData.description;
+
+  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
 
   return {
-    title: doc.data.meta_title || `${docName} | Academy Course`,
-    description: doc.data.meta_description || "An academy course by Lunim.",
-  };
+    ...parentMetaData,
+    title: title,
+    description: description,
+    keywords: keywords, 
+    openGraph: {
+      ...parentMetaData.openGraph,
+      title: typeof title === 'string' ? `${title}` : fallBackPageName,
+      description: `${description}`,
+      // images: [
+      //   {
+      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
+      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
+      //   }
+      // ]
+    },
+  }
 }
