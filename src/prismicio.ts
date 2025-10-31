@@ -62,6 +62,7 @@ const routes: Route[] = [
   { type: "privacy_policy_sm", path: "/privacy-policy" },
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
+  { type: "author", path: "/blog/authors/:uid" },
 ];
 
 /**
