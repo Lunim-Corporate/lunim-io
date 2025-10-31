@@ -133,7 +133,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                 {waysSubtitle && (
                   <p className="text-gray-300 !mb-6">{waysSubtitle}</p>
                 )}
-                <ul className="space-y-5 list-none">
+                <ul className="space-y-7 list-none">
                   {contactItems.map((item, index) => {
                     const Icon = iconComponents[item.icon_name || ""] || Clock;
                     const rawTitle =
