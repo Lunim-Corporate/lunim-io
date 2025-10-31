@@ -285,14 +285,14 @@ export function NavigationMenuClient({
               >
                 <div>
                   <div
-                    className={`flex items-center justify-between px-4 py-4 rounded-lg transition-colors ${
+                    className={`flex items-center justify-between rounded-lg transition-colors ${
                       openMobileSections[section.id] ? "bg-white/10" : "hover:bg-white/10"
                     }`}
                   >
                     {section.link ? (
                       <PrismicNextLink
                         field={section.link}
-                        className="flex-1 text-white/90 hover:text-white font-medium text-left"
+                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {section.label}
@@ -311,7 +311,7 @@ export function NavigationMenuClient({
                       <button
                         type="button"
                         onClick={() => toggleMobileSection(section.id)}
-                        className="ml-3 p-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+                        className="mx-3 my-2 p-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
                         aria-expanded={!!openMobileSections[section.id]}
                         aria-label={`Toggle ${section.label} submenu`}
                       >
