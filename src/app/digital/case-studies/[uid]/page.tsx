@@ -1,4 +1,4 @@
-// app/tech/casestudies/[uid]/page.tsx
+// app/tech/case-studies/[uid]/page.tsx
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
