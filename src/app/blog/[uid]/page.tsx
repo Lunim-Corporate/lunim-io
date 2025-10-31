@@ -22,6 +22,23 @@ import ViewCounter from "@/components/ViewCounter";
 
 type Params = { uid: string };
 
+type ImageLikeField = {
+  url?: string | null;
+  alt?: string | null;
+};
+
+function withFallbackAlt<T extends ImageLikeField>(
+  field: T | null | undefined,
+  fallback: string
+): T | null | undefined {
+  if (!field?.url) return field ?? null;
+  const existingAlt =
+    typeof field.alt === "string" ? field.alt.trim() : "";
+  if (existingAlt) return field;
+  const fallbackAlt = fallback.trim() || "Blog image";
+  return { ...field, alt: fallbackAlt } as T;
+}
+
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
@@ -40,10 +57,26 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
   const readingTime: number = calculateReadingTime(docData.main_article_content);
   // Author info from linked document
-  const author = docData.author_info;
-  const authorName = author.data?.author_name;
-  const authorBio = author.data?.author_bio;
-  const authorImage = author.data?.author_image;
+  const authorInfo = docData.author_info;
+  const authorData =
+    authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
+  const authorName =
+    (typeof authorData?.author_name === "string"
+      ? authorData.author_name.trim()
+      : "") || "";
+  const authorDisplayName = authorName || "Lunim";
+  const authorBio = authorData?.author_bio;
+  const authorImage = authorData?.author_image ?? null;
+
+  const headingText = asText(docData.blog_article_heading).trim();
+  const articleImageWithAlt = withFallbackAlt(
+    docData.article_main_image,
+    headingText || "Blog article image"
+  );
+  const authorImageWithAlt = withFallbackAlt(
+    authorImage,
+    authorName || "Blog author portrait"
+  );
 
   return (
     <main className="bg-black text-white mb-15">
@@ -71,8 +104,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               </div>
               <div className="flex gap-10">
                 <div className="flex items-center">
-                  <PrismicNextImage field={docData.author_image} className="rounded-full w-[40] aspect-[1] inline-block mr-2" />
-                  <span>By {authorName} </span>
+                  {authorImageWithAlt?.url ? (
+                    <PrismicNextImage
+                      field={authorImageWithAlt}
+                      className="rounded-full w-[40] aspect-[1] inline-block mr-2"
+                    />
+                  ) : null}
+                  <span>By {authorDisplayName} </span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1" />
@@ -82,7 +120,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </div>
             {/* Hero Image Wrapper */}
             <div>
-              <PrismicNextImage field={docData.article_main_image} className="rounded-2xl" />
+              {articleImageWithAlt?.url ? (
+                <PrismicNextImage
+                  field={articleImageWithAlt}
+                  className="rounded-2xl"
+                />
+              ) : null}
             </div>
           </div>
           {/* Table of Contents and Main content */}
@@ -143,13 +186,18 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               <div className="grid grid-cols-1 sm:grid-cols-[3fr_1fr] sm:gap-x-2 p-6 bg-[#1f2937] rounded-lg">
                 <div className="order-2 sm:order-1">
                   <h4 className="mb-0!">Article Written by</h4>
-                  <h3 className="mt-0! font-bold">{authorName}</h3>
+                  <h3 className="mt-0! font-bold">{authorDisplayName}</h3>
                   <p>{authorBio}</p>
                   {/* TODO: Implement later */}
                   {/* <PrismicNextLink field={docData.more_posts_link_text} className="underline underline-offset-8 font-bold" /> */}
                 </div>
                 <div className="order-1 sm:order-2">
-                  <PrismicNextImage field={authorImage} className="rounded-full w-[150] aspect-[1] sm:ms-auto" />
+                  {authorImageWithAlt?.url ? (
+                    <PrismicNextImage
+                      field={authorImageWithAlt}
+                      className="rounded-full w-[150] aspect-[1] sm:ms-auto"
+                    />
+                  ) : null}
                 </div>
               </div>
                {/* End Article written by section */}
