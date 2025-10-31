@@ -4,6 +4,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
 import { Clock, Mail, Phone, LucideProps } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
+import type { ContactVariant } from "@/hooks/useContactForm";
 import type { Content } from "@prismicio/client";
 import model from "@/slices/Contact/model.json";
 import { usePathname } from "next/navigation";
@@ -26,15 +27,15 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   const pathname = usePathname();
 
   // Route-based variant to drive copy & field visibility
-  const variant = useMemo<"home" | "digital" | "media" | "academy" | "tabb" | "default">(() => {
+  const variant = useMemo<ContactVariant>(() => {
     const p = pathname.replace(/\/+$/, "") || "/";
     if (p === "/") return "home";
     if (p === "/tabb" || p.startsWith("/tabb/")) return "tabb";
     if (p === "/digital" || p.startsWith("/digital/")) return "digital";
     if (p === "/media" || p.startsWith("/media/")) return "media";
-  if (p === "/academy" || p.startsWith("/academy/")) return "academy";
-  return "default";
-}, [pathname]);
+    if (p === "/academy" || p.startsWith("/academy/")) return "academy";
+    return "default";
+  }, [pathname]);
 
   const isDigital = variant === "digital";
 
