@@ -218,6 +218,101 @@ export type AcademyCourseDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Author → Social media*
+ */
+export interface AuthorDocumentDataSocialMediaItem {
+  /**
+   * Social media link field in *Author → Social media*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.social_media[].social_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  social_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+}
+
+type AuthorDocumentDataSlicesSlice = BlogListSlice;
+
+/**
+ * Content for Author documents
+ */
+interface AuthorDocumentData {
+  /**
+   * Author Name field in *Author*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.author_name
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author_name: prismic.RichTextField;
+
+  /**
+   * Author image field in *Author*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.author_image
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  author_image: prismic.ImageField<never>;
+
+  /**
+   * Author biography field in *Author*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.author_bio
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author_bio: prismic.RichTextField;
+
+  /**
+   * Social media field in *Author*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.social_media[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  social_media: prismic.GroupField<Simplify<AuthorDocumentDataSocialMediaItem>>;
+
+  /**
+   * Slice Zone field in *Author*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AuthorDocumentDataSlicesSlice>;
+}
+
+/**
+ * Author document from Prismic
+ *
+ * - **API ID**: `author`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AuthorDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<AuthorDocumentData>, "author", Lang>;
+
 type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
 
 /**
@@ -376,6 +471,29 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   more_about_author_text: prismic.KeyTextField;
+
+  /**
+   * Author info field in *Blog Post*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.author_info
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  author_info: ContentRelationshipFieldWithData<
+    [
+      {
+        id: "author";
+        fields: [
+          "author_name",
+          "author_image",
+          "author_bio",
+          { id: "social_media"; fields: ["social_link"] },
+        ];
+      },
+    ]
+  >;
 
   /**
    * Slice Zone field in *Blog Post*
@@ -1513,6 +1631,7 @@ export type TechDocument<Lang extends string = string> =
 export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
+  | AuthorDocument
   | BlogHomePageDocument
   | BlogPostDocument
   | CaseStudyDocument
@@ -2092,6 +2211,104 @@ type ServiceGridSliceVariation = ServiceGridSliceDefault;
 export type ServiceGridSlice = prismic.SharedSlice<
   "ServiceGrid",
   ServiceGridSliceVariation
+>;
+
+/**
+ * Item in *AuthorInfo → Default → Primary → Social media*
+ */
+export interface AuthorInfoSliceDefaultPrimarySocialMediaItem {
+  /**
+   * Social media link field in *AuthorInfo → Default → Primary → Social media*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author_info.default.primary.social_media[].social_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  social_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+}
+
+/**
+ * Primary content in *AuthorInfo → Default → Primary*
+ */
+export interface AuthorInfoSliceDefaultPrimary {
+  /**
+   * Author name field in *AuthorInfo → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author_info.default.primary.author_name
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author_name: prismic.RichTextField;
+
+  /**
+   * Author image field in *AuthorInfo → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author_info.default.primary.author_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  author_image: prismic.ImageField<never>;
+
+  /**
+   * Author Biography field in *AuthorInfo → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author_info.default.primary.author_bio
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author_bio: prismic.RichTextField;
+
+  /**
+   * Social media field in *AuthorInfo → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author_info.default.primary.social_media[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  social_media: prismic.GroupField<
+    Simplify<AuthorInfoSliceDefaultPrimarySocialMediaItem>
+  >;
+}
+
+/**
+ * Default variation for AuthorInfo Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AuthorInfoSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<AuthorInfoSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *AuthorInfo*
+ */
+type AuthorInfoSliceVariation = AuthorInfoSliceDefault;
+
+/**
+ * AuthorInfo Shared Slice
+ *
+ * - **API ID**: `author_info`
+ * - **Description**: AuthorInfo
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AuthorInfoSlice = prismic.SharedSlice<
+  "author_info",
+  AuthorInfoSliceVariation
 >;
 
 /**
@@ -3406,6 +3623,10 @@ declare module "@prismicio/client" {
       AcademyCourseDocument,
       AcademyCourseDocumentData,
       AcademyCourseDocumentDataSlicesSlice,
+      AuthorDocument,
+      AuthorDocumentData,
+      AuthorDocumentDataSocialMediaItem,
+      AuthorDocumentDataSlicesSlice,
       BlogHomePageDocument,
       BlogHomePageDocumentData,
       BlogHomePageDocumentDataSlicesSlice,
@@ -3486,6 +3707,11 @@ declare module "@prismicio/client" {
       ServiceGridSliceDefaultItem,
       ServiceGridSliceVariation,
       ServiceGridSliceDefault,
+      AuthorInfoSlice,
+      AuthorInfoSliceDefaultPrimarySocialMediaItem,
+      AuthorInfoSliceDefaultPrimary,
+      AuthorInfoSliceVariation,
+      AuthorInfoSliceDefault,
       BlogArticleCardSlice,
       BlogArticleCardSliceDefaultPrimary,
       BlogArticleCardSlicePastBlogArticlesPrimary,

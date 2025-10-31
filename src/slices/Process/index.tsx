@@ -19,10 +19,12 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
 
 const Process: React.FC<ProcessProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const items = slice.items as Content.ProcessSliceDefaultItem[];
 
   // Check if the screen size is mobile
   useEffect(() => {
+    setIsMounted(true);
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -84,7 +86,8 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
             })}
 
             {/* Draw arrows between circles (desktop only) */}
-            {!isMobile &&
+            {isMounted &&
+              !isMobile &&
               items.map((_, index) =>
                 index < items.length - 1 ? (
                   <Xarrow
