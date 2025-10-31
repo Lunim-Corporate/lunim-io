@@ -1,6 +1,8 @@
 // app/blog/authors/[uid]/page.tsx
+// Next
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
+// Prismic
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
@@ -9,9 +11,10 @@ import {
   filter,
   type LinkField,
 } from "@prismicio/client";
-
+// Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
+import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string };
 
@@ -379,32 +382,44 @@ export default async function Page({ params, searchParams }: PageProps) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Promise<Params>;},
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
   const { uid } = await params;
   const client = createClient();
-  const authorDoc = await client
-    .getByUID<Content.AuthorDocument>("author", uid)
-    .catch(() => null);
-  if (!authorDoc) {
+  const parentMetaData = await pickBaseMetadata(parent);
+  const doc = await client
+  .getByUID<Content.AuthorDocument>("author", uid)
+  .catch(() => null);
+  if (!doc) {
     return {
-      title: "Author | Lunim",
-      description: "Articles written by Lunim contributors.",
+      title: "Lunim Author Page",
+      description: "Welcome to Lunim's official author page."
     };
   }
-  const authorName =
-    authorDoc.data.author_name?.trim() || authorDoc.uid || "Author";
-  const bio = authorDoc.data.author_bio?.trim();
+
+
+  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
+  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
+
   return {
-    title: `${authorName} | Lunim Blog`,
-    description:
-      bio && bio.length > 0
-        ? bio
-        : `Articles written by ${authorName} on the Lunim blog.`,
-  };
+    ...parentMetaData,
+    title: `${doc?.data.author_name}`,
+    description: `Articles written by ${doc.data.author_name} on the Lunim Blog.`,
+    openGraph: {
+      ...parentMetaData.openGraph,
+      title: `${doc?.data.author_name}`,
+      description: `Articles written by ${doc.data.author_name} on the Lunim Blog.`,
+      // images: [
+      //   {
+      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
+      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
+      //   }
+      // ]
+    },
+  }
 }
 
 export async function generateStaticParams() {
