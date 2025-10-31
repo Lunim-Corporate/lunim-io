@@ -5,6 +5,8 @@ export type ContactVariant =
   | "home"
   | "tech"
   | "film"
+  | "digital"
+  | "media"
   | "academy"
   | "tabb"
   | "default";
