@@ -9,7 +9,7 @@ export interface NavigationCard {
 
 export const navigationCardsData: NavigationCard[] = [
   {
-    title: 'Tabb',
+    title: 'Community',
     description: 'Innovative solutions & platforms',
     icon: '🚀',
     path: '/tabb',
@@ -17,18 +17,18 @@ export const navigationCardsData: NavigationCard[] = [
     hoverColor: 'text-[#BBFEFF]'
   },
   {
-    title: 'Tech',
+    title: 'Digital',
     description: 'Cutting-edge development solutions',
     icon: '💻',
-    path: '/tech',
+    path: '/digital',
     gradient: 'from-blue-500 to-cyan-500',
     hoverColor: 'text-[#BBFEFF]'
   },
   {
-    title: 'Film',
+    title: 'Media',
     description: 'Creative visual storytelling',
     icon: '🎬',
-    path: '/film',
+    path: '/media',
     gradient: 'from-purple-500 to-pink-500',
     hoverColor: 'text-[#BBFEFF]'
   },
