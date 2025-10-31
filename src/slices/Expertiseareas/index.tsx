@@ -38,7 +38,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
 
   return (
     <section
-      className="py-20 bg-black"
+      className="py-16 bg-black"
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >

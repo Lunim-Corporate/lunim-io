@@ -73,7 +73,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
 
   return (
     <section
-      className={`py-20 ${
+      className={`py-16 ${
         isDigital
           ? "relative overflow-hidden bg-gradient-to-b from-[#040a18] via-[#071327] to-[#03070f]"
           : "bg-[#0f172a]"
@@ -125,13 +125,13 @@ const Contact: FC<ContactProps> = ({ slice }) => {
               >
                 <h3
                   className={`${
-                    isDigital ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white mt-1"
+                    isDigital ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white !mt-1 !mb-2"
                   }`}
                 >
                   {waysTitle}
                 </h3>
                 {waysSubtitle && (
-                  <p className="text-gray-300 mb-6">{waysSubtitle}</p>
+                  <p className="text-gray-300 !mb-6">{waysSubtitle}</p>
                 )}
                 <ul className="space-y-5 list-none">
                   {contactItems.map((item, index) => {
@@ -183,11 +183,11 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                         <div className="space-y-1">
                           {hasLabel && (
                             <p
-                              className={`font-semibold text-white ${
+                              className={`font-semibold text-white !mb-0 ${
                                 isDigital ? "text-lg" : "text-base"
                               }`}
                             >
-                              {displayTitle}
+                              {displayTitle}xxx
                             </p>
                           )}
                           {descriptionContent}
@@ -208,8 +208,8 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                 <h3
                   className={`${
                     isDigital
-                      ? "text-2xl font-semibold text-white mb-6"
-                      : "text-xl font-bold text-white mt-1 mb-6"
+                      ? "text-2xl font-semibold text-white mb-6 !mt-1"
+                      : "text-xl font-bold text-white mt-1 mb-6 !mt-1"
                   }`}
                 >
                   {asText(slice.primary.office_hours_title) || "Office Hours"}

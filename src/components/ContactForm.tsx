@@ -96,7 +96,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
       style={{ scrollMarginTop: "5rem" }}
     >
-      <h3 className="text-xl font-bold text-white mt-1 mb-6 text-center">
+      <h3 className="text-xl font-bold text-white !mt-1 !mb-6 text-center">
         {resolvedTitle}
       </h3>
 
