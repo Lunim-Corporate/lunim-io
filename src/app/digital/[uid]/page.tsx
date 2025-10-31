@@ -35,8 +35,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     return { title: "Digital Page | Lunim" };
   }
 
+  const docName = doc.uid[0].toUpperCase() + doc.uid.slice(1);
+
   return {
-    title: doc.data.meta_title || `${doc.uid} | Digital Page`,
+    title: doc.data.meta_title || `${docName} | Digital Page`,
     description: doc.data.meta_description || "A digital page by Lunim.",
   };
 }
