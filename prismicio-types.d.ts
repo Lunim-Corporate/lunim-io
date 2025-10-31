@@ -817,11 +817,11 @@ type FilmDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
- * Content for Film documents
+ * Content for Media documents
  */
 interface FilmDocumentData {
   /**
-   * Slice Zone field in *Film*
+   * Slice Zone field in *Media*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
@@ -830,7 +830,7 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<FilmDocumentDataSlicesSlice> /**
-   * Meta Title field in *Film*
+   * Meta Title field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
@@ -841,7 +841,7 @@ interface FilmDocumentData {
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *Film*
+   * Meta Description field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
@@ -852,7 +852,7 @@ interface FilmDocumentData {
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *Film*
+   * Meta Image field in *Media*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
@@ -864,7 +864,7 @@ interface FilmDocumentData {
 }
 
 /**
- * Film document from Prismic
+ * Media document from Prismic
  *
  * - **API ID**: `film`
  * - **Repeatable**: `false`
