@@ -60,7 +60,7 @@ export default async function CaseStudiesIndex() {
                   key={cs.id}
                   className="rounded-lg border border-white/10 overflow-hidden hover:border-cyan-400/50 transition"
                 >
-                  <Link href={`/tech/casestudies/${cs.uid}`} className="block">
+                  <Link href={`/digital/case-studies/${cs.uid}`} className="block">
                     {imageUrl ? (
                       <div className="relative w-full aspect-[16/9]">
                         <Image
