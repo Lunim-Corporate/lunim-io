@@ -26,39 +26,39 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   const pathname = usePathname();
 
   // Route-based variant to drive copy & field visibility
-  const variant = useMemo<"home" | "tech" | "film" | "academy" | "tabb" | "default">(() => {
+  const variant = useMemo<"home" | "digital" | "media" | "academy" | "tabb" | "default">(() => {
     const p = pathname.replace(/\/+$/, "") || "/";
     if (p === "/") return "home";
     if (p === "/tabb" || p.startsWith("/tabb/")) return "tabb";
-    if (p === "/tech" || p.startsWith("/tech/")) return "tech";
-    if (p === "/film" || p.startsWith("/film/")) return "film";
+    if (p === "/digital" || p.startsWith("/digital/")) return "digital";
+    if (p === "/media" || p.startsWith("/media/")) return "media";
   if (p === "/academy" || p.startsWith("/academy/")) return "academy";
   return "default";
 }, [pathname]);
 
-  const isTech = variant === "tech";
+  const isDigital = variant === "digital";
 
   // Title overrides per page
   const computedMainTitle = (() => {
-    if (variant === "home" || variant === "film") return "Ready to Go?";
+    if (variant === "home" || variant === "media") return "Ready to Go?";
     if (variant === "academy") return "Ready to Learn?";
-    if (isTech) return "Ready to Innovate?";
+    if (isDigital) return "Ready to Innovate?";
     return asText(slice.primary.main_title) || "Get in Touch";
   })();
 
   const computedSubtitle = (() => {
-    if (variant === "home" || variant === "film")
+    if (variant === "home" || variant === "media")
       return "Let’s discuss how we can help you take your next giant leap.";
     if (variant === "academy")
       return "Let’s get you on the road to powering up your workflow.";
-    if (isTech)
+    if (isDigital)
       return "Let's discuss your project and how we can bring it to life.";
     return asText(slice.primary.subtitle) || "";
   })();
 
   // Left panels content adjustments:
-  const waysTitle = isTech ? "Why Contact Us?" : "Ways to Contact Us";
-  const waysSubtitle = isTech
+  const waysTitle = isDigital ? "Why Contact Us?" : "Ways to Contact Us";
+  const waysSubtitle = isDigital
     ? ""
     : "We respond to all queries within 24 hours";
 
@@ -74,20 +74,20 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   return (
     <section
       className={`py-20 ${
-        isTech
+        isDigital
           ? "relative overflow-hidden bg-gradient-to-b from-[#040a18] via-[#071327] to-[#03070f]"
           : "bg-[#0f172a]"
       }`}
       id="get-in-touch"
     >
-      {isTech && (
+      {isDigital && (
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(88,214,255,0.22),transparent_60%)]" />
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Title */}
         <div
           className={`${
-            isTech ? "text-4xl md:text-5xl" : "text-3xl"
+            isDigital ? "text-4xl md:text-5xl" : "text-3xl"
           } font-bold text-white mb-4 text-center`}
         >
           <span>{computedMainTitle}</span>
@@ -97,7 +97,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
         {computedSubtitle && (
           <div
             className={`${
-              isTech ? "text-lg md:text-xl text-white/70" : "text-lg text-gray-300"
+              isDigital ? "text-lg md:text-xl text-white/70" : "text-lg text-gray-300"
             } mb-12 text-center`}
           >
             <span>{computedSubtitle}</span>
@@ -108,7 +108,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
           className={
             variant === "tabb"
               ? "flex justify-center"
-              : isTech
+              : isDigital
               ? "grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-10 items-start relative"
               : "grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
           }
@@ -118,19 +118,19 @@ const Contact: FC<ContactProps> = ({ slice }) => {
             <div className="space-y-8 relative">
               <div
                 className={
-                  isTech
+                  isDigital
                     ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
                     : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
                 }
               >
                 <h3
                   className={`${
-                    isTech ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white mt-1"
+                    isDigital ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white mt-1"
                   }`}
                 >
                   {waysTitle}
                 </h3>
-                {!isTech && waysSubtitle && (
+                {!isDigital && waysSubtitle && (
                   <p className="text-gray-300 mb-6">{waysSubtitle}</p>
                 )}
                 <ul className="space-y-5 list-none">
@@ -141,7 +141,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     const isQuickResponse =
                       rawTitle.toLowerCase() === "quick response";
                     const displayTitle =
-                      !isTech && isQuickResponse ? "Want to Meet?" : rawTitle;
+                      !isDigital && isQuickResponse ? "Want to Meet?" : rawTitle;
                     const hasLabel = displayTitle.length > 0;
                     const rawDescription =
                       typeof item.description === "string"
@@ -151,7 +151,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     if (!hasLabel && !hasDesc) return null;
 
                     const descriptionContent =
-                      isQuickResponse && !isTech ? (
+                      isQuickResponse && !isDigital ? (
                         <a
                           href="https://calendly.com/hello-lunim/30min"
                           target="_blank"
@@ -161,7 +161,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                           Book a meeting with us now
                         </a>
                       ) : hasDesc ? (
-                        <span className={isTech ? "text-white/60" : "text-gray-300"}>
+                        <span className={isDigital ? "text-white/60" : "text-gray-300"}>
                           {rawDescription}
                         </span>
                       ) : null;
@@ -173,7 +173,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                       >
                         <span
                           className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                            isTech
+                            isDigital
                               ? "bg-white/5 text-[#8df6ff] shadow-[0_0_20px_rgba(101,225,255,0.35)]"
                               : "bg-white/10 text-[#BBFEFF]"
                           }`}
@@ -184,7 +184,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                           {hasLabel && (
                             <p
                               className={`font-semibold text-white ${
-                                isTech ? "text-lg" : "text-base"
+                                isDigital ? "text-lg" : "text-base"
                               }`}
                             >
                               {displayTitle}
@@ -200,14 +200,14 @@ const Contact: FC<ContactProps> = ({ slice }) => {
 
               <div
                 className={
-                  isTech
+                  isDigital
                     ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
                     : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
                 }
               >
                 <h3
                   className={`${
-                    isTech
+                    isDigital
                       ? "text-2xl font-semibold text-white mb-6"
                       : "text-xl font-bold text-white mt-1 mb-6"
                   }`}
@@ -216,7 +216,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                 </h3>
                 <ul
                   className={`space-y-3 ${
-                    isTech ? "text-white/70" : "text-gray-300"
+                    isDigital ? "text-white/70" : "text-gray-300"
                   }`}
                 >
                   {officeHourItems.map((hour, index) => (
@@ -226,7 +226,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     >
                       <span
                         className={`font-semibold mb-1.5 sm:mb-0 ${
-                          isTech ? "text-white" : ""
+                          isDigital ? "text-white" : ""
                         }`}
                       >
                         {hour.days}

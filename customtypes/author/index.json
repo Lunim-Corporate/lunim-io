@@ -13,12 +13,17 @@
         }
       },
       "author_name": {
-        "type": "StructuredText",
+        "type": "Text",
         "config": {
-          "label": "Author Name",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          "label": "Author name",
+          "placeholder": ""
+        }
+      },
+      "author_bio": {
+        "type": "Text",
+        "config": {
+          "label": "Author Biography",
+          "placeholder": ""
         }
       },
       "author_image": {
@@ -27,15 +32,6 @@
           "label": "Author image",
           "constraint": {},
           "thumbnails": []
-        }
-      },
-      "author_bio": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Author biography",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
       "social_media": {

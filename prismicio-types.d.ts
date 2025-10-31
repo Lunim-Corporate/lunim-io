@@ -246,15 +246,26 @@ type AuthorDocumentDataSlicesSlice = BlogListSlice;
  */
 interface AuthorDocumentData {
   /**
-   * Author Name field in *Author*
+   * Author name field in *Author*
    *
-   * - **Field Type**: Rich Text
+   * - **Field Type**: Text
    * - **Placeholder**: *None*
    * - **API ID Path**: author.author_name
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   * - **Documentation**: https://prismic.io/docs/fields/text
    */
-  author_name: prismic.RichTextField;
+  author_name: prismic.KeyTextField;
+
+  /**
+   * Author Biography field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.author_bio
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  author_bio: prismic.KeyTextField;
 
   /**
    * Author image field in *Author*
@@ -266,17 +277,6 @@ interface AuthorDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   author_image: prismic.ImageField<never>;
-
-  /**
-   * Author biography field in *Author*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: author.author_bio
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  author_bio: prismic.RichTextField;
 
   /**
    * Social media field in *Author*
@@ -418,28 +418,6 @@ interface BlogPostDocumentData {
   blog_article_heading: prismic.RichTextField;
 
   /**
-   * Author Image field in *Blog Post*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.author_image
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  author_image: prismic.ImageField<never>;
-
-  /**
-   * Author Name field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.author_name
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  author_name: prismic.RichTextField;
-
-  /**
    * Article Main Image field in *Blog Post*
    *
    * - **Field Type**: Image
@@ -460,17 +438,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   main_article_content: prismic.RichTextField;
-
-  /**
-   * More About Author Text field in *Blog Post*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.more_about_author_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  more_about_author_text: prismic.KeyTextField;
 
   /**
    * Author info field in *Blog Post*
@@ -817,11 +784,11 @@ type FilmDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
- * Content for Film documents
+ * Content for Media documents
  */
 interface FilmDocumentData {
   /**
-   * Slice Zone field in *Film*
+   * Slice Zone field in *Media*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
@@ -830,7 +797,7 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<FilmDocumentDataSlicesSlice> /**
-   * Meta Title field in *Film*
+   * Meta Title field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
@@ -841,7 +808,7 @@ interface FilmDocumentData {
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *Film*
+   * Meta Description field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
@@ -852,7 +819,7 @@ interface FilmDocumentData {
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *Film*
+   * Meta Image field in *Media*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
@@ -864,7 +831,7 @@ interface FilmDocumentData {
 }
 
 /**
- * Film document from Prismic
+ * Media document from Prismic
  *
  * - **API ID**: `film`
  * - **Repeatable**: `false`

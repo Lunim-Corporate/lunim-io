@@ -56,12 +56,13 @@ const routes: Route[] = [
   { type: "digital_page", path: "/digital/:uid" },
   { type: "academy", path: "/academy" },
   { type: "academy_course", path: "/academy/:uid" },
-  { type: "film", path: "/film" },
+  { type: "film", path: "/media" },
   { type: "tabb", path: "/tabb" },
-  { type: "case_study_sm", path: "/digital/casestudies/:uid" },
+  { type: "case_study_sm", path: "/digital/case-studies/:uid" },
   { type: "privacy_policy_sm", path: "/privacy-policy" },
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
+  { type: "author", path: "/blog/authors/:uid" },
 ];
 
 /**

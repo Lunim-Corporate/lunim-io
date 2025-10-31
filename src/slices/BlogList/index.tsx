@@ -33,9 +33,9 @@ function extractCategoryText(
 ): string {
   if (!field) return "";
   // If it's StructuredText (RichTextField), convert to plain text.
-  if (Array.isArray(field)) return asText(field);
+  if (Array.isArray(field)) return asText(field).trim();
   // Otherwise it's a KeyText string already.
-  return field;
+  return field.trim();
 }
 
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
@@ -44,10 +44,16 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const img = d.article_main_image;
   const articleImageField =
     img && !img.alt ? { ...img, alt: title } : img ?? null;
+  // Resolve linked author document details.
+  const authorInfo = d.author_info;
+  const authorData = authorInfo && "data" in authorInfo ? authorInfo.data : null;
+  const rawAuthorName = authorData?.author_name?.trim() ?? "";
+  const authorName = rawAuthorName || (authorInfo && "uid" in authorInfo ? authorInfo.uid ?? "" : "");
+  const authorImage = authorData?.author_image ?? null;
   const authorImageField =
-    d.author_image && !d.author_image.alt
-      ? { ...d.author_image, alt: asText(d.author_name) || "Author" }
-      : d.author_image ?? null;
+    authorImage && !authorImage.alt
+      ? { ...authorImage, alt: authorName || "Author" }
+      : authorImage;
   const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
@@ -72,7 +78,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
           {readingTime ? <span>• {readingTime >= 10 ? `${readingTime}+` : readingTime} min read</span> : null}
         </div>
 
-        {(d.author_name?.length || d.author_image?.url) ? (
+        {(authorName || authorImageField?.url) ? (
           <div className="flex items-center gap-3 mb-4">
             {authorImageField?.url ? (
               <PrismicNextImage
@@ -82,8 +88,8 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
                 className="w-8 h-8 rounded-full object-cover"
               />
             ) : null}
-            {d.author_name?.length ? (
-              <span className="text-white/90 text-sm">{asText(d.author_name)}</span>
+            {authorName ? (
+              <span className="text-white/90 text-sm">{authorName}</span>
             ) : null}
           </div>
         ) : null}
@@ -123,23 +129,29 @@ export default async function BlogList({ slice, context }: Props) {
     pageSize,
     page: currentPage,
     orderings: [{ field: "my.blog_post.publication_date", direction: "desc" }],
+    fetchLinks: ["author.author_name", "author.author_image"],
   });
 
   const posts = response.results;
   const totalPages = response.total_pages || 1;
 
-  // ----- Build category set from the fetched posts -----
-  const categoriesSet = new Set<string>();
+  // ----- Build category map from the fetched posts -----
+  const categoriesMap = new Map<string, string>();
   for (const p of posts) {
-    const cat = normalizeCategory(extractCategoryText(p.data.category));
-    if (cat) categoriesSet.add(cat);
+    const rawCategory = extractCategoryText(p.data.category);
+    const normalizedCategory = normalizeCategory(rawCategory);
+    if (normalizedCategory && !categoriesMap.has(normalizedCategory)) {
+      categoriesMap.set(normalizedCategory, rawCategory);
+    }
   }
-  const categories = Array.from(categoriesSet).sort();
+  const categories = Array.from(categoriesMap.entries()).sort(([, aLabel], [, bLabel]) =>
+    aLabel.localeCompare(bLabel, undefined, { sensitivity: "base" })
+  );
 
   // ----- Decide the effective filter (only if it exists on this page) -----
   const normalizedRequested = normalizeCategory(selectedCategoryRaw || "");
   const filterExistsOnPage = normalizedRequested
-    ? categories.includes(normalizedRequested)
+    ? categoriesMap.has(normalizedRequested)
     : false;
 
   // Only apply filter if it is valid for this page; else show all.
@@ -203,17 +215,17 @@ export default async function BlogList({ slice, context }: Props) {
           >
             All
           </a>
-          {categories.map((cat) => (
+          {categories.map(([normalizedCat, label]) => (
             <a
-              key={cat}
-              href={withParams({ page: 1, cat })}
+              key={normalizedCat}
+              href={withParams({ page: 1, cat: normalizedCat })}
               className={`px-3 py-1 rounded-full text-sm border ${
-                cat === effectiveFilter
+                normalizedCat === effectiveFilter
                   ? "bg-cyan-300 text-black border-cyan-300"
                   : "border-white/20 text-white/80 hover:text-white"
               }`}
             >
-              {cat}
+              {label}
             </a>
           ))}
         </div>
