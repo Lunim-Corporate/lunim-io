@@ -418,28 +418,6 @@ interface BlogPostDocumentData {
   blog_article_heading: prismic.RichTextField;
 
   /**
-   * Author Image field in *Blog Post*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.author_image
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  author_image: prismic.ImageField<never>;
-
-  /**
-   * Author Name field in *Blog Post*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.author_name
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  author_name: prismic.RichTextField;
-
-  /**
    * Article Main Image field in *Blog Post*
    *
    * - **Field Type**: Image
@@ -460,17 +438,6 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   main_article_content: prismic.RichTextField;
-
-  /**
-   * More About Author Text field in *Blog Post*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.more_about_author_text
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  more_about_author_text: prismic.KeyTextField;
 
   /**
    * Author info field in *Blog Post*
