@@ -227,6 +227,14 @@ export function NavigationMenuClient({
               {data.ctaLabel}
             </Link>
           )}
+          {data.ctaLabel && finalCtaHref && (
+            <Link
+              href={finalCtaHref}
+              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+            >
+              {data.ctaLabel}
+            </Link>
+          )}
           <button
             onClick={() => setIsMenuOpen((v) => !v)}
             className="md:hidden ml-4 p-3 rounded-full bg-black/30 border border-cyan-500/30"
