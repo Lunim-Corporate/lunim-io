@@ -37,23 +37,6 @@
           "multi": "heading1,strong,em"
         }
       },
-      "author_image": {
-        "type": "Image",
-        "config": {
-          "label": "Author Image",
-          "constraint": {},
-          "thumbnails": []
-        }
-      },
-      "author_name": {
-        "type": "StructuredText",
-        "config": {
-          "label": "Author Name",
-          "placeholder": "",
-          "allowTargetBlank": true,
-          "multi": "strong,em,paragraph"
-        }
-      },
       "article_main_image": {
         "type": "Image",
         "config": {
@@ -69,13 +52,6 @@
           "placeholder": "",
           "allowTargetBlank": true,
           "multi": "paragraph,preformatted,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-        }
-      },
-      "more_about_author_text": {
-        "type": "Text",
-        "config": {
-          "label": "More About Author Text",
-          "placeholder": ""
         }
       },
       "author_info": {
