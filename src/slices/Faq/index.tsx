@@ -16,7 +16,7 @@ const Faq: React.FC<FaqProps> = ({ slice }) => {
   const items = slice.items as Content.FaqSliceDefaultItem[];
 
   return (
-    <section className="bg-[#0f172a] py-20">
+    <section className="bg-[#0f172a] py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-3xl font-bold text-white mb-12 text-center">
           <PrismicRichText field={slice.primary.title} />

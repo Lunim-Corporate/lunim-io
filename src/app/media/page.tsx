@@ -18,7 +18,7 @@ export default async function Page() {
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
-      <main className="p-6 text-white bg-black">Film page not published.</main>
+      <main className="p-6 text-white bg-black">Media page not published.</main>
     );
   }
 
