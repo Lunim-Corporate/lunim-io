@@ -246,15 +246,26 @@ type AuthorDocumentDataSlicesSlice = BlogListSlice;
  */
 interface AuthorDocumentData {
   /**
-   * Author Name field in *Author*
+   * Author name field in *Author*
    *
-   * - **Field Type**: Rich Text
+   * - **Field Type**: Text
    * - **Placeholder**: *None*
    * - **API ID Path**: author.author_name
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   * - **Documentation**: https://prismic.io/docs/fields/text
    */
-  author_name: prismic.RichTextField;
+  author_name: prismic.KeyTextField;
+
+  /**
+   * Author Biography field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.author_bio
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  author_bio: prismic.KeyTextField;
 
   /**
    * Author image field in *Author*
@@ -266,17 +277,6 @@ interface AuthorDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   author_image: prismic.ImageField<never>;
-
-  /**
-   * Author biography field in *Author*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: author.author_bio
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  author_bio: prismic.RichTextField;
 
   /**
    * Social media field in *Author*
