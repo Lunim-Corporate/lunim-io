@@ -810,6 +810,21 @@ export interface CaseStudySmDocumentDataMetaKeywordsItem {
  */
 interface CaseStudySmDocumentData {
   /**
+   * Digital Category field in *Case Study SM*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Discovery
+   * - **API ID Path**: case_study_sm.digital_category
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  digital_category: prismic.SelectField<
+    "Discovery" | "UX" | "Web3" | "AI",
+    "filled"
+  >;
+
+  /**
    * Slice Zone field in *Case Study SM*
    *
    * - **Field Type**: Slice Zone
@@ -1018,12 +1033,11 @@ type FilmDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
-<<<<<<< HEAD
- * Item in *Film → Meta Keywords*
+ * Item in *Media → Meta Keywords*
  */
 export interface FilmDocumentDataMetaKeywordsItem {
   /**
-   * Meta Keywords Text field in *Film → Meta Keywords*
+   * Meta Keywords Text field in *Media → Meta Keywords*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1034,10 +1048,7 @@ export interface FilmDocumentDataMetaKeywordsItem {
 }
 
 /**
- * Content for Film documents
-=======
  * Content for Media documents
->>>>>>> 795a3c859c97143ee386220cf8b893fcb0dd1d7d
  */
 interface FilmDocumentData {
   /**
@@ -1083,7 +1094,7 @@ interface FilmDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Film*
+   * Meta Image Alt Text field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1094,7 +1105,7 @@ interface FilmDocumentData {
   meta_image_alt_text: prismic.KeyTextField;
 
   /**
-   * Meta Keywords field in *Film*
+   * Meta Keywords field in *Media*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
