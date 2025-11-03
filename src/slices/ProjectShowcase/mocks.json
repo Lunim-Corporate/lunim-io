@@ -78,6 +78,11 @@
 					"url": "http://twitter.com",
 					"text": "grandmother"
 				}
+			},
+			"view_project_button_text": {
+				"__TYPE__": "FieldContent",
+				"value": "sleep",
+				"type": "Text"
 			}
 		},
 		"items": [

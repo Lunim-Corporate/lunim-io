@@ -2,7 +2,7 @@
 import { asText, Content } from '@prismicio/client';
 import { PrismicNextLink } from '@prismicio/next';
 import { PrismicRichText } from '@prismicio/react';
-import { RichTextField } from '@prismicio/types';
+import { KeyTextField, RichTextField } from '@prismicio/types';
 // React
 import { ComponentProps } from 'react';
 
@@ -11,10 +11,11 @@ type CaseStudiesProps = {
     projects: ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>
     heading: RichTextField,
     caseStudiesPageLink: ComponentProps<typeof PrismicNextLink>['field'],
-    category: string
+    category: string,
+    viewProjectBtn: KeyTextField
 }
 
-export default function CaseStudies({ projects, heading, caseStudiesPageLink, category }: CaseStudiesProps) {
+export default function CaseStudies({ projects, heading, caseStudiesPageLink, category, viewProjectBtn }: CaseStudiesProps) {
     
     const filteredProjects = projects.filter(project => project.relationship === category);
 
@@ -57,9 +58,16 @@ export default function CaseStudies({ projects, heading, caseStudiesPageLink, ca
                 <div className="bg-[#1f2937] p-6 flex-1 flex flex-col">
                     <div className="flex-1">
                         {project.project_title && (
-                        <h3 className="text-white font-bold text-xl mb-2 text-left">
-                        {asText(project.project_title)}
-                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] pt-4 pb-8">
+                            <div>
+                                <h3 className="text-white font-bold text-xl m-0! text-left">
+                                {asText(project.project_title)}
+                                </h3>
+                            </div>
+                            <div className='mt-2 sm:mt-0 text-start sm:text-end'>
+                                <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{viewProjectBtn}</button>
+                            </div>
+                        </div>
                         )}
                         <div className="text-gray-200 text-base text-left">
                             <PrismicRichText field={project.project_description} />

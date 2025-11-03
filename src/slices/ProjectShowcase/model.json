@@ -88,6 +88,13 @@
             "allowText": true,
             "repeat": false
           }
+        },
+        "view_project_button_text": {
+          "type": "Text",
+          "config": {
+            "label": "view_project_button_text",
+            "placeholder": ""
+          }
         }
       },
       "items": {
