@@ -1018,12 +1018,11 @@ type FilmDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
-<<<<<<< HEAD
- * Item in *Film → Meta Keywords*
+ * Item in *Media → Meta Keywords*
  */
 export interface FilmDocumentDataMetaKeywordsItem {
   /**
-   * Meta Keywords Text field in *Film → Meta Keywords*
+   * Meta Keywords Text field in *Media → Meta Keywords*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1034,10 +1033,7 @@ export interface FilmDocumentDataMetaKeywordsItem {
 }
 
 /**
- * Content for Film documents
-=======
  * Content for Media documents
->>>>>>> 795a3c859c97143ee386220cf8b893fcb0dd1d7d
  */
 interface FilmDocumentData {
   /**
@@ -1083,7 +1079,7 @@ interface FilmDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Film*
+   * Meta Image Alt Text field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1094,7 +1090,7 @@ interface FilmDocumentData {
   meta_image_alt_text: prismic.KeyTextField;
 
   /**
-   * Meta Keywords field in *Film*
+   * Meta Keywords field in *Media*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
@@ -2140,6 +2136,43 @@ export interface ExpertiseareasSliceDefaultItem {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   item_description: prismic.RichTextField;
+
+  /**
+   * is_card_link field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: Expertiseareas.items[].is_card_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_card_link: prismic.BooleanField;
+
+  /**
+   * card_link field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.items[].card_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  card_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * button_text field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.items[].button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_text: prismic.KeyTextField;
 }
 
 /**
@@ -2504,6 +2537,27 @@ export interface ProjectShowcaseSliceDefaultItem {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   tags: prismic.KeyTextField;
+
+  /**
+   * show_cta_button field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: ProjectShowcase.items[].show_cta_button
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_cta_button: prismic.BooleanField;
+
+  /**
+   * button_cta_text field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.items[].button_cta_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_cta_text: prismic.KeyTextField;
 }
 
 /**

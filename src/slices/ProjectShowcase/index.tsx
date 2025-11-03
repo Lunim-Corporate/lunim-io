@@ -79,6 +79,14 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                       ))}
                     </div>
                   )}
+                  {project.show_cta_button && (
+                    <div className="mt-10">
+                       <button
+                        className="cursor-pointer bg-[#BBFEFF] text-black px-8 py-2 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300">
+                        {project.button_cta_text || "More"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </PrismicLink>
             );

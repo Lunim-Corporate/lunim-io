@@ -67,6 +67,22 @@
           "config": {
             "label": "tags"
           }
+        },
+        "show_cta_button": {
+          "type": "Boolean",
+          "config": {
+            "label": "show_cta_button",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "button_cta_text": {
+          "type": "Text",
+          "config": {
+            "label": "button_cta_text",
+            "placeholder": ""
+          }
         }
       }
     }
