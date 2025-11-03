@@ -11,6 +11,7 @@ import {
   PersonStanding as PersonStandingIcon,
   HelpCircle,
 } from "lucide-react";
+import { PrismicNextLink } from "@prismicio/next";
 
 /**
  * Props for `Expertiseareas`.
@@ -51,7 +52,45 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
 
             const itemTitleText: string = asText(item.item_title) ?? "";
 
-            return (
+            if (item.is_card_link) {
+              return (
+                <PrismicNextLink
+                  key={idx}
+                  field={item.card_link}
+                >
+                <div
+                className="rounded-2xl p-6 bg-black/40 border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full"
+              >
+                <div className="bg-[#BBFEFF] text-black w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                  <Icon className="w-7 h-7" />
+                </div>
+
+                {/* Item title rendered as plain text to avoid nested heading conflicts */}
+                {itemTitleText && (
+                  <h3 className="text-xl font-bold text-[#BBFEFF] mb-2">
+                    {itemTitleText}
+                  </h3>
+                )}
+
+                {/* Description is RichText (paragraph). We control paragraph rendering. */}
+                <PrismicRichText
+                  field={item.item_description}
+                  components={{
+                    paragraph: ({ children }) => (
+                      <p className="text-gray-300 text-base">{children}</p>
+                    ),
+                  }}
+                    />
+                    <div className="mt-8">
+                      <button className="cursor-pointer bg-[#BBFEFF] text-black px-6 py-1.5 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300">
+                        {item.button_text || "More"}
+                      </button>
+                    </div>
+                  </div>
+                  </PrismicNextLink>
+              )
+            } else {
+              return (
               <div
                 key={idx}
                 className="rounded-2xl p-6 bg-black/40 border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors"
@@ -77,7 +116,8 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
                   }}
                 />
               </div>
-            );
+              )
+            }
           })}
         </div>
 

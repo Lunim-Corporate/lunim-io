@@ -7,6 +7,7 @@ import { components } from "@/slices";
 import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 export const revalidate = 60;
 
@@ -22,10 +23,10 @@ export default async function Page() {
     );
   }
 
-  console.log(
-    "✅ Slices:",
-    doc.data.slices.map((slice) => slice.slice_type)
-  );
+  // console.log(
+  //   "✅ Slices:",
+  //   doc.data.slices.map((slice) => slice.slice_type)
+  // );
   return (
     <main className="bg-black">
       <SliceZone slices={doc.data.slices} components={components} />
@@ -59,7 +60,8 @@ export async function generateMetadata(
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
 
-   const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+  // const canonical = await getCanonicalUrl();
 
   return {
     ...parentMetaData,
@@ -70,6 +72,7 @@ export async function generateMetadata(
       ...parentMetaData.openGraph,
       title: typeof title === 'string' ? `${title}` : fallBackPageName,
       description: `${description}`,
+      // url: canonical,
       // images: [
       //   {
       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,

@@ -96,6 +96,21 @@
 							"value": "solid",
 							"type": "Text"
 						}
+					],
+					[
+						"show_cta_button",
+						{
+							"__TYPE__": "BooleanContent",
+							"value": true
+						}
+					],
+					[
+						"button_cta_text",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "character",
+							"type": "Text"
+						}
 					]
 				]
 			}

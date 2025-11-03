@@ -6,6 +6,8 @@ import { components } from "@/slices";
 // Next
 import type { Metadata, ResolvingMetadata } from 'next';
 import { pickBaseMetadata } from "@/utils/metadata";
+// Utils
+// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 export const revalidate = 60;
 
@@ -57,6 +59,8 @@ export async function generateMetadata(
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
 
+  // const canonical = await getCanonicalUrl();
+
   return {
     ...parentMetaData,
     title: title,
@@ -66,6 +70,7 @@ export async function generateMetadata(
       ...parentMetaData.openGraph,
       title: `${title}`,
       description: `${description}`,
+      // url: canonical,
       // images: [
       //   {
       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
