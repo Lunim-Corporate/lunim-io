@@ -2569,6 +2569,16 @@ export interface ProjectShowcaseSliceDefaultPrimary {
     prismic.FieldState,
     never
   >;
+
+  /**
+   * view_project_button_text field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.view_project_button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  view_project_button_text: prismic.KeyTextField;
 }
 
 /**

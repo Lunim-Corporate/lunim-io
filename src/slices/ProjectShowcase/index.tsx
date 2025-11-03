@@ -28,9 +28,24 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
             <PrismicRichText field={slice.primary.title} />
           </div>
         )}
-        <CaseStudies projects={projects} heading={slice.primary.heading_ai} caseStudiesPageLink={slice.primary.ai_link} category={categories[0]} />
-        <CaseStudies projects={projects} heading={slice.primary.heading_ux} caseStudiesPageLink={slice.primary.ux_link} category={categories[1]} />
-        <CaseStudies projects={projects} heading={slice.primary.heading_web3} caseStudiesPageLink={slice.primary.web3_link} category={categories[2]} />
+        <CaseStudies
+          projects={projects}
+          heading={slice.primary.heading_ai}
+          caseStudiesPageLink={slice.primary.ai_link}
+          category={categories[0]}
+          viewProjectBtn={slice.primary.view_project_button_text} />
+        <CaseStudies
+          projects={projects}
+          heading={slice.primary.heading_ux}
+          caseStudiesPageLink={slice.primary.ux_link}
+          category={categories[1]}
+          viewProjectBtn={slice.primary.view_project_button_text} />
+        <CaseStudies
+          projects={projects}
+          heading={slice.primary.heading_web3}
+          caseStudiesPageLink={slice.primary.web3_link}
+          category={categories[2]}
+          viewProjectBtn={slice.primary.view_project_button_text} />
       </div>
     </section>
   );
