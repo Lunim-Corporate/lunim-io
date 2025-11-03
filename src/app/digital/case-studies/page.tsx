@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { asText } from "@prismicio/helpers";
 import type { HeroLikeSlice, CaseStudySmDocumentWithLegacy } from "./types";
+import { digitalCategoryToSlug } from "./utils";
 
 export const revalidate = 60;
 
@@ -55,12 +56,15 @@ export default async function CaseStudiesIndex() {
                 asText(fromSlices.title) ||
                 cs.uid;
 
+              const categorySlug = digitalCategoryToSlug(cs.data.digital_category);
+              if (!categorySlug) return null;
+
               return (
                 <li
                   key={cs.id}
                   className="rounded-lg border border-white/10 overflow-hidden hover:border-cyan-400/50 transition"
                 >
-                  <Link href={`/digital/case-studies/${cs.uid}`} className="block">
+                  <Link href={`/digital/${categorySlug}/case-studies/${cs.uid}`} className="block">
                     {imageUrl ? (
                       <div className="relative w-full aspect-[16/9]">
                         <Image
