@@ -1,5 +1,5 @@
 // app/digital/[uid]/case-studies/[caseStudyUid]/page.tsx
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
@@ -21,7 +21,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   const docCategorySlug = digitalCategoryToSlug(doc.data.digital_category);
   const paramCategorySlug = digitalCategoryToSlug(uid);
-  if (!docCategorySlug || !paramCategorySlug || docCategorySlug !== paramCategorySlug) notFound();
+  if (!docCategorySlug || !paramCategorySlug || docCategorySlug !== paramCategorySlug) {
+    notFound();
+  }
+
+  if (uid !== docCategorySlug) {
+    redirect(`/digital/${docCategorySlug}/case-studies/${caseStudyUid}`);
+  }
 
   const slices = doc.data.slices;
 
@@ -86,3 +92,4 @@ export async function generateMetadata(
     },
   };
 }
+
