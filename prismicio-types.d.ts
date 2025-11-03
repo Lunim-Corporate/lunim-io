@@ -2491,6 +2491,84 @@ export interface ProjectShowcaseSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   section_id: prismic.KeyTextField;
+
+  /**
+   * heading_ux field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_ux
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_ux: prismic.RichTextField;
+
+  /**
+   * ux_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.ux_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  ux_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * heading_ai field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_ai
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_ai: prismic.RichTextField;
+
+  /**
+   * ai_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.ai_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  ai_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * heading_web3 field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_web3
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_web3: prismic.RichTextField;
+
+  /**
+   * web3_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.web3_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  web3_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
@@ -2573,6 +2651,16 @@ export interface ProjectShowcaseSliceDefaultItem {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   button_cta_text: prismic.KeyTextField;
+
+  /**
+   * relationship field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.items[].relationship
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  relationship: prismic.SelectField<"ux" | "ai" | "web3">;
 }
 
 /**
