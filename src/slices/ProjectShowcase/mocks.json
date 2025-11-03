@@ -178,7 +178,7 @@
 						}
 					],
 					[
-						"relationship",
+						"case_study_type",
 						{
 							"__TYPE__": "FieldContent",
 							"value": "ux",

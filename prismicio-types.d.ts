@@ -2663,14 +2663,14 @@ export interface ProjectShowcaseSliceDefaultItem {
   button_cta_text: prismic.KeyTextField;
 
   /**
-   * relationship field in *ProjectShowcase → Items*
+   * case_study_type field in *ProjectShowcase → Items*
    *
    * - **Field Type**: Select
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].relationship
+   * - **API ID Path**: ProjectShowcase.items[].case_study_type
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
-  relationship: prismic.SelectField<"ux" | "ai" | "web3">;
+  case_study_type: prismic.SelectField<"ux" | "ai" | "web3">;
 }
 
 /**
