@@ -17,8 +17,8 @@
         "config": {
           "label": "Digital Category",
           "placeholder": "",
-          "options": ["Discovery", "UX", "Web3", "AI"],
-          "default_value": "Discovery"
+          "options": ["discovery", "ux", "web3", "ai"],
+          "default_value": "discovery"
         }
       },
       "slices": {

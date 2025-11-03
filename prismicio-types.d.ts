@@ -814,13 +814,13 @@ interface CaseStudySmDocumentData {
    *
    * - **Field Type**: Select
    * - **Placeholder**: *None*
-   * - **Default Value**: Discovery
+   * - **Default Value**: discovery
    * - **API ID Path**: case_study_sm.digital_category
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   digital_category: prismic.SelectField<
-    "Discovery" | "UX" | "Web3" | "AI",
+    "discovery" | "ux" | "web3" | "ai",
     "filled"
   >;
 
