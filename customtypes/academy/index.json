@@ -80,6 +80,29 @@
           "thumbnails": []
         },
         "type": "Image"
+      },
+      "meta_image_alt_text": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Image Alt Text",
+          "placeholder": ""
+        }
+      },
+      "meta_keywords": {
+        "type": "Group",
+        "config": {
+          "label": "Meta Keywords",
+          "repeat": true,
+          "fields": {
+            "meta_keywords_text": {
+              "type": "Text",
+              "config": {
+                "label": "Meta Keywords Text",
+                "placeholder": ""
+              }
+            }
+          }
+        }
       }
     }
   }
