@@ -13,7 +13,8 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
   const projects =
     slice.items as ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>;
   
-  const categories: string[] = ["ai", "ux", "web3"];
+  // Must match case study types in Prismic
+  const caseStudyTypes: string[] = ["ai", "ux", "web3"];
 
   return (
     <section
@@ -32,19 +33,19 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
           projects={projects}
           heading={slice.primary.heading_ai}
           caseStudiesPageLink={slice.primary.ai_link}
-          category={categories[0]}
+          caseStudyType={caseStudyTypes[0]}
           viewProjectBtn={slice.primary.view_project_button_text} />
         <CaseStudies
           projects={projects}
           heading={slice.primary.heading_ux}
           caseStudiesPageLink={slice.primary.ux_link}
-          category={categories[1]}
+          caseStudyType={caseStudyTypes[1]}
           viewProjectBtn={slice.primary.view_project_button_text} />
         <CaseStudies
           projects={projects}
           heading={slice.primary.heading_web3}
           caseStudiesPageLink={slice.primary.web3_link}
-          category={categories[2]}
+          caseStudyType={caseStudyTypes[2]}
           viewProjectBtn={slice.primary.view_project_button_text} />
       </div>
     </section>

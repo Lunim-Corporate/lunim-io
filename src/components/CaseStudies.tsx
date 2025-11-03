@@ -11,13 +11,13 @@ type CaseStudiesProps = {
     projects: ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>
     heading: RichTextField,
     caseStudiesPageLink: ComponentProps<typeof PrismicNextLink>['field'],
-    category: string,
+    caseStudyType: string,
     viewProjectBtn: KeyTextField
 }
 
-export default function CaseStudies({ projects, heading, caseStudiesPageLink, category, viewProjectBtn }: CaseStudiesProps) {
+export default function CaseStudies({ projects, heading, caseStudiesPageLink, caseStudyType, viewProjectBtn }: CaseStudiesProps) {
     
-    const filteredProjects = projects.filter(project => project.relationship === category);
+    const filteredProjects = projects.filter(project => project.case_study_type === caseStudyType);
 
     if (filteredProjects.length === 0) return null;
     
