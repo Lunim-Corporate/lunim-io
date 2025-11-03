@@ -1,5 +1,5 @@
 // Prismic
-import { asText, Content } from '@prismicio/client';
+import { asText, Content, isFilled } from '@prismicio/client';
 import { PrismicNextLink } from '@prismicio/next';
 import { PrismicRichText } from '@prismicio/react';
 import { KeyTextField, RichTextField } from '@prismicio/types';
@@ -59,14 +59,22 @@ export default function CaseStudies({ projects, heading, caseStudiesPageLink, ca
                     <div className="flex-1">
                         {project.project_title && (
                         <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] pt-4 pb-8">
-                            <div>
+                            {isFilled.keyText(viewProjectBtn) ? (
+                            <>
+                                <div>
+                                    <h3 className="text-white font-bold text-xl m-0! text-left">
+                                    {asText(project.project_title)}
+                                    </h3>
+                                </div>
+                                <div className='mt-2 sm:mt-0 text-start sm:text-end'>
+                                    <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{viewProjectBtn}</button>
+                                </div>
+                            </>
+                            ) : (
                                 <h3 className="text-white font-bold text-xl m-0! text-left">
                                 {asText(project.project_title)}
                                 </h3>
-                            </div>
-                            <div className='mt-2 sm:mt-0 text-start sm:text-end'>
-                                <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{viewProjectBtn}</button>
-                            </div>
+                            )}
                         </div>
                         )}
                         <div className="text-gray-200 text-base text-left">
