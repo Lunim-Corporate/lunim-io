@@ -57,6 +57,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
                 <PrismicNextLink
                   key={idx}
                   field={item.card_link}
+                  className="transform transition-transform duration-300 hover:scale-105"
                 >
                 <div
                 className="rounded-2xl p-6 bg-black/40 border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full"
