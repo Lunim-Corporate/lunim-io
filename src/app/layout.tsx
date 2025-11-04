@@ -30,12 +30,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Lunim",
-    // images: [
-    //   {
-    //     url: "",
-    //     alt: "Lunim",
-    //   }
-    // ]
+    images: [
+      {
+        url: "https://lunim-v3-progress.netlify.app/",
+        alt: "Lunim",
+      }
+    ]
   }
   }
 
