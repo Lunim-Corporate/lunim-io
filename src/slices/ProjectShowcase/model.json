@@ -28,6 +28,73 @@
           "config": {
             "label": "section_id"
           }
+        },
+        "heading_ux": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading_ux",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading2,heading3,heading4,heading5,heading6,em,strong"
+          }
+        },
+        "ux_link": {
+          "type": "Link",
+          "config": {
+            "label": "ux_link",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": false
+          }
+        },
+        "heading_ai": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading_ai",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+          }
+        },
+        "ai_link": {
+          "type": "Link",
+          "config": {
+            "label": "ai_link",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": false
+          }
+        },
+        "heading_web3": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading_web3",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+          }
+        },
+        "web3_link": {
+          "type": "Link",
+          "config": {
+            "label": "web3_link",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": false
+          }
+        },
+        "view_project_button_text": {
+          "type": "Text",
+          "config": {
+            "label": "view_project_button_text",
+            "placeholder": ""
+          }
         }
       },
       "items": {
@@ -82,6 +149,18 @@
           "config": {
             "label": "button_cta_text",
             "placeholder": ""
+          }
+        },
+        "case_study_type": {
+          "type": "Select",
+          "config": {
+            "label": "case_study_type",
+            "placeholder": "",
+            "options": [
+              "ux",
+              "ai",
+              "web3"
+            ]
           }
         }
       }

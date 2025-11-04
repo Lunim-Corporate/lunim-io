@@ -18,6 +18,71 @@
 				"__TYPE__": "FieldContent",
 				"value": "street",
 				"type": "Text"
+			},
+			"heading_ux": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Exist"
+						}
+					}
+				]
+			},
+			"heading_ai": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Through"
+						}
+					}
+				]
+			},
+			"heading_web3": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Slight"
+						}
+					}
+				]
+			},
+			"ux_link": {
+				"key": "e07f9fa8-2d3e-4551-9e97-612baad1125c",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://slicemachine.dev",
+					"text": "aloud"
+				}
+			},
+			"web3_link": {
+				"key": "7101da93-2caa-4bd1-9ca5-d50d76d8cb39",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "http://google.com",
+					"text": "dust"
+				}
+			},
+			"ai_link": {
+				"key": "92d506af-5937-4a4d-859b-f0d369f1873c",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "http://twitter.com",
+					"text": "grandmother"
+				}
+			},
+			"view_project_button_text": {
+				"__TYPE__": "FieldContent",
+				"value": "sleep",
+				"type": "Text"
 			}
 		},
 		"items": [
@@ -110,6 +175,14 @@
 							"__TYPE__": "FieldContent",
 							"value": "character",
 							"type": "Text"
+						}
+					],
+					[
+						"case_study_type",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "ux",
+							"type": "Select"
 						}
 					]
 				]
