@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { asText } from "@prismicio/helpers";
 import type { HeroLikeSlice, CaseStudySmDocumentWithLegacy } from "./types";
+import { ResolvingMetadata } from "next";
+import { getMetaDataInfo } from "@/utils/metadata";
 
 export const revalidate = 60;
 
@@ -86,3 +88,10 @@ export default async function CaseStudiesIndex() {
     </main>
   );
 }
+
+
+export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
+  const pathname = "/digital/case-studies";
+
+  return getMetaDataInfo(pathname, parent);
+  }
