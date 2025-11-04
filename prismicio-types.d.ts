@@ -2469,158 +2469,45 @@ export type ProcessSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *ProjectShowcase → Default → Primary*
+ * Item in *ProjectShowcase → Default → Primary → case_study*
  */
-export interface ProjectShowcaseSliceDefaultPrimary {
+export interface ProjectShowcaseSliceDefaultPrimaryCaseStudyItem {
   /**
-   * title field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.title
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  title: prismic.RichTextField;
-
-  /**
-   * section_id field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.section_id
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  section_id: prismic.KeyTextField;
-
-  /**
-   * heading_ux field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.heading_ux
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  heading_ux: prismic.RichTextField;
-
-  /**
-   * ux_link field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.ux_link
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  ux_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-
-  /**
-   * heading_ai field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.heading_ai
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  heading_ai: prismic.RichTextField;
-
-  /**
-   * ai_link field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.ai_link
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  ai_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-
-  /**
-   * heading_web3 field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.heading_web3
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  heading_web3: prismic.RichTextField;
-
-  /**
-   * web3_link field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.web3_link
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  web3_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-
-  /**
-   * view_project_button_text field in *ProjectShowcase → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.default.primary.view_project_button_text
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  view_project_button_text: prismic.KeyTextField;
-}
-
-/**
- * Primary content in *ProjectShowcase → Items*
- */
-export interface ProjectShowcaseSliceDefaultItem {
-  /**
-   * project_image field in *ProjectShowcase → Items*
+   * project_image field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].project_image
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].project_image
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   project_image: prismic.ImageField<never>;
 
   /**
-   * project_title field in *ProjectShowcase → Items*
+   * project_title field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].project_title
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].project_title
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   project_title: prismic.RichTextField;
 
   /**
-   * project_description field in *ProjectShowcase → Items*
+   * project_description field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].project_description
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].project_description
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   project_description: prismic.RichTextField;
 
   /**
-   * project_link field in *ProjectShowcase → Items*
+   * project_link field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Link
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].project_link
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].project_link
    * - **Documentation**: https://prismic.io/docs/fields/link
    */
   project_link: prismic.LinkField<
@@ -2632,45 +2519,160 @@ export interface ProjectShowcaseSliceDefaultItem {
   >;
 
   /**
-   * tags field in *ProjectShowcase → Items*
+   * tags field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].tags
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].tags
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   tags: prismic.KeyTextField;
 
   /**
-   * show_cta_button field in *ProjectShowcase → Items*
+   * show_cta_button field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Boolean
    * - **Placeholder**: *None*
-   * - **Default Value**: false
-   * - **API ID Path**: ProjectShowcase.items[].show_cta_button
+   * - **Default Value**: true
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].show_cta_button
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_cta_button: prismic.BooleanField;
 
   /**
-   * button_cta_text field in *ProjectShowcase → Items*
+   * button_cta_text field in *ProjectShowcase → Default → Primary → case_study*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].button_cta_text
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[].button_cta_text
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   button_cta_text: prismic.KeyTextField;
+}
+
+/**
+ * Item in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+ */
+export interface ProjectShowcaseSliceProjectShowcaseHeroPrimaryCaseStudyItem {
+  /**
+   * project_image field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].project_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  project_image: prismic.ImageField<never>;
 
   /**
-   * case_study_type field in *ProjectShowcase → Items*
+   * project_title field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
    *
-   * - **Field Type**: Select
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: ProjectShowcase.items[].case_study_type
-   * - **Documentation**: https://prismic.io/docs/fields/select
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].project_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  case_study_type: prismic.SelectField<"ux" | "ai" | "web3">;
+  project_title: prismic.RichTextField;
+
+  /**
+   * project_description field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].project_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  project_description: prismic.RichTextField;
+
+  /**
+   * project_link field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].project_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  project_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * tags field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].tags
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  tags: prismic.KeyTextField;
+
+  /**
+   * show_cta_button field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].show_cta_button
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_cta_button: prismic.BooleanField;
+
+  /**
+   * button_cta_text field in *ProjectShowcase → ProjectShowcaseHero → Primary → case_study*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[].button_cta_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_cta_text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *ProjectShowcase → Default → Primary*
+ */
+export interface ProjectShowcaseSliceDefaultPrimary {
+  /**
+   * heading field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * case_study_page_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study_page_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  case_study_page_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * case_study field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.case_study[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  case_study: prismic.GroupField<
+    Simplify<ProjectShowcaseSliceDefaultPrimaryCaseStudyItem>
+  >;
 }
 
 /**
@@ -2683,13 +2685,92 @@ export interface ProjectShowcaseSliceDefaultItem {
 export type ProjectShowcaseSliceDefault = prismic.SharedSliceVariation<
   "default",
   Simplify<ProjectShowcaseSliceDefaultPrimary>,
-  Simplify<ProjectShowcaseSliceDefaultItem>
+  never
 >;
+
+/**
+ * Primary content in *ProjectShowcase → ProjectShowcaseHero → Primary*
+ */
+export interface ProjectShowcaseSliceProjectShowcaseHeroPrimary {
+  /**
+   * title field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * section_id field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.section_id
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_id: prismic.KeyTextField;
+
+  /**
+   * heading field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * case_study_page_link field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study_page_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  case_study_page_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * case_study field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.case_study[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  case_study: prismic.GroupField<
+    Simplify<ProjectShowcaseSliceProjectShowcaseHeroPrimaryCaseStudyItem>
+  >;
+}
+
+/**
+ * ProjectShowcaseHero variation for ProjectShowcase Slice
+ *
+ * - **API ID**: `projectShowcaseHero`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ProjectShowcaseSliceProjectShowcaseHero =
+  prismic.SharedSliceVariation<
+    "projectShowcaseHero",
+    Simplify<ProjectShowcaseSliceProjectShowcaseHeroPrimary>,
+    never
+  >;
 
 /**
  * Slice variation for *ProjectShowcase*
  */
-type ProjectShowcaseSliceVariation = ProjectShowcaseSliceDefault;
+type ProjectShowcaseSliceVariation =
+  | ProjectShowcaseSliceDefault
+  | ProjectShowcaseSliceProjectShowcaseHero;
 
 /**
  * ProjectShowcase Shared Slice
@@ -4310,10 +4391,13 @@ declare module "@prismicio/client" {
       ProcessSliceVariation,
       ProcessSliceDefault,
       ProjectShowcaseSlice,
+      ProjectShowcaseSliceDefaultPrimaryCaseStudyItem,
       ProjectShowcaseSliceDefaultPrimary,
-      ProjectShowcaseSliceDefaultItem,
+      ProjectShowcaseSliceProjectShowcaseHeroPrimaryCaseStudyItem,
+      ProjectShowcaseSliceProjectShowcaseHeroPrimary,
       ProjectShowcaseSliceVariation,
       ProjectShowcaseSliceDefault,
+      ProjectShowcaseSliceProjectShowcaseHero,
       ServiceGridSlice,
       ServiceGridSliceDefaultPrimary,
       ServiceGridSliceDefaultItem,
