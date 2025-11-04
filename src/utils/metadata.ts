@@ -20,6 +20,7 @@ export async function pickBaseMetadata(parent: ResolvingMetadata) {
     title: resolved.title,
     description: resolved.description,
     keywords: resolved.keywords,
+    metadataBase: resolved.metadataBase,
     openGraph: resolved.openGraph
       ? {
           type: type,
@@ -137,7 +138,6 @@ export const getMetaDataInfo = async (
   pathname: string,
   parentMetaData: ResolvingMetadata,
   slug?: string,
-  url: string | undefined = process.env.NEXT_PUBLIC_WEBSITE_URL,
 ): Promise<ResolvingMetadata | Record<string, unknown>> => {
 
   // Get parent metadata
@@ -153,7 +153,7 @@ export const getMetaDataInfo = async (
         const metaTitle = dynamicRouteKey.title || parentTitle;
         const metaDescription = dynamicRouteKey.description || parentDescription;
         const metaKeywords = `${dynamicRouteKey.keywords ?? ""} ${parentKeywords ?? ""}`.trim();
-        const canonicalUrl = `${url}${pathname.split("/")[1]}/${slug}`;
+        const canonicalUrl = `${pathname.split("/")[1]}/${slug}`;
 
         return {
           ...parentMetaData,
@@ -188,7 +188,7 @@ export const getMetaDataInfo = async (
         ...openGraph,
         title: metaTitle,
         description: `${metaDescription}`,
-        url: `${url}${slug}`,
+        url: slug || "/", // Ensure og url tag shows root if on homepage
       },
     }
   }

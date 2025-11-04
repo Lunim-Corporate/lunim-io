@@ -34,4 +34,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }, 
   const { uid } = await params; 
 
   return getMetaDataInfo(pathname, parent, uid);
-  }
+}
+  
+export async function generateStaticParams() {
+  const client = createClient();
+  const docs = await client.getAllByType('digital_page');
+  return docs.map(d => ({ uid: d.uid }));
+}
