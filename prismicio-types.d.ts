@@ -810,6 +810,21 @@ export interface CaseStudySmDocumentDataMetaKeywordsItem {
  */
 interface CaseStudySmDocumentData {
   /**
+   * Digital Category field in *Case Study SM*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Discovery
+   * - **API ID Path**: case_study_sm.digital_category
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  digital_category: prismic.SelectField<
+    "Discovery" | "UX" | "Web3" | "AI",
+    "filled"
+  >;
+
+  /**
    * Slice Zone field in *Case Study SM*
    *
    * - **Field Type**: Slice Zone
@@ -1018,12 +1033,11 @@ type FilmDocumentDataSlicesSlice =
   | ExpertiseareasSlice;
 
 /**
-<<<<<<< HEAD
- * Item in *Film → Meta Keywords*
+ * Item in *Media → Meta Keywords*
  */
 export interface FilmDocumentDataMetaKeywordsItem {
   /**
-   * Meta Keywords Text field in *Film → Meta Keywords*
+   * Meta Keywords Text field in *Media → Meta Keywords*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1034,10 +1048,7 @@ export interface FilmDocumentDataMetaKeywordsItem {
 }
 
 /**
- * Content for Film documents
-=======
  * Content for Media documents
->>>>>>> 795a3c859c97143ee386220cf8b893fcb0dd1d7d
  */
 interface FilmDocumentData {
   /**
@@ -1083,7 +1094,7 @@ interface FilmDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Film*
+   * Meta Image Alt Text field in *Media*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1094,7 +1105,7 @@ interface FilmDocumentData {
   meta_image_alt_text: prismic.KeyTextField;
 
   /**
-   * Meta Keywords field in *Film*
+   * Meta Keywords field in *Media*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
@@ -2140,6 +2151,43 @@ export interface ExpertiseareasSliceDefaultItem {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   item_description: prismic.RichTextField;
+
+  /**
+   * is_card_link field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: Expertiseareas.items[].is_card_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_card_link: prismic.BooleanField;
+
+  /**
+   * card_link field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.items[].card_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  card_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * button_text field in *Expertiseareas → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.items[].button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_text: prismic.KeyTextField;
 }
 
 /**
@@ -2443,6 +2491,94 @@ export interface ProjectShowcaseSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   section_id: prismic.KeyTextField;
+
+  /**
+   * heading_ux field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_ux
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_ux: prismic.RichTextField;
+
+  /**
+   * ux_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.ux_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  ux_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * heading_ai field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_ai
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_ai: prismic.RichTextField;
+
+  /**
+   * ai_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.ai_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  ai_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * heading_web3 field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.heading_web3
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_web3: prismic.RichTextField;
+
+  /**
+   * web3_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.web3_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  web3_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * view_project_button_text field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.default.primary.view_project_button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  view_project_button_text: prismic.KeyTextField;
 }
 
 /**
@@ -2504,6 +2640,37 @@ export interface ProjectShowcaseSliceDefaultItem {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   tags: prismic.KeyTextField;
+
+  /**
+   * show_cta_button field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: ProjectShowcase.items[].show_cta_button
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_cta_button: prismic.BooleanField;
+
+  /**
+   * button_cta_text field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.items[].button_cta_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_cta_text: prismic.KeyTextField;
+
+  /**
+   * case_study_type field in *ProjectShowcase → Items*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ProjectShowcase.items[].case_study_type
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  case_study_type: prismic.SelectField<"ux" | "ai" | "web3">;
 }
 
 /**

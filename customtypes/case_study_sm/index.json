@@ -12,6 +12,15 @@
           "label": "UID"
         }
       },
+      "digital_category": {
+        "type": "Select",
+        "config": {
+          "label": "Digital Category",
+          "placeholder": "",
+          "options": ["Discovery", "UX", "Web3", "AI"],
+          "default_value": "Discovery"
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

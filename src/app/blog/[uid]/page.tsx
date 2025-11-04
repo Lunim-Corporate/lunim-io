@@ -22,6 +22,7 @@ import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 type Params = { uid: string };
 
@@ -249,6 +250,7 @@ export async function generateMetadata(
   const description = doc.data?.meta_description || parentMetaData.description;
 
   const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+  // const canonical = await getCanonicalUrl();
 
   return {
     ...parentMetaData,
@@ -259,6 +261,7 @@ export async function generateMetadata(
       ...parentMetaData.openGraph,
       title: typeof title === 'string' ? `${title}` : fallBackPageName,
       description: `${description}`,
+      // url: canonical,
       // images: [
       //   {
       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
