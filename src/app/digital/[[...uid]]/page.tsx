@@ -61,6 +61,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies"], ["web3", "case-studies"]
     else if (uid.length === 2) {
         // console.log("2", uid);
+        if (uid[1] !== "case-studies") notFound();
         const allCaseStudies = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
         const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === uid[0]);
         const caseStudyPage = await client.getSingle("case_studies").catch(() => null);
