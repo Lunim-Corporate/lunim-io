@@ -677,6 +677,121 @@ export type BlogPostDocument<Lang extends string = string> =
     Lang
   >;
 
+type CaseStudiesDocumentDataSlicesSlice = never;
+
+/**
+ * Item in *Case Studies → Meta Keywords*
+ */
+export interface CaseStudiesDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Case Studies → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
+ * Content for Case Studies documents
+ */
+interface CaseStudiesDocumentData {
+  /**
+   * Heading field in *Case Studies*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.heading
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Slice Zone field in *Case Studies*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<CaseStudiesDocumentDataSlicesSlice> /**
+   * Meta Title field in *Case Studies*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: case_studies.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Case Studies*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: case_studies.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Case Studies*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Case Studies*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Case Studies*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<CaseStudiesDocumentDataMetaKeywordsItem>
+  >;
+}
+
+/**
+ * Case Studies document from Prismic
+ *
+ * - **API ID**: `case_studies`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CaseStudiesDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CaseStudiesDocumentData>,
+    "case_studies",
+    Lang
+  >;
+
 /**
  * Content for Case Study documents
  */
@@ -825,6 +940,17 @@ interface CaseStudySmDocumentData {
   >;
 
   /**
+   * URL Full Path field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.url_full_path
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  url_full_path: prismic.KeyTextField;
+
+  /**
    * Slice Zone field in *Case Study SM*
    *
    * - **Field Type**: Slice Zone
@@ -908,6 +1034,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type DigitalPageDocumentDataSlicesSlice =
+  | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
   | ProjectShowcaseSlice
@@ -2078,6 +2205,7 @@ export type AllDocumentTypes =
   | AuthorDocument
   | BlogHomePageDocument
   | BlogPostDocument
+  | CaseStudiesDocument
   | CaseStudyDocument
   | CaseStudySmDocument
   | DigitalPageDocument
@@ -4318,6 +4446,10 @@ declare module "@prismicio/client" {
       BlogPostDocumentData,
       BlogPostDocumentDataSlicesSlice,
       BlogPostDocumentDataMetaKeywordsItem,
+      CaseStudiesDocument,
+      CaseStudiesDocumentData,
+      CaseStudiesDocumentDataSlicesSlice,
+      CaseStudiesDocumentDataMetaKeywordsItem,
       CaseStudyDocument,
       CaseStudyDocumentData,
       CaseStudySmDocument,

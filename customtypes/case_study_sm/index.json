@@ -21,6 +21,13 @@
           "default_value": "discovery"
         }
       },
+      "url_full_path": {
+        "type": "Text",
+        "config": {
+          "label": "URL Full Path",
+          "placeholder": ""
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
