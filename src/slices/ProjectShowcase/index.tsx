@@ -68,7 +68,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                             </h3>
                         </div>
                         <div className='mt-2 sm:mt-0 text-start sm:text-end'>
-                            <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{item.button_cta_text}</button>
+                            <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{item.button_cta_text}</button>
                         </div>
                     </div>
                     ) : (
@@ -88,7 +88,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                     {tagsArray.map((tag, tagIndex) => (
                       <span
                       key={tagIndex}
-                      className="bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full"
+                      className="bg-white/10 text-white px-3 py-1 rounded-full"
                       >
                           {tag}
                       </span>
