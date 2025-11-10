@@ -254,15 +254,17 @@ export async function generateMetadata(
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";
+  const blogAuthors = doc.data?.meta_authors?.filter((val) => Boolean(val.author_name)).map((a) => ({ name: a.author_name || undefined}));
 
   return {
     ...parentMetaData,
     title: title,
     description: description,
     keywords: keywords,
+    authors: blogAuthors,
     openGraph: {
       ...parentMetaData.openGraph,
-      title: `${title}`,
+      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
       url: canonicalUrl,
       // images: [

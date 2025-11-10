@@ -57,7 +57,6 @@ export async function generateMetadata(
   const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
 
   return {
     ...parentMetaData,
@@ -68,7 +67,7 @@ export async function generateMetadata(
       ...parentMetaData.openGraph,
       title: `${title}`,
       description: `${description}`,
-      url: canonicalUrl,
+      url: process.env.NEXT_PUBLIC_WEBSITE_URL,
       // images: [
       //   {
       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,

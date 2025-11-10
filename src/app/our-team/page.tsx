@@ -69,7 +69,7 @@ export async function generateMetadata(
     keywords: keywords,
     openGraph: {
       ...parentMetaData.openGraph,
-      title: `${title}`,
+      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
       url: canonicalUrl,
       // images: [
