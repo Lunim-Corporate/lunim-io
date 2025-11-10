@@ -1,0 +1,77 @@
+{
+  "id": "virtual_production",
+  "type": "SharedSlice",
+  "name": "VirtualProduction",
+  "description": "Virtual Production section showcasing LED stage with text overlay",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default variation",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Virtual Production",
+            "allowTargetBlank": false,
+            "single": "heading2"
+          }
+        },
+        "subtitle": {
+          "type": "Text",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "More Creative Freedom, Less Risk"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "This virtual-first approach will allow us to...",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em"
+          }
+        },
+        "background_image": {
+          "type": "Image",
+          "config": {
+            "label": "Background Image",
+            "constraint": {
+              "width": 1920,
+              "height": 1080
+            },
+            "thumbnails": []
+          }
+        },
+        "content_position": {
+          "type": "Select",
+          "config": {
+            "label": "Content Position",
+            "placeholder": "Select position",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ],
+            "default_value": "left"
+          }
+        },
+        "enable_zoom_effect": {
+          "type": "Boolean",
+          "config": {
+            "label": "Enable Zoom Effect on Scroll",
+            "default_value": true,
+            "placeholder_true": "Enabled",
+            "placeholder_false": "Disabled"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
