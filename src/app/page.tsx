@@ -54,9 +54,10 @@ export async function generateMetadata(
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
   // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
+  const canonicalUrl = doc.data?.meta_url || "";
 
   return {
     ...parentMetaData,
@@ -67,7 +68,7 @@ export async function generateMetadata(
       ...parentMetaData.openGraph,
       title: `${title}`,
       description: `${description}`,
-      // url: canonical,
+      url: canonicalUrl,
       // images: [
       //   {
       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
