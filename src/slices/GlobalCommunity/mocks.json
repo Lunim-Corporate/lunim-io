@@ -1,0 +1,94 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "eyebrow_text": "Global Community",
+      "heading": [
+        {
+          "type": "heading2",
+          "text": "Attracting The Talent",
+          "spans": []
+        }
+      ],
+      "body_text": [
+        {
+          "type": "paragraph",
+          "text": "Lunim's online community, Tabb, serves over 9000 producers, filmmakers and actors, which we complement with a comprehensive and practiced outreach programme via the major online networks.",
+          "spans": [
+            {
+              "start": 27,
+              "end": 31,
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "This means direct access to a global talent base of the highest quality at a modest cost.",
+          "spans": []
+        }
+      ],
+      "tabb_logo": {
+        "dimensions": {
+          "width": 300,
+          "height": 150
+        },
+        "alt": "Tabb Logo",
+        "copyright": null,
+        "url": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&h=150&fit=crop"
+      },
+      "background_color": "dark-blue"
+    },
+    "items": [
+      {
+        "face_image": {
+          "dimensions": {
+            "width": 200,
+            "height": 200
+          },
+          "alt": "Team member",
+          "copyright": null,
+          "url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
+        },
+        "person_name": "Team Member 1"
+      },
+      {
+        "face_image": {
+          "dimensions": {
+            "width": 200,
+            "height": 200
+          },
+          "alt": "Team member",
+          "copyright": null,
+          "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+        },
+        "person_name": "Team Member 2"
+      },
+      {
+        "face_image": {
+          "dimensions": {
+            "width": 200,
+            "height": 200
+          },
+          "alt": "Team member",
+          "copyright": null,
+          "url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop"
+        },
+        "person_name": "Team Member 3"
+      },
+      {
+        "face_image": {
+          "dimensions": {
+            "width": 200,
+            "height": 200
+          },
+          "alt": "Team member",
+          "copyright": null,
+          "url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop"
+        },
+        "person_name": "Team Member 4"
+      }
+    ]
+  }
+]
