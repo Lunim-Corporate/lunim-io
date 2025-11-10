@@ -34,6 +34,15 @@
             "repeat": false
           }
         },
+        "show_case_study_page_link": {
+          "type": "Boolean",
+          "config": {
+            "label": "show_case_study_page_link",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
         "case_study": {
           "type": "Group",
           "config": {
@@ -147,6 +156,15 @@
             "allowTargetBlank": true,
             "allowText": true,
             "repeat": false
+          }
+        },
+        "show_case_study_page_link": {
+          "type": "Boolean",
+          "config": {
+            "label": "show_case_study_page_link",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
           }
         },
         "case_study": {

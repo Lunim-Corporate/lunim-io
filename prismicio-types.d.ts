@@ -2814,6 +2814,17 @@ export interface ProjectShowcaseSliceDefaultPrimary {
   >;
 
   /**
+   * show_case_study_page_link field in *ProjectShowcase → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: ProjectShowcase.default.primary.show_case_study_page_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_case_study_page_link: prismic.BooleanField;
+
+  /**
    * case_study field in *ProjectShowcase → Default → Primary*
    *
    * - **Field Type**: Group
@@ -2888,6 +2899,17 @@ export interface ProjectShowcaseSliceProjectShowcaseHeroPrimary {
     prismic.FieldState,
     never
   >;
+
+  /**
+   * show_case_study_page_link field in *ProjectShowcase → ProjectShowcaseHero → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: ProjectShowcase.projectShowcaseHero.primary.show_case_study_page_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_case_study_page_link: prismic.BooleanField;
 
   /**
    * case_study field in *ProjectShowcase → ProjectShowcaseHero → Primary*
