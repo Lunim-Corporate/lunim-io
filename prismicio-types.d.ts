@@ -166,6 +166,17 @@ interface AcademyDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<AcademyDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Academy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -278,6 +289,17 @@ interface AcademyCourseDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<AcademyCourseDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Academy Course*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -477,6 +499,17 @@ interface BlogHomePageDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<BlogHomePageDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Blog Home Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home_page.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -659,6 +692,17 @@ interface BlogPostDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<BlogPostDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Blog Post*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -774,6 +818,17 @@ interface CaseStudiesDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<CaseStudiesDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Case Studies*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1016,6 +1071,17 @@ interface CaseStudySmDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<CaseStudySmDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1129,6 +1195,17 @@ interface DigitalPageDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<DigitalPageDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Digital Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1253,6 +1330,17 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
   meta_keywords: prismic.GroupField<Simplify<FilmDocumentDataMetaKeywordsItem>>;
+
+  /**
+   * Meta URL field in *Media*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1396,6 +1484,17 @@ interface HomepageDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<HomepageDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Homepage*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1593,6 +1692,17 @@ interface OurTeamPageDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<OurTeamPageDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Our Team*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1774,6 +1884,17 @@ interface PrivacyPolicySmDocumentData {
   meta_keywords: prismic.GroupField<
     Simplify<PrivacyPolicySmDocumentDataMetaKeywordsItem>
   >;
+
+  /**
+   * Meta URL field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -1887,6 +2008,17 @@ interface TabbDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
   meta_keywords: prismic.GroupField<Simplify<TabbDocumentDataMetaKeywordsItem>>;
+
+  /**
+   * Meta URL field in *Tabb*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -2197,6 +2329,17 @@ interface TechDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
   meta_keywords: prismic.GroupField<Simplify<TechDocumentDataMetaKeywordsItem>>;
+
+  /**
+   * Meta URL field in *Digital*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**

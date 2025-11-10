@@ -100,6 +100,13 @@
             }
           }
         }
+      },
+      "meta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Meta URL",
+          "placeholder": ""
+        }
       }
     }
   }
