@@ -61,15 +61,10 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
             <div className="bg-[#1f2937] p-6 flex-1 flex flex-col">
                 <div className="flex-1">
                     {item.show_cta_button ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] pt-4 pb-8">
-                        <div>
-                            <h3 className="text-white font-bold text-xl m-0! text-left">
-                            {asText(item.project_title)}
-                            </h3>
-                        </div>
-                        <div className='mt-2 sm:mt-0 text-start sm:text-end'>
-                            
-                        </div>
+                    <div className="grid pt-4 pb-8">
+                        <h3 className="text-white font-bold text-xl m-0! text-left">
+                        {asText(item.project_title)}
+                        </h3>
                     </div>
                     ) : (
                         <div className="grid grid-cols-1 pt-4 pb-8">
