@@ -2486,6 +2486,17 @@ export interface ImageandtextSliceDefaultPrimary {
     prismic.FieldState,
     never
   >;
+
+  /**
+   * show link field in *Imageandtext → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: Imageandtext.default.primary.show_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_link: prismic.BooleanField;
 }
 
 /**
