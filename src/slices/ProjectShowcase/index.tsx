@@ -19,7 +19,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         {/* Only show title for this slice */}
         {slice.variation === "projectShowcaseHero" && (
-          <div className="mb-18">
+          <div className="mb-22">
             <PrismicRichText
               field={slice.primary.title}
               components={{
@@ -29,7 +29,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
           </div>
         )}
         {/* Heading (for example, UX, Web3, AI) */}
-        <div className="text-3xl font-bold text-white mb-24 text-center">
+        <div className="text-3xl font-bold text-white mb-18 text-center">
           <PrismicRichText field={slice.primary.heading} />
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
@@ -102,12 +102,14 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
         )}
       </div>
       {/* Case Study Link */}
+      {slice.primary.show_case_study_page_link && (
       <div className="mt-16 text-center text-white">
         <PrismicNextLink
             field={slice.primary.case_study_page_link}
             className='bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300'
           />
         </div>
+        )}
       </div>
     </section>
   );
