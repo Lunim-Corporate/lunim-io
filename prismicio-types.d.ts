@@ -902,6 +902,7 @@ export type CaseStudyDocument<Lang extends string = string> =
   >;
 
 type CaseStudySmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | CompactHeroSlice;
 
