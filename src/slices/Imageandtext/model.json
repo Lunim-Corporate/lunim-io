@@ -53,6 +53,15 @@
             "allowText": true,
             "repeat": false
           }
+        },
+        "show_link": {
+          "type": "Boolean",
+          "config": {
+            "label": "show link",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
         }
       },
       "items": {}
