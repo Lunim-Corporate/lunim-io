@@ -83,7 +83,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
                   }}
                     />
                     <div>
-                      <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF] text-base hover:text-cyan-300">
+                      <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-[#BBFEFF] text-base hover:text-cyan-300">
                         {item.button_text || "More"}
                       </button>
                     </div>
