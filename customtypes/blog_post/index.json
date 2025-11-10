@@ -143,6 +143,22 @@
           "label": "Meta URL",
           "placeholder": ""
         }
+      },
+      "meta_authors": {
+        "type": "Group",
+        "config": {
+          "label": "Meta Authors",
+          "repeat": true,
+          "fields": {
+            "author_name": {
+              "type": "Text",
+              "config": {
+                "label": "Author Name",
+                "placeholder": ""
+              }
+            }
+          }
+        }
       }
     }
   }

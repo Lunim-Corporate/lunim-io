@@ -342,6 +342,21 @@ export interface AuthorDocumentDataSocialMediaItem {
 type AuthorDocumentDataSlicesSlice = BlogListSlice;
 
 /**
+ * Item in *Author → Meta Keywords*
+ */
+export interface AuthorDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Author → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
  * Content for Author documents
  */
 interface AuthorDocumentData {
@@ -398,7 +413,73 @@ interface AuthorDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/slices
    */
-  slices: prismic.SliceZone<AuthorDocumentDataSlicesSlice>;
+  slices: prismic.SliceZone<AuthorDocumentDataSlicesSlice> /**
+   * Meta Title field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Author*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Author*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<AuthorDocumentDataMetaKeywordsItem>
+  >;
+
+  /**
+   * Meta URL field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
 }
 
 /**
@@ -412,6 +493,121 @@ interface AuthorDocumentData {
  */
 export type AuthorDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<AuthorDocumentData>, "author", Lang>;
+
+type AuthorsDocumentDataSlicesSlice = never;
+
+/**
+ * Item in *Authors → Meta Keywords*
+ */
+export interface AuthorsDocumentDataMetaKeywordsItem {
+  /**
+   * Meta Keywords Text field in *Authors → Meta Keywords*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_keywords[].meta_keywords_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
+ * Content for Authors documents
+ */
+interface AuthorsDocumentData {
+  /**
+   * Slice Zone field in *Authors*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AuthorsDocumentDataSlicesSlice> /**
+   * Meta Title field in *Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: authors.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: authors.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Authors*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+
+  /**
+   * Meta Image Alt Text field in *Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
+
+  /**
+   * Meta Keywords field in *Authors*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_keywords[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_keywords: prismic.GroupField<
+    Simplify<AuthorsDocumentDataMetaKeywordsItem>
+  >;
+
+  /**
+   * Meta URL field in *Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_url
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_url: prismic.KeyTextField;
+}
+
+/**
+ * Authors document from Prismic
+ *
+ * - **API ID**: `authors`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AuthorsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<AuthorsDocumentData>,
+    "authors",
+    Lang
+  >;
 
 type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
 
@@ -543,6 +739,21 @@ export interface BlogPostDocumentDataMetaKeywordsItem {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_keywords_text: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Blog Post → Meta Authors*
+ */
+export interface BlogPostDocumentDataMetaAuthorsItem {
+  /**
+   * Author Name field in *Blog Post → Meta Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_authors[].author_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  author_name: prismic.KeyTextField;
 }
 
 /**
@@ -703,6 +914,19 @@ interface BlogPostDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Authors field in *Blog Post*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_authors[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  meta_authors: prismic.GroupField<
+    Simplify<BlogPostDocumentDataMetaAuthorsItem>
+  >;
 }
 
 /**
@@ -2358,6 +2582,7 @@ export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
   | AuthorDocument
+  | AuthorsDocument
   | BlogHomePageDocument
   | BlogPostDocument
   | CaseStudiesDocument
@@ -5758,6 +5983,11 @@ declare module "@prismicio/client" {
       AuthorDocumentData,
       AuthorDocumentDataSocialMediaItem,
       AuthorDocumentDataSlicesSlice,
+      AuthorDocumentDataMetaKeywordsItem,
+      AuthorsDocument,
+      AuthorsDocumentData,
+      AuthorsDocumentDataSlicesSlice,
+      AuthorsDocumentDataMetaKeywordsItem,
       BlogHomePageDocument,
       BlogHomePageDocumentData,
       BlogHomePageDocumentDataSlicesSlice,
@@ -5766,6 +5996,7 @@ declare module "@prismicio/client" {
       BlogPostDocumentData,
       BlogPostDocumentDataSlicesSlice,
       BlogPostDocumentDataMetaKeywordsItem,
+      BlogPostDocumentDataMetaAuthorsItem,
       CaseStudiesDocument,
       CaseStudiesDocumentData,
       CaseStudiesDocumentDataSlicesSlice,

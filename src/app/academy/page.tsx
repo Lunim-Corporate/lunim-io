@@ -69,7 +69,9 @@ export async function generateMetadata(
     keywords: keywords,
     openGraph: {
       ...parentMetaData.openGraph,
-      title: `${title}`,
+      // Prevents issues where title is an object (due to Next.js Metadata type)
+      // Title is only an object when no title is set in Prismic and it falls back to parentMetaData.title. Title value will read [object Object] in head tag`
+      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
       url: canonicalUrl,
       // images: [
