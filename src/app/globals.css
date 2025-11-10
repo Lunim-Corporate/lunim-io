@@ -23,12 +23,16 @@
     line-height: 1.5;
   }
 
-  p {
+  p, ul {
     font-family: var(--font-primary);
     font-size: 1.167rem;
     font-weight: 400;
     line-height: 1.5;
     margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: circle inside;
   }
 
   span {
