@@ -49,6 +49,7 @@ const SEGMENT_LABEL_OVERRIDES: Record<string, string> = {
   ai: "AI",
   "case-studies": "Case Studies",
 };
+// Add more slug-based overrides here if needed, e.g. "ai-whatsapp-interactor": "AI Whatsapp Interactor",
 
 const labelFromSegment = (segment: string): string => {
   const decoded = decodeURIComponent(segment);
@@ -72,6 +73,8 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
     }
     return currentPath.split("/").filter(Boolean);
   }, [currentPath]);
+
+  const showBreadcrumbs = segments.length >= 3;
 
   // Build a path -> label map from navigation
   const pathLabelMap = useMemo(() => {
@@ -100,21 +103,24 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
     // Home
     items.push({ href: "/", label: "Home" });
 
-    // For each path prefix: /digital, /digital/ai, /digital/ai/case-studies, ...
     let acc = "";
     segments.forEach((seg) => {
       acc += `/${seg}`;
       const href = acc;
-      const label =
-        pathLabelMap.get(href) ??
-        labelFromSegment(seg); // fallback to prettified segment
+
+      const segLower = seg.toLowerCase();
+      const overrideLabel = SEGMENT_LABEL_OVERRIDES[segLower];
+      const navLabel = pathLabelMap.get(href);
+      const baseLabel = labelFromSegment(seg);
+      const label = overrideLabel ?? navLabel ?? baseLabel;
+
       items.push({ href, label });
     });
 
     return items;
   }, [segments, pathLabelMap]);
 
-  if (segments.length < 3) {
+  if (!showBreadcrumbs) {
     return null;
   }
 
@@ -123,28 +129,28 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
   return (
     <nav
       aria-label="Breadcrumb"
-      className="w-full bg-black/40 border-b border-white/5"
+      className="w-full border-b border-white/10 bg-black/30/80 backdrop-blur-sm"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol className="flex flex-wrap items-center gap-1 text-xs sm:text-sm text-white/60">
+        <ol className="flex flex-wrap items-center gap-1 text-[11px] sm:text-xs md:text-sm text-white/55">
           {crumbs.map((crumb, index) => {
             const isLast = index === lastIndex;
             return (
               <li key={crumb.href} className="flex items-center min-w-0">
                 {index > 0 && (
                   <ChevronRight
-                    className="w-3 h-3 sm:w-4 sm:h-4 mx-1 text-white/40"
+                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/35"
                     aria-hidden="true"
                   />
                 )}
                 {isLast ? (
-                  <span className="font-medium text-white/90 truncate max-w-[200px] sm:max-w-none">
+                  <span className="font-semibold text-white truncate max-w-[200px] sm:max-w-none">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     href={crumb.href}
-                    className="hover:text-white transition-colors truncate max-w-[140px] sm:max-w-none"
+                    className="hover:text-white hover:underline underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none"
                   >
                     {crumb.label}
                   </Link>
