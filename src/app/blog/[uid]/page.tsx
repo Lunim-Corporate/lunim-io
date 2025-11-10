@@ -2,7 +2,7 @@
 // Next
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 // Prismicio
 import { createClient } from "@/prismicio";
 import { asText, type Content } from "@prismicio/client";
@@ -20,6 +20,12 @@ import { formatDate } from "@/utils/formatDate";
 // Components
 import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
+// Utils
+import { pickBaseMetadata } from "@/utils/metadata";
+// import { getCanonicalUrl } from "@/utils/getCanonical";
+
+// Must use 'force-dynamic' to show meta tags correctly for each blog post
+// export const dynamic = 'force-dynamic';
 
 type Params = { uid: string };
 
@@ -220,23 +226,46 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Promise<Params>;},
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
   const { uid } = await params;
   const client = createClient();
+  const parentMetaData = await pickBaseMetadata(parent);
   const doc = await client
-    .getByUID<Content.BlogPostDocument>("blog_post", uid)
-    .catch(() => null);
+  .getByUID<Content.BlogPostDocument>("blog_post", uid)
+  .catch(() => null);
   if (!doc) {
-    return { title: "Blog Post | Lunim" };
+    return {
+      title: "Lunim Blog Article",
+      description: "Welcome to Lunim's official blog article page."
+    };
   }
+
+
+  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
+  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
+  const parentKeywords = parentMetaData.keywords || "";
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
+  const title = doc.data?.meta_title || parentMetaData.title;
+  const description = doc.data?.meta_description || parentMetaData.description;
+
+  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+
   return {
-    title: doc.data.meta_title || `${doc.uid} | Blog`,
-    description: doc.data.meta_description || "Blog post by Lunim.",
-  };
+    ...parentMetaData,
+    title: title,
+    description: description,
+    keywords: keywords, 
+    openGraph: {
+      ...parentMetaData.openGraph,
+      title: typeof title === 'string' ? `${title}` : fallBackPageName,
+      description: `${description}`,
+      url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/${doc.uid}`,
+    },
+  }
 }
 
 // Static generation for known UIDs (optional)

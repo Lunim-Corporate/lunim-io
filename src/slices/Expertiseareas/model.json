@@ -51,6 +51,33 @@
             "single": "paragraph",
             "label": "item_description"
           }
+        },
+        "is_card_link": {
+          "type": "Boolean",
+          "config": {
+            "label": "is_card_link",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
+        "card_link": {
+          "type": "Link",
+          "config": {
+            "label": "card_link",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": false
+          }
+        },
+        "button_text": {
+          "type": "Text",
+          "config": {
+            "label": "button_text",
+            "placeholder": ""
+          }
         }
       }
     }

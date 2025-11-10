@@ -1,0 +1,23 @@
+{
+  "id": "education_world",
+  "type": "SharedSlice",
+  "name": "EducationWorld",
+  "description": "Education section with classroom doorway imagery and explanatory copy",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "",
+      "version": "initial",
+      "description": "Default variation",
+      "imageUrl": "",
+      "primary": {
+        "title": { "type": "StructuredText", "config": { "label": "Title", "single": "heading2", "placeholder": "Education" } },
+        "subtitle": { "type": "Text", "config": { "label": "Subtitle", "placeholder": "A Virtual World in the Classroom" } },
+        "description": { "type": "StructuredText", "config": { "label": "Description", "multi": "paragraph,strong,em,hyperlink" } },
+        "background_image": { "type": "Image", "config": { "label": "Background Image", "constraint": { "width": 1920, "height": 1080 }, "thumbnails": [] } }
+      },
+      "items": {}
+    }
+  ]
+}

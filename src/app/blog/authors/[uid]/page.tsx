@@ -1,6 +1,8 @@
 // app/blog/authors/[uid]/page.tsx
+// Next
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
+// Prismic
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
@@ -9,9 +11,11 @@ import {
   filter,
   type LinkField,
 } from "@prismicio/client";
-
+// Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
+import { pickBaseMetadata } from "@/utils/metadata";
+// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 type Params = { uid: string };
 
@@ -379,32 +383,46 @@ export default async function Page({ params, searchParams }: PageProps) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Promise<Params>;},
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
   const { uid } = await params;
   const client = createClient();
-  const authorDoc = await client
-    .getByUID<Content.AuthorDocument>("author", uid)
-    .catch(() => null);
-  if (!authorDoc) {
+  const parentMetaData = await pickBaseMetadata(parent);
+  const doc = await client
+  .getByUID<Content.AuthorDocument>("author", uid)
+  .catch(() => null);
+  if (!doc) {
     return {
-      title: "Author | Lunim",
-      description: "Articles written by Lunim contributors.",
+      title: "Lunim Author Page",
+      description: "Welcome to Lunim's official author page."
     };
   }
-  const authorName =
-    authorDoc.data.author_name?.trim() || authorDoc.uid || "Author";
-  const bio = authorDoc.data.author_bio?.trim();
-  return {
-    title: `${authorName} | Lunim Blog`,
-    description:
-      bio && bio.length > 0
-        ? bio
-        : `Articles written by ${authorName} on the Lunim blog.`,
-  };
+
+
+  const parentKeywords = parentMetaData.keywords || "";
+  const authorKeywords = ""; // End keywords using a comma
+  const keywords = `${authorKeywords} ${parentKeywords}`.trim();
+  const description = "Lunim's official author page";
+  const authorName = uid.replace("-", " ").split(" ");
+  const authorFirstName = authorName[0][0].toUpperCase() + authorName[0].slice(1);
+  const authorLastName = authorName[1][0].toUpperCase() + authorName[1].slice(1);
+  const title = `${authorFirstName} ${authorLastName}`;
+  
+    return {
+      ...parentMetaData,
+      title: title,
+      description: description,
+      keywords: keywords, 
+      openGraph: {
+        ...parentMetaData.openGraph,
+        title: title,
+        description: `${description}`,
+        url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/authors/${doc.uid}`,
+      },
+    }
 }
 
 export async function generateStaticParams() {

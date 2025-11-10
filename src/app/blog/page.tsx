@@ -1,10 +1,12 @@
-// src/app/blog/page.tsx
+// Next
 import { notFound } from "next/navigation";
+import type { ResolvingMetadata } from "next";
+// Prismic
 import { SliceZone } from "@prismicio/react";
-import type { Metadata } from "next";
-
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+// Utils
+import { getMetaDataInfo } from "@/utils/metadata";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -28,17 +30,9 @@ export default async function Page({ searchParams }: PageProps) {
     </main>
   );
 }
- 
-export async function generateMetadata(): Promise<Metadata> {
-  const client = createClient();
-  const doc = await client.getSingle("blog_home_page").catch(() => null);
-  if (!doc) return {};
 
-  const title =
-    (doc.data as { meta_title?: string }).meta_title || "Blog | Lunim";
-  const description =
-    (doc.data as { meta_description?: string }).meta_description ||
-    "Articles from Lunim.";
+export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
+  const pathname = "/blog";
 
-  return { title, description };
-}
+  return getMetaDataInfo(pathname, parent);
+  }

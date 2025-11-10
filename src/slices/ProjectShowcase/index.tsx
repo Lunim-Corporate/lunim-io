@@ -1,88 +1,112 @@
 "use client";
-import React, { FC } from "react";
 import {
   PrismicRichText,
-  PrismicLink,
   type SliceComponentProps,
 } from "@prismicio/react";
-import { Content } from "@prismicio/client";
-import { asText } from "@prismicio/helpers";
+import { asText, Content } from "@prismicio/client";
+// React
+import { FC } from "react";
+import { PrismicNextLink } from "@prismicio/next";
 
 type ProjectShowcaseProps = SliceComponentProps<Content.ProjectShowcaseSlice>;
 
 const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
-  const projects =
-    slice.items as ReadonlyArray<Content.ProjectShowcaseSliceDefaultItem>;
-
   return (
     <section
-      id={slice.primary.section_id || "case-studies"}
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
+      id="case-studies"
       className="bg-[#0f172a] py-16"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {slice.primary.title && (
-          <div className="text-3xl font-bold text-white mb-12 text-center">
-            <PrismicRichText field={slice.primary.title} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
+        {/* Only show title for this slice */}
+        {slice.variation === "projectShowcaseHero" && (
+          <div className="mb-18">
+            <PrismicRichText
+              field={slice.primary.title}
+              components={{
+                heading2: ({ children }) => <h2 className="text-3xl font-bold text-white text-center ">{children}</h2>
+              }}
+              />
           </div>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-          {projects.map((project, index) => {
-            const tagsArray: string[] = project.tags
-              ? project.tags.split(",").map((tag) => tag.trim())
-              : [];
-            const projectImageUrl: string | undefined =
-              project.project_image?.url ?? undefined;
+        {/* Heading (for example, UX, Web3, AI) */}
+        <div className="text-3xl font-bold text-white mb-24 text-center">
+          <PrismicRichText field={slice.primary.heading} />
+        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        {slice.primary.case_study && slice.primary.case_study.length > 0 && (
+          slice.primary.case_study.map((item, index) => {
+            const tagsArray: string[] = item.tags
+                  ? item.tags.split(",").map((tag) => tag.trim())
+                  : [];
 
             return (
-              <PrismicLink
-                field={project.project_link}
+              <PrismicNextLink
+                field={item.project_link}
                 key={index}
                 className="rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 flex flex-col h-full"
-              >
-                <div
-                  className="bg-gray-800 h-48 flex items-center justify-center"
-                  style={
-                    projectImageUrl
-                      ? {
-                          backgroundImage: `url(${projectImageUrl})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }
-                      : {}
-                  }
-                />
+            >
+            <div
+                className="bg-gray-800 h-48 flex items-center justify-center"
+                style={
+                    item.project_image
+                    ? {
+                    backgroundImage: `url(${item.project_image.url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    }
+                    : {}
+                }
+            />
 
-                <div className="bg-[#1f2937] p-6 flex-1 flex flex-col">
-                  <div className="flex-1">
-                    {project.project_title && (
-                      <h3 className="text-white font-bold text-xl mb-2 text-left">
-                        {asText(project.project_title)}
-                      </h3>
-                    )}
+            <div className="bg-[#1f2937] p-6 flex-1 flex flex-col">
+                <div className="flex-1">
+                    {item.show_cta_button ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] pt-4 pb-8">
+                        <div>
+                            <h3 className="text-white font-bold text-xl m-0! text-left">
+                            {asText(item.project_title)}
+                            </h3>
+                        </div>
+                        <div className='mt-2 sm:mt-0 text-start sm:text-end'>
+                            <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{item.button_cta_text}</button>
+                        </div>
+                    </div>
+                    ) : (
+                        <div className="grid grid-cols-1 pt-4 pb-8">
+                          <h3 className="text-white font-bold text-xl m-0! text-left">
+                          {asText(item.project_title)}
+                          </h3>
+                        </div>
+                      )}
                     <div className="text-gray-200 text-base text-left">
-                      <PrismicRichText field={project.project_description} />
+                        <PrismicRichText field={item.project_description} />
                     </div>
-                  </div>
-
-                  {tagsArray.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {tagsArray.map((tag, tagIndex) => (
-                        <span
-                          key={tagIndex}
-                          className="bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
-              </PrismicLink>
-            );
-          })}
+
+                {tagsArray.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                    {tagsArray.map((tag, tagIndex) => (
+                      <span
+                      key={tagIndex}
+                      className="bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full"
+                      >
+                          {tag}
+                      </span>
+                    ))}
+                </div>
+                )}
+            </div>
+            </PrismicNextLink>
+            )
+          })
+        )}
+      </div>
+      {/* Case Study Link */}
+      <div className="mt-16 text-center text-white">
+        <PrismicNextLink
+            field={slice.primary.case_study_page_link}
+            className='bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300'
+          />
         </div>
       </div>
     </section>

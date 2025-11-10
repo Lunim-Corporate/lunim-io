@@ -1,7 +1,12 @@
+// Prismic
 import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
+// Next
+import { ResolvingMetadata } from "next";
+// Utils
+import { getMetaDataInfo } from "@/utils/metadata";
 
 export const revalidate = 60;
 
@@ -17,13 +22,19 @@ export default async function Page() {
     );
   }
 
-  console.log(
-    "✅ Slices:",
-    doc.data.slices.map((slice) => slice.slice_type)
-  );
+  // console.log(
+  //   "✅ Slices:",
+  //   doc.data.slices.map((slice) => slice.slice_type)
+  // );
   return (
     <main className="bg-black">
       <SliceZone slices={doc.data.slices} components={components} />
     </main>
   );
 }
+
+export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
+  const pathname = "/academy";
+
+  return getMetaDataInfo(pathname, parent);
+  }

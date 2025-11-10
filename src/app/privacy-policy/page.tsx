@@ -1,7 +1,12 @@
+// Prismic
 import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
+// Next
+import { ResolvingMetadata } from "next";
+// Utils
+import { getMetaDataInfo } from "@/utils/metadata";
 
 export const revalidate = 60;
 
@@ -25,3 +30,9 @@ export default async function Page() {
     </main>
   );
 }
+
+export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
+  const pathname = "/privacy-policy";
+
+  return getMetaDataInfo(pathname, parent);
+  }

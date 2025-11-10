@@ -1,0 +1,43 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "title": [
+        {
+          "type": "heading2",
+          "text": "The Shoot",
+          "spans": []
+        }
+      ],
+      "subtitle": "Preparation is Everything",
+      "background_image": {
+        "dimensions": {
+          "width": 1920,
+          "height": 1080
+        },
+        "alt": "Film production set",
+        "copyright": null,
+        "url": "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&h=1080&fit=crop"
+      },
+      "text_alignment": "left"
+    },
+    "items": [
+      {
+        "bullet_point": "Virtual Mastercut (Previs Film)"
+      },
+      {
+        "bullet_point": "Shot List & Shooting Boards"
+      },
+      {
+        "bullet_point": "Environment and Prop Visuals"
+      },
+      {
+        "bullet_point": "Character Reference Sheets"
+      },
+      {
+        "bullet_point": "Scene-by-Scene Breakdown"
+      }
+    ]
+  }
+]

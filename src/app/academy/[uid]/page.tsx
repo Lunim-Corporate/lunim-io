@@ -2,12 +2,14 @@
 // Marketing, Engineering, Design, Filmmaking, HR
 // Next
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { ResolvingMetadata } from "next";
 // Prismic
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { AcademyCourseDocument } from "../../../../prismicio-types";
+// Utils
+import { getMetaDataInfo } from "@/utils/metadata";
 
 type Params = { uid: string };
 
@@ -27,18 +29,15 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   );
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { uid } = await params;
+export async function generateMetadata({ params }: { params: Promise<Params> }, parent: ResolvingMetadata) {
+  const pathname = "/academy/[uid]";
+  const { uid } = await params; 
+
+  return getMetaDataInfo(pathname, parent, uid);
+}
+  
+export async function generateStaticParams() {
   const client = createClient();
-  const doc = await client.getByUID<AcademyCourseDocument>("academy_course", uid).catch(() => null);
-  if (!doc) {
-    return { title: "Academy Course | Lunim" };
-  }
-
-  const docName = doc.uid[0].toUpperCase() + doc.uid.slice(1);
-
-  return {
-    title: doc.data.meta_title || `${docName} | Academy Course`,
-    description: doc.data.meta_description || "An academy course by Lunim.",
-  };
+  const docs = await client.getAllByType('academy_course');
+  return docs.map(d => ({ uid: d.uid }));
 }

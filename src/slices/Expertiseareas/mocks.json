@@ -65,6 +65,33 @@
 								}
 							]
 						}
+					],
+					[
+						"is_card_link",
+						{
+							"__TYPE__": "BooleanContent",
+							"value": false
+						}
+					],
+					[
+						"button_text",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "discussion",
+							"type": "Text"
+						}
+					],
+					[
+						"card_link",
+						{
+							"key": "d56c0a9b-7193-4a26-8b2a-2510a4839399",
+							"__TYPE__": "LinkContent",
+							"value": {
+								"__TYPE__": "ExternalLink",
+								"url": "https://slicemachine.dev",
+								"text": "shade"
+							}
+						}
 					]
 				]
 			}
