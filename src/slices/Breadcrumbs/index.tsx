@@ -1,53 +1,117 @@
-import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import type { SliceComponentProps } from "@prismicio/react";
+import type { Content, LinkField } from "@prismicio/client";
+import { createClient } from "@/prismicio";
+import BreadcrumbsClient from "./BreadcrumbsClient";
 
-/**
- * Props for `Breadcrumbs`.
- */
 export type BreadcrumbsProps = SliceComponentProps<Content.BreadcrumbsSlice>;
 
-/**
- * Component for "Breadcrumbs" Slices.
- */
-const Breadcrumbs: FC<BreadcrumbsProps> = ({ slice }) => {
-  return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
-      Placeholder component for breadcrumbs (variation: {slice.variation})
-      slices.
-      <br />
-      <strong>You can edit this slice directly in your code editor.</strong>
-      {/**
-       * 💡 Use Prismic MCP with your code editor
-       *
-       * Get AI-powered help to build your slice components — based on your actual model.
-       *
-       * ▶️ Setup:
-       * 1. Add a new MCP Server in your code editor:
-       *
-       * {
-       *   "mcpServers": {
-       *     "Prismic MCP": {
-       *       "command": "npx",
-       *       "args": ["-y", "@prismicio/mcp-server@latest"]
-       *     }
-       *   }
-       * }
-       *
-       * 2. Select a model optimized for coding (e.g. Claude 3.7 Sonnet or similar)
-       *
-       * ✅ Then open your slice file and ask your code editor:
-       *    "Code this slice"
-       *
-       * Your code editor reads your slice model and helps you code faster ⚡
-       * 🎙️ Give your feedback: https://community.prismic.io/t/help-us-shape-the-future-of-slice-creation/19505
-       * 📚 Documentation: https://prismic.io/docs/ai#code-with-prismics-mcp-server
-       */}
-    </section>
-  );
+type ChildLink = {
+  label: string;
+  link: LinkField;
 };
 
-export default Breadcrumbs;
+type Section = {
+  id: string;
+  label: string;
+  link: LinkField;
+  children: ChildLink[];
+};
+
+function isUsableLink(link: LinkField | null | undefined): link is LinkField {
+  return !!link && link.link_type !== "Any";
+}
+
+/**
+ * Server component for the Breadcrumbs slice.
+ *
+ * This slice does not use any fields from the slice model itself. Instead,
+ * it derives its data from the primary navigation document and the current URL
+ * (handled inside the BreadcrumbsClient via `usePathname()`).
+ */
+export default async function Breadcrumbs({}: BreadcrumbsProps) {
+  const client = createClient();
+
+  // Fetch the primary navigation singleton (same as in RootLayout)
+  const primaryNav = await client
+    .getSingle<Content.PrimaryNavigationDocument>("primary_navigation")
+    .catch(() => null);
+
+  if (!primaryNav) {
+    return null;
+  }
+
+  // Find the navigation_menu slice within the primary navigation document
+  const navigationMenu = primaryNav.data.slices.find(
+    (s) => s.slice_type === "navigation_menu"
+  ) as Content.NavigationMenuSlice | undefined;
+
+  if (!navigationMenu) {
+    return null;
+  }
+
+  // This mirrors the logic used in NavigationMenuServer to resolve sections
+  const sectionsGroup = Array.isArray(navigationMenu.primary.sections)
+    ? navigationMenu.primary.sections
+    : [];
+
+  const ids = sectionsGroup
+    .map((row) => row.section_ref)
+    .map((ref) =>
+      ref && ref.link_type === "Document" && typeof ref.id === "string"
+        ? ref.id
+        : null
+    )
+    .filter((id): id is string => !!id);
+
+  let orderedDocs: Content.NavSectionDocument[] = [];
+
+  if (ids.length) {
+    try {
+      const fetched = await client.getAllByIDs<Content.NavSectionDocument>(ids);
+      const byId = new Map(fetched.map((d) => [d.id, d]));
+      orderedDocs = ids
+        .map((id) => byId.get(id))
+        .filter((d): d is Content.NavSectionDocument => !!d);
+    } catch {
+      orderedDocs = [];
+    }
+  }
+
+  const sections: Section[] = orderedDocs
+    .map((doc) => {
+      const data = doc.data;
+
+      const children: ChildLink[] = (
+        Array.isArray(data.child_links) ? data.child_links : []
+      )
+        .map((row, idx) => {
+          const label =
+            typeof row.child_label === "string" && row.child_label.trim()
+              ? row.child_label.trim()
+              : `Item ${idx + 1}`;
+          const link = isUsableLink(row.child_link) ? row.child_link : null;
+          return { label, link: link as LinkField };
+        })
+        .filter((r): r is ChildLink => !!r.link);
+
+      const resolvedLink: LinkField | undefined = children[0]?.link;
+
+      if (!resolvedLink) return null;
+
+      return {
+        id: doc.id,
+        label:
+          typeof data.section_label === "string" ? data.section_label : "",
+        link: resolvedLink,
+        children,
+      } as Section;
+    })
+    .filter((s): s is Section => !!s);
+
+  if (!sections.length) {
+    return null;
+  }
+
+  // Delegate actual breadcrumb rendering + URL handling to the client component
+  return <BreadcrumbsClient sections={sections} />;
+}
