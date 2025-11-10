@@ -74,9 +74,7 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
     return currentPath.split("/").filter(Boolean);
   }, [currentPath]);
 
-  if (segments.length < 3) {
-    return null;
-  }
+  const showBreadcrumbs = segments.length >= 3;
 
   // Build a path -> label map from navigation
   const pathLabelMap = useMemo(() => {
@@ -121,6 +119,10 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
 
     return items;
   }, [segments, pathLabelMap]);
+
+  if (!showBreadcrumbs) {
+    return null;
+  }
 
   const lastIndex = crumbs.length - 1;
 
