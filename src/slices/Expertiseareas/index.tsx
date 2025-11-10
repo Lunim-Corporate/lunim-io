@@ -60,7 +60,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
                   className="transform transition-transform duration-300 hover:scale-105"
                 >
                 <div
-                className="rounded-2xl p-6 bg-black/40 border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full"
+                className="rounded-2xl p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full"
               >
                 <div className="bg-[#BBFEFF] text-black w-14 h-14 rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-7 h-7" />
@@ -94,7 +94,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
               return (
               <div
                 key={idx}
-                className="rounded-2xl p-6 bg-black/40 border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors"
+                className="rounded-2xl p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
               >
                 <div className="bg-[#BBFEFF] text-black w-14 h-14 rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-7 h-7" />
