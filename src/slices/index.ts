@@ -20,4 +20,16 @@ export const components = {
   navigation_menu: dynamic(() => import("./NavigationMenu")),
   our_team: dynamic(() => import("./OurTeam")),
   privacy_text_box: dynamic(() => import("./PrivacyTextBox")),
+  // Media homepage custom slices
+  transmedia_hero: dynamic(() => import("./TransmediaHero")),
+  global_community: dynamic(() => import("./GlobalCommunity")),
+  virtual_team_circle: dynamic(() => import("./VirtualTeamCircle")),
+  the_shoot: dynamic(() => import("./TheShoot")),
+  virtual_production: dynamic(() => import("./VirtualProduction")),
+  alternate_reality: dynamic(() => import("./AlternateReality")),
+  education_world: dynamic(() => import("./EducationWorld")),
+  gaming_assets: dynamic(() => import("./GamingAssets")),
+  collectibles: dynamic(() => import("./Collectibles")),
+  business_affairs: dynamic(() => import("./BusinessAffairs")),
+  media_finale: dynamic(() => import("./MediaFinale")),
 };
