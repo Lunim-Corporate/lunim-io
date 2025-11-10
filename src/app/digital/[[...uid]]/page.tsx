@@ -22,10 +22,12 @@ import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
 import { notFound } from "next/navigation";
-// import { Metadata, ResolvingMetadata } from "next";
-// import { pickBaseMetadata } from "@/utils/metadata";
+import { Metadata, ResolvingMetadata } from "next";
+// Utils
+import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string[] };
+const listOfValidCategories = ["discovery", "ux", "ai", "web3"];
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;
@@ -63,9 +65,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies"], ["web3", "case-studies"]
     else if (uid.length === 2) {
         // console.log("2", uid);
-        if (uid[1] !== "case-studies") notFound();
+        const paramOne = uid[0];
+        if (
+            uid[1] !== "case-studies" ||
+            !listOfValidCategories.includes(paramOne)
+        ) notFound();
         const allCaseStudies = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
-        const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === uid[0]);
+        const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === paramOne);
         const caseStudyPage = await client.getSingle("case_studies").catch(() => null);
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
     }
@@ -74,8 +80,20 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies", "pizza-hut-checkout"]
     else if (uid.length === 3) {
         // console.log("3", uid);
+        if (
+            uid[1] !== "case-studies" ||
+            !listOfValidCategories.includes(uid[0])
+        ) notFound();
         const doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
         if (!doc) notFound();
+
+        // Ensure the fetched case study actually belongs to the requested category.
+        // Without this check a case study with UID `pizza-hut-checkout` in category
+        // `ux` would still render at `/digital/web3/case-studies/pizza-hut-checkout`.
+        const caseStudyCategory = doc.data?.digital_category;
+        if (caseStudyCategory !== uid[0]) {
+            notFound();
+        }
         const slices = doc.data.slices;
         return (
             <main className="bg-black text-white min-h-screen">
@@ -85,51 +103,65 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     }
 }
 
-// export async function generateMetadata(
-//   _context: unknown,
-//   parent: ResolvingMetadata
-// ): Promise<Metadata> {
-//   // fetch data
-//   const client = createClient();
-//   const parentMetaData = await pickBaseMetadata(parent);
-//   const doc = await client
-//   .getSingle<Content.HomepageDocument>("homepage")
-//   .catch(() => null);
-//   if (!doc) {
-//     return {
-//       title: "Lunim Home Page",
-//       description: "Welcome to Lunim's official homepage."
-//     };
-//   }
+export async function generateMetadata(
+  {params}: {params: Promise<Params>},
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+    const { uid } = await params;
+    const client = createClient();
+    const parentMetaData = await pickBaseMetadata(parent);
+    let doc;
 
+    if (!uid) {
+        doc = await client.getSingle("tech").catch(() => null);
+    }
+    else if (uid.length === 1) {
+        doc = await client.getByUID("digital_page", uid[0]).catch(() => null);
+    } else if (uid.length === 2 && uid[1] === "case-studies") {
+        doc = await client.getSingle("case_studies").catch(() => null);
+    } else if (uid.length === 3) {
+        doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
+        // Ensure metadata generation respects the requested category.
+        // If the fetched case study's category doesn't match the route's category,
+        // treat it as not found to keep behavior consistent with the page renderer.
+        if (doc) {
+            const caseStudyCategory = String(doc.data?.digital_category || "").trim().toLowerCase();
+            const requestedCategory = String(uid[0] || "").trim().toLowerCase();
+            if (caseStudyCategory !== requestedCategory) notFound();
+        }
+    }
 
-//   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-//   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
-//   const parentKeywords = parentMetaData.keywords || "";
-//   // Filter out empty keyword fields
-//   // Ensure each keyword is separated by a comma and space
-//   // Join keywords from current page (if any) to parent keywords
-//   const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-//   const title = doc.data?.meta_title || parentMetaData.title;
-//   const description = doc.data?.meta_description || parentMetaData.description;
-//   const canonicalUrl = doc.data?.meta_url || "";
+    if (!doc) {
+        return {
+            title: "Lunim",
+            description: "Welcome to Lunim's official homepage."
+        };
+    }
 
-//   return {
-//     ...parentMetaData,
-//     title: title,
-//     description: description,
-//     keywords: keywords,
-//     openGraph: {
-//       ...parentMetaData.openGraph,
-//       title: `${title}`,
-//       description: `${description}`,
-//       url: canonicalUrl,
-//       // images: [
-//       //   {
-//       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-//       //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-//       //   }
-//       // ]
-//     },
-//   }
-// }
+  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
+  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
+  const parentKeywords = parentMetaData.keywords || "";
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const title = doc.data?.meta_title || parentMetaData.title;
+  const description = doc.data?.meta_description || parentMetaData.description;
+  const canonicalUrl = doc.data?.meta_url || "";
+
+  return {
+    ...parentMetaData,
+    title: title,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      ...parentMetaData.openGraph,
+       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
+      description: `${description}`,
+      url: canonicalUrl,
+      // images: [
+      //   {
+      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
+      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
+      //   }
+      // ]
+    },
+  }
+}
