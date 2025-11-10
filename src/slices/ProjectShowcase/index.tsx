@@ -68,7 +68,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                             </h3>
                         </div>
                         <div className='mt-2 sm:mt-0 text-start sm:text-end'>
-                            <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF] hover:text-cyan-300">{item.button_cta_text}</button>
+                            
                         </div>
                     </div>
                     ) : (
@@ -79,7 +79,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                         </div>
                       )}
                     <div className="text-gray-200 text-base text-left">
-                        <PrismicRichText field={item.project_description} />
+                        <p>{asText(item.project_description)}&nbsp; <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-base text-[#BBFEFF] hover:text-cyan-300">{item.button_cta_text}</button></p>
                     </div>
                 </div>
 
