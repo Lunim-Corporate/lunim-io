@@ -26,16 +26,18 @@ export const metadata: Metadata = {
   // Default description
   description: "Lunim website page",
   keywords: "technology, innovation, software, development, lunim",
+  // Base URL prefix for metadata fields that require a fully qualified URL
+  metadataBase: new URL(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/"),
   openGraph: {
     type: "website",
     locale: "en_GB",
     siteName: "Lunim",
-    // images: [
-    //   {
-    //     url: "",
-    //     alt: "Lunim",
-    //   }
-    // ]
+    images: [
+      {
+        url: "https://lunim-v3-progress.netlify.app/",
+        alt: "Lunim",
+      }
+    ]
   }
   }
 

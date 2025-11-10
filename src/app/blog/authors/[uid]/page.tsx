@@ -15,6 +15,7 @@ import {
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
 import { pickBaseMetadata } from "@/utils/metadata";
+// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 type Params = { uid: string };
 
@@ -401,25 +402,27 @@ export async function generateMetadata(
   }
 
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
-
-  return {
-    ...parentMetaData,
-    title: `${doc?.data.author_name}`,
-    description: `Articles written by ${doc.data.author_name} on the Lunim Blog.`,
-    openGraph: {
-      ...parentMetaData.openGraph,
-      title: `${doc?.data.author_name}`,
-      description: `Articles written by ${doc.data.author_name} on the Lunim Blog.`,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
-    },
-  }
+  const parentKeywords = parentMetaData.keywords || "";
+  const authorKeywords = ""; // End keywords using a comma
+  const keywords = `${authorKeywords} ${parentKeywords}`.trim();
+  const description = "Lunim's official author page";
+  const authorName = uid.replace("-", " ").split(" ");
+  const authorFirstName = authorName[0][0].toUpperCase() + authorName[0].slice(1);
+  const authorLastName = authorName[1][0].toUpperCase() + authorName[1].slice(1);
+  const title = `${authorFirstName} ${authorLastName}`;
+  
+    return {
+      ...parentMetaData,
+      title: title,
+      description: description,
+      keywords: keywords, 
+      openGraph: {
+        ...parentMetaData.openGraph,
+        title: title,
+        description: `${description}`,
+        url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/authors/${doc.uid}`,
+      },
+    }
 }
 
 export async function generateStaticParams() {

@@ -1,14 +1,17 @@
 // app/blog/authors/page.tsx
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
-import type { Metadata } from "next";
+import type { ResolvingMetadata } from "next";
 
 import { createClient } from "@/prismicio";
 import { type Content } from "@prismicio/client";
+import { getMetaDataInfo } from "@/utils/metadata";
 
 type ImageLikeField = {
   url?: string | null;
   alt?: string | null;
 };
+
+export const dynamic = "force-static";
 
 function withFallbackAlt<T extends ImageLikeField>(
   field: T | null | undefined,
@@ -102,12 +105,8 @@ export default async function Page() {
   );
 }
 
-export const dynamic = "force-static";
+export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
+  const pathname = "/blog/authors";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Authors | Lunim Blog",
-    description:
-      "Browse the Lunim blog authors and discover articles written by our team.",
-  };
-}
+  return getMetaDataInfo(pathname, parent);
+  }

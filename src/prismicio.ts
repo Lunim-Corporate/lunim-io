@@ -1,5 +1,6 @@
 import {
   createClient as baseCreateClient,
+  LinkResolverFunction,
   type ClientConfig,
   type Route,
 } from "@prismicio/client";
@@ -7,7 +8,6 @@ import { enableAutoPreviews } from "@prismicio/next";
 import sm from "../slicemachine.config.json";
 
 /**
- * Attempts to extract a valid Prismic repository name from an environment string.
  * Supports direct repository names or full API endpoints. Returns `undefined`
  * if the value does not resemble a valid name.
  */
@@ -43,6 +43,31 @@ const envRepositoryName =
  */
 export const repositoryName = envRepositoryName || sm.repositoryName;
 
+
+export const linkResolver: LinkResolverFunction = (link) => {
+  // Will handle all routes under /digital
+  if (link.type === "digital_page") {
+    if (link.uid) return `/digital/${encodeURIComponent(link.uid)}`;
+  }
+  if (link.type === "case-studies") {
+    if (link.uid) return `/digital/${encodeURIComponent(link.uid)}/case-studies`;
+  }
+  if (link.type === "case_study_sm") {
+    const full = (link.data as { url_full_path?: string })?.url_full_path;
+  // Defensive check for non-empty string
+    if (typeof full === "string" && full.trim()) {
+        const safe = full
+        .split("/")
+        .map((s) => encodeURIComponent(s.trim()))
+        .filter(Boolean)
+        .join("/");
+      return `/digital/${safe}`;
+    }
+  }
+  // return undefined to let the client's route resolvers handle the rest
+  return undefined;
+};
+
 /**
  * A list of Route Resolver objects that define how a document's `url` field is resolved.
  *
@@ -53,16 +78,16 @@ const routes: Route[] = [
   { type: "homepage", path: "/" },
   { type: "our_team_page", path: "/our-team" },
   { type: "tech", path: "/digital" },
-  { type: "digital_page", path: "/digital/:uid" },
   { type: "academy", path: "/academy" },
   { type: "academy_course", path: "/academy/:uid" },
   { type: "film", path: "/media" },
   { type: "tabb", path: "/tabb" },
-  { type: "case_study_sm", path: "/digital/case-studies/:uid" },
   { type: "privacy_policy_sm", path: "/privacy-policy" },
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
   { type: "author", path: "/blog/authors/:uid" },
+  // { type: "digital_page", path: "/digital/:uid" },
+  // { type: "case_study_sm", path: "/digital/case-studies/:uid" },
 ];
 
 /**
