@@ -1,0 +1,50 @@
+{
+  "id": "alternate_reality",
+  "type": "SharedSlice",
+  "name": "AlternateReality",
+  "description": "Immersive, puzzle-led Alternate Reality Game section with cinematic background",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default variation",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Alternate Reality Game",
+            "single": "heading2"
+          }
+        },
+        "subtitle": {
+          "type": "Text",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Immersive, Puzzle-Led"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Sophisticated alternate reality gaming experiences...",
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        },
+        "background_image": {
+          "type": "Image",
+          "config": {
+            "label": "Background Image",
+            "constraint": { "width": 1920, "height": 1080 },
+            "thumbnails": []
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
