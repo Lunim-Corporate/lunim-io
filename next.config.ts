@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -11,6 +12,9 @@ const nextConfig: NextConfig = {
         pathname: "/lunim-v3/**",
       },
     ],
+  },
+  turbopack: {
+    root: path.resolve(__dirname),
   },
 };
 
