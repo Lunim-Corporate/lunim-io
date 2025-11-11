@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import type { JSX } from "react";
 import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -28,6 +30,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps): JSX.Element => {
   const bodyRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const tabbLogoImage = withImageAlt(
+    slice.primary.tabb_logo,
+    slice.primary.eyebrow_text || "Community logo"
+  );
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -171,10 +177,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps): JSX.Element => {
             )}
 
             {/* Tabb Logo */}
-            {slice.primary.tabb_logo?.url && (
+            {tabbLogoImage && (
               <div ref={logoRef} className="pt-8 will-change-transform">
                 <PrismicNextImage
-                  field={slice.primary.tabb_logo}
+                  field={tabbLogoImage}
                   className="w-32 md:w-40 h-auto object-contain"
                 />
               </div>
@@ -185,20 +191,25 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps): JSX.Element => {
           {slice.items && slice.items.length > 0 && (
             <div ref={gridRef} className="relative">
               <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
-                {slice.items.map((item, index) => (
-                  <div
-                    key={index}
-                    className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"
-                  >
-                    {item.face_image?.url && (
-                      <PrismicNextImage
-                        field={item.face_image}
-                        className="w-full h-full object-cover"
-                        alt={item.person_name || "Team member"}
-                      />
-                    )}
-                  </div>
-                ))}
+                {slice.items.map((item, index) => {
+                  const faceImageField = withImageAlt(
+                    item.face_image,
+                    item.person_name || `Team member ${index + 1}`
+                  );
+                  return (
+                    <div
+                      key={index}
+                      className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"
+                    >
+                      {faceImageField && (
+                        <PrismicNextImage
+                          field={faceImageField}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
               {/* Cyan overlay glow */}
               <div className="absolute inset-0 bg-[#8df6ff]/5 pointer-events-none mix-blend-soft-light" />
