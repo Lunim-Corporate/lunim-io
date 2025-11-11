@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -16,13 +15,12 @@ if (typeof window !== "undefined") {
 /**
  * Props for `TransmediaHero`.
  */
-export type TransmediaHeroProps =
-  SliceComponentProps<Content.TransmediaHeroSlice>;
+export type TransmediaHeroProps = SliceComponentProps<any>;
 
 /**
  * Component for "TransmediaHero" Slices.
  */
-const TransmediaHero = ({ slice }: TransmediaHeroProps): JSX.Element => {
+const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);

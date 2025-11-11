@@ -134,7 +134,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                   <p className="text-gray-300 !mb-6">{waysSubtitle}</p>
                 )}
                 <ul className="space-y-7 list-none">
-                  {contactItems.map((item, index) => {
+                  {contactItems.map((item: any, index: number) => {
                     const Icon = iconComponents[item.icon_name || ""] || Clock;
                     const rawTitle =
                       typeof item.title === "string" ? item.title.trim() : "";
@@ -219,7 +219,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     isDigital ? "text-white/70" : "text-gray-300"
                   }`}
                 >
-                  {officeHourItems.map((hour, index) => (
+                  {officeHourItems.map((hour: any, index: number) => (
                     <li
                       key={index}
                       className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-white/5 pb-3 last:border-b-0 last:pb-0"

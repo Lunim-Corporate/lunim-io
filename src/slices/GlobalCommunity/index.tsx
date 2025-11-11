@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -15,13 +14,12 @@ if (typeof window !== "undefined") {
 /**
  * Props for `GlobalCommunity`.
  */
-export type GlobalCommunityProps =
-  SliceComponentProps<Content.GlobalCommunitySlice>;
+export type GlobalCommunityProps = SliceComponentProps<any>;
 
 /**
  * Component for "GlobalCommunity" Slices.
  */
-const GlobalCommunity = ({ slice }: GlobalCommunityProps): JSX.Element => {
+const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -185,7 +183,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps): JSX.Element => {
           {slice.items && slice.items.length > 0 && (
             <div ref={gridRef} className="relative">
               <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
-                {slice.items.map((item, index) => (
+                {slice.items.map((item: any, index: number) => (
                   <div
                     key={index}
                     className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"

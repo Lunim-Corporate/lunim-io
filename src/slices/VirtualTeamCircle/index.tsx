@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -15,8 +14,7 @@ if (typeof window !== "undefined") {
 /**
  * Props for `VirtualTeamCircle`.
  */
-export type VirtualTeamCircleProps =
-  SliceComponentProps<Content.VirtualTeamCircleSlice>;
+export type VirtualTeamCircleProps = SliceComponentProps<any>;
 
 // Position mapping for circular layout (degrees)
 const POSITION_ANGLES: Record<string, number> = {
@@ -33,7 +31,7 @@ const POSITION_ANGLES: Record<string, number> = {
 /**
  * Component for "VirtualTeamCircle" Slices.
  */
-const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
+const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -233,7 +231,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
               viewBox="-350 -350 700 700"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {slice.items.map((item, index) => {
+              {slice.items.map((item: any, index: number) => {
                 const pos = calculatePosition(item.position || "top-center", radius);
                 return (
                   <line
@@ -257,7 +255,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
             </div>
 
             {/* Team Members */}
-            {slice.items.map((item, index) => {
+            {slice.items.map((item: any, index: number) => {
               const pos = calculatePosition(item.position || "top-center", radius);
               return (
                 <div
@@ -303,7 +301,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
 
         {/* Mobile fallback: Stacked grid */}
         <div className="lg:hidden mt-12 grid grid-cols-2 gap-6">
-          {slice.items.map((item, index) => (
+          {slice.items.map((item: any, index: number) => (
             <div key={index} className="flex flex-col items-center text-center">
               {item.team_photo?.url && (
                 <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">

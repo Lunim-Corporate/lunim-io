@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -15,13 +14,12 @@ if (typeof window !== "undefined") {
 /**
  * Props for `VirtualProduction`.
  */
-export type VirtualProductionProps =
-  SliceComponentProps<Content.VirtualProductionSlice>;
+export type VirtualProductionProps = SliceComponentProps<any>;
 
 /**
  * Component for "VirtualProduction" Slices.
  */
-const VirtualProduction = ({ slice }: VirtualProductionProps): JSX.Element => {
+const VirtualProduction = ({ slice }: VirtualProductionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);

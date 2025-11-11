@@ -3,7 +3,8 @@ import {
   PrismicRichText,
   type SliceComponentProps,
 } from "@prismicio/react";
-import { asText, Content } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 // React
 import { FC } from "react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -34,9 +35,9 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {slice.primary.case_study && slice.primary.case_study.length > 0 && (
-          slice.primary.case_study.map((item, index) => {
+          slice.primary.case_study.map((item: any, index: number) => {
             const tagsArray: string[] = item.tags
-                  ? item.tags.split(",").map((tag) => tag.trim())
+                  ? item.tags.split(",").map((tag: string) => tag.trim())
                   : [];
 
             return (

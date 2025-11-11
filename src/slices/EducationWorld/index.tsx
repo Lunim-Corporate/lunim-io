@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -12,10 +11,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type EducationWorldProps =
-  SliceComponentProps<Content.EducationWorldSlice>;
+export type EducationWorldProps = SliceComponentProps<any>;
 
-const EducationWorld = ({ slice }: EducationWorldProps): JSX.Element => {
+const EducationWorld = ({ slice }: EducationWorldProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);

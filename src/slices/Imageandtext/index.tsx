@@ -4,8 +4,8 @@ import Image from "next/image";
 // Prismic
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import { isFilled, type Content } from "@prismicio/client";
-import { asText } from "@prismicio/helpers";
+import type { Content } from "@prismicio/client";
+import { asText, isFilled } from "@prismicio/helpers";
 import { PrismicNextLink } from "@prismicio/next";
 
 export type ImageandtextProps = SliceComponentProps<Content.ImageandtextSlice>;

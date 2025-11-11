@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -12,9 +11,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type CollectiblesProps = SliceComponentProps<Content.CollectiblesSlice>;
+export type CollectiblesProps = SliceComponentProps<any>;
 
-const Collectibles = ({ slice }: CollectiblesProps): JSX.Element => {
+const Collectibles = ({ slice }: CollectiblesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +56,7 @@ const Collectibles = ({ slice }: CollectiblesProps): JSX.Element => {
         )}
 
         <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-          {slice.items.map((item, idx) => (
+          {slice.items.map((item: any, idx: number) => (
             <article key={idx} className="collectible-card rounded-xl overflow-hidden bg-[#0b1222] border border-white/5 shadow-[0_0_20px_rgba(141,246,255,0.1)]">
               <div className="aspect-[4/3] relative">
                 {item.image?.url && (

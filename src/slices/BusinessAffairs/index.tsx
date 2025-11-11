@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
+import { PrismicNextImage } from "@prismicio/next";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,9 +11,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type BusinessAffairsProps = SliceComponentProps<Content.BusinessAffairsSlice>;
+export type BusinessAffairsProps = SliceComponentProps<any>;
 
-const BusinessAffairs = ({ slice }: BusinessAffairsProps): JSX.Element => {
+const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const svgRefH = useRef<SVGSVGElement>(null);
   const svgRefV = useRef<SVGSVGElement>(null);
@@ -74,7 +74,7 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps): JSX.Element => {
       <div className="relative hidden md:block" aria-hidden>
         {/* absolute container over the line height */}
         <div className="absolute inset-0 h-16">
-          {slice.items.map((item, idx) => {
+          {slice.items.map((item: any, idx: number) => {
             const left = (idx / (count - 1)) * 100;
             return (
               <div key={idx} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${left}%`, transform: 'translate(-50%, -50%)' }}>
@@ -151,7 +151,7 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps): JSX.Element => {
 
         {/* Steps (mobile textual list) */}
         <div className="mt-6 grid grid-cols-1 md:hidden gap-6">
-          {slice.items.map((item, idx) => (
+          {slice.items.map((item: any, idx: number) => (
             <div key={idx} className="ba-step flex md:flex-col items-center md:items-start gap-3 md:gap-2">
               <div className="relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/40 shrink-0 overflow-hidden">
                 {item.node_image?.url ? (

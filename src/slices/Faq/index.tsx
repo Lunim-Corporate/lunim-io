@@ -13,7 +13,7 @@ export type FaqProps = SliceComponentProps<Content.FaqSlice>;
  * Component for "Faq" Slices.
  */
 const Faq: React.FC<FaqProps> = ({ slice }) => {
-  const items = slice.items as Content.FaqSliceDefaultItem[];
+  const items = (slice.items as any[]) ?? [];
 
   return (
     <section className="bg-[#0f172a] py-16">
@@ -23,7 +23,7 @@ const Faq: React.FC<FaqProps> = ({ slice }) => {
         </div>
 
         <div className="space-y-4">
-          {items.map((item, index) => (
+          {items.map((item: any, index: number) => (
             <div
               key={index}
               className="bg-[#1f2937] rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg"

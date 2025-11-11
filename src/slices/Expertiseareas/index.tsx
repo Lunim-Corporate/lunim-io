@@ -31,8 +31,8 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
   // Defensive: ensure arrays exist
-  const items: ReadonlyArray<Content.ExpertiseareasSliceDefaultItem> =
-    (slice.items as ReadonlyArray<Content.ExpertiseareasSliceDefaultItem>) ?? [];
+  const items: ReadonlyArray<any> =
+    (slice.items as ReadonlyArray<any>) ?? [];
 
   // Heading is RichText (heading1). We render as plain text inside our own <h2> to avoid nested heading issues.
   const headingText: string = asText(slice.primary.heading) ?? "";
@@ -46,7 +46,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
         {/* Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 order-2 lg:order-1 gap-8">
-          {items.map((item, idx) => {
+          {items.map((item: any, idx: number) => {
             const Icon =
               (item.icon_name && ICONS[item.icon_name]) || HelpCircle;
 

@@ -2,7 +2,8 @@
 import { FC } from "react";
 import { PrismicRichText } from "@prismicio/react";
 import { SliceComponentProps } from "@prismicio/react";
-import type { Content, RichTextField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { RichTextField } from "@prismicio/types";
 
 export type CaseStudyTextPanelProps =
   SliceComponentProps<Content.CaseStudyTextPanelSlice>;
