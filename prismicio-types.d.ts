@@ -3868,6 +3868,16 @@ export interface ContactSliceDefaultPrimary {
   contact_us_title: prismic.RichTextField;
 
   /**
+   * contact us subtitle field in *Contact → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact.default.primary.contact_us_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  contact_us_subtitle: prismic.RichTextField;
+
+  /**
    * office hours title field in *Contact → Default → Primary*
    *
    * - **Field Type**: Rich Text
