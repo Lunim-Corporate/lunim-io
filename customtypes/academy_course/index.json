@@ -17,6 +17,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "case_study_text_panel": {
+              "type": "SharedSlice"
+            },
             "contact": {
               "type": "SharedSlice"
             },

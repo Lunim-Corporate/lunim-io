@@ -57,7 +57,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
               <button
                 type="button"
                 onClick={() => setIsLunaOpen(true)}
-                className="max-w-xs px-8 py-4 rounded-[0.3rem] border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm"
+                className="max-w-xs px-8 py-4 rounded-[0.3rem] border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer"
               >
                 Ask Luna
               </button>

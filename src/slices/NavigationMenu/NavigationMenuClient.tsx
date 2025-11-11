@@ -198,9 +198,9 @@ export function NavigationMenuClient({
                 )}
                 {hasRealChildren && (
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute left-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-[#0a0a1a] shadow-xl transition-all duration-200">
-                    <ul className="py-2 list-none m-0">
+                    <ul className="my-0 px-0 py-2 list-none m-0">
                       {children.map((child, idx) => (
-                        <li key={`${section.id}-${idx}`}>
+                        <li key={`${section.id}-${idx}`} className="mb-0">
                           <PrismicNextLink
                             field={child.link}
                             className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors"
@@ -325,9 +325,9 @@ export function NavigationMenuClient({
                   </div>
                 </div>
                 {hasRealChildren && openMobileSections[section.id] && (
-                  <ul className="list-none m-0 px-2 pb-2 pt-2 space-y-1">
+                  <ul className="list-none my-0 m-0 px-2 pb-2 pt-2 space-y-1">
                     {children.map((child, idx) => (
-                      <li key={`${section.id}-m-${idx}`}>
+                      <li key={`${section.id}-m-${idx}`} className="mb-0">
                         <PrismicNextLink
                           field={child.link}
                           className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px]"
