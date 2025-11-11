@@ -43,9 +43,9 @@ const Contact: FC<ContactProps> = ({ slice }) => {
   // Title overrides per page
   const computedMainTitle = (() => {
     if (variant === "home" || variant === "media") return "Ready to Go?";
-    if (variant === "academy") return "Ready to Learn?";
+    if (variant === "academy") return "Ready to Transform your Team?";
     if (isDigital) return "Ready to Innovate?";
-    return asText(slice.primary.main_title) || "Get in Touch xxx";
+    return asText(slice.primary.main_title) || "Get in Touch";
   })();
 
   const computedSubtitle = (() => {

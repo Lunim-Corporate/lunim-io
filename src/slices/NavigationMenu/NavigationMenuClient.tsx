@@ -114,7 +114,7 @@ export function NavigationMenuClient({
 
     let destination = normalizePath(bestMatch) ?? rawCtaLink ?? "/";
 
-    if (destination === "/academy" || destination === "/tabb" || destination === "/our-team") {
+    if (destination === "/tabb" || destination === "/our-team") {
       destination = "/";
     }
 
