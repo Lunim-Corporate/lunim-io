@@ -21,6 +21,7 @@ type Section = {
 
 type BreadcrumbsClientProps = {
   sections: Section[];
+  hiddenSegments?: string[];
 };
 
 const resolveLinkField = (link: LinkField | null | undefined): string | null => {
@@ -63,7 +64,10 @@ const labelFromSegment = (segment: string): string => {
     .join(" ");
 };
 
-export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) {
+export default function BreadcrumbsClient({
+  sections,
+  hiddenSegments,
+}: BreadcrumbsClientProps) {
   const pathname = usePathname();
   const currentPath = normalizePath(pathname) ?? "/";
 
@@ -73,6 +77,11 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
     }
     return currentPath.split("/").filter(Boolean);
   }, [currentPath]);
+
+  const hiddenSet = useMemo(
+    () => new Set((hiddenSegments ?? []).map((s) => s.toLowerCase())),
+    [hiddenSegments]
+  );
 
   const showBreadcrumbs = segments.length >= 3;
 
@@ -109,6 +118,12 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
       const href = acc;
 
       const segLower = seg.toLowerCase();
+
+      // Skip routing-only segments that should not appear as separate crumbs.
+      if (hiddenSet.has(segLower)) {
+        return;
+      }
+
       const overrideLabel = SEGMENT_LABEL_OVERRIDES[segLower];
       const navLabel = pathLabelMap.get(href);
       const baseLabel = labelFromSegment(seg);
@@ -118,7 +133,7 @@ export default function BreadcrumbsClient({ sections }: BreadcrumbsClientProps) 
     });
 
     return items;
-  }, [segments, pathLabelMap]);
+  }, [segments, pathLabelMap, hiddenSet]);
 
   if (!showBreadcrumbs) {
     return null;

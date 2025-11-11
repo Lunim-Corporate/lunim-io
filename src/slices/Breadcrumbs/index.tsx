@@ -112,6 +112,23 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
     return null;
   }
 
+  // Optionally fetch breadcrumb settings from Prismic to control hidden segments.
+  const breadcrumbSettings = await client
+    .getSingle<Content.BreadcrumbSettingsDocument>("breadcrumb_settings")
+    .catch(() => null);
+
+  const hiddenSegments: string[] =
+    breadcrumbSettings?.data?.hidden_segments
+      ?.map((row) =>
+        typeof row.segment === "string" ? row.segment.trim().toLowerCase() : ""
+      )
+      .filter((slug): slug is string => slug.length > 0) ?? [];
+
   // Delegate actual breadcrumb rendering + URL handling to the client component
-  return <BreadcrumbsClient sections={sections} />;
+  return (
+    <BreadcrumbsClient
+      sections={sections}
+      hiddenSegments={hiddenSegments}
+    />
+  );
 }
