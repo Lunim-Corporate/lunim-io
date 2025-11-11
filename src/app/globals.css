@@ -23,7 +23,7 @@
     line-height: 1.5;
   }
 
-  p, ul {
+  p, li {
     font-family: var(--font-primary);
     font-size: 1.167rem;
     font-weight: 400;
@@ -32,7 +32,8 @@
   }
 
   ul {
-    list-style: circle inside;
+    list-style: disc;
+    padding-inline-start: 20px;
   }
 
   span {
