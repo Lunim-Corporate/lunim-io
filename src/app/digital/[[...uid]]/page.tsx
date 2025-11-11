@@ -33,8 +33,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // /digital
     if (!uid) {
         // console.log("Root");
-        const doc = await client
-            .getSingle<Content.TechDocument>("tech")
+        const doc = await (client as any)
+            .getSingle("tech")
             .catch(() => null);
         if (!doc) notFound()
         return (
@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // /digital/[uid]
     else if (uid.length === 1) {
         // console.log("1", uid);
-        const doc = await client.getByUID<DigitalPageDocument>("digital_page", uid[0]).catch(() => null);
+        const doc = (await (client as any).getByUID("digital_page", uid[0]).catch(() => null)) as DigitalPageDocument | null;
         if (!doc) notFound();
         const slices = doc.data?.slices;
         return (
@@ -62,9 +62,9 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     else if (uid.length === 2) {
         // console.log("2", uid);
         if (uid[1] !== "case-studies") notFound();
-        const allCaseStudies = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
-        const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === uid[0]);
-        const caseStudyPage = await client.getSingle("case_studies").catch(() => null);
+        const allCaseStudies = (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+        const filteredCaseStudies = allCaseStudies.filter((cs: CaseStudySmDocumentWithLegacy) => cs.data.digital_category === uid[0]);
+        const caseStudyPage = await (client as any).getSingle("case_studies").catch(() => null);
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
     }
     
@@ -72,7 +72,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies", "pizza-hut-checkout"]
     else if (uid.length === 3) {
         // console.log("3", uid);
-        const doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
+        const doc = await (client as any).getByUID("case_study_sm", uid[2]).catch(() => null);
         if (!doc) notFound();
         const slices = doc.data.slices;
         return (
