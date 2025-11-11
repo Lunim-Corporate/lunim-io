@@ -1,7 +1,8 @@
 "use client";
 
 import { FC, useState } from "react";
-import type { Content, ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
@@ -28,8 +29,11 @@ type CompactHeroPrimary = Content.CompactHeroSlice["primary"] & LegacyHomepageHe
  */
 export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
   const primary: CompactHeroPrimary = slice.primary;
-  const heroTitleText = asText(primary.hero_title).trim();
-  const splitTitleText = [asText(primary.hero_title_part1), asText(primary.hero_title_part2)]
+  const heroTitleText = (asText(primary.hero_title || []) || "").trim();
+  const splitTitleText = [
+    asText(primary.hero_title_part1 || []) || "",
+    asText(primary.hero_title_part2 || []) || "",
+  ]
     .filter(Boolean)
     .join(" ")
     .trim();

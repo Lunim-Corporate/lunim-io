@@ -3,7 +3,7 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { useContactForm, type ContactVariant } from "../hooks/useContactForm";
 import { asText } from "@prismicio/helpers";
-import type { RichTextField } from "@prismicio/client";
+import type { RichTextField } from "@prismicio/types";
 
 interface ContactFormProps {
   title?: RichTextField;

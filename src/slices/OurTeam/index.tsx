@@ -3,7 +3,8 @@ import Avatar from "boring-avatars";
 // React
 import { FC, useState, useEffect } from "react";
 // Prismic
-import { asText, Content } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 import { SliceComponentProps } from "@prismicio/react";
 // Next
 import Image from "next/image";
@@ -50,7 +51,7 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
         {/* Team Section */}
         <section className="max-w-6xl mx-auto px-4">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {(slice.primary.team_member as Content.OurTeamSliceDefaultPrimaryTeamMemberItem[]).map((member, i) => {
+            {(slice.primary.team_member as any[]).map((member: any, i: number) => {
               const memberName = asText(member?.name);
               return (
                 <div
@@ -85,7 +86,7 @@ export default OurTeam;
  * Team Member Component
  */
 const TeamMember: FC<{
-  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
+  member: any;
   isActive: boolean;
   setActive: (name: string | null) => void;
   isMobile: boolean;
@@ -147,7 +148,7 @@ const TeamMember: FC<{
 //   isMobile: boolean;
 // }> = ({ member, isMobile }) => {
 const BioCard: FC<{
-  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
+  member: any;
 }> = ({ member }) => {
   return (
     // <div

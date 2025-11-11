@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { JSX } from "react";
 import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
@@ -17,12 +16,12 @@ if (typeof window !== "undefined") {
 /**
  * Props for `TheShoot`.
  */
-export type TheShootProps = SliceComponentProps<Content.TheShootSlice>;
+export type TheShootProps = SliceComponentProps<any>;
 
 /**
  * Component for "TheShoot" Slices.
  */
-const TheShoot = ({ slice }: TheShootProps): JSX.Element => {
+const TheShoot = ({ slice }: TheShootProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -127,7 +126,6 @@ const TheShoot = ({ slice }: TheShootProps): JSX.Element => {
             fill
             className="object-cover"
             quality={90}
-            alt=""
           />
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/95 via-[#040a18]/80 to-transparent" />
@@ -169,7 +167,7 @@ const TheShoot = ({ slice }: TheShootProps): JSX.Element => {
               ref={listRef}
               className="space-y-6 list-none"
             >
-              {slice.items.map((item, index) => (
+              {slice.items.map((item: any, index: number) => (
                 <li
                   key={index}
                   className="flex items-start gap-4 text-white text-lg md:text-xl"

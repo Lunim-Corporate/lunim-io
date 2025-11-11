@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { asLink } from "@prismicio/helpers";
-import type { LinkField } from "@prismicio/client";
+import type { LinkField } from "@prismicio/types";
 
 type ChildLink = {
   label: string;
