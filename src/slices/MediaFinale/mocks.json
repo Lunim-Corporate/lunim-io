@@ -1,0 +1,12 @@
+{
+  "id": "media_finale$default",
+  "primary": {
+    "logo": { "dimensions": { "width": 400, "height": 120 }, "url": "https://images.prismic.io/lunim-v3/logo.png" },
+    "main_title": [{ "type": "heading2", "text": "TRANSMEDIA PLAYBOOK" }],
+    "subtitle": "Virtual-First, AI-First, Human-Centred",
+    "cta_text": "hello@lunim.io",
+    "background_image": { "dimensions": { "width": 1600, "height": 900 }, "url": "https://images.prismic.io/lunim-v3/finale-bg.jpg" },
+    "enable_parallax": true
+  },
+  "items": []
+}

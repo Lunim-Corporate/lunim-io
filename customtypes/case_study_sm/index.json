@@ -33,6 +33,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
             "case_study_text_panel": {
               "type": "SharedSlice"
             },
@@ -90,6 +93,13 @@
               }
             }
           }
+        }
+      },
+      "meta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Meta URL",
+          "placeholder": ""
         }
       }
     }

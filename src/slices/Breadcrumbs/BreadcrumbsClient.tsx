@@ -1,0 +1,180 @@
+"use client";
+
+import React, { useMemo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronRight } from "lucide-react";
+import { asLink } from "@prismicio/helpers";
+import type { LinkField } from "@prismicio/client";
+
+type ChildLink = {
+  label: string;
+  link: LinkField;
+};
+
+type Section = {
+  id: string;
+  label: string;
+  link: LinkField;
+  children: ChildLink[];
+};
+
+type BreadcrumbsClientProps = {
+  sections: Section[];
+  hiddenSegments?: string[];
+};
+
+const resolveLinkField = (link: LinkField | null | undefined): string | null => {
+  if (!link) return null;
+  try {
+    const url = asLink(link);
+    if (!url) return null;
+    const clean = url.split("#")[0]?.split("?")[0] ?? url;
+    if (!clean) return "/";
+    if (clean === "/") return "/";
+    return clean.replace(/\/+$/, "");
+  } catch {
+    return null;
+  }
+};
+
+const normalizePath = (value: string | null): string | null => {
+  if (!value) return null;
+  if (value === "/") return "/";
+  return value.replace(/\/+$/, "");
+};
+
+// Optional nice labels for known segments
+const SEGMENT_LABEL_OVERRIDES: Record<string, string> = {
+  digital: "Digital",
+  ai: "AI",
+  "case-studies": "Case Studies",
+};
+// Add more slug-based overrides here if needed, e.g. "ai-whatsapp-interactor": "AI Whatsapp Interactor",
+
+const labelFromSegment = (segment: string): string => {
+  const decoded = decodeURIComponent(segment);
+  const override = SEGMENT_LABEL_OVERRIDES[decoded.toLowerCase()];
+  if (override) return override;
+
+  return decoded
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+};
+
+export default function BreadcrumbsClient({
+  sections,
+  hiddenSegments,
+}: BreadcrumbsClientProps) {
+  const pathname = usePathname();
+  const currentPath = normalizePath(pathname) ?? "/";
+
+  const segments = useMemo(() => {
+    if (currentPath === "/") {
+      return [];
+    }
+    return currentPath.split("/").filter(Boolean);
+  }, [currentPath]);
+
+  const hiddenSet = useMemo(
+    () => new Set((hiddenSegments ?? []).map((s) => s.toLowerCase())),
+    [hiddenSegments]
+  );
+
+  const showBreadcrumbs = segments.length >= 3;
+
+  // Build a path -> label map from navigation
+  const pathLabelMap = useMemo(() => {
+    const map = new Map<string, string>();
+
+    sections.forEach((section) => {
+      const sectionPath = normalizePath(resolveLinkField(section.link));
+      if (sectionPath) {
+        map.set(sectionPath, section.label);
+      }
+
+      section.children.forEach((child) => {
+        const childPath = normalizePath(resolveLinkField(child.link));
+        if (childPath) {
+          map.set(childPath, child.label);
+        }
+      });
+    });
+
+    return map;
+  }, [sections]);
+
+  const crumbs = useMemo(() => {
+    const items: { href: string; label: string }[] = [];
+
+    // Home
+    items.push({ href: "/", label: "Home" });
+
+    let acc = "";
+    segments.forEach((seg) => {
+      acc += `/${seg}`;
+      const href = acc;
+
+      const segLower = seg.toLowerCase();
+
+      // Skip routing-only segments that should not appear as separate crumbs.
+      if (hiddenSet.has(segLower)) {
+        return;
+      }
+
+      const overrideLabel = SEGMENT_LABEL_OVERRIDES[segLower];
+      const navLabel = pathLabelMap.get(href);
+      const baseLabel = labelFromSegment(seg);
+      const label = overrideLabel ?? navLabel ?? baseLabel;
+
+      items.push({ href, label });
+    });
+
+    return items;
+  }, [segments, pathLabelMap, hiddenSet]);
+
+  if (!showBreadcrumbs) {
+    return null;
+  }
+
+  const lastIndex = crumbs.length - 1;
+
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className="w-full border-b border-white/10 bg-black/30/80 backdrop-blur-sm"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <ol className="flex flex-wrap items-center gap-1 text-[11px] sm:text-xs md:text-sm text-white/55">
+          {crumbs.map((crumb, index) => {
+            const isLast = index === lastIndex;
+            return (
+              <li key={crumb.href} className="flex items-center min-w-0">
+                {index > 0 && (
+                  <ChevronRight
+                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/35"
+                    aria-hidden="true"
+                  />
+                )}
+                {isLast ? (
+                  <span className="font-semibold text-white truncate max-w-[200px] sm:max-w-none">
+                    {crumb.label}
+                  </span>
+                ) : (
+                  <Link
+                    href={crumb.href}
+                    className="hover:text-white hover:underline underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none"
+                  >
+                    {crumb.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </nav>
+  );
+}

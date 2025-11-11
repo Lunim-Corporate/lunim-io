@@ -1,0 +1,41 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "title": [
+        {
+          "type": "heading2",
+          "text": "Virtual Production",
+          "spans": []
+        }
+      ],
+      "subtitle": "More Creative Freedom, Less Risk",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "This virtual-first approach will allow us to shoot many complex, visually rich scenes without the cost, risk or limitations of physical locations.",
+          "spans": [
+            {
+              "start": 5,
+              "end": 25,
+              "type": "strong"
+            }
+          ]
+        }
+      ],
+      "background_image": {
+        "dimensions": {
+          "width": 1920,
+          "height": 1080
+        },
+        "alt": "LED stage virtual production",
+        "copyright": null,
+        "url": "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=1920&h=1080&fit=crop"
+      },
+      "content_position": "left",
+      "enable_zoom_effect": true
+    },
+    "items": []
+  }
+]

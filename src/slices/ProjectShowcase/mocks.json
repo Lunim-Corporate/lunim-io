@@ -121,6 +121,10 @@
 						]
 					}
 				]
+			},
+			"show_case_study_page_link": {
+				"__TYPE__": "BooleanContent",
+				"value": false
 			}
 		},
 		"items": [
@@ -268,6 +272,10 @@
 						]
 					}
 				]
+			},
+			"show_case_study_page_link": {
+				"__TYPE__": "BooleanContent",
+				"value": false
 			}
 		},
 		"items": [

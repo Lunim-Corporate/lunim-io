@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -11,6 +12,19 @@ const nextConfig: NextConfig = {
         pathname: "/lunim-v3/**",
       },
     ],
+  },
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+  async redirects() {
+    return [
+      // Only redirect the "container" page, not inner slugs
+      {
+        source: '/:path*/case-studies',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
   },
 };
 

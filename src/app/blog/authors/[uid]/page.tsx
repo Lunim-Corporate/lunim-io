@@ -15,7 +15,7 @@ import {
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
 import { pickBaseMetadata } from "@/utils/metadata";
-// import { getCanonicalUrl } from "@/utils/getCanonical";
+import { withImageAlt } from "@/lib/prismicImage";
 
 type Params = { uid: string };
 
@@ -23,23 +23,6 @@ type PageProps = {
   params: Promise<Params>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-type ImageLikeField = {
-  url?: string | null;
-  alt?: string | null;
-};
-
-function withFallbackAlt<T extends ImageLikeField>(
-  field: T | null | undefined,
-  fallback: string
-): T | null | undefined {
-  if (!field?.url) return field ?? null;
-  const providedAlt =
-    typeof field.alt === "string" ? field.alt.trim() : "";
-  if (providedAlt) return field;
-  const derivedAlt = fallback.trim() || "Image";
-  return { ...field, alt: derivedAlt } as T;
-}
 
 function getFirstParam(
   value: string | string[] | undefined
@@ -84,7 +67,7 @@ function resolveSocialLabel(link: LinkField | null | undefined): string {
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const data = doc.data;
   const title = asText(data.blog_article_heading) || doc.uid || "Untitled";
-  const articleImage = withFallbackAlt(
+  const articleImage = withImageAlt(
     data.article_main_image,
     `${title} cover`
   );
@@ -102,8 +85,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
       ? authorInfo.uid
       : "");
   const authorImage =
-    withFallbackAlt(authorData?.author_image ?? null, authorName || title) ??
-    null;
+    withImageAlt(authorData?.author_image ?? null, authorName || title) ?? null;
   const readingTime = calculateReadingTime(data.main_article_content);
 
   return (
@@ -168,7 +150,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const authorName =
     authorDoc.data.author_name?.trim() || authorDoc.uid || "Author";
   const authorBio = authorDoc.data.author_bio?.trim() || "";
-  const authorImage = withFallbackAlt(
+  const authorImage = withImageAlt(
     authorDoc.data.author_image,
     `${authorName} portrait`
   );
@@ -387,7 +369,6 @@ export async function generateMetadata(
   { params }: { params: Promise<Params>;},
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // fetch data
   const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
@@ -396,21 +377,17 @@ export async function generateMetadata(
   .catch(() => null);
   if (!doc) {
     return {
-      title: "Lunim Author Page",
+      title: "Lunim",
       description: "Welcome to Lunim's official author page."
     };
   }
 
-
   const parentKeywords = parentMetaData.keywords || "";
-  const authorKeywords = ""; // End keywords using a comma
-  const keywords = `${authorKeywords} ${parentKeywords}`.trim();
-  const description = "Lunim's official author page";
-  const authorName = uid.replace("-", " ").split(" ");
-  const authorFirstName = authorName[0][0].toUpperCase() + authorName[0].slice(1);
-  const authorLastName = authorName[1][0].toUpperCase() + authorName[1].slice(1);
-  const title = `${authorFirstName} ${authorLastName}`;
-  
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const title = doc.data?.meta_title || parentMetaData.title;
+  const description = doc.data?.meta_description || parentMetaData.description;
+  const canonicalUrl = doc.data?.meta_url || "";
+
     return {
       ...parentMetaData,
       title: title,
@@ -418,9 +395,9 @@ export async function generateMetadata(
       keywords: keywords, 
       openGraph: {
         ...parentMetaData.openGraph,
-        title: title,
+        title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
         description: `${description}`,
-        url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/authors/${doc.uid}`,
+        url: canonicalUrl,
       },
     }
 }

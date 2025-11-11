@@ -86,8 +86,6 @@ const routes: Route[] = [
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
   { type: "author", path: "/blog/authors/:uid" },
-  // { type: "digital_page", path: "/digital/:uid" },
-  // { type: "case_study_sm", path: "/digital/case-studies/:uid" },
 ];
 
 /**

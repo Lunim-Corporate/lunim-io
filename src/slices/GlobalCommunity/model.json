@@ -1,0 +1,87 @@
+{
+  "id": "global_community",
+  "type": "SharedSlice",
+  "name": "GlobalCommunity",
+  "description": "Global Community section featuring Tabb platform and talent grid",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default variation",
+      "imageUrl": "",
+      "primary": {
+        "eyebrow_text": {
+          "type": "Text",
+          "config": {
+            "label": "Eyebrow Text",
+            "placeholder": "Global Community"
+          }
+        },
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading",
+            "placeholder": "Attracting The Talent",
+            "allowTargetBlank": false,
+            "single": "heading2"
+          }
+        },
+        "body_text": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Body Text",
+            "placeholder": "Description of the global community...",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        },
+        "tabb_logo": {
+          "type": "Image",
+          "config": {
+            "label": "Tabb Logo",
+            "constraint": {
+              "width": 300,
+              "height": 150
+            },
+            "thumbnails": []
+          }
+        },
+        "background_color": {
+          "type": "Select",
+          "config": {
+            "label": "Background Color",
+            "placeholder": "Select background",
+            "options": [
+              "dark-blue",
+              "black",
+              "gradient-dark"
+            ],
+            "default_value": "dark-blue"
+          }
+        }
+      },
+      "items": {
+        "face_image": {
+          "type": "Image",
+          "config": {
+            "label": "Face Image",
+            "constraint": {
+              "width": 200,
+              "height": 200
+            },
+            "thumbnails": []
+          }
+        },
+        "person_name": {
+          "type": "Text",
+          "config": {
+            "label": "Person Name",
+            "placeholder": "Optional name for accessibility"
+          }
+        }
+      }
+    }
+  ]
+}

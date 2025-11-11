@@ -22,29 +22,13 @@ import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { withImageAlt } from "@/lib/prismicImage";
 // import { getCanonicalUrl } from "@/utils/getCanonical";
 
 // Must use 'force-dynamic' to show meta tags correctly for each blog post
 // export const dynamic = 'force-dynamic';
 
 type Params = { uid: string };
-
-type ImageLikeField = {
-  url?: string | null;
-  alt?: string | null;
-};
-
-function withFallbackAlt<T extends ImageLikeField>(
-  field: T | null | undefined,
-  fallback: string
-): T | null | undefined {
-  if (!field?.url) return field ?? null;
-  const existingAlt =
-    typeof field.alt === "string" ? field.alt.trim() : "";
-  if (existingAlt) return field;
-  const fallbackAlt = fallback.trim() || "Blog image";
-  return { ...field, alt: fallbackAlt } as T;
-}
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
@@ -80,11 +64,11 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const authorImage = authorData?.author_image ?? null;
 
   const headingText = asText(docData.blog_article_heading).trim();
-  const articleImageWithAlt = withFallbackAlt(
+  const articleImageWithAlt = withImageAlt(
     docData.article_main_image,
     headingText || "Blog article image"
   );
-  const authorImageWithAlt = withFallbackAlt(
+  const authorImageWithAlt = withImageAlt(
     authorImage,
     authorName || "Blog author portrait"
   );
@@ -227,43 +211,52 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 }
 
 export async function generateMetadata(
-  { params }: { params: Promise<Params>;},
+  { params }: { params: Promise<Params> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // fetch data
-  const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
+  const { uid } = await params;
   const doc = await client
   .getByUID<Content.BlogPostDocument>("blog_post", uid)
   .catch(() => null);
   if (!doc) {
     return {
-      title: "Lunim Blog Article",
-      description: "Welcome to Lunim's official blog article page."
+      title: "Lunim",
+      description: "Welcome to Lunim's official blog post page."
     };
   }
-
 
   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
+  // Filter out empty keyword fields
+  // Ensure each keyword is separated by a comma and space
+  // Join keywords from current page (if any) to parent keywords
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
-
-  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+  const canonicalUrl = doc.data?.meta_url || "";
+  const blogAuthors = doc.data?.meta_authors?.filter((val) => Boolean(val.author_name)).map((a) => ({ name: a.author_name || undefined}));
 
   return {
     ...parentMetaData,
     title: title,
     description: description,
-    keywords: keywords, 
+    keywords: keywords,
+    authors: blogAuthors,
     openGraph: {
       ...parentMetaData.openGraph,
-      title: typeof title === 'string' ? `${title}` : fallBackPageName,
+      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
-      url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/${doc.uid}`,
+      url: canonicalUrl,
+      // images: [
+      //   {
+      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
+      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
+      //   }
+      // ]
     },
   }
 }
