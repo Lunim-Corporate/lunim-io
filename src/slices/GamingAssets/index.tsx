@@ -50,7 +50,7 @@ const GamingAssets = ({ slice }: GamingAssetsProps) => {
     <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative min-h-[70svh] overflow-hidden bg-[#03070f]">
       {slice.primary.background_image?.url && (
         <div ref={bgRef} className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} fallbackAlt="" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#03070f]/90 via-[#03070f]/60 to-transparent" />
         </div>
       )}

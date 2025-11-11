@@ -42,7 +42,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
     <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]">
       {slice.primary.background_image?.url && (
         <div className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} fallbackAlt="" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
         </div>
       )}
@@ -60,7 +60,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
             <article key={idx} className="collectible-card rounded-xl overflow-hidden bg-[#0b1222] border border-white/5 shadow-[0_0_20px_rgba(141,246,255,0.1)]">
               <div className="aspect-[4/3] relative">
                 {item.image?.url && (
-                  <PrismicNextImage field={item.image} fill className="object-cover" />
+<PrismicNextImage field={{ ...(item.image as any), alt: ((item.title as string) || "Collectible") }} fill className="object-cover" />
                 )}
               </div>
               <div className="p-3">

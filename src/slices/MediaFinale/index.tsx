@@ -47,7 +47,7 @@ const MediaFinale = ({ slice }: MediaFinaleProps) => {
     >
       {slice.primary.background_image?.url && (
         <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} fallbackAlt="" />
         </div>
       )}
 

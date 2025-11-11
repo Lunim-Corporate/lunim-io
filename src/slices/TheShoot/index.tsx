@@ -123,6 +123,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
             fill
             className="object-cover"
             quality={90}
+            fallbackAlt=""
           />
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/95 via-[#040a18]/80 to-transparent" />

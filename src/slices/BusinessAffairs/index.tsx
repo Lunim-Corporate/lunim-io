@@ -79,8 +79,8 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
             return (
               <div key={idx} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${left}%`, transform: 'translate(-50%, -50%)' }}>
                 <div className="relative w-16 h-16 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_20px_rgba(141,246,255,0.3)]">
-                  {item.node_image?.url && (
-                    <PrismicNextImage field={item.node_image} fill className="object-cover" />
+{item.node_image?.url && (
+<PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || "Timeline node") }} fill className="object-cover" />
                   )}
                 </div>
                 {/* Top connector + text */}
@@ -125,7 +125,7 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
       {/* Background Image */}
       {slice.primary.background_image?.url && (
         <div className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} fallbackAlt="" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
       )}
@@ -154,8 +154,8 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
           {slice.items.map((item: any, idx: number) => (
             <div key={idx} className="ba-step flex md:flex-col items-center md:items-start gap-3 md:gap-2">
               <div className="relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/40 shrink-0 overflow-hidden">
-                {item.node_image?.url ? (
-                  <PrismicNextImage field={item.node_image} fill className="object-cover" />
+{item.node_image?.url ? (
+<PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.step_title as string) || "Timeline step") }} fill className="object-cover" />
                 ) : (
                   <span className="text-[#8df6ff] font-bold text-sm">{idx + 1}</span>
                 )}

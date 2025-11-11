@@ -55,7 +55,7 @@ const EducationWorld = ({ slice }: EducationWorldProps) => {
     >
       {slice.primary.background_image?.url && (
         <div ref={bgRef} className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} fallbackAlt="" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#071327]/95 via-[#071327]/70 to-transparent" />
         </div>
       )}

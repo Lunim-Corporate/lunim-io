@@ -171,9 +171,9 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
             {/* Tabb Logo */}
             {slice.primary.tabb_logo?.url && (
               <div ref={logoRef} className="pt-8 will-change-transform">
-                <PrismicNextImage
-                  field={slice.primary.tabb_logo}
-                  className="w-32 md:w-40 h-auto object-contain"
+<PrismicNextImage
+field={{ ...(slice.primary.tabb_logo as any), alt: "Tabb logo" }}
+className="w-32 md:w-40 h-auto object-contain"
                 />
               </div>
             )}
