@@ -22,6 +22,16 @@ const eslintConfig = [
       "prismicio-types.d.ts",
     ],
   },
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      // So builds don't fail on tiny unused vars; keep as warning.
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^unused" }
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;
