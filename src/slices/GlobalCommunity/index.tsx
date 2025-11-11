@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -26,6 +28,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   const bodyRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const tabbLogoImage = withImageAlt(
+    slice.primary.tabb_logo,
+    slice.primary.eyebrow_text || "Community logo"
+  );
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -169,11 +175,11 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
             )}
 
             {/* Tabb Logo */}
-            {slice.primary.tabb_logo?.url && (
+            {tabbLogoImage && (
               <div ref={logoRef} className="pt-8 will-change-transform">
-<PrismicNextImage
-field={{ ...(slice.primary.tabb_logo as any), alt: "Tabb logo" }}
-className="w-32 md:w-40 h-auto object-contain"
+                <PrismicNextImage
+                  field={slice.primary.tabb_logo}
+                  className="w-32 md:w-40 h-auto object-contain"
                 />
               </div>
             )}
@@ -183,7 +189,7 @@ className="w-32 md:w-40 h-auto object-contain"
           {slice.items && slice.items.length > 0 && (
             <div ref={gridRef} className="relative">
               <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
-                {slice.items.map((item: any, index: number) => (
+                {slice.items.map((item, index) => (
                   <div
                     key={index}
                     className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"

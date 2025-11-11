@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -27,6 +29,11 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
+  const logoImage = withImageAlt(
+    slice.primary.logo,
+    slice.primary.subtitle || "Transmedia hero logo"
+  );
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -98,18 +105,19 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18]"
     >
       {/* Background Image with Parallax */}
-      {slice.primary.background_image?.url && (
+      {backgroundImage && (
         <div
           ref={bgRef}
           className="absolute inset-0 z-0 will-change-transform"
           style={{ transform: "translate3d(0, 0, 0)" }}
         >
           <PrismicNextImage
-            field={slice.primary.background_image}
+            field={backgroundImage}
             fill
             className="object-cover"
             priority
             quality={90}
+            alt=""
           />
         </div>
       )}
@@ -117,14 +125,14 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Logo */}
-        {slice.primary.logo?.url && (
+        {logoImage && (
           <div
             ref={logoRef}
             className="mb-12 flex justify-center"
           >
             <div className="relative">
               <PrismicNextImage
-                field={slice.primary.logo}
+                field={logoImage}
                 className="w-auto h-32 md:h-48 lg:h-56 object-contain drop-shadow-[0_0_30px_rgba(141,246,255,0.6)]"
                 priority
               />

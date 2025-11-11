@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
-import { PrismicNextImage } from "@prismicio/next";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,6 +17,7 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const svgRefH = useRef<SVGSVGElement>(null);
   const svgRefV = useRef<SVGSVGElement>(null);
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -74,35 +75,35 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
       <div className="relative hidden md:block" aria-hidden>
         {/* absolute container over the line height */}
         <div className="absolute inset-0 h-16">
-          {slice.items.map((item: any, idx: number) => {
+          {slice.items.map((item, idx) => {
             const left = (idx / (count - 1)) * 100;
             return (
               <div key={idx} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${left}%`, transform: 'translate(-50%, -50%)' }}>
                 <div className="relative w-16 h-16 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_20px_rgba(141,246,255,0.3)]">
-{item.node_image?.url && (
-<PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || "Timeline node") }} fill className="object-cover" />
+                  {item.node_image?.url && (
+                    <PrismicNextImage field={item.node_image} fill className="object-cover" />
                   )}
                 </div>
                 {/* Top connector + text */}
-                {item.top_title || (item.top_description as any)?.length ? (
+                {item.top_title || hasTopDescription ? (
                   <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-56 text-center">
                     <div className="mx-auto mb-2 h-14 w-px bg-[#8df6ff]/40" />
                     {item.top_title && <p className="text-white font-semibold text-sm">{item.top_title}</p>}
-                    {item.top_description && (
+                    {hasTopDescription && (
                       <div className="text-white/80 text-xs leading-snug mt-1">
-                        <PrismicRichText field={item.top_description as any} />
+                        <PrismicRichText field={item.top_description} />
                       </div>
                     )}
                   </div>
                 ) : null}
                 {/* Bottom connector + text */}
-                {item.bottom_title || (item.bottom_description as any)?.length ? (
+                {item.bottom_title || hasBottomDescription ? (
                   <div className="absolute -bottom-36 left-1/2 -translate-x-1/2 w-56 text-center">
                     <div className="mx-auto mb-2 h-14 w-px bg-[#8df6ff]/40" />
                     {item.bottom_title && <p className="text-white font-semibold text-sm">{item.bottom_title}</p>}
-                    {item.bottom_description && (
+                    {hasBottomDescription && (
                       <div className="text-white/80 text-xs leading-snug mt-1">
-                        <PrismicRichText field={item.bottom_description as any} />
+                        <PrismicRichText field={item.bottom_description} />
                       </div>
                     )}
                   </div>
@@ -123,9 +124,9 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
   return (
     <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 bg-[#040a18] overflow-hidden">
       {/* Background Image */}
-      {slice.primary.background_image?.url && (
+      {backgroundImage && (
         <div className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} fallbackAlt="" />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={85} />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
       )}
@@ -151,23 +152,24 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
 
         {/* Steps (mobile textual list) */}
         <div className="mt-6 grid grid-cols-1 md:hidden gap-6">
-          {slice.items.map((item: any, idx: number) => (
+          {slice.items.map((item, idx) => (
             <div key={idx} className="ba-step flex md:flex-col items-center md:items-start gap-3 md:gap-2">
               <div className="relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/40 shrink-0 overflow-hidden">
-{item.node_image?.url ? (
-<PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.step_title as string) || "Timeline step") }} fill className="object-cover" />
+                {item.node_image?.url ? (
+                  <PrismicNextImage field={item.node_image} fill className="object-cover" />
                 ) : (
                   <span className="text-[#8df6ff] font-bold text-sm">{idx + 1}</span>
-                )}
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-sm md:text-base">{item.step_title}</h3>
+                  {item.step_description && (
+                    <p className="text-white/70 text-xs md:text-sm mt-1">{item.step_description}</p>
+                  )}
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-semibold text-sm md:text-base">{item.step_title}</h3>
-                {item.step_description && (
-                  <p className="text-white/70 text-xs md:text-sm mt-1">{item.step_description}</p>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

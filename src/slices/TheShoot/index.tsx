@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -25,6 +27,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -112,18 +115,17 @@ const TheShoot = ({ slice }: TheShootProps) => {
       className="relative min-h-screen flex items-center overflow-hidden"
     >
       {/* Background Image with Parallax */}
-      {slice.primary.background_image?.url && (
+      {backgroundImage && (
         <div
           ref={bgRef}
           className="absolute inset-0 z-0 will-change-transform"
           style={{ transform: "translate3d(0, 0, 0)" }}
         >
           <PrismicNextImage
-            field={slice.primary.background_image}
+            field={backgroundImage}
             fill
             className="object-cover"
             quality={90}
-            fallbackAlt=""
           />
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/95 via-[#040a18]/80 to-transparent" />

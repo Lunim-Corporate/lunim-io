@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,6 +18,11 @@ export type MediaFinaleProps = SliceComponentProps<any>;
 const MediaFinale = ({ slice }: MediaFinaleProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
+  const logoImage = withImageAlt(
+    slice.primary.logo,
+    slice.primary.subtitle || "Media finale logo"
+  );
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -45,16 +52,16 @@ const MediaFinale = ({ slice }: MediaFinaleProps) => {
       data-slice-variation={slice.variation}
       className="relative min-h-[90svh] flex items-center justify-center overflow-hidden bg-[#03070f]"
     >
-      {slice.primary.background_image?.url && (
+      {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} fallbackAlt="" />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
         </div>
       )}
 
       <div className="relative z-10 text-center px-4">
-        {slice.primary.logo?.url && (
+        {logoImage && (
           <div className="mb-8 flex justify-center">
-            <PrismicNextImage field={slice.primary.logo} className="h-20 w-auto object-contain" />
+            <PrismicNextImage field={logoImage} className="h-20 w-auto object-contain" />
           </div>
         )}
 

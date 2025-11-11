@@ -5,25 +5,9 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { createClient } from "@/prismicio";
 import { type Content } from "@prismicio/client";
 import { pickBaseMetadata } from "@/utils/metadata";
-
-type ImageLikeField = {
-  url?: string | null;
-  alt?: string | null;
-};
+import { withImageAlt } from "@/lib/prismicImage";
 
 export const dynamic = "force-static";
-
-function withFallbackAlt<T extends ImageLikeField>(
-  field: T | null | undefined,
-  fallback: string
-): T | null | undefined {
-  if (!field?.url) return field ?? null;
-  const providedAlt =
-    typeof field.alt === "string" ? field.alt.trim() : "";
-  if (providedAlt) return field;
-  const derivedAlt = fallback.trim() || "Author portrait";
-  return { ...field, alt: derivedAlt } as T;
-}
 
 export default async function Page() {
   const client = createClient();
@@ -51,7 +35,7 @@ export default async function Page() {
               const name =
                 author.data.author_name?.trim() || author.uid || "Author";
               const bio = author.data.author_bio?.trim() || "";
-              const imageField = withFallbackAlt(
+              const imageField = withImageAlt(
                 author.data.author_image,
                 name
               );

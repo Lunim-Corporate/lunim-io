@@ -13,6 +13,7 @@ import * as prismic from "@prismicio/client";
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
 import { pickBaseMetadata } from "@/utils/metadata";
+import { withImageAlt } from "@/lib/prismicImage";
 
 type Params = { uid: string };
 
@@ -20,23 +21,6 @@ type PageProps = {
   params: Promise<Params>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-type ImageLikeField = {
-  url?: string | null;
-  alt?: string | null;
-};
-
-function withFallbackAlt<T extends ImageLikeField>(
-  field: T | null | undefined,
-  fallback: string
-): T | null | undefined {
-  if (!field?.url) return field ?? null;
-  const providedAlt =
-    typeof field.alt === "string" ? field.alt.trim() : "";
-  if (providedAlt) return field;
-  const derivedAlt = fallback.trim() || "Image";
-  return { ...field, alt: derivedAlt } as T;
-}
 
 function getFirstParam(
   value: string | string[] | undefined
@@ -81,7 +65,7 @@ function resolveSocialLabel(link: LinkField | null | undefined): string {
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const data = doc.data;
   const title = asText(data.blog_article_heading) || doc.uid || "Untitled";
-  const articleImage = withFallbackAlt(
+  const articleImage = withImageAlt(
     data.article_main_image,
     `${title} cover`
   );
@@ -99,8 +83,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
       ? authorInfo.uid
       : "");
   const authorImage =
-    withFallbackAlt(authorData?.author_image ?? null, authorName || title) ??
-    null;
+    withImageAlt(authorData?.author_image ?? null, authorName || title) ?? null;
   const readingTime = calculateReadingTime(data.main_article_content);
 
   return (
@@ -165,7 +148,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const authorName =
     authorDoc.data.author_name?.trim() || authorDoc.uid || "Author";
   const authorBio = authorDoc.data.author_bio?.trim() || "";
-  const authorImage = withFallbackAlt(
+  const authorImage = withImageAlt(
     authorDoc.data.author_image,
     `${authorName} portrait`
   );
