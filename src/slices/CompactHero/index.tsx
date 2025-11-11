@@ -121,7 +121,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
                 <button
                   type="button"
                   onClick={() => setIsLunaOpen(true)}
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer"
                 >
                   Ask Luna
                 </button>
