@@ -68,6 +68,15 @@
     font-style: normal;
   }
 
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  :is(h1+h2, h2+h3, h3+h4, h4+h5, h5+h6){
+    margin-top: -0.5rem;
+  }
+
   summary::-webkit-details-marker,
   summary::marker {
     display: none;
