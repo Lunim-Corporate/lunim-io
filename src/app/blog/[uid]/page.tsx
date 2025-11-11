@@ -252,7 +252,6 @@ export async function generateMetadata(
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";
 
-  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, (c: string) => c.toUpperCase());
 
   return {
     ...parentMetaData,

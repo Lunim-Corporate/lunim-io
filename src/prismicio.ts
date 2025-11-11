@@ -3,11 +3,8 @@ import { enableAutoPreviews } from "@prismicio/next";
 import sm from "../slicemachine.config.json";
 
 // Local type fallbacks to avoid CLI/type version mismatches
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ClientConfig = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Route = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LinkResolverFunction = (link: any) => string | null | undefined;
 
 /**
