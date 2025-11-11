@@ -23,13 +23,28 @@ import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
-import { withImageAlt } from "@/lib/prismicImage";
 // import { getCanonicalUrl } from "@/utils/getCanonical";
 
 // Must use 'force-dynamic' to show meta tags correctly for each blog post
 // export const dynamic = 'force-dynamic';
 
 type Params = { uid: string };
+
+type ImageLikeField = {
+  url?: string | null;
+  alt?: string | null;
+};
+
+function withFallbackAlt<T extends ImageLikeField>(
+  field: T | null | undefined,
+  fallback: string
+): T | null | undefined {
+  if (!field?.url) return field ?? null;
+  const existingAlt = typeof field.alt === "string" ? field.alt.trim() : "";
+  if (existingAlt) return field;
+  const fallbackAlt = fallback.trim() || "Blog image";
+  return { ...field, alt: fallbackAlt } as T;
+}
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
@@ -64,12 +79,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const authorBio = authorData?.author_bio;
   const authorImage = authorData?.author_image ?? null;
 
-  const headingText = asText(docData.blog_article_heading).trim();
+  const headingText = (asText(docData.blog_article_heading || []) || "").trim();
   const articleImageWithAlt = withFallbackAlt(
     docData.article_main_image,
     headingText || "Blog article image"
   );
-  const authorImageWithAlt = withImageAlt(
+  const authorImageWithAlt = withFallbackAlt(
     authorImage,
     authorName || "Blog author portrait"
   );

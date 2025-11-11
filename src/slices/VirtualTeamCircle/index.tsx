@@ -305,7 +305,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
         {/* Mobile fallback: Stacked grid */}
         <div className="lg:hidden mt-12 grid grid-cols-2 gap-6">
-          {slice.items.map((item, index) => (
+          {slice.items.map((item: any, index: number) => (
             <div key={index} className="flex flex-col items-center text-center">
               {item.team_photo?.url && (
                 <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">

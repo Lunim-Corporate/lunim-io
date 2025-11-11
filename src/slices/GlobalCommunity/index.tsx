@@ -189,7 +189,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
           {slice.items && slice.items.length > 0 && (
             <div ref={gridRef} className="relative">
               <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
-                {slice.items.map((item, index) => (
+                {slice.items.map((item: any, index: number) => (
                   <div
                     key={index}
                     className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"
