@@ -73,9 +73,12 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                           </h3>
                         </div>
                       )}
-                    <div className="text-gray-200 text-base text-left">
-                        <p>{asText(item.project_description)}&nbsp; <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-base text-[#BBFEFF] hover:text-cyan-300">{item.button_cta_text}</button></p>
-                    </div>
+                    <PrismicRichText 
+                      field={item.project_description}
+                      components={{
+                        paragraph: ({ children }) => <p className="text-gray-200 text-base text-left">{children} <span className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-base text-[#BBFEFF] hover:text-cyan-300">{item.button_cta_text}</span></p>
+                      }}
+                    />
                 </div>
 
                 {tagsArray.length > 0 && (
