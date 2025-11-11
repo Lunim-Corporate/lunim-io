@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
   const client = createClient();
-  const doc = await client.getByUID<AcademyCourseDocument>("academy_course", uid).catch(() => null);
+  const doc = (await (client as any).getByUID("academy_course", uid).catch(() => null)) as AcademyCourseDocument | null;
   if (!doc) notFound();
 
   const slices = doc.data?.slices;
@@ -38,6 +38,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }, 
   
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType('academy_course');
-  return docs.map(d => ({ uid: d.uid }));
+  const docs = (await client.getAllByType('academy_course')) as unknown as AcademyCourseDocument[];
+  return docs.map((d: AcademyCourseDocument) => ({ uid: d.uid! }));
 }
