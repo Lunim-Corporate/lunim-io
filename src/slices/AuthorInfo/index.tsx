@@ -1,11 +1,10 @@
 import { FC } from "react";
-import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 
 /**
  * Props for `AuthorInfo`.
  */
-export type AuthorInfoProps = SliceComponentProps<Content.AuthorInfoSlice>;
+export type AuthorInfoProps = SliceComponentProps<any>;
 
 /**
  * Component for "AuthorInfo" Slices.

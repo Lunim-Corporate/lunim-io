@@ -1,7 +1,8 @@
 import type { CaseStudySmDocumentWithLegacy } from "@/app/digital/case-studies/types";
 import { HeroLikeSlice } from "@/app/digital/case-studies/types";
 // Prismic
-import { asText, Content } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 import { PrismicRichText } from "@prismicio/react";
 // Next
 import Image from "next/image";
@@ -31,7 +32,7 @@ function extractHeroFromSlices(slices: ReadonlyArray<HeroLikeSlice> | null | und
 
 type CaseStudiesProps = {
   filteredCaseStudies: CaseStudySmDocumentWithLegacy[];
-  caseStudyPage?: Content.CaseStudiesDocument | null;
+  caseStudyPage?: any;
 };
 
 export default function CaseStudies({ filteredCaseStudies, caseStudyPage }: CaseStudiesProps) {

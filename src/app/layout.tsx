@@ -48,19 +48,19 @@ export default async function RootLayout({
 }) {
   const { isEnabled: isDraft } = await draftMode();
   const client = createClient();
-  const primaryNav = await client
-    .getSingle<Content.PrimaryNavigationDocument>("primary_navigation")
-    .catch(() => null);
+  const primaryNav = (await (client as any)
+    .getSingle("primary_navigation")
+    .catch(() => null)) as Content.PrimaryNavigationDocument | null;
   // Extract the navigation_menu slice from the slices array
   const navigationMenu = primaryNav?.data?.slices.find(
-    (slice) => slice.slice_type === "navigation_menu"
+    (slice: any) => slice.slice_type === "navigation_menu"
   );
   // Fetch the footer slice
-  const footer = await client
-    .getSingle<Content.FooterDocument>("footer")
-    .catch(() => null);
+  const footer = (await (client as any)
+    .getSingle("footer")
+    .catch(() => null)) as Content.FooterDocument | null;
   const footerSlice = footer?.data?.slices.find(
-    (slice) => slice.slice_type === "footer"
+    (slice: any) => slice.slice_type === "footer"
   );
 
   return (

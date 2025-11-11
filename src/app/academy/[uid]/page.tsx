@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
   const client = createClient();
-  const doc = await client.getByUID<AcademyCourseDocument>("academy_course", uid).catch(() => null);
+  const doc = (await (client as any).getByUID("academy_course", uid).catch(() => null)) as AcademyCourseDocument | null;
   if (!doc) notFound();
 
   const slices = doc.data?.slices;
@@ -33,8 +33,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType('academy_course');
-  return docs.map(d => ({ uid: d.uid }));
+  const docs = (await client.getAllByType('academy_course')) as unknown as AcademyCourseDocument[];
+  return docs.map((d: AcademyCourseDocument) => ({ uid: d.uid! }));
 }
 
 export async function generateMetadata(
@@ -45,9 +45,9 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const { uid } = await params;
-  const doc = await client
-  .getByUID<Content.AcademyCourseDocument>("academy_course", uid)
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getByUID("academy_course", uid)
+  .catch(() => null)) as AcademyCourseDocument | null;
   if (!doc) {
     return {
       title: "Lunim",
@@ -61,7 +61,7 @@ export async function generateMetadata(
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
   // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";

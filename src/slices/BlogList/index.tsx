@@ -2,7 +2,8 @@
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content, KeyTextField, RichTextField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { KeyTextField, RichTextField } from "@prismicio/types";
 import { asText } from "@prismicio/helpers";
 
 import { createClient } from "@/prismicio";
@@ -159,10 +160,9 @@ export default async function BlogList({ slice, context }: Props) {
 
   // ----- Visible posts -----
   const visiblePosts = effectiveFilter
-    ? posts.filter(
-        (doc) =>
-          normalizeCategory(extractCategoryText(doc.data.category)) ===
-          effectiveFilter
+    ? posts.filter((doc: Content.BlogPostDocument) =>
+        normalizeCategory(extractCategoryText(doc.data.category)) ===
+        effectiveFilter
       )
     : posts;
 
@@ -233,7 +233,7 @@ export default async function BlogList({ slice, context }: Props) {
         {/* Grid / empty state */}
         {visiblePosts.length ? (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {visiblePosts.map((doc) => (
+            {visiblePosts.map((doc: Content.BlogPostDocument) => (
               <BlogCard key={doc.id} doc={doc} />
             ))}
           </div>
