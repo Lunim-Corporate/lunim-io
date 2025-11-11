@@ -13,9 +13,9 @@ export const revalidate = 60;
 
 export default async function Page() {
   const client = createClient();
-  const doc = await client
-    .getSingle<Content.HomepageDocument>("homepage")
-    .catch(() => null);
+  const doc = (await (client as any)
+    .getSingle("homepage")
+    .catch(() => null)) as Content.HomepageDocument | null;
   if (!doc) {
     return (
       <main className="p-6 text-white bg-black">Homepage not published.</main>

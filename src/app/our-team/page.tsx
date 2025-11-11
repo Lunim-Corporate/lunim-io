@@ -12,9 +12,9 @@ export const revalidate = 60;
 
 export default async function Page() {
   const client = createClient();
-  const doc = await client
-    .getSingle<Content.OurTeamPageDocument>("our_team_page")
-    .catch(() => null);
+  const doc = (await (client as any)
+    .getSingle("our_team_page")
+    .catch(() => null)) as Content.OurTeamPageDocument | null;
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
