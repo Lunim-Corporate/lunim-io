@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { JSX } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -14,9 +12,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type MediaFinaleProps = SliceComponentProps<Content.MediaFinaleSlice>;
+export type MediaFinaleProps = SliceComponentProps<any>;
 
-const MediaFinale = ({ slice }: MediaFinaleProps): JSX.Element => {
+const MediaFinale = ({ slice }: MediaFinaleProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
@@ -55,7 +53,7 @@ const MediaFinale = ({ slice }: MediaFinaleProps): JSX.Element => {
     >
       {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
-          <PrismicNextImage field={backgroundImage} fill className="object-cover" quality={90} alt="" />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
         </div>
       )}
 

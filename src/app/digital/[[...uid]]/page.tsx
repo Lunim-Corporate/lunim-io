@@ -17,7 +17,6 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { DigitalPageDocument } from "../../../../prismicio-types";
-import { Content } from "@prismicio/client";
 import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
@@ -27,7 +26,6 @@ import { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string[] };
-const listOfValidCategories = ["discovery", "ux", "ai", "web3"];
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;
@@ -37,8 +35,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // /digital
     if (!uid) {
         // console.log("Root");
-        const doc = await client
-            .getSingle<Content.TechDocument>("tech")
+        const doc = await (client as any)
+            .getSingle("tech")
             .catch(() => null);
         if (!doc) notFound()
         return (
@@ -51,7 +49,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // /digital/[uid]
     else if (uid.length === 1) {
         // console.log("1", uid);
-        const doc = await client.getByUID<DigitalPageDocument>("digital_page", uid[0]).catch(() => null);
+        const doc = (await (client as any).getByUID("digital_page", uid[0]).catch(() => null)) as DigitalPageDocument | null;
         if (!doc) notFound();
         const slices = doc.data?.slices;
         return (
@@ -65,14 +63,10 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies"], ["web3", "case-studies"]
     else if (uid.length === 2) {
         // console.log("2", uid);
-        const paramOne = uid[0];
-        if (
-            uid[1] !== "case-studies" ||
-            !listOfValidCategories.includes(paramOne)
-        ) notFound();
-        const allCaseStudies = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
-        const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === paramOne);
-        const caseStudyPage = await client.getSingle("case_studies").catch(() => null);
+        if (uid[1] !== "case-studies") notFound();
+        const allCaseStudies = (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+        const filteredCaseStudies = allCaseStudies.filter((cs: any) => cs.data.digital_category === uid[0]);
+        const caseStudyPage = await (client as any).getSingle("case_studies").catch(() => null);
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
     }
     
@@ -80,10 +74,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     // E.g., ["ai", "case-studies", "pizza-hut-checkout"]
     else if (uid.length === 3) {
         // console.log("3", uid);
-        if (
-            uid[1] !== "case-studies" ||
-            !listOfValidCategories.includes(uid[0])
-        ) notFound();
         const doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
         if (!doc) notFound();
 
@@ -141,7 +131,7 @@ export async function generateMetadata(
   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";

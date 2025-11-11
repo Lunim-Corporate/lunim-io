@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { JSX } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -14,9 +12,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type GamingAssetsProps = SliceComponentProps<Content.GamingAssetsSlice>;
+export type GamingAssetsProps = SliceComponentProps<any>;
 
-const GamingAssets = ({ slice }: GamingAssetsProps): JSX.Element => {
+const GamingAssets = ({ slice }: GamingAssetsProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -54,7 +52,7 @@ const GamingAssets = ({ slice }: GamingAssetsProps): JSX.Element => {
     <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative min-h-[70svh] overflow-hidden bg-[#03070f]">
       {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10">
-          <PrismicNextImage field={backgroundImage} fill className="object-cover" quality={90} alt="" />
+          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
           <div className="absolute inset-0 bg-gradient-to-r from-[#03070f]/90 via-[#03070f]/60 to-transparent" />
         </div>
       )}

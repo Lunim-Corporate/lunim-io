@@ -28,7 +28,7 @@ type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
 const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
   const columns = slice.primary.columns || 4;
   const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${columns === 4 ? 'md:grid-cols-4' : ''} gap-10`;
-  const items = slice.items as Content.ServiceGridSliceDefaultItem[];
+  const items = (slice.items as any[]) ?? [];
   
   return (
     // Use the section_id directly from the Key Text field
@@ -38,7 +38,7 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
             <PrismicRichText field={slice.primary.title} />
         </div>
         <div className={gridClass}>
-          {items.map((item, index) => {
+          {items.map((item: any, index: number) => {
             const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
             
             return (

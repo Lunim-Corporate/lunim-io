@@ -12,9 +12,9 @@ export const revalidate = 60;
 
 export default async function Page() {
   const client = createClient();
-  const doc = await client
-    .getSingle<Content.HomepageDocument>("homepage")
-    .catch(() => null);
+  const doc = (await (client as any)
+    .getSingle("homepage")
+    .catch(() => null)) as Content.HomepageDocument | null;
   if (!doc) {
     return (
       <main className="p-6 text-white bg-black">Homepage not published.</main>
@@ -37,9 +37,9 @@ export async function generateMetadata(
   // fetch data
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client
-  .getSingle<Content.HomepageDocument>("homepage")
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getSingle("homepage")
+  .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim Home Page",
@@ -54,7 +54,7 @@ export async function generateMetadata(
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
   // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
 

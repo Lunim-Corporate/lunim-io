@@ -20,7 +20,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
 const Process: React.FC<ProcessProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const items = slice.items as Content.ProcessSliceDefaultItem[];
+  const items = (slice.items as any[]) ?? [];
 
   // Check if the screen size is mobile
   useEffect(() => {
@@ -45,7 +45,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
 
         <Xwrapper>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 relative">
-            {items.map((item, index) => {
+            {items.map((item: any, index: number) => {
               const iconContent = item.icon_text || "";
               const isNumber = !isNaN(parseInt(iconContent));
               const IconComponent = iconComponents[iconContent] || HelpCircle;
@@ -88,7 +88,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
             {/* Draw arrows between circles (desktop only) */}
             {isMounted &&
               !isMobile &&
-              items.map((_, index) =>
+              items.map((_: any, index: number) =>
                 index < items.length - 1 ? (
                   <Xarrow
                     key={index}

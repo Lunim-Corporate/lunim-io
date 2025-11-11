@@ -1,11 +1,11 @@
-import {
-  createClient as baseCreateClient,
-  LinkResolverFunction,
-  type ClientConfig,
-  type Route,
-} from "@prismicio/client";
+import * as prismic from "@prismicio/client";
 import { enableAutoPreviews } from "@prismicio/next";
 import sm from "../slicemachine.config.json";
+
+// Local type fallbacks to avoid CLI/type version mismatches
+type ClientConfig = any;
+type Route = any;
+type LinkResolverFunction = (link: any) => string | null | undefined;
 
 /**
  * Supports direct repository names or full API endpoints. Returns `undefined`
@@ -95,7 +95,7 @@ const routes: Route[] = [
  * @param config - Configuration for the Prismic client.
  */
 export const createClient = (config: ClientConfig = {}) => {
-  const client = baseCreateClient(repositoryName, {
+  const client = (prismic as any).createClient(repositoryName, {
     routes,
     fetchOptions:
       process.env.NODE_ENV === "production"

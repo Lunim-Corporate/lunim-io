@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { JSX } from "react";
-import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -14,10 +12,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type AlternateRealityProps =
-  SliceComponentProps<Content.AlternateRealitySlice>;
+export type AlternateRealityProps = SliceComponentProps<any>;
 
-const AlternateReality = ({ slice }: AlternateRealityProps): JSX.Element => {
+const AlternateReality = ({ slice }: AlternateRealityProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const eyebrowRef = useRef<HTMLDivElement>(null);
@@ -75,7 +72,6 @@ const AlternateReality = ({ slice }: AlternateRealityProps): JSX.Element => {
             priority={false}
             quality={90}
             className="object-cover"
-            alt=""
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
         </div>

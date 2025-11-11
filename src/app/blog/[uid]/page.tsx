@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
 // Prismicio
 import { createClient } from "@/prismicio";
-import { asText, type Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
+import type { BlogPostDocument, BlogPostDocumentData, BlogPostDocumentDataSlicesSlice } from "../../../../prismicio-types";
 import { PrismicRichText } from "@prismicio/react";
 import { RichTextField, SliceZone } from "@prismicio/types";
 import { PrismicNextImage } from "@prismicio/next";
@@ -22,7 +23,6 @@ import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
-import { withImageAlt } from "@/lib/prismicImage";
 // import { getCanonicalUrl } from "@/utils/getCanonical";
 
 // Must use 'force-dynamic' to show meta tags correctly for each blog post
@@ -30,22 +30,38 @@ import { withImageAlt } from "@/lib/prismicImage";
 
 type Params = { uid: string };
 
+type ImageLikeField = {
+  url?: string | null;
+  alt?: string | null;
+};
+
+function withFallbackAlt<T extends ImageLikeField>(
+  field: T | null | undefined,
+  fallback: string
+): T | null | undefined {
+  if (!field?.url) return field ?? null;
+  const existingAlt = typeof field.alt === "string" ? field.alt.trim() : "";
+  if (existingAlt) return field;
+  const fallbackAlt = fallback.trim() || "Blog image";
+  return { ...field, alt: fallbackAlt } as T;
+}
+
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
   const client = createClient();
   // Pass custom name of linked document type 'author'
-  const doc = await client
-    .getByUID<Content.BlogPostDocument>("blog_post", uid, {
+  const doc = (await (client as any)
+    .getByUID("blog_post", uid, {
       fetchLinks: ["author.author_name", "author.author_image", "author.author_bio"],
     })
-    .catch(() => null);
+    .catch(() => null)) as BlogPostDocument | null;
   if (!doc) notFound();
-  const docData: Simplify<Content.BlogPostDocumentData> = doc.data;
+  const docData: Simplify<BlogPostDocumentData> = doc.data;
   
-  const faqSlice: SliceZone<Content.FaqSlice> = docData.slices
-  const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
-  const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
+  const faqSlice: SliceZone<BlogPostDocumentDataSlicesSlice> = docData.slices
+  const faqs = (faqSlice[0] as any)?.items as any[] | undefined
+  const faqHeading: RichTextField | undefined = (faqSlice[0] as any)?.primary?.title
   const readingTime: number = calculateReadingTime(docData.main_article_content);
   // Author info from linked document
   const authorInfo = docData.author_info;
@@ -63,12 +79,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const authorBio = authorData?.author_bio;
   const authorImage = authorData?.author_image ?? null;
 
-  const headingText = asText(docData.blog_article_heading).trim();
-  const articleImageWithAlt = withImageAlt(
+  const headingText = (asText(docData.blog_article_heading || []) || "").trim();
+  const articleImageWithAlt = withFallbackAlt(
     docData.article_main_image,
     headingText || "Blog article image"
   );
-  const authorImageWithAlt = withImageAlt(
+  const authorImageWithAlt = withFallbackAlt(
     authorImage,
     authorName || "Blog author portrait"
   );
@@ -218,9 +234,9 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const { uid } = await params;
-  const doc = await client
-  .getByUID<Content.BlogPostDocument>("blog_post", uid)
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getByUID("blog_post", uid)
+  .catch(() => null)) as BlogPostDocument | null;
   if (!doc) {
     return {
       title: "Lunim",
@@ -231,21 +247,17 @@ export async function generateMetadata(
   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
-  // Filter out empty keyword fields
-  // Ensure each keyword is separated by a comma and space
-  // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";
-  const blogAuthors = doc.data?.meta_authors?.filter((val) => Boolean(val.author_name)).map((a) => ({ name: a.author_name || undefined}));
+
 
   return {
     ...parentMetaData,
     title: title,
     description: description,
     keywords: keywords,
-    authors: blogAuthors,
     openGraph: {
       ...parentMetaData.openGraph,
       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
@@ -264,6 +276,6 @@ export async function generateMetadata(
 // Static generation for known UIDs (optional)
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType<Content.BlogPostDocument>("blog_post");
-  return docs.map((d) => ({ uid: d.uid! }));
+  const docs = (await (client as any).getAllByType("blog_post")) as BlogPostDocument[];
+  return docs.map((d: BlogPostDocument) => ({ uid: d.uid! }));
 }

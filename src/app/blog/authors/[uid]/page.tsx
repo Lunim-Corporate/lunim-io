@@ -6,11 +6,9 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
-import {
-  type Content,
-  filter,
-  type LinkField,
-} from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { LinkField } from "@prismicio/types";
+import * as prismic from "@prismicio/client";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
@@ -142,9 +140,9 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const client = createClient();
 
-  const authorDoc = await client
-    .getByUID<Content.AuthorDocument>("author", uid)
-    .catch(() => null);
+  const authorDoc = (await (client as any)
+    .getByUID("author", uid)
+    .catch(() => null)) as Content.AuthorDocument | null;
   if (!authorDoc) notFound();
 
   const authorName =
@@ -157,16 +155,21 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const socialLinks = authorDoc.data.social_media || [];
 
-  const authorPosts = await client.getAllByType<Content.BlogPostDocument>(
+  const authorPosts = (await (client as any).getAllByType(
     "blog_post",
     {
-      filters: [filter.at("my.blog_post.author_info", authorDoc.id)],
+      // Use runtime filter to avoid TS import issues across CLI versions
+      filters: [
+        (
+          (prismic as any).filter?.at ?? ((_field: string, _value: unknown) => ({}))
+        )("my.blog_post.author_info", authorDoc.id),
+      ],
       orderings: [
         { field: "my.blog_post.publication_date", direction: "desc" },
       ],
       fetchLinks: ["author.author_name", "author.author_image"],
     }
-  );
+  )) as Content.BlogPostDocument[];
 
   const pageSize = 12;
   const rawPage = getFirstParam(resolvedSearchParams?.page);
@@ -198,10 +201,9 @@ export default async function Page({ params, searchParams }: PageProps) {
   const effectiveFilter = filterExists ? normalizedRequested : "";
 
   const filteredPosts = effectiveFilter
-    ? authorPosts.filter(
-        (post) =>
-          normalizeCategory(extractCategoryText(post.data.category)) ===
-          effectiveFilter
+    ? authorPosts.filter((post: Content.BlogPostDocument) =>
+        normalizeCategory(extractCategoryText(post.data.category)) ===
+        effectiveFilter
       )
     : authorPosts;
 
@@ -257,7 +259,7 @@ export default async function Page({ params, searchParams }: PageProps) {
             ) : null}
             {socialLinks.length ? (
               <div className="flex flex-wrap items-center gap-3 mt-5">
-                {socialLinks.map((item, index) => {
+                {socialLinks.map((item: { social_link?: LinkField | null }, index: number) => {
                   const link = item?.social_link;
                   if (!isFilled.link(link)) return null;
                   return (
@@ -320,7 +322,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 
           {visiblePosts.length ? (
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {visiblePosts.map((doc) => (
+              {visiblePosts.map((doc: Content.BlogPostDocument) => (
                 <BlogCard key={doc.id} doc={doc} />
               ))}
             </div>
@@ -372,9 +374,9 @@ export async function generateMetadata(
   const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client
-  .getByUID<Content.AuthorDocument>("author", uid)
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getByUID("author", uid)
+  .catch(() => null)) as Content.AuthorDocument | null;
   if (!doc) {
     return {
       title: "Lunim",
@@ -383,7 +385,7 @@ export async function generateMetadata(
   }
 
   const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";
@@ -404,8 +406,8 @@ export async function generateMetadata(
 
 export async function generateStaticParams() {
   const client = createClient();
-  const authors = await client.getAllByType<Content.AuthorDocument>("author");
+  const authors = (await (client as any).getAllByType("author")) as Content.AuthorDocument[];
   return authors
-    .filter((doc) => Boolean(doc.uid))
-    .map((doc) => ({ uid: doc.uid! }));
+    .filter((doc: Content.AuthorDocument) => Boolean(doc.uid))
+    .map((doc: Content.AuthorDocument) => ({ uid: doc.uid! }));
 }

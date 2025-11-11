@@ -1,5 +1,5 @@
 // Prismic
-import { asText } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 import { RichTextField } from "@prismicio/types";
 
 export const calculateReadingTime = (articleMainContent: RichTextField): number => {

@@ -12,9 +12,9 @@ export const dynamic = "force-static";
 export default async function Page() {
   const client = createClient();
 
-  const authors = await client.getAllByType<Content.AuthorDocument>("author", {
+  const authors = (await (client as any).getAllByType("author", {
     orderings: [{ field: "my.author.author_name", direction: "asc" }],
-  });
+  })) as Content.AuthorDocument[];
 
   return (
     <main className="bg-black text-white min-h-screen">
@@ -31,7 +31,7 @@ export default async function Page() {
 
         {authors.length ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {authors.map((author) => {
+            {authors.map((author: Content.AuthorDocument) => {
               const name =
                 author.data.author_name?.trim() || author.uid || "Author";
               const bio = author.data.author_bio?.trim() || "";
@@ -96,9 +96,9 @@ export async function generateMetadata(
   // fetch data
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client
-  .getSingle<Content.AuthorsDocument>("authors")
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getSingle("authors")
+  .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim",
@@ -113,7 +113,7 @@ export async function generateMetadata(
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
   // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";
