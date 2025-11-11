@@ -3,7 +3,6 @@
 // does not augment the Content namespace.
 
 declare module "@prismicio/client" {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   export namespace Content {
     // Core site slices
     type AuthorInfoSlice = any;

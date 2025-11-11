@@ -159,8 +159,11 @@ export default async function Page({ params, searchParams }: PageProps) {
     "blog_post",
     {
       // Use runtime filter to avoid TS import issues across CLI versions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      filters: [((prismic as any).filter?.at ?? ((f: string, v: unknown) => ({}) ) )("my.blog_post.author_info", authorDoc.id)],
+      filters: [
+        (
+          (prismic as any).filter?.at ?? ((_field: string, _value: unknown) => ({}))
+        )("my.blog_post.author_info", authorDoc.id),
+      ],
       orderings: [
         { field: "my.blog_post.publication_date", direction: "desc" },
       ],
