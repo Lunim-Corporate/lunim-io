@@ -4,8 +4,8 @@ import Image from "next/image";
 // Prismic
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content } from "@prismicio/client";
-import { asText, isFilled } from "@prismicio/helpers";
+import { isFilled, type Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 import { PrismicNextLink } from "@prismicio/next";
 
 export type ImageandtextProps = SliceComponentProps<Content.ImageandtextSlice>;
@@ -42,8 +42,7 @@ const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => {
         <div className="text-gray-200">
           <PrismicRichText field={slice.primary.description} />
         </div>
-        {/* Show only if there is a link value AND text value */}
-        {isFilled.link(buttonLinkField) && buttonLinkFieldText && (
+        {slice.primary.show_link && (
           <PrismicNextLink field={buttonLinkField}>
             <button
               className="cursor-pointer bg-[#BBFEFF] text-black px-8 py-2.5 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300"

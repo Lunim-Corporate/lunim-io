@@ -1,7 +1,7 @@
 {
   "format": "page",
-  "id": "our_team_page",
-  "label": "Our Team",
+  "id": "authors",
+  "label": "Authors",
   "repeatable": false,
   "status": true,
   "json": {
@@ -17,14 +17,7 @@
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {
-            "navigation_menu": {
-              "type": "SharedSlice"
-            },
-            "our_team": {
-              "type": "SharedSlice"
-            }
-          }
+          "choices": {}
         }
       }
     },

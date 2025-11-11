@@ -13,7 +13,6 @@ import * as prismic from "@prismicio/client";
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
 import { pickBaseMetadata } from "@/utils/metadata";
-// import { getCanonicalUrl } from "@/utils/getCanonical";
 
 type Params = { uid: string };
 
@@ -386,7 +385,6 @@ export async function generateMetadata(
   { params }: { params: Promise<Params>;},
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // fetch data
   const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
@@ -395,21 +393,17 @@ export async function generateMetadata(
   .catch(() => null)) as Content.AuthorDocument | null;
   if (!doc) {
     return {
-      title: "Lunim Author Page",
+      title: "Lunim",
       description: "Welcome to Lunim's official author page."
     };
   }
 
-
   const parentKeywords = parentMetaData.keywords || "";
-  const authorKeywords = ""; // End keywords using a comma
-  const keywords = `${authorKeywords} ${parentKeywords}`.trim();
-  const description = "Lunim's official author page";
-  const authorName = uid.replace("-", " ").split(" ");
-  const authorFirstName = authorName[0][0].toUpperCase() + authorName[0].slice(1);
-  const authorLastName = authorName[1][0].toUpperCase() + authorName[1].slice(1);
-  const title = `${authorFirstName} ${authorLastName}`;
-  
+  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const title = doc.data?.meta_title || parentMetaData.title;
+  const description = doc.data?.meta_description || parentMetaData.description;
+  const canonicalUrl = doc.data?.meta_url || "";
+
     return {
       ...parentMetaData,
       title: title,
@@ -417,9 +411,9 @@ export async function generateMetadata(
       keywords: keywords, 
       openGraph: {
         ...parentMetaData.openGraph,
-        title: title,
+        title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
         description: `${description}`,
-        url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}blog/authors/${doc.uid}`,
+        url: canonicalUrl,
       },
     }
 }

@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  async redirects() {
+    return [
+      // Only redirect the "container" page, not inner slugs
+      {
+        source: '/:path*/case-studies',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

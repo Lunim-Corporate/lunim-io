@@ -114,7 +114,7 @@ export function NavigationMenuClient({
 
     let destination = normalizePath(bestMatch) ?? rawCtaLink ?? "/";
 
-    if (destination === "/academy" || destination === "/tabb" || destination === "/our-team") {
+    if (destination === "/tabb" || destination === "/our-team") {
       destination = "/";
     }
 
@@ -247,7 +247,7 @@ export function NavigationMenuClient({
           )}
           <button
             onClick={() => setIsMenuOpen((v) => !v)}
-            className="md:hidden ml-4 p-3 rounded-full bg-black/30 border border-cyan-500/30"
+            className="cursor-pointer md:hidden ml-4 p-3 rounded-full bg-black/30 border border-cyan-500/30"
           >
             {isMenuOpen ? (
               <X className="w-6 h-6 text-cyan-400" />

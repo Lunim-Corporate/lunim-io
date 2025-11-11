@@ -20,7 +20,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         {/* Only show title for this slice */}
         {slice.variation === "projectShowcaseHero" && (
-          <div className="mb-18">
+          <div className="mb-22">
             <PrismicRichText
               field={slice.primary.title}
               components={{
@@ -30,7 +30,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
           </div>
         )}
         {/* Heading (for example, UX, Web3, AI) */}
-        <div className="text-3xl font-bold text-white mb-24 text-center">
+        <div className="text-3xl font-bold text-white mb-18 text-center">
           <PrismicRichText field={slice.primary.heading} />
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
@@ -62,15 +62,10 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
             <div className="bg-[#1f2937] p-6 flex-1 flex flex-col">
                 <div className="flex-1">
                     {item.show_cta_button ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] pt-4 pb-8">
-                        <div>
-                            <h3 className="text-white font-bold text-xl m-0! text-left">
-                            {asText(item.project_title)}
-                            </h3>
-                        </div>
-                        <div className='mt-2 sm:mt-0 text-start sm:text-end'>
-                            <button className="after:content-['_↗'] cursor-pointer rounded-[0.3rem] font-semibold text-[#BBFEFF]">{item.button_cta_text}</button>
-                        </div>
+                    <div className="grid pt-4 pb-8">
+                        <h3 className="text-white font-bold text-xl m-0! text-left">
+                        {asText(item.project_title)}
+                        </h3>
                     </div>
                     ) : (
                         <div className="grid grid-cols-1 pt-4 pb-8">
@@ -79,9 +74,12 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                           </h3>
                         </div>
                       )}
-                    <div className="text-gray-200 text-base text-left">
-                        <PrismicRichText field={item.project_description} />
-                    </div>
+                    <PrismicRichText 
+                      field={item.project_description}
+                      components={{
+                        paragraph: ({ children }) => <p className="text-gray-200 text-base text-left">{children} <span className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-base text-[#BBFEFF] hover:text-cyan-300">{item.button_cta_text}</span></p>
+                      }}
+                    />
                 </div>
 
                 {tagsArray.length > 0 && (
@@ -89,7 +87,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
                     {tagsArray.map((tag, tagIndex) => (
                       <span
                       key={tagIndex}
-                      className="bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full"
+                      className="bg-white/10 text-white px-3 py-1 rounded-full"
                       >
                           {tag}
                       </span>
@@ -103,12 +101,14 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
         )}
       </div>
       {/* Case Study Link */}
+      {slice.primary.show_case_study_page_link && (
       <div className="mt-16 text-center text-white">
         <PrismicNextLink
             field={slice.primary.case_study_page_link}
             className='bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300'
           />
         </div>
+        )}
       </div>
     </section>
   );
