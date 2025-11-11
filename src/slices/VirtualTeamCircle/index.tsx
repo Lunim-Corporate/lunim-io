@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import type { JSX } from "react";
 import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -259,6 +261,9 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
             {/* Team Members */}
             {slice.items.map((item, index) => {
               const pos = calculatePosition(item.position || "top-center", radius);
+              const memberAlt =
+                item.primary_role || item.secondary_role || `Team member ${index + 1}`;
+              const teamPhotoField = withImageAlt(item.team_photo, memberAlt);
               return (
                 <div
                   key={index}
@@ -271,12 +276,11 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
                 >
                   <div className="flex flex-col items-center">
                     {/* Photo Circle */}
-                    {item.team_photo?.url && (
+                    {teamPhotoField && (
                       <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] mb-3">
                         <PrismicNextImage
-                          field={item.team_photo}
+                          field={teamPhotoField}
                           className="w-full h-full object-cover"
-                          alt={item.primary_role || "Team member"}
                         />
                       </div>
                     )}
@@ -303,21 +307,25 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps): JSX.Element => {
 
         {/* Mobile fallback: Stacked grid */}
         <div className="lg:hidden mt-12 grid grid-cols-2 gap-6">
-          {slice.items.map((item, index) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              {item.team_photo?.url && (
-                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">
-                  <PrismicNextImage
-                    field={item.team_photo}
-                    className="w-full h-full object-cover"
-                    alt={item.primary_role || "Team member"}
-                  />
-                </div>
-              )}
-              <p className="text-white font-semibold text-sm">{item.primary_role}</p>
-              <p className="text-[#8df6ff] text-xs">{item.secondary_role}</p>
-            </div>
-          ))}
+          {slice.items.map((item, index) => {
+            const memberAlt =
+              item.primary_role || item.secondary_role || `Team member ${index + 1}`;
+            const teamPhotoField = withImageAlt(item.team_photo, memberAlt);
+            return (
+              <div key={index} className="flex flex-col items-center text-center">
+                {teamPhotoField && (
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">
+                    <PrismicNextImage
+                      field={teamPhotoField}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <p className="text-white font-semibold text-sm">{item.primary_role}</p>
+                <p className="text-[#8df6ff] text-xs">{item.secondary_role}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

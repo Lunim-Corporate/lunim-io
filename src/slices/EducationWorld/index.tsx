@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { JSX } from "react";
 import type { Content } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -21,6 +23,7 @@ const EducationWorld = ({ slice }: EducationWorldProps): JSX.Element => {
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -55,9 +58,9 @@ const EducationWorld = ({ slice }: EducationWorldProps): JSX.Element => {
       data-slice-variation={slice.variation}
       className="relative min-h-[90svh] flex items-center overflow-hidden bg-[#071327]"
     >
-      {slice.primary.background_image?.url && (
+      {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10">
-          <PrismicNextImage field={slice.primary.background_image} fill className="object-cover" quality={90} />
+          <PrismicNextImage field={backgroundImage} fill className="object-cover" quality={90} alt="" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#071327]/95 via-[#071327]/70 to-transparent" />
         </div>
       )}
