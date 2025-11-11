@@ -157,7 +157,7 @@ export function NavigationMenuClient({
               alt={data.logoAlt}
               width={160}
               height={48}
-              className="h-12 w-auto"
+              className="h-10 w-auto"
               priority
             />
           ) : (
