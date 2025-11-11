@@ -114,13 +114,6 @@
         },
         "type": "Image"
       },
-      "meta_image_alt_text": {
-        "type": "Text",
-        "config": {
-          "label": "Meta Image Alt Text",
-          "placeholder": ""
-        }
-      },
       "meta_keywords": {
         "type": "Group",
         "config": {
