@@ -45,6 +45,10 @@
 						"value": []
 					}
 				]
+			},
+			"show_ask_luna": {
+				"__TYPE__": "BooleanContent",
+				"value": true
 			}
 		},
 		"items": []

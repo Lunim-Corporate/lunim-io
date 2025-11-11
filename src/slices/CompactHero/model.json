@@ -36,6 +36,15 @@
             "repeat": true,
             "fields": {}
           }
+        },
+        "show_ask_luna": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Ask Luna",
+            "placeholder_false": "Hide Ask Luna",
+            "placeholder_true": "Show Ask Luna",
+            "default_value": true
+          }
         }
       },
       "items": {}

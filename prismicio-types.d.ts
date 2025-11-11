@@ -144,17 +144,6 @@ interface AcademyDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Academy*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: academy.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Academy*
    *
    * - **Field Type**: Group
@@ -265,17 +254,6 @@ interface AcademyCourseDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Academy Course*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: academy_course.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Academy Course*
@@ -558,17 +536,6 @@ interface AuthorsDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Authors*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: authors.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Authors*
    *
    * - **Field Type**: Group
@@ -671,17 +638,6 @@ interface BlogHomePageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Blog Home Page*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_home_page.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Blog Home Page*
@@ -881,17 +837,6 @@ interface BlogPostDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Blog Post*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Blog Post*
    *
    * - **Field Type**: Group
@@ -1067,17 +1012,6 @@ interface CaseStudiesDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Case Studies*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: case_studies.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Case Studies*
@@ -1322,17 +1256,6 @@ interface CaseStudySmDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Case Study SM*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: case_study_sm.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Case Study SM*
    *
    * - **Field Type**: Group
@@ -1444,17 +1367,6 @@ interface DigitalPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Digital Page*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: digital_page.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Digital Page*
@@ -1581,17 +1493,6 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Media*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: film.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Media*
@@ -1733,17 +1634,6 @@ interface HomepageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Homepage*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Homepage*
@@ -1943,17 +1833,6 @@ interface OurTeamPageDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Our Team*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: our_team_page.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Our Team*
    *
    * - **Field Type**: Group
@@ -2135,17 +2014,6 @@ interface PrivacyPolicySmDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Privacy Policy SM*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: privacy_policy_sm.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Privacy Policy SM*
    *
    * - **Field Type**: Group
@@ -2259,17 +2127,6 @@ interface TabbDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Tabb*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: tabb.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Tabb*
@@ -2580,17 +2437,6 @@ interface TechDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Meta Image Alt Text field in *Digital*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: tech.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
 
   /**
    * Meta Keywords field in *Digital*
@@ -4396,6 +4242,17 @@ export interface CompactHeroSliceDefaultPrimary {
   casestudycontentfields: prismic.GroupField<
     Simplify<CompactHeroSliceDefaultPrimaryCasestudycontentfieldsItem>
   >;
+
+  /**
+   * Show Ask Luna field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: compact_hero.default.primary.show_ask_luna
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_ask_luna: prismic.BooleanField;
 }
 
 /**
@@ -5172,6 +5029,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   background_image: prismic.ImageField<never>;
+
+  /**
+   * Show Ask Luna field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_ask_luna
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_ask_luna: prismic.BooleanField;
 }
 
 /**

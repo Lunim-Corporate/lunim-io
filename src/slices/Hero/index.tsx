@@ -1,9 +1,10 @@
 "use client";
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
+import { LunaPortal } from "@/components/Luna";
 
 /**
  * Props for `Hero`.
@@ -14,8 +15,11 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
  * Component for "Hero" Slices.
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
+  const [isLunaOpen, setIsLunaOpen] = useState(false);
   const backgroundImageUrl = slice.primary.background_image.url;
   const sectionRef = useRef<HTMLElement | null>(null);
+  const showAskLuna = slice.primary.show_ask_luna ?? true;
+
   return (
     <section
       ref={sectionRef}
@@ -44,11 +48,20 @@ const Hero: FC<HeroProps> = ({ slice }) => {
             {slice.primary.hero_description}
           </div>
 
-          <div className="flex flex-col gap-4 items-center justify-center mb-16">
+          <div className="flex flex-col gap-4 items-center justify-center mb-16 sm:flex-row">
             <PrismicLink
               field={slice.primary.button_link}
               className="max-w-xs bg-gradient-to-r bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg items-center justify-center space-x-2"
             ></PrismicLink>
+            {showAskLuna ? (
+              <button
+                type="button"
+                onClick={() => setIsLunaOpen(true)}
+                className="max-w-xs px-8 py-4 rounded-[0.3rem] border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm"
+              >
+                Ask Luna
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
@@ -81,6 +94,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
+      <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
     </section>
   );
 };
