@@ -17,7 +17,6 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { DigitalPageDocument } from "../../../../prismicio-types";
-import { Content } from "@prismicio/client";
 import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
@@ -27,7 +26,6 @@ import { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string[] };
-const listOfValidCategories = ["discovery", "ux", "ai", "web3"];
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;

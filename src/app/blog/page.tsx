@@ -7,7 +7,6 @@ import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
-import { Content } from "@prismicio/client";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

@@ -10,7 +10,6 @@ import { components } from "@/slices";
 import { AcademyCourseDocument } from "../../../../prismicio-types";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
-import { Content } from "@prismicio/client";
 
 type Params = { uid: string };
 
