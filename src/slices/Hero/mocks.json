@@ -61,6 +61,10 @@
 				"credits": null,
 				"__TYPE__": "ImageContent",
 				"thumbnails": {}
+			},
+			"show_ask_luna": {
+				"__TYPE__": "BooleanContent",
+				"value": true
 			}
 		},
 		"items": []
