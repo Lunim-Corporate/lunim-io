@@ -32,7 +32,7 @@ function extractHeroFromSlices(slices: ReadonlyArray<HeroLikeSlice> | null | und
 
 type CaseStudiesProps = {
   filteredCaseStudies: CaseStudySmDocumentWithLegacy[];
-  caseStudyPage?: Content.CaseStudiesDocument | null;
+  caseStudyPage?: any;
 };
 
 export default function CaseStudies({ filteredCaseStudies, caseStudyPage }: CaseStudiesProps) {

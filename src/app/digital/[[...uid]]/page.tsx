@@ -66,9 +66,9 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     else if (uid.length === 2) {
         // console.log("2", uid);
         if (uid[1] !== "case-studies") notFound();
-        const allCaseStudies = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
-        const filteredCaseStudies = allCaseStudies.filter((cs) => cs.data.digital_category === uid[0]);
-        const caseStudyPage = await client.getSingle("case_studies").catch(() => null);
+        const allCaseStudies = (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+        const filteredCaseStudies = allCaseStudies.filter((cs: any) => cs.data.digital_category === uid[0]);
+        const caseStudyPage = await (client as any).getSingle("case_studies").catch(() => null);
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
     }
     
@@ -133,7 +133,7 @@ export async function generateMetadata(
   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
   const canonicalUrl = doc.data?.meta_url || "";

@@ -1,9 +1,10 @@
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content, LinkField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { LinkField } from "@prismicio/types";
 import { createClient } from "@/prismicio";
 import BreadcrumbsClient from "./BreadcrumbsClient";
 
-export type BreadcrumbsProps = SliceComponentProps<Content.BreadcrumbsSlice>;
+export type BreadcrumbsProps = SliceComponentProps<any>;
 
 type ChildLink = {
   label: string;
@@ -32,9 +33,9 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
   const client = createClient();
 
   // Fetch the primary navigation singleton (same as in RootLayout)
-  const primaryNav = await client
-    .getSingle<Content.PrimaryNavigationDocument>("primary_navigation")
-    .catch(() => null);
+  const primaryNav = (await (client as any)
+    .getSingle("primary_navigation")
+    .catch(() => null)) as any;
 
   if (!primaryNav) {
     return null;
@@ -42,7 +43,7 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
 
   // Find the navigation_menu slice within the primary navigation document
   const navigationMenu = primaryNav.data.slices.find(
-    (s) => s.slice_type === "navigation_menu"
+    (s: any) => s.slice_type === "navigation_menu"
   ) as Content.NavigationMenuSlice | undefined;
 
   if (!navigationMenu) {
@@ -55,36 +56,36 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
     : [];
 
   const ids = sectionsGroup
-    .map((row) => row.section_ref)
-    .map((ref) =>
+    .map((row: any) => row.section_ref)
+    .map((ref: any) =>
       ref && ref.link_type === "Document" && typeof ref.id === "string"
         ? ref.id
         : null
     )
-    .filter((id): id is string => !!id);
+    .filter((id: any): id is string => !!id);
 
   let orderedDocs: Content.NavSectionDocument[] = [];
 
   if (ids.length) {
     try {
-      const fetched = await client.getAllByIDs<Content.NavSectionDocument>(ids);
-      const byId = new Map(fetched.map((d) => [d.id, d]));
+      const fetched = (await (client as any).getAllByIDs(ids as any)) as any[];
+      const byId = new Map(fetched.map((d: any) => [d.id, d]));
       orderedDocs = ids
-        .map((id) => byId.get(id))
-        .filter((d): d is Content.NavSectionDocument => !!d);
+        .map((id: string) => byId.get(id))
+        .filter((d: any): d is Content.NavSectionDocument => !!d);
     } catch {
       orderedDocs = [];
     }
   }
 
   const sections: Section[] = orderedDocs
-    .map((doc) => {
+    .map((doc: any) => {
       const data = doc.data;
 
       const children: ChildLink[] = (
         Array.isArray(data.child_links) ? data.child_links : []
       )
-        .map((row, idx) => {
+        .map((row: any, idx: number) => {
           const label =
             typeof row.child_label === "string" && row.child_label.trim()
               ? row.child_label.trim()
@@ -92,7 +93,7 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
           const link = isUsableLink(row.child_link) ? row.child_link : null;
           return { label, link: link as LinkField };
         })
-        .filter((r): r is ChildLink => !!r.link);
+        .filter((r: any): r is ChildLink => !!r.link);
 
       const resolvedLink: LinkField | undefined = children[0]?.link;
 
@@ -113,16 +114,16 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
   }
 
   // Optionally fetch breadcrumb settings from Prismic to control hidden segments.
-  const breadcrumbSettings = await client
-    .getSingle<Content.BreadcrumbSettingsDocument>("breadcrumb_settings")
-    .catch(() => null);
+  const breadcrumbSettings = (await (client as any)
+    .getSingle("breadcrumb_settings")
+    .catch(() => null)) as any;
 
   const hiddenSegments: string[] =
     breadcrumbSettings?.data?.hidden_segments
-      ?.map((row) =>
+      ?.map((row: any) =>
         typeof row.segment === "string" ? row.segment.trim().toLowerCase() : ""
       )
-      .filter((slug): slug is string => slug.length > 0) ?? [];
+      .filter((slug: any): slug is string => slug.length > 0) ?? [];
 
   // Delegate actual breadcrumb rendering + URL handling to the client component
   return (
