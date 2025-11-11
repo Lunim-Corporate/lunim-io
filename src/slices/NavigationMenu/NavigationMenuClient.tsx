@@ -8,7 +8,6 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import type { LinkField } from "@prismicio/client";
 import { asLink } from "@prismicio/helpers";
 import { usePathname } from "next/navigation";
-import { LunaPortal } from "@/components/Luna";
 
 type ChildLink = { label: string; link: LinkField };
 type Section = {
@@ -31,7 +30,6 @@ export function NavigationMenuClient({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
-  const [isLunaOpen, setIsLunaOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
@@ -219,16 +217,8 @@ export function NavigationMenuClient({
           })}
         </nav>
 
-        {/* CTA + Ask Luna + Mobile toggle */}
+        {/* CTA + Mobile toggle */}
         <div className="flex items-center gap-3">
-          {/* Ask Luna Button - Desktop */}
-          <button
-            onClick={() => setIsLunaOpen(true)}
-            className="hidden md:block px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 text-white font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm shadow-lg hover:shadow-white/50"
-          >
-            Ask Luna
-          </button>
-          
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
@@ -353,19 +343,6 @@ export function NavigationMenuClient({
             );
           })}
         </div>
-        {/* Ask Luna Button - Mobile */}
-        <div className="w-full max-w-xs px-2 mt-4">
-          <button
-            onClick={() => {
-              setIsLunaOpen(true);
-              setIsMenuOpen(false);
-            }}
-            className="block w-full px-6 py-3 rounded-full bg-white/10 border border-white/20 text-white font-medium text-center shadow-lg"
-          >
-            Ask Luna
-          </button>
-        </div>
-        
         {data.ctaLabel && finalCtaHref && (
           <div className="w-full max-w-xs px-2 mt-3">
             <Link
@@ -379,8 +356,6 @@ export function NavigationMenuClient({
         )}
       </div>
       
-      {/* Luna Portal */}
-      <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
     </header>
   );
 }
