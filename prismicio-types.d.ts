@@ -945,6 +945,55 @@ export type BlogPostDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Breadcrumb Settings → Hidden Segments*
+ */
+export interface BreadcrumbSettingsDocumentDataHiddenSegmentsItem {
+  /**
+   * Segment Slug field in *Breadcrumb Settings → Hidden Segments*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: breadcrumb_settings.hidden_segments[].segment
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  segment: prismic.KeyTextField;
+}
+
+/**
+ * Content for Breadcrumb Settings documents
+ */
+interface BreadcrumbSettingsDocumentData {
+  /**
+   * Hidden Segments field in *Breadcrumb Settings*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: breadcrumb_settings.hidden_segments[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  hidden_segments: prismic.GroupField<
+    Simplify<BreadcrumbSettingsDocumentDataHiddenSegmentsItem>
+  >;
+}
+
+/**
+ * Breadcrumb Settings document from Prismic
+ *
+ * - **API ID**: `breadcrumb_settings`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BreadcrumbSettingsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<BreadcrumbSettingsDocumentData>,
+    "breadcrumb_settings",
+    Lang
+  >;
+
 type CaseStudiesDocumentDataSlicesSlice = never;
 
 /**
@@ -2585,6 +2634,7 @@ export type AllDocumentTypes =
   | AuthorsDocument
   | BlogHomePageDocument
   | BlogPostDocument
+  | BreadcrumbSettingsDocument
   | CaseStudiesDocument
   | CaseStudyDocument
   | CaseStudySmDocument
@@ -5997,6 +6047,9 @@ declare module "@prismicio/client" {
       BlogPostDocumentDataSlicesSlice,
       BlogPostDocumentDataMetaKeywordsItem,
       BlogPostDocumentDataMetaAuthorsItem,
+      BreadcrumbSettingsDocument,
+      BreadcrumbSettingsDocumentData,
+      BreadcrumbSettingsDocumentDataHiddenSegmentsItem,
       CaseStudiesDocument,
       CaseStudiesDocumentData,
       CaseStudiesDocumentDataSlicesSlice,
