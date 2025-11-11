@@ -28,9 +28,9 @@ function withFallbackAlt<T extends ImageLikeField>(
 export default async function Page() {
   const client = createClient();
 
-  const authors = await client.getAllByType<Content.AuthorDocument>("author", {
+  const authors = (await (client as any).getAllByType("author", {
     orderings: [{ field: "my.author.author_name", direction: "asc" }],
-  });
+  })) as Content.AuthorDocument[];
 
   return (
     <main className="bg-black text-white min-h-screen">
@@ -47,7 +47,7 @@ export default async function Page() {
 
         {authors.length ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {authors.map((author) => {
+            {authors.map((author: Content.AuthorDocument) => {
               const name =
                 author.data.author_name?.trim() || author.uid || "Author";
               const bio = author.data.author_bio?.trim() || "";

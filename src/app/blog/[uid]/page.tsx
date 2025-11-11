@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
 // Prismicio
 import { createClient } from "@/prismicio";
-import { asText, type Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
+import type { BlogPostDocument, BlogPostDocumentData, BlogPostDocumentDataSlicesSlice } from "../../../../prismicio-types";
 import { PrismicRichText } from "@prismicio/react";
 import { RichTextField, SliceZone } from "@prismicio/types";
 import { PrismicNextImage } from "@prismicio/next";
@@ -51,17 +52,17 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   const client = createClient();
   // Pass custom name of linked document type 'author'
-  const doc = await client
-    .getByUID<Content.BlogPostDocument>("blog_post", uid, {
+  const doc = (await (client as any)
+    .getByUID("blog_post", uid, {
       fetchLinks: ["author.author_name", "author.author_image", "author.author_bio"],
     })
-    .catch(() => null);
+    .catch(() => null)) as BlogPostDocument | null;
   if (!doc) notFound();
-  const docData: Simplify<Content.BlogPostDocumentData> = doc.data;
+  const docData: Simplify<BlogPostDocumentData> = doc.data;
   
-  const faqSlice: SliceZone<Content.FaqSlice> = docData.slices
-  const faqs: Simplify<Content.FaqSliceDefaultItem>[] | undefined = faqSlice[0]?.items
-  const faqHeading: RichTextField | undefined = faqSlice[0]?.primary.title
+  const faqSlice: SliceZone<BlogPostDocumentDataSlicesSlice> = docData.slices
+  const faqs = (faqSlice[0] as any)?.items as any[] | undefined
+  const faqHeading: RichTextField | undefined = (faqSlice[0] as any)?.primary?.title
   const readingTime: number = calculateReadingTime(docData.main_article_content);
   // Author info from linked document
   const authorInfo = docData.author_info;
@@ -79,7 +80,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const authorBio = authorData?.author_bio;
   const authorImage = authorData?.author_image ?? null;
 
-  const headingText = asText(docData.blog_article_heading).trim();
+  const headingText = asText(docData.blog_article_heading || []).trim();
   const articleImageWithAlt = withFallbackAlt(
     docData.article_main_image,
     headingText || "Blog article image"
@@ -234,9 +235,9 @@ export async function generateMetadata(
   const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client
-  .getByUID<Content.BlogPostDocument>("blog_post", uid)
-  .catch(() => null);
+  const doc = (await (client as any)
+  .getByUID("blog_post", uid)
+  .catch(() => null)) as BlogPostDocument | null;
   if (!doc) {
     return {
       title: "Lunim Blog Article",
@@ -248,11 +249,13 @@ export async function generateMetadata(
   // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
   // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
+  const keywords = (doc.data?.meta_keywords || []).filter((val: { meta_keywords_text?: string | null }) => Boolean(val.meta_keywords_text)).length >= 1
+    ? `${(doc.data?.meta_keywords || []).map((k: { meta_keywords_text?: string | null }) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}`
+    : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;
 
-  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, (c: string) => c.toUpperCase());
 
   return {
     ...parentMetaData,
@@ -271,6 +274,6 @@ export async function generateMetadata(
 // Static generation for known UIDs (optional)
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType<Content.BlogPostDocument>("blog_post");
-  return docs.map((d) => ({ uid: d.uid! }));
+  const docs = (await (client as any).getAllByType("blog_post")) as BlogPostDocument[];
+  return docs.map((d: BlogPostDocument) => ({ uid: d.uid! }));
 }
