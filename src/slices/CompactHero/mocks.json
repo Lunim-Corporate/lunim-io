@@ -49,6 +49,19 @@
 			"show_ask_luna": {
 				"__TYPE__": "BooleanContent",
 				"value": true
+			},
+			"show_main_cta": {
+				"__TYPE__": "BooleanContent",
+				"value": true
+			},
+			"button_link": {
+				"__TYPE__": "LinkContent",
+				"key": "773305e2-ad4e-4071-931b-4de8697b7fa7",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "http://google.com",
+					"text": "unless"
+				}
 			}
 		},
 		"items": []
