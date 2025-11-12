@@ -15,6 +15,7 @@ export type ContactVariant =
 interface SubmitPayload {
   full_name: string;
   work_email: string;
+  phone_number?: string;
   company?: string;
   project_budget?: string;
   project_goals?: string;
@@ -29,6 +30,7 @@ export const useContactForm = (opts?: {
   const variant: ContactVariant = opts?.variant ?? "default";
   const [fullName, setFullName] = useState<string>("");
   const [workEmail, setWorkEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [company, setCompany] = useState<string>("");
   const [projectBudget, setProjectBudget] = useState<string>("");
   const [projectGoals, setProjectGoals] = useState<string>("");
@@ -61,6 +63,7 @@ export const useContactForm = (opts?: {
     const payload: SubmitPayload = {
       full_name: fullName,
       work_email: workEmail,
+      phone_number: phoneNumber || undefined,
       company: company || undefined, // optional everywhere
       source: opts?.source ?? "",
     };
@@ -134,6 +137,7 @@ export const useContactForm = (opts?: {
       setFormStatus("success");
       setFullName("");
       setWorkEmail("");
+      setPhoneNumber("");
       setCompany("");
       setProjectBudget("");
       setProjectGoals("");
@@ -153,6 +157,8 @@ export const useContactForm = (opts?: {
     setWorkEmail,
     company,
     setCompany,
+    phoneNumber,
+    setPhoneNumber,
     projectBudget,
     setProjectBudget,
     projectGoals,
