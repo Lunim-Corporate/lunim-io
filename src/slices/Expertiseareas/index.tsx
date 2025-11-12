@@ -9,6 +9,14 @@ import {
   Brain as BrainIcon,
   Network as NetworkIcon,
   PersonStanding as PersonStandingIcon,
+  Pickaxe as PickaxeIcon,
+  ClipboardCheck as ClipBoardCheckIcon,
+  Workflow as WorkflowIcon,
+  GraduationCap as GraduationCapIcon,
+  Shirt as ShirtIcon,
+  Microscope as MicroscopeIcon,
+  SwatchBook as SwatchBookIcon,
+  Users as UsersIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -27,6 +35,14 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Brain: BrainIcon,
   Network: NetworkIcon,
   PersonStanding: PersonStandingIcon,
+  Pickaxe: PickaxeIcon,
+  ClipboardCheck: ClipBoardCheckIcon,
+  Workflow: WorkflowIcon,
+  GraduationCap: GraduationCapIcon,
+  Shirt: ShirtIcon,
+  Microscope: MicroscopeIcon,
+  SwatchBook: SwatchBookIcon,
+  Users: UsersIcon,
 };
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
