@@ -70,6 +70,7 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
@@ -186,6 +187,7 @@ export type AcademyDocument<Lang extends string = string> =
   >;
 
 type AcademyCourseDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | ContactSlice
   | CompactHeroSlice
@@ -578,7 +580,10 @@ export type AuthorsDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
+type BlogHomePageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | BlogListSlice
+  | CompactHeroSlice;
 
 /**
  * Item in *Blog Home Page → Meta Keywords*
@@ -682,7 +687,7 @@ export type BlogHomePageDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogPostDocumentDataSlicesSlice = FaqSlice;
+type BlogPostDocumentDataSlicesSlice = BreadcrumbsSlice | FaqSlice;
 
 /**
  * Item in *Blog Post → Meta Keywords*
@@ -1299,6 +1304,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type DigitalPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
@@ -1412,6 +1418,7 @@ export type DigitalPageDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -1771,7 +1778,10 @@ export type NavSectionDocument<Lang extends string = string> =
     Lang
   >;
 
-type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
+type OurTeamPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | NavigationMenuSlice
+  | OurTeamSlice;
 
 /**
  * Item in *Our Team → Meta Keywords*
@@ -1952,7 +1962,9 @@ export type PrivacyPolicyDocument<Lang extends string = string> =
     Lang
   >;
 
-type PrivacyPolicySmDocumentDataSlicesSlice = PrivacyTextBoxSlice;
+type PrivacyPolicySmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | PrivacyTextBoxSlice;
 
 /**
  * Item in *Privacy Policy SM → Meta Keywords*
@@ -2057,6 +2069,7 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -2368,6 +2381,7 @@ export type TeamPageDocument<Lang extends string = string> =
   >;
 
 type TechDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | HeroSlice
   | FaqSlice
   | ProjectShowcaseSlice
