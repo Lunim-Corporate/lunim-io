@@ -244,8 +244,6 @@ export async function generateMetadata(
     };
   }
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
   const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
@@ -263,12 +261,6 @@ export async function generateMetadata(
       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
       url: canonicalUrl,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
     },
   }
 }
