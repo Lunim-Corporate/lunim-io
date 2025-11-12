@@ -11,7 +11,6 @@ const doc = await client.getSingle("privacy_policy_sm").catch(() => null);
 const title = doc?.data?.meta_title ?? "Privacy Policy";
 const backgroundImg = doc?.data?.meta_image?.url;
 
-// Use optional chaining when reading the image alt (meta_image may be null)
 export const alt = doc?.data?.meta_image?.alt || "Privacy Policy";
 
 export default async function Image() {

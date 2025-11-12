@@ -11,7 +11,6 @@ const doc = await client.getSingle("our_team_page").catch(() => null);
 const title = doc?.data?.meta_title ?? "Our Team";
 const backgroundImg = doc?.data?.meta_image?.url;
 
-// Use optional chaining when reading the image alt (meta_image may be null)
 export const alt = doc?.data?.meta_image?.alt || "Our Team";
 
 export default async function Image() {
