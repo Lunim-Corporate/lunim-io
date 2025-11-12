@@ -14,6 +14,7 @@ import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { withImageAlt } from "@/lib/prismicImage";
+import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
 type Params = { uid: string };
 
@@ -384,24 +385,7 @@ export async function generateMetadata(
     };
   }
 
-  const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-  const title = doc.data?.meta_title || parentMetaData.title;
-  const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
-
-    return {
-      ...parentMetaData,
-      title: title,
-      description: description,
-      keywords: keywords, 
-      openGraph: {
-        ...parentMetaData.openGraph,
-        title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-        description: `${description}`,
-        url: canonicalUrl,
-      },
-    }
+  return generateMetaDataInfo(doc.data, parentMetaData);
 }
 
 export async function generateStaticParams() {

@@ -3,6 +3,7 @@ import { createClient } from "../prismicio";
 
 // Options for the generated Open Graph image
 const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
 
 // Fetch data for the Open Graph image
 const client = createClient();

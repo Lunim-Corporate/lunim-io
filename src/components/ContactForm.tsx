@@ -147,7 +147,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           id="company"
           label={
             companyLabel
-              ? `${companyLabel} (optional)`
+              ? `${companyLabel}`
               : "Company Name (optional)"
           }
           value={company}
