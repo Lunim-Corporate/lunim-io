@@ -19,6 +19,10 @@ const Hero: FC<HeroProps> = ({ slice }) => {
   const backgroundImageUrl = slice.primary.background_image.url;
   const sectionRef = useRef<HTMLElement | null>(null);
   const showAskLuna = slice.primary.show_ask_luna ?? true;
+  const showMainCta = slice.primary.show_main_cta ?? true;
+  const hasMainCta = showMainCta && Boolean(slice.primary.button_link?.url);
+  const shouldRenderCtas = hasMainCta || showAskLuna;
+  const primaryCtaText = slice.primary.button_link?.text || "Learn more";
 
   return (
     <section
@@ -48,21 +52,27 @@ const Hero: FC<HeroProps> = ({ slice }) => {
             {slice.primary.hero_description}
           </div>
 
-          <div className="flex flex-col gap-4 items-center justify-center mb-16 sm:flex-row">
-            <PrismicLink
-              field={slice.primary.button_link}
-              className="max-w-xs bg-gradient-to-r bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg items-center justify-center space-x-2"
-            ></PrismicLink>
-            {showAskLuna ? (
-              <button
-                type="button"
-                onClick={() => setIsLunaOpen(true)}
-                className="max-w-xs px-8 py-4 rounded-[0.3rem] border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer"
-              >
-                Ask Luna
-              </button>
-            ) : null}
-          </div>
+          {shouldRenderCtas ? (
+            <div className="flex flex-col gap-4 items-center justify-center mb-16 sm:flex-row">
+              {hasMainCta ? (
+                <PrismicLink
+                  field={slice.primary.button_link}
+                  className="max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2"
+                >
+                  {primaryCtaText}
+                </PrismicLink>
+              ) : null}
+              {showAskLuna ? (
+                <button
+                  type="button"
+                  onClick={() => setIsLunaOpen(true)}
+                  className="max-w-xs px-8 py-4 rounded-[0.3rem] border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer"
+                >
+                  Ask Luna
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
       {/* Scroll-down chevron (absolute, bottom-centered) */}

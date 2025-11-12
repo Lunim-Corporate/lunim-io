@@ -65,6 +65,10 @@
 			"show_ask_luna": {
 				"__TYPE__": "BooleanContent",
 				"value": true
+			},
+			"show_main_cta": {
+				"__TYPE__": "BooleanContent",
+				"value": false
 			}
 		},
 		"items": []

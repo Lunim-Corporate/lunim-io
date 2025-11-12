@@ -1,6 +1,6 @@
 // app/api/og/route.tsx
 import { createClient } from "@/prismicio";
-import { ImageResponse } from "next/og";
+import generateOgImageResponse from "../../../lib/ogImage";
 
 export const runtime = "edge";
 const size = { width: 1200, height: 630 };
@@ -43,46 +43,10 @@ export async function GET(req: Request) {
 
     const client = createClient();
     const doc = await fetchDocForSegments(client, segments);
-
     const title = doc?.data?.meta_title ?? "Lunim";
     const backgroundImg = doc?.data?.meta_image?.url ?? null;
 
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            background: backgroundImg
-              ? `url(${backgroundImg}) center/cover no-repeat`
-              : "linear-gradient(black, #0f172a 80%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxSizing: "border-box",
-            textAlign: "center",
-            color: "white",
-            fontSize: 110,
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              background: "black",
-              opacity: 0.7,
-            }}
-          />
-          <div>
-            {title}
-          </div>
-        </div>
-      ),
-      { ...size }
-    );
+    return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
   } catch (err) {
     // ImageResponse must return something valid; here we return a very small fallback.
     return new Response(`Image generation failed: ${err}`, { status: 500 });

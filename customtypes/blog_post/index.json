@@ -81,6 +81,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
             "Faq": {
               "type": "SharedSlice"
             }

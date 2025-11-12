@@ -151,21 +151,21 @@ export default function BreadcrumbsClient({
           {crumbs.map((crumb, index) => {
             const isLast = index === lastIndex;
             return (
-              <li key={crumb.href} className="flex items-center min-w-0">
+              <li key={crumb.href} className="mb-0 flex items-center min-w-0">
                 {index > 0 && (
                   <ChevronRight
-                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/35"
+                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/60"
                     aria-hidden="true"
                   />
                 )}
                 {isLast ? (
-                  <span className="font-semibold text-white truncate max-w-[200px] sm:max-w-none">
+                  <span className="text-white/70 truncate max-w-[200px] sm:max-w-none lowercase">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     href={crumb.href}
-                    className="hover:text-white hover:underline underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none"
+                    className="text-[#BBFEFF]/80 hover:text-white hover:underline underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none lowercase"
                   >
                     {crumb.label}
                   </Link>

@@ -70,6 +70,8 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -185,6 +187,7 @@ export type AcademyDocument<Lang extends string = string> =
   >;
 
 type AcademyCourseDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | ContactSlice
   | CompactHeroSlice
@@ -577,7 +580,10 @@ export type AuthorsDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
+type BlogHomePageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | BlogListSlice
+  | CompactHeroSlice;
 
 /**
  * Item in *Blog Home Page → Meta Keywords*
@@ -681,7 +687,7 @@ export type BlogHomePageDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogPostDocumentDataSlicesSlice = FaqSlice;
+type BlogPostDocumentDataSlicesSlice = BreadcrumbsSlice | FaqSlice;
 
 /**
  * Item in *Blog Post → Meta Keywords*
@@ -1298,6 +1304,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type DigitalPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
@@ -1411,6 +1418,7 @@ export type DigitalPageDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -1770,7 +1778,10 @@ export type NavSectionDocument<Lang extends string = string> =
     Lang
   >;
 
-type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
+type OurTeamPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | NavigationMenuSlice
+  | OurTeamSlice;
 
 /**
  * Item in *Our Team → Meta Keywords*
@@ -1951,7 +1962,9 @@ export type PrivacyPolicyDocument<Lang extends string = string> =
     Lang
   >;
 
-type PrivacyPolicySmDocumentDataSlicesSlice = PrivacyTextBoxSlice;
+type PrivacyPolicySmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | PrivacyTextBoxSlice;
 
 /**
  * Item in *Privacy Policy SM → Meta Keywords*
@@ -2056,6 +2069,7 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -2367,6 +2381,7 @@ export type TeamPageDocument<Lang extends string = string> =
   >;
 
 type TechDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | HeroSlice
   | FaqSlice
   | ProjectShowcaseSlice
@@ -4254,6 +4269,33 @@ export interface CompactHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: compact_hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
+
+  /**
+   * Button Link field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.button_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  button_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
@@ -5051,6 +5093,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
 }
 
 /**
