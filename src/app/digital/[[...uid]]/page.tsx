@@ -24,6 +24,7 @@ import { notFound } from "next/navigation";
 import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
 type Params = { uid: string[] };
 export const dynamic = "force-dynamic";
@@ -129,43 +130,7 @@ export async function generateMetadata(
         };
     }
 
-    const parentKeywords = parentMetaData.keywords || "";
-    const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-    const title = doc.data?.meta_title || parentMetaData.title;
-    const description = doc.data?.meta_description || parentMetaData.description;
-    const canonicalUrl = doc.data?.meta_url || "";
-    
-        // Og Image via API route
-        // Use the published site URL in production (from NEXT_PUBLIC_WEBSITE_URL),
-        // and localhost during development to ensure `new URL(...)` always receives
-        // a valid absolute base.
-        const siteUrl =
-            process.env.NODE_ENV === "production"
-                ? process.env.NEXT_PUBLIC_WEBSITE_URL
-                : "http://localhost:3000";
-    const uidString = uid && uid.length ? uid.join("/") : "";
-
-    // use a stable token tied to the document so image URLs change when content changes
-    const cacheToken = encodeURIComponent(String(doc?.id ?? doc?.last_publication_date ?? Date.now()));
-
-    // point metadata to the API route
-    // Adding `v=` cache buster to ensure updated images are fetched when content changes
-    const imageUrl = new URL(`/api/og?uid=${encodeURIComponent(uidString)}&v=${cacheToken}`, siteUrl).toString();
-    const imageAlt = doc?.data?.meta_image?.alt || "Lunim";
-
-    return {
-        ...parentMetaData,
-        title: title,
-        description: description,
-        keywords: keywords,
-        openGraph: {
-            ...parentMetaData.openGraph,
-            title: typeof doc?.data?.meta_title === "object" ? parentMetaData.title?.absolute : `${doc?.data?.meta_title || parentMetaData.title}`,
-            description: `${doc?.data?.meta_description || parentMetaData.description}`,
-            url: canonicalUrl,
-            images: [{ url: imageUrl, alt: imageAlt, width: 1200, height: 630, }],
-        },
-    }
+    return generateMetaDataInfo(doc.data, parentMetaData, false, true, uid);
 }
 
 /* Notes
