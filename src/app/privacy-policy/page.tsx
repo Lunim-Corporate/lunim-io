@@ -7,6 +7,7 @@ import { components } from "@/slices";
 import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
 export const revalidate = 60;
 
@@ -48,28 +49,7 @@ export async function generateMetadata(
     };
   }
 
-
-  const parentKeywords = parentMetaData.keywords || "";
-  // Filter out empty keyword fields
-  // Ensure each keyword is separated by a comma and space
-  // Join keywords from current page (if any) to parent keywords
-  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-  const title = doc.data?.meta_title || parentMetaData.title;
-  const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
-
-  return {
-    ...parentMetaData,
-    title: title,
-    description: description,
-    keywords: keywords,
-    openGraph: {
-      ...parentMetaData.openGraph,
-      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-      description: `${description}`,
-      url: canonicalUrl,
-    },
-  }
+  return generateMetaDataInfo(doc.data, parentMetaData);
 }
 
 // export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
