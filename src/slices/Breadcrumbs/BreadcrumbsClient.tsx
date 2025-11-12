@@ -159,7 +159,7 @@ export default function BreadcrumbsClient({
                   />
                 )}
                 {isLast ? (
-                  <span className="text-white/80 truncate max-w-[200px] sm:max-w-none lowercase">
+                  <span className="text-white/70 truncate max-w-[200px] sm:max-w-none lowercase">
                     {crumb.label}
                   </span>
                 ) : (
