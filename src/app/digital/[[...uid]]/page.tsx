@@ -135,9 +135,14 @@ export async function generateMetadata(
     const description = doc.data?.meta_description || parentMetaData.description;
     const canonicalUrl = doc.data?.meta_url || "";
     
-    // Og Image via API route
-    // const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3000";
-    const siteUrl = "http://localhost:3000"; // ! Replace with site's URL once published
+        // Og Image via API route
+        // Use the published site URL in production (from NEXT_PUBLIC_WEBSITE_URL),
+        // and localhost during development to ensure `new URL(...)` always receives
+        // a valid absolute base.
+        const siteUrl =
+            process.env.NODE_ENV === "production"
+                ? process.env.NEXT_PUBLIC_WEBSITE_URL
+                : "http://localhost:3000";
     const uidString = uid && uid.length ? uid.join("/") : "";
 
     // use a stable token tied to the document so image URLs change when content changes
@@ -160,25 +165,6 @@ export async function generateMetadata(
             url: canonicalUrl,
             images: [{ url: imageUrl, alt: imageAlt, width: 1200, height: 630, }],
         },
-
-        //   return {
-        //     ...parentMetaData,
-        //     title: title,
-        //     description: description,
-        //     keywords: keywords,
-        //     openGraph: {
-        //       ...parentMetaData.openGraph,
-        //        title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-        //       description: `${description}`,
-        //       url: canonicalUrl,
-        //       // images: [
-        //       //   {
-        //       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-        //       //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-        //       //   }
-        //       // ]
-        //     },
-        //   }
     }
 }
 
