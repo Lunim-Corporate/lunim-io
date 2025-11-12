@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 interface ContactPayload {
   full_name: string;
   work_email: string;
+  phone_number?: string;
   company?: string;
   project_budget?: string;
   project_goals?: string;
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
   const insertPayload = {
     full_name: body.full_name,
     work_email: body.work_email,
+    phone_number: body.phone_number ?? null,
     company: body.company ?? null,
     project_budget: body.project_budget ?? null,
     project_goals: body.project_goals ?? null,
