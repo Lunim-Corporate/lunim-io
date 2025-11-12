@@ -83,7 +83,7 @@ export default function BreadcrumbsClient({
     [hiddenSegments]
   );
 
-  const showBreadcrumbs = segments.length >= 3;
+  const showBreadcrumbs = segments.length >= 2;
 
   // Build a path -> label map from navigation
   const pathLabelMap = useMemo(() => {
