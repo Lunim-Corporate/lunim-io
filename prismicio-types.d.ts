@@ -4254,6 +4254,33 @@ export interface CompactHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: compact_hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
+
+  /**
+   * Button Link field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.button_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  button_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
@@ -5051,6 +5078,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
 }
 
 /**
