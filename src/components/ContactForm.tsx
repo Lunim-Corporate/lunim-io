@@ -10,6 +10,7 @@ interface ContactFormProps {
   fullNameLabel?: string;
   emailLabel?: string;
   companyLabel?: string;
+  phoneLabel?: string;
   budgetLabel?: string;
   goalsLabel?: string;
   buttonLabel?: string;
@@ -23,6 +24,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   fullNameLabel,
   emailLabel,
   companyLabel,
+  phoneLabel,
   budgetLabel,
   goalsLabel,
   buttonLabel,
@@ -64,6 +66,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setFullName,
     workEmail,
     setWorkEmail,
+    phoneNumber,
+    setPhoneNumber,
     company,
     setCompany,
     projectBudget,
@@ -126,6 +130,16 @@ const ContactForm: React.FC<ContactFormProps> = ({
           onChange={setWorkEmail}
           placeholder="Your Email Address"
           required
+        />
+
+        <FormField
+          id="phoneNumber"
+          label={phoneLabel || "Phone Number (optional)"}
+          type="tel"
+          value={phoneNumber}
+          onChange={setPhoneNumber}
+          placeholder="+44 20 1234 5678"
+          autoComplete="tel"
         />
 
         {/* Company is optional everywhere */}
@@ -265,9 +279,10 @@ const FormField: React.FC<{
   label: string;
   value: string;
   onChange: (value: string) => void;
-  type?: "text" | "email";
+  type?: "text" | "email" | "tel";
   placeholder?: string;
   required?: boolean;
+  autoComplete?: string;
 }> = ({
   id,
   label,
@@ -276,6 +291,7 @@ const FormField: React.FC<{
   type = "text",
   placeholder,
   required = false,
+  autoComplete,
 }) => (
   <div>
     <label
@@ -291,6 +307,7 @@ const FormField: React.FC<{
       placeholder={placeholder}
       value={value}
       required={required}
+      autoComplete={autoComplete}
       onChange={(e) => onChange(e.target.value)}
       className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
     />
