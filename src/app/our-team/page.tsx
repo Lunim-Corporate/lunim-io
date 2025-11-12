@@ -51,8 +51,6 @@ export async function generateMetadata(
   }
 
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
@@ -72,12 +70,6 @@ export async function generateMetadata(
       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
       description: `${description}`,
       url: canonicalUrl,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
     },
   }
 }

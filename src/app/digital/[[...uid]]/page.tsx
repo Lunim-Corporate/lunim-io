@@ -26,6 +26,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 
 type Params = { uid: string[] };
+export const dynamic = "force-dynamic";
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;
@@ -94,8 +95,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 }
 
 export async function generateMetadata(
-  {params}: {params: Promise<Params>},
-  parent: ResolvingMetadata
+    { params }: { params: Promise<Params> },
+    parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { uid } = await params;
     const client = createClient();
@@ -128,30 +129,63 @@ export async function generateMetadata(
         };
     }
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
-  const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-  const title = doc.data?.meta_title || parentMetaData.title;
-  const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
+    const parentKeywords = parentMetaData.keywords || "";
+    const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
+    const title = doc.data?.meta_title || parentMetaData.title;
+    const description = doc.data?.meta_description || parentMetaData.description;
+    const canonicalUrl = doc.data?.meta_url || "";
+    
+    // Og Image via API route
+    // const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3000";
+    const siteUrl = "http://localhost:3000"; // ! Replace with site's URL once published
+    const uidString = uid && uid.length ? uid.join("/") : "";
 
-  return {
-    ...parentMetaData,
-    title: title,
-    description: description,
-    keywords: keywords,
-    openGraph: {
-      ...parentMetaData.openGraph,
-       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-      description: `${description}`,
-      url: canonicalUrl,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
-    },
-  }
+    // use a stable token tied to the document so image URLs change when content changes
+    const cacheToken = encodeURIComponent(String(doc?.id ?? doc?.last_publication_date ?? Date.now()));
+
+    // point metadata to the API route
+    // Adding `v=` cache buster to ensure updated images are fetched when content changes
+    const imageUrl = new URL(`/api/og?uid=${encodeURIComponent(uidString)}&v=${cacheToken}`, siteUrl).toString();
+    const imageAlt = doc?.data?.meta_image?.alt || "Lunim";
+
+    return {
+        ...parentMetaData,
+        title: title,
+        description: description,
+        keywords: keywords,
+        openGraph: {
+            ...parentMetaData.openGraph,
+            title: typeof doc?.data?.meta_title === "object" ? parentMetaData.title?.absolute : `${doc?.data?.meta_title || parentMetaData.title}`,
+            description: `${doc?.data?.meta_description || parentMetaData.description}`,
+            url: canonicalUrl,
+            images: [{ url: imageUrl, alt: imageAlt, width: 1200, height: 630, }],
+        },
+
+        //   return {
+        //     ...parentMetaData,
+        //     title: title,
+        //     description: description,
+        //     keywords: keywords,
+        //     openGraph: {
+        //       ...parentMetaData.openGraph,
+        //        title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
+        //       description: `${description}`,
+        //       url: canonicalUrl,
+        //       // images: [
+        //       //   {
+        //       //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
+        //       //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
+        //       //   }
+        //       // ]
+        //     },
+        //   }
+    }
 }
+
+/* Notes
+Why you cannot do `digital/[[...uid]]/opengraph-image.tsx` for OG images:
+    Next.js can’t statically predict all possible paths (/, /docs/getting-started, /blog/hello-world, etc.).
+    Because of that, it does not automatically inject OG meta tags for catch-all or optional catch-all routes.
+
+    Instead, it assumes you might want to decide dynamically — so the automatic discovery is skipped.
+*/
