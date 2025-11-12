@@ -7,7 +7,6 @@ export const contentType = "image/png";
 
 export async function alt({params}: {params: { uid: string }}) {
   const client = createClient();
-  // Fetch the specific doc for this page:
   const doc = await client
     .getByUID("academy_course", params.uid)
     .catch(() => null);

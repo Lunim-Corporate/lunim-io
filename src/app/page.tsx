@@ -7,6 +7,7 @@ import { components } from "@/slices";
 import type { Metadata, ResolvingMetadata } from 'next';
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { notFound } from "next/navigation";
 
 export const revalidate = 60;
 
@@ -15,11 +16,7 @@ export default async function Page() {
   const doc = (await (client as any)
     .getSingle("homepage")
     .catch(() => null)) as Content.HomepageDocument | null;
-  if (!doc) {
-    return (
-      <main className="p-6 text-white bg-black">Homepage not published.</main>
-    );
-  }
+  if (!doc) notFound()
 
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
   return (
@@ -48,8 +45,6 @@ export async function generateMetadata(
   }
 
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
   const parentKeywords = parentMetaData.keywords || "";
   // Filter out empty keyword fields
   // Ensure each keyword is separated by a comma and space
@@ -68,12 +63,6 @@ export async function generateMetadata(
       title: `${title}`,
       description: `${description}`,
       url: process.env.NEXT_PUBLIC_WEBSITE_URL,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
     },
   }
 }
