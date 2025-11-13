@@ -5506,6 +5506,143 @@ export type PrivacyTextBoxSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *PureCards → Default → Primary → Cards*
+ */
+export interface PureCardsSliceDefaultPrimaryCardsItem {
+  /**
+   * icon_name field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.cards[].icon_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  icon_name: prismic.KeyTextField;
+
+  /**
+   * item title field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.cards[].item_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_title: prismic.RichTextField;
+
+  /**
+   * item description field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.cards[].item_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_description: prismic.RichTextField;
+
+  /**
+   * is card link field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: pure_cards.default.primary.cards[].is_card_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_card_link: prismic.BooleanField;
+
+  /**
+   * card link field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.cards[].card_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  card_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * button_text field in *PureCards → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: More
+   * - **API ID Path**: pure_cards.default.primary.cards[].button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_text: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *PureCards → Default → Primary*
+ */
+export interface PureCardsSliceDefaultPrimary {
+  /**
+   * heading field in *PureCards → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * paragraph field in *PureCards → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.paragraph
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  paragraph: prismic.RichTextField;
+
+  /**
+   * Cards field in *PureCards → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: pure_cards.default.primary.cards[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  cards: prismic.GroupField<Simplify<PureCardsSliceDefaultPrimaryCardsItem>>;
+}
+
+/**
+ * Default variation for PureCards Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PureCardsSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<PureCardsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *PureCards*
+ */
+type PureCardsSliceVariation = PureCardsSliceDefault;
+
+/**
+ * PureCards Shared Slice
+ *
+ * - **API ID**: `pure_cards`
+ * - **Description**: PureCards
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PureCardsSlice = prismic.SharedSlice<
+  "pure_cards",
+  PureCardsSliceVariation
+>;
+
+/**
  * Primary content in *TheShoot → Default → Primary*
  */
 export interface TheShootSliceDefaultPrimary {
@@ -6162,6 +6299,11 @@ declare module "@prismicio/client" {
       PrivacyTextBoxSliceDefaultPrimary,
       PrivacyTextBoxSliceVariation,
       PrivacyTextBoxSliceDefault,
+      PureCardsSlice,
+      PureCardsSliceDefaultPrimaryCardsItem,
+      PureCardsSliceDefaultPrimary,
+      PureCardsSliceVariation,
+      PureCardsSliceDefault,
       TheShootSlice,
       TheShootSliceDefaultPrimary,
       TheShootSliceDefaultItem,

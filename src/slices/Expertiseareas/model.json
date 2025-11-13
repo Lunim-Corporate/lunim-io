@@ -19,15 +19,17 @@
           "config": {
             "label": "heading",
             "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+            "allowTargetBlank": false,
+            "single": "heading2,heading3,heading4,heading5,heading6,strong,em"
           }
         },
         "paragraph": {
           "type": "StructuredText",
           "config": {
-            "multi": "paragraph",
-            "label": "paragraph"
+            "label": "paragraph",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
           }
         }
       },
@@ -41,15 +43,19 @@
         "item_title": {
           "type": "StructuredText",
           "config": {
-            "single": "heading2",
-            "label": "item_title"
+            "label": "item_title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading2"
           }
         },
         "item_description": {
           "type": "StructuredText",
           "config": {
-            "single": "paragraph",
-            "label": "item_description"
+            "label": "item_description",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph,hyperlink,image,list-item,o-list-item,rtl,preformatted"
           }
         },
         "is_card_link": {
