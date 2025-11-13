@@ -17,6 +17,15 @@ import {
   Microscope as MicroscopeIcon,
   SwatchBook as SwatchBookIcon,
   Users as UsersIcon,
+  ChartColumnBig as ChartColumnBigIcon,
+  BriefcaseBusiness as BriefcaseBusinessIcon,
+  ScrollText as ScrollTextIcon,
+  Target as TargetIcon,
+  ChartLine as ChartLineIcon,
+  Bot as BotIcon,
+  MessageCircleHeart as MessageCircleHeartIcon,
+  Cog as CogIcon,
+  Waypoints as WaypointsIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -43,6 +52,15 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Microscope: MicroscopeIcon,
   SwatchBook: SwatchBookIcon,
   Users: UsersIcon,
+  ChartColumnBig: ChartColumnBigIcon,
+  BriefcaseBusiness: BriefcaseBusinessIcon,
+  ScrollText: ScrollTextIcon,
+  Target: TargetIcon,
+  ChartLine: ChartLineIcon,
+  Bot: BotIcon,
+  MessageCircleHeart: MessageCircleHeartIcon,
+  Cog: CogIcon,
+  Waypoints: WaypointsIcon,
 };
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
