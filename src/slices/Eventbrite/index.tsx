@@ -18,6 +18,7 @@ const Eventbrite: FC<EventbriteProps> = ({ slice }) => {
           eventId={eventId}
           title={heading}
           description={description}
+          descriptionRichText={slice.primary.description}
           locationOverride={locationOverride}
         />
       </div>

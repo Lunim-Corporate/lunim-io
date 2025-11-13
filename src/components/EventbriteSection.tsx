@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
+import { PrismicRichText } from "@prismicio/react";
+import type { RichTextField } from "@prismicio/types";
 
 const DEFAULT_EVENT_ID =
   process.env.NEXT_PUBLIC_EVENTBRITE_EVENT_ID ?? "1967972076457";
@@ -109,6 +111,7 @@ interface EventbriteSectionProps {
   eventId?: string;
   title?: string;
   description?: string | null;
+  descriptionRichText?: RichTextField | null;
   locationOverride?: string | null;
 }
 
@@ -117,6 +120,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   eventId,
   title,
   description,
+  descriptionRichText,
   locationOverride,
 }) => {
   const safeEventId = eventId?.trim() || DEFAULT_EVENT_ID;
@@ -183,6 +187,8 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const effectiveEventId = courseInfo?.id || safeEventId;
   const heading = title?.trim() || "Book Your Place on the AI Academy";
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
+  const hasRichDescription =
+    Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
 
   return (
     <div
@@ -192,11 +198,20 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
         <h3 className="text-white text-3xl md:text-4xl font-semibold tracking-tight">
           {heading}
         </h3>
-        {supportingCopy && (
+        {hasRichDescription ? (
+          <div className="text-base text-gray-300 max-w-3xl mx-auto prose prose-invert prose-p:text-gray-300 prose-strong:text-white prose-a:text-[#BBFEFF]">
+            <PrismicRichText
+              field={descriptionRichText ?? []}
+              components={{
+                paragraph: ({ children }) => <p>{children}</p>,
+              }}
+            />
+          </div>
+        ) : supportingCopy ? (
           <p className="text-base text-gray-300 max-w-3xl mx-auto">
             {supportingCopy}
           </p>
-        )}
+        ) : null}
         {status === "loading" && (
           <p className="text-sm text-cyan-200">Updating Eventbrite details…</p>
         )}
