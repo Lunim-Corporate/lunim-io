@@ -4242,6 +4242,17 @@ export interface CompactHeroSliceDefaultPrimary {
   casestudycontentfields: prismic.GroupField<
     Simplify<CompactHeroSliceDefaultPrimaryCasestudycontentfieldsItem>
   >;
+
+  /**
+   * Show Ask Luna field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: compact_hero.default.primary.show_ask_luna
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_ask_luna: prismic.BooleanField;
 }
 
 /**
@@ -5018,6 +5029,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   background_image: prismic.ImageField<never>;
+
+  /**
+   * Show Ask Luna field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_ask_luna
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_ask_luna: prismic.BooleanField;
 }
 
 /**

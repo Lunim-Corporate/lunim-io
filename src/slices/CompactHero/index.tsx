@@ -1,11 +1,12 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import type { Content } from "@prismicio/client";
 import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
+import { LunaPortal } from "@/components/Luna";
 
 /**
  * Props for `CompactHero`.
@@ -56,6 +57,7 @@ export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
  *  - background_image, hero_title_part1, hero_title_part2, hero_description, button_1_link, button_1_label
  */
 const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
+  const [isLunaOpen, setIsLunaOpen] = useState(false);
   const primary: CompactHeroPrimary = slice.primary;
 
   // Prefer new schema fields
@@ -66,6 +68,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
   const description = primary.hero_description;
   const ctaLink = primary.button_1_link;
   const ctaLabel = primary.button_1_label;
+  const showAskLuna = primary.show_ask_luna ?? true;
 
   return (
     <section
@@ -107,15 +110,26 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
             </div>
           ) : null}
 
-          {/* Optional CTA (legacy) */}
-          {ctaLink && ctaLabel ? (
-            <div className="flex justify-center">
-              <PrismicLink
-                field={ctaLink}
-                className="inline-flex items-center justify-center px-8 py-4 rounded-md font-semibold shadow-lg transition-colors duration-300 bg-[#BBFEFF] text-black hover:bg-cyan-300"
-              >
-                {ctaLabel}
-              </PrismicLink>
+          {/* CTA row */}
+          {showAskLuna || (ctaLink && ctaLabel) ? (
+            <div className="flex flex-col gap-4 items-center justify-center sm:flex-row">
+              {ctaLink && ctaLabel ? (
+                <PrismicLink
+                  field={ctaLink}
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md font-semibold shadow-lg transition-colors duration-300 bg-[#BBFEFF] text-black hover:bg-cyan-300"
+                >
+                  {ctaLabel}
+                </PrismicLink>
+              ) : null}
+              {showAskLuna ? (
+                <button
+                  type="button"
+                  onClick={() => setIsLunaOpen(true)}
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm"
+                >
+                  Ask Luna
+                </button>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -124,6 +138,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
       {/* subtle decorative glows */}
       <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-cyan-400/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-2xl" />
+      <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
     </section>
   );
 };
