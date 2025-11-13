@@ -1,0 +1,41 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Reprehenderit anim commodo reprehenderit anim Lorem id ad excepteur veniam. Ipsum sunt dolor eiusmod elit sint id ea excepteur enim cillum aliqua nulla Lorem."
+						}
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Velit occaecat Lorem enim ipsum do cillum cupidatat. Fugiat dolor voluptate eu et esse sint elit proident quis voluptate cupidatat."
+						}
+					}
+				]
+			},
+			"eventbrite_event_id": {
+				"__TYPE__": "FieldContent",
+				"value": "sell",
+				"type": "Text"
+			},
+			"location_override": {
+				"__TYPE__": "FieldContent",
+				"value": "national",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]
