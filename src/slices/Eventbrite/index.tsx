@@ -1,21 +1,10 @@
 "use client";
 import { FC } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { KeyTextField, RichTextField } from "@prismicio/types";
 import { asText } from "@prismicio/helpers";
+import type { Content } from "@prismicio/client";
 import EventbriteSection from "@/components/EventbriteSection";
-type EventbriteSlice = {
-  variation: "default";
-  version: string;
-  primary: {
-    heading: RichTextField;
-    description: RichTextField;
-    eventbrite_event_id: KeyTextField;
-    location_override: KeyTextField;
-  };
-  items: [];
-};
-type EventbriteProps = SliceComponentProps<EventbriteSlice>;
+type EventbriteProps = SliceComponentProps<Content.EventbriteSlice>;
 const Eventbrite: FC<EventbriteProps> = ({ slice }) => {
   const heading =
     asText(slice.primary.heading) || "Book Your Place on the AI Academy";
