@@ -2514,6 +2514,78 @@ export type AllDocumentTypes =
   | TechDocument;
 
 /**
+ * Item in *Expertiseareas → Pure Cards → Primary → Cards*
+ */
+export interface ExpertiseareasSlicePureCardsPrimaryCardsItem {
+  /**
+   * icon_name field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].icon_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  icon_name: prismic.KeyTextField;
+
+  /**
+   * item title field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].item_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_title: prismic.RichTextField;
+
+  /**
+   * item description field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].item_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_description: prismic.RichTextField;
+
+  /**
+   * is card link field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].is_card_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_card_link: prismic.BooleanField;
+
+  /**
+   * card link field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].card_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  card_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * button_text field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_text: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *Expertiseareas → Default → Primary*
  */
 export interface ExpertiseareasSliceDefaultPrimary {
@@ -2624,9 +2696,61 @@ export type ExpertiseareasSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Expertiseareas → Pure Cards → Primary*
+ */
+export interface ExpertiseareasSlicePureCardsPrimary {
+  /**
+   * heading field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * paragraph field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.paragraph
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  paragraph: prismic.RichTextField;
+
+  /**
+   * Cards field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  cards: prismic.GroupField<
+    Simplify<ExpertiseareasSlicePureCardsPrimaryCardsItem>
+  >;
+}
+
+/**
+ * Pure Cards variation for Expertiseareas Slice
+ *
+ * - **API ID**: `pureCards`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ExpertiseareasSlicePureCards = prismic.SharedSliceVariation<
+  "pureCards",
+  Simplify<ExpertiseareasSlicePureCardsPrimary>,
+  never
+>;
+
+/**
  * Slice variation for *Expertiseareas*
  */
-type ExpertiseareasSliceVariation = ExpertiseareasSliceDefault;
+type ExpertiseareasSliceVariation =
+  | ExpertiseareasSliceDefault
+  | ExpertiseareasSlicePureCards;
 
 /**
  * Expertiseareas Shared Slice
@@ -6042,8 +6166,11 @@ declare module "@prismicio/client" {
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
       ExpertiseareasSliceDefaultItem,
+      ExpertiseareasSlicePureCardsPrimaryCardsItem,
+      ExpertiseareasSlicePureCardsPrimary,
       ExpertiseareasSliceVariation,
       ExpertiseareasSliceDefault,
+      ExpertiseareasSlicePureCards,
       FaqSlice,
       FaqSliceDefaultPrimary,
       FaqSliceDefaultItem,
