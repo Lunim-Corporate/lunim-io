@@ -26,6 +26,9 @@ import {
   MessageCircleHeart as MessageCircleHeartIcon,
   Cog as CogIcon,
   Waypoints as WaypointsIcon,
+  FileText as FileTextIcon,
+  MessagesSquare as MessagesSquareIcon,
+  Mail as MailIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -61,6 +64,9 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   MessageCircleHeart: MessageCircleHeartIcon,
   Cog: CogIcon,
   Waypoints: WaypointsIcon,
+  FileText: FileTextIcon,
+  MessagesSquare: MessagesSquareIcon,
+  Mail: MailIcon,
 };
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
