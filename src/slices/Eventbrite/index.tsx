@@ -12,7 +12,7 @@ const Eventbrite: FC<EventbriteProps> = ({ slice }) => {
   const eventId = slice.primary.eventbrite_event_id || "";
   const locationOverride = slice.primary.location_override || null;
   return (
-    <section className="bg-black px-4 py-16 sm:px-6 lg:px-8">
+    <section className="bg-[#0f172a] px-4 py-16 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <EventbriteSection
           eventId={eventId}
