@@ -17,6 +17,15 @@ import {
   Microscope as MicroscopeIcon,
   SwatchBook as SwatchBookIcon,
   Users as UsersIcon,
+  ChartColumnBig as ChartColumnBigIcon,
+  BriefcaseBusiness as BriefcaseBusinessIcon,
+  ScrollText as ScrollTextIcon,
+  Target as TargetIcon,
+  ChartLine as ChartLineIcon,
+  Bot as BotIcon,
+  MessageCircleHeart as MessageCircleHeartIcon,
+  Cog as CogIcon,
+  Waypoints as WaypointsIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -43,6 +52,15 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Microscope: MicroscopeIcon,
   SwatchBook: SwatchBookIcon,
   Users: UsersIcon,
+  ChartColumnBig: ChartColumnBigIcon,
+  BriefcaseBusiness: BriefcaseBusinessIcon,
+  ScrollText: ScrollTextIcon,
+  Target: TargetIcon,
+  ChartLine: ChartLineIcon,
+  Bot: BotIcon,
+  MessageCircleHeart: MessageCircleHeartIcon,
+  Cog: CogIcon,
+  Waypoints: WaypointsIcon,
 };
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
@@ -139,7 +157,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
               }}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {items.map(renderCard)}
           </div>
         </div>

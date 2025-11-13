@@ -187,6 +187,7 @@ export type AcademyDocument<Lang extends string = string> =
   >;
 
 type AcademyCourseDocumentDataSlicesSlice =
+  | EventbriteSlice
   | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | ContactSlice
@@ -4796,6 +4797,81 @@ export type EducationWorldSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *Eventbrite → Default → Primary*
+ */
+export interface EventbriteSliceDefaultPrimary {
+  /**
+   * Heading field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Book Your Place on the AI Academy
+   * - **API ID Path**: eventbrite.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Description field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Add supporting copy
+   * - **API ID Path**: eventbrite.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Eventbrite Event ID field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: eventbrite.default.primary.eventbrite_event_id
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eventbrite_event_id: prismic.KeyTextField;
+
+  /**
+   * Location Override field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Online via Zoom
+   * - **API ID Path**: eventbrite.default.primary.location_override
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  location_override: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Eventbrite Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type EventbriteSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<EventbriteSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Eventbrite*
+ */
+type EventbriteSliceVariation = EventbriteSliceDefault;
+
+/**
+ * Eventbrite Shared Slice
+ *
+ * - **API ID**: `eventbrite`
+ * - **Description**: Eventbrite
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type EventbriteSlice = prismic.SharedSlice<
+  "eventbrite",
+  EventbriteSliceVariation
+>;
+
+/**
  * Item in *Footer → Default → Primary → Links*
  */
 export interface FooterSliceDefaultPrimaryLinksItem {
@@ -6253,6 +6329,10 @@ declare module "@prismicio/client" {
       EducationWorldSliceDefaultPrimary,
       EducationWorldSliceVariation,
       EducationWorldSliceDefault,
+      EventbriteSlice,
+      EventbriteSliceDefaultPrimary,
+      EventbriteSliceVariation,
+      EventbriteSliceDefault,
       FooterSlice,
       FooterSliceDefaultPrimaryLinksItem,
       FooterSliceDefaultPrimary,

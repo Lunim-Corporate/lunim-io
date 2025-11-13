@@ -20,6 +20,7 @@ export const components = {
   compact_hero: dynamic(() => import("./CompactHero")),
   contact: dynamic(() => import("./Contact")),
   education_world: dynamic(() => import("./EducationWorld")),
+  eventbrite: dynamic(() => import("./Eventbrite")),
   footer: dynamic(() => import("./Footer")),
   gaming_assets: dynamic(() => import("./GamingAssets")),
   global_community: dynamic(() => import("./GlobalCommunity")),
