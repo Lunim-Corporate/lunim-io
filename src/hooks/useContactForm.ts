@@ -43,8 +43,7 @@ export const useContactForm = (opts?: {
     setErrorMessage("");
 
     // required fields: full name, email, goals/message
-    const requireGoals =
-      variant !== "academy" && variant !== "academy_marketing";
+    const requireGoals = variant !== "academy";
 
     const missingFields: string[] = [];
     if (!fullName) missingFields.push("Full Name");
@@ -73,7 +72,7 @@ export const useContactForm = (opts?: {
     }
 
     // Academy will later use Stripe; mark pending now
-    if (variant === "academy" || variant === "academy_marketing") {
+    if (variant === "academy") {
       payload.order_status = "pending";
     }
 

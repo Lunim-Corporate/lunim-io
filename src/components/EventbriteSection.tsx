@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
+import { PrismicRichText } from "@prismicio/react";
+import type { RichTextField } from "@prismicio/types";
 
 const DEFAULT_EVENT_ID =
   process.env.NEXT_PUBLIC_EVENTBRITE_EVENT_ID ?? "1967972076457";
@@ -30,49 +32,64 @@ const formatDate = (value?: string | null, options?: Intl.DateTimeFormatOptions)
   }
 };
 
-const formatSchedule = (
+const getScheduleMeta = (
   start?: string | null,
   end?: string | null,
   timezone?: string | null
 ) => {
-  if (!start) return "Live cohort";
-
-  const dateLabel = formatDate(start, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-  const timeFormatter = new Intl.DateTimeFormat("en-GB", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: timezone ?? "UTC",
-  });
+  const safeTimezone = timezone ?? "UTC";
+  if (!start) {
+    return {
+      dateRange: "Live cohort",
+      startDateLabel: null,
+      startTimeLabel: null,
+      endDateLabel: null,
+      endTimeLabel: null,
+      timezoneLabel: safeTimezone,
+    };
+  }
 
   try {
     const startDate = new Date(start);
-    const startTime = timeFormatter.format(startDate);
+    const endDate = end ? new Date(end) : null;
+    const rangeFormatter = new Intl.DateTimeFormat("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const dayFormatter = new Intl.DateTimeFormat("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+    const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: safeTimezone,
+    });
 
-    if (!end) {
-      return `${dateLabel} · ${startTime} ${timezone ?? "UTC"}`;
-    }
+    const dateRange = endDate
+      ? `${rangeFormatter.format(startDate)} → ${rangeFormatter.format(endDate)}`
+      : rangeFormatter.format(startDate);
 
-    const endDate = new Date(end);
-    const sameDay = startDate.toDateString() === endDate.toDateString();
-    const endTime = timeFormatter.format(endDate);
-
-    const dayPart = sameDay
-      ? dateLabel
-      : `${dateLabel} → ${formatDate(end, {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        })}`;
-
-    return `${dayPart} · ${startTime} – ${endTime} ${timezone ?? "UTC"}`;
+    return {
+      dateRange,
+      startDateLabel: dayFormatter.format(startDate),
+      startTimeLabel: `${timeFormatter.format(startDate)} ${safeTimezone}`,
+      endDateLabel: endDate ? dayFormatter.format(endDate) : null,
+      endTimeLabel: endDate ? `${timeFormatter.format(endDate)} ${safeTimezone}` : null,
+      timezoneLabel: safeTimezone,
+    };
   } catch {
-    return "Live cohort";
+    return {
+      dateRange: "Live cohort",
+      startDateLabel: null,
+      startTimeLabel: null,
+      endDateLabel: null,
+      endTimeLabel: null,
+      timezoneLabel: safeTimezone,
+    };
   }
 };
 
@@ -94,6 +111,7 @@ interface EventbriteSectionProps {
   eventId?: string;
   title?: string;
   description?: string | null;
+  descriptionRichText?: RichTextField | null;
   locationOverride?: string | null;
 }
 
@@ -102,6 +120,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   eventId,
   title,
   description,
+  descriptionRichText,
   locationOverride,
 }) => {
   const safeEventId = eventId?.trim() || DEFAULT_EVENT_ID;
@@ -151,10 +170,10 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
     };
   }, [safeEventId]);
 
-  const scheduleLabel = formatSchedule(
-    courseInfo?.startLocal,
-    courseInfo?.endLocal,
-    courseInfo?.timezone
+  const scheduleMeta = useMemo(
+    () =>
+      getScheduleMeta(courseInfo?.startLocal, courseInfo?.endLocal, courseInfo?.timezone),
+    [courseInfo]
   );
   const cohortDate =
     formatDate(courseInfo?.startLocal, {
@@ -168,6 +187,8 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const effectiveEventId = courseInfo?.id || safeEventId;
   const heading = title?.trim() || "Book Your Place on the AI Academy";
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
+  const hasRichDescription =
+    Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
 
   return (
     <div
@@ -177,11 +198,20 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
         <h3 className="text-white text-3xl md:text-4xl font-semibold tracking-tight">
           {heading}
         </h3>
-        {supportingCopy && (
+        {hasRichDescription ? (
+          <div className="text-base text-gray-300 max-w-3xl mx-auto prose prose-invert prose-p:text-gray-300 prose-strong:text-white prose-a:text-[#BBFEFF]">
+            <PrismicRichText
+              field={descriptionRichText ?? []}
+              components={{
+                paragraph: ({ children }) => <p>{children}</p>,
+              }}
+            />
+          </div>
+        ) : supportingCopy ? (
           <p className="text-base text-gray-300 max-w-3xl mx-auto">
             {supportingCopy}
           </p>
-        )}
+        ) : null}
         {status === "loading" && (
           <p className="text-sm text-cyan-200">Updating Eventbrite details…</p>
         )}
@@ -192,33 +222,74 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
         )}
       </div>
 
-      <dl className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/15 bg-white/5 p-6 text-left">
+      <dl className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-5">
+        <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/10 to-white/0 p-6 space-y-5 text-center flex flex-col justify-center h-full">
           <dt className="text-sm uppercase tracking-[0.3em] text-white/50">
             Schedule
           </dt>
-          <dd className="mt-3 text-white text-lg font-semibold space-y-2">
-            <p>{scheduleLabel}</p>
-            <p className="text-sm font-normal text-white/60">
+          <dd className="space-y-4 text-white flex flex-col">
+            {scheduleMeta.startDateLabel ? (
+              <div className="rounded-2xl bg-white/5 px-5 py-4 flex-1 flex flex-col justify-between">
+                <div className="flex items-center justify-between gap-4 text-left">
+                  <div className="flex-1">
+                    <p className="text-xs uppercase tracking-[0.4em] text-white/50">
+                      Start
+                    </p>
+                    <p className="text-xl font-semibold text-white">
+                      {scheduleMeta.startDateLabel}
+                    </p>
+                    <p className="text-base text-white/70">
+                      {scheduleMeta.startTimeLabel}
+                    </p>
+                  </div>
+                  <span className="text-white/40 text-2xl">→</span>
+                  <div className="flex-1 text-right">
+                    <p className="text-xs uppercase tracking-[0.4em] text-white/50">
+                      End
+                    </p>
+                    <p className="text-xl font-semibold text-white">
+                      {scheduleMeta.endDateLabel ?? "TBA"}
+                    </p>
+                    {scheduleMeta.endTimeLabel && (
+                      <p className="text-base text-white/70">
+                        {scheduleMeta.endTimeLabel}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-center uppercase tracking-[0.4em] text-white/40">
+                  {`Timezone · ${scheduleMeta.timezoneLabel}`}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-white/60 flex-1 flex items-center justify-center">
+                New schedule coming soon.
+              </p>
+            )}
+            <p className="text-sm text-white/60 mt-4">
               Next cohort: <span className="text-white">{cohortDate}</span>
             </p>
           </dd>
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-white/5 p-6 text-left">
-          <dt className="text-sm uppercase tracking-[0.3em] text-white/50">
-            Investment
-          </dt>
-          <dd className="mt-3 text-white text-2xl font-semibold">{investment}</dd>
-        </div>
+        <div className="flex flex-col gap-5">
+          <div className="rounded-3xl border border-white/15 bg-white/5 p-6 text-center flex-1 flex flex-col justify-center">
+            <dt className="text-sm uppercase tracking-[0.3em] text-white/50">
+              Investment
+            </dt>
+            <dd className="mt-4 text-white text-4xl font-semibold">
+              {investment}
+            </dd>
+          </div>
 
-        <div className="rounded-2xl border border-white/15 bg-white/5 p-6 text-left">
-          <dt className="text-sm uppercase tracking-[0.3em] text-white/50">
-            Location
-          </dt>
-          <dd className="mt-3 text-white text-2xl font-semibold">
-            {locationText}
-          </dd>
+          <div className="rounded-3xl border border-white/15 bg-white/5 p-6 text-center flex-1 flex flex-col justify-center">
+            <dt className="text-sm uppercase tracking-[0.3em] text-white/50">
+              Location
+            </dt>
+            <dd className="mt-4 text-white text-3xl font-semibold">
+              {locationText}
+            </dd>
+          </div>
         </div>
       </dl>
 
