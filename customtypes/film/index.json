@@ -81,7 +81,7 @@
             "business_affairs": {
               "type": "SharedSlice"
             },
-            "media_finale": {
+            "parallax_text_image": {
               "type": "SharedSlice"
             }
           }

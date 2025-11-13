@@ -24,7 +24,7 @@ export const components = {
   gaming_assets: dynamic(() => import("./GamingAssets")),
   global_community: dynamic(() => import("./GlobalCommunity")),
   hero: dynamic(() => import("./Hero")),
-  media_finale: dynamic(() => import("./MediaFinale")),
+  media_finale: dynamic(() => import("./TransmediaHero")),
   navigation_menu: dynamic(() => import("./NavigationMenu")),
   our_team: dynamic(() => import("./OurTeam")),
   privacy_text_box: dynamic(() => import("./PrivacyTextBox")),
@@ -32,4 +32,5 @@ export const components = {
   transmedia_hero: dynamic(() => import("./TransmediaHero")),
   virtual_production: dynamic(() => import("./VirtualProduction")),
   virtual_team_circle: dynamic(() => import("./VirtualTeamCircle")),
+  parallax_text_image: dynamic(() => import("./ParallaxTextImage")),
 };

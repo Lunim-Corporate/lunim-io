@@ -73,6 +73,7 @@ const AlternateReality = ({ slice }: AlternateRealityProps) => {
             priority={false}
             quality={90}
             className="object-cover"
+            fallbackAlt=""
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
         </div>
