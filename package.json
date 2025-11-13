@@ -17,6 +17,7 @@
     "@prismicio/helpers": "^2.3.9",
     "@prismicio/next": "^2.0.1",
     "@prismicio/react": "^3.2.1",
+    "@react-email/render": "^2.0.0",
     "@supabase/supabase-js": "^2.74.0",
     "boring-avatars": "^2.0.4",
     "framer-motion": "^12.23.22",
@@ -28,6 +29,7 @@
     "react-dom": "19.1.0",
     "react-tsparticles": "^2.12.2",
     "react-xarrows": "^2.0.2",
+    "resend": "^6.4.2",
     "stripe": "^19.1.0",
     "tsparticles": "^3.9.1"
   },
