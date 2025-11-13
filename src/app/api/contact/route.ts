@@ -67,14 +67,9 @@ export async function POST(request: Request) {
 
     supabaseStatus.success = true;
     supabaseStatus.recordId = data?.id ?? null;
-    console.info("[Contact API] Stored contact submission", {
-      recordId: supabaseStatus.recordId,
-      source: insertPayload.source,
-    });
   } catch (error) {
     supabaseStatus.error =
       error instanceof Error ? error.message : "Unable to store contact submission.";
-    console.error("[Contact API] Supabase insert failed", error);
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -126,14 +121,9 @@ export async function POST(request: Request) {
 
       emailStatus.success = true;
       emailStatus.messageId = data?.id ?? null;
-      console.info("[Contact API] Resend notification sent", {
-        messageId: emailStatus.messageId,
-        recipients: toRecipients,
-      });
     } catch (error) {
       emailStatus.error =
         error instanceof Error ? error.message : "Unable to send notification email.";
-      console.error("[Contact API] Resend send failed", error);
     }
   }
 
