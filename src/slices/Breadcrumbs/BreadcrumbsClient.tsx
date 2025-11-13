@@ -49,6 +49,9 @@ const SEGMENT_LABEL_OVERRIDES: Record<string, string> = {
   digital: "Digital",
   ai: "AI",
   "case-studies": "Case Studies",
+  marketing: "Marketing",
+  "marketing-academy": "Marketing",
+  tabb: "Community",
 };
 // Add more slug-based overrides here if needed, e.g. "ai-whatsapp-interactor": "AI Whatsapp Interactor",
 
