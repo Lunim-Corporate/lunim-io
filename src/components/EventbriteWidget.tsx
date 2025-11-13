@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+
+declare global {
+  interface Window {
+    EBWidgets?: {
+      createWidget: (options: {
+        widgetType: string;
+        eventId: string;
+        modal?: boolean;
+        modalTriggerElementId: string;
+        onOrderComplete?: () => void;
+      }) => void;
+    };
+  }
+}
+
+const EVENTBRITE_SCRIPT_ID = "eventbrite-widget-script";
+const EVENTBRITE_WIDGET_SRC = "https://www.eventbrite.co.uk/static/widgets/eb_widgets.js";
+
+const loadEventbriteScript = () =>
+  new Promise<void>((resolve, reject) => {
+    if (typeof window === "undefined") return;
+    const existingScript = document.getElementById(
+      EVENTBRITE_SCRIPT_ID
+    ) as HTMLScriptElement | null;
+
+    if (existingScript) {
+      if (existingScript.dataset.loaded === "true") {
+        resolve();
+        return;
+      }
+
+      existingScript.addEventListener("load", () => resolve());
+      existingScript.addEventListener("error", (error) => reject(error));
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = EVENTBRITE_SCRIPT_ID;
+    script.src = EVENTBRITE_WIDGET_SRC;
+    script.async = true;
+    script.dataset.loaded = "false";
+
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve();
+    };
+    script.onerror = (error) => reject(error);
+
+    document.body.appendChild(script);
+  });
+
+interface EventbriteWidgetProps {
+  eventId: string;
+  buttonLabel?: string;
+  eventUrl?: string | null;
+}
+
+export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
+  eventId,
+  buttonLabel = "Buy Tickets",
+  eventUrl,
+}) => {
+  const [isSecureContext, setIsSecureContext] = useState(true);
+  const buttonId = useMemo(
+    () => `eventbrite-widget-modal-trigger-${eventId}`,
+    [eventId]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setIsSecureContext(window.location.protocol === "https:");
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!eventId || !isSecureContext) return;
+
+    const initialiseWidget = async () => {
+      try {
+        await loadEventbriteScript();
+        if (cancelled || typeof window === "undefined") return;
+        window.EBWidgets?.createWidget({
+          widgetType: "checkout",
+          eventId,
+          modal: true,
+          modalTriggerElementId: buttonId,
+          onOrderComplete: () => {
+            console.log("Eventbrite order complete");
+          },
+        });
+      } catch (error) {
+        console.error("Failed to load Eventbrite widget", error);
+      }
+    };
+
+    initialiseWidget();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [eventId, buttonId, isSecureContext]);
+
+  if (!eventId) {
+    return (
+      <p className="text-center text-sm text-red-300">
+        Event ID missing – please configure NEXT_PUBLIC_EVENTBRITE_EVENT_ID.
+      </p>
+    );
+  }
+
+  if (!isSecureContext) {
+    const fallbackUrl =
+      eventUrl ??
+      `https://www.eventbrite.com/e/${eventId}?aff=website_embed`;
+    return (
+      <div className="space-y-3 text-center">
+        <p className="text-sm text-amber-200">
+          Eventbrite checkout needs HTTPS. Open this page over HTTPS or use the
+          link below.
+        </p>
+        <a
+          href={fallbackUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex w-full justify-center bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+        >
+          {buttonLabel}
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center">
+      <button
+        id={buttonId}
+        type="button"
+        className="w-full bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+      >
+        {buttonLabel}
+      </button>
+    </div>
+  );
+};
+
+export default EventbriteWidget;
