@@ -28,7 +28,6 @@ export const components = {
   navigation_menu: dynamic(() => import("./NavigationMenu")),
   our_team: dynamic(() => import("./OurTeam")),
   privacy_text_box: dynamic(() => import("./PrivacyTextBox")),
-  pure_cards: dynamic(() => import("./PureCards")),
   the_shoot: dynamic(() => import("./TheShoot")),
   transmedia_hero: dynamic(() => import("./TransmediaHero")),
   virtual_production: dynamic(() => import("./VirtualProduction")),
