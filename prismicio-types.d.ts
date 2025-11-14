@@ -1796,6 +1796,71 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
+type MediaTempDocumentDataSlicesSlice = HeroSlice;
+
+/**
+ * Content for Media Temp documents
+ */
+interface MediaTempDocumentData {
+  /**
+   * Slice Zone field in *Media Temp*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: media_temp.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<MediaTempDocumentDataSlicesSlice> /**
+   * Meta Title field in *Media Temp*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: media_temp.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Media Temp*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: media_temp.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Media Temp*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: media_temp.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Media Temp document from Prismic
+ *
+ * - **API ID**: `media_temp`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type MediaTempDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<MediaTempDocumentData>,
+    "media_temp",
+    Lang
+  >;
+
 /**
  * Item in *Navigation Section → Child Links (Dropdown)*
  */
@@ -2659,6 +2724,7 @@ export type AllDocumentTypes =
   | FilmDocument
   | FooterDocument
   | HomepageDocument
+  | MediaTempDocument
   | NavSectionDocument
   | OurTeamPageDocument
   | PrimaryNavigationDocument
@@ -7055,6 +7121,9 @@ declare module "@prismicio/client" {
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
       HomepageDocumentDataMetaKeywordsItem,
+      MediaTempDocument,
+      MediaTempDocumentData,
+      MediaTempDocumentDataSlicesSlice,
       NavSectionDocument,
       NavSectionDocumentData,
       NavSectionDocumentDataChildLinksItem,
