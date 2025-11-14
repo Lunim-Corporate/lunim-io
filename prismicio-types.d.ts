@@ -5593,6 +5593,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_main_cta: prismic.BooleanField;
+
+  /**
+   * Show Down Scroll field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_down_scroll
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_down_scroll: prismic.BooleanField;
 }
 
 /**

@@ -76,6 +76,15 @@
             "placeholder_true": "Show Main CTA",
             "default_value": true
           }
+        },
+        "show_down_scroll": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Down Scroll",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": true
+          }
         }
       },
       "items": {}
