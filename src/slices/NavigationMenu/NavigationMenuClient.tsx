@@ -88,12 +88,11 @@ export function NavigationMenuClient({
       section.children.forEach((child) => {
         const childPath = normalizePath(resolveLinkField(child.link));
         if (!childPath) return;
-        const topLevel = sectionPath ?? childPath;
         if (
           currentPath === childPath ||
           currentPath.startsWith(`${childPath}/`)
         ) {
-          matches.push({ topLevel, length: childPath.length });
+          matches.push({ topLevel: childPath, length: childPath.length });
         }
       });
 
