@@ -192,6 +192,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
 
   return (
     <div
+      id="book-event"
       className={`bg-[#0f172a] border border-white/20 rounded-3xl p-8 md:p-10 shadow-[0_24px_65px_rgba(0,0,0,0.45)] space-y-8 ${className}`}
     >
       <div className="text-center space-y-3">
