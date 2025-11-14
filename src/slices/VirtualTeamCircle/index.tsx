@@ -255,8 +255,9 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               </defs>
               {(() => {
                 const cx = 440; const cy = 350; const hubR = 96; const nodeR = 44; const r = 220;
-                const degs = [30, 0, 300, 270, 225, 180];
-                const list = (slice.items || []).slice(0, 6);
+                const count = Math.min((slice.items || []).length, 8);
+                const degs = count >= 8 ? [140, 20, 0, 330, 270, 210, 180, 110] : [30, 0, 300, 270, 225, 180];
+                const list = (slice.items || []).slice(0, count);
                 return list.map((_: any, i: number) => {
                   const a = (degs[i] * Math.PI) / 180;
                   const nx = cx + r * Math.cos(a);
@@ -267,7 +268,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                   const y1 = ny + uy * nodeR;
                   const x2 = cx - ux * hubR;
                   const y2 = cy - uy * hubR;
-                  return <line key={`arr-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#ffffff" strokeWidth="2" markerEnd="url(#vtc-arrow)" />;
+                  return <line key={`arr-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#ffffff" strokeWidth="3" markerEnd="url(#vtc-arrow)" />;
                 });
               })()}
             </svg>
@@ -284,21 +285,26 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
             {/* Six profile nodes with neon labels */}
             {(() => {
-              const cx = 440; const cy = 350; const r = 220; const nodeSize = 88; const degs = [30, 0, 300, 270, 225, 180];
-              const list = (slice.items || []).slice(0, 6);
+              const cx = 440; const cy = 350; const r = 220; const nodeSize = 88;
+              const count = Math.min((slice.items || []).length, 8);
+              const degs = count >= 8 ? [140, 20, 0, 330, 270, 210, 180, 110] : [30, 0, 300, 270, 225, 180];
+              const list = (slice.items || []).slice(0, count);
               return list.map((item: any, i: number) => {
                 const a = (degs[i] * Math.PI) / 180;
                 const nx = cx + r * Math.cos(a);
                 const ny = cy + r * Math.sin(a);
                 return (
-                  <div key={`n-${i}`} className="absolute" style={{ left: nx, top: ny, transform: "translate(-50%, -50%)" }}>
+                  <div key={`n-${i}`} className="absolute team-member" style={{ left: nx, top: ny, transform: "translate(-50%, -50%)" }}>
                     <div className="relative rounded-full overflow-hidden ring-2 ring-[#8df6ff] shadow-[0_0_18px_rgba(141,246,255,0.5)]" style={{ width: nodeSize, height: nodeSize }}>
                       {item.team_photo?.url && (
                         <PrismicNextImage field={withImageAlt(item.team_photo, item.primary_role || "Member") as any} fill className="object-cover" />
                       )}
                     </div>
-                    <div className="mt-2 px-3 py-1 rounded-full bg-[#071327]/80 border border-[#8df6ff]/30 text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[120px] mx-auto">
+                    <div className="mt-2 px-3 py-1 rounded-full bg-[#071327]/80 border border-[#8df6ff]/30 text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[140px] mx-auto">
                       <p className="text-white text-xs font-semibold leading-tight">{item.primary_role}</p>
+                      {item.secondary_role && (
+                        <p className="text-[#8df6ff] text-[11px] leading-tight">{item.secondary_role}</p>
+                      )}
                     </div>
                   </div>
                 );
