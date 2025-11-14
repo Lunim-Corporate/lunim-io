@@ -385,7 +385,7 @@ export async function generateMetadata(
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['blog', 'authors', uid]);
 }
 
 export async function generateStaticParams() {

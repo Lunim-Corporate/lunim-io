@@ -5,15 +5,6 @@ import { generateOgImageResponse } from "@/lib/ogImage";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export async function alt({params}: {params: { uid: string }}) {
-  const client = createClient();
-  const doc = await client
-    .getByUID("academy_course", params.uid)
-    .catch(() => null);
-
-  return doc?.data?.meta_image.alt || "Academy Course";
-}
-
 export default async function Image({
   params,
 }: {
@@ -26,5 +17,4 @@ export default async function Image({
   const backgroundImg = doc?.data?.meta_image?.url;
 
   return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
-
 }
