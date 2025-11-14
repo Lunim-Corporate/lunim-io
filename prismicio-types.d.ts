@@ -1796,7 +1796,7 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
-type MediaTempDocumentDataSlicesSlice = HeroSlice;
+type MediaTempDocumentDataSlicesSlice = BreadcrumbsSlice | HeroSlice;
 
 /**
  * Content for Media Temp documents
