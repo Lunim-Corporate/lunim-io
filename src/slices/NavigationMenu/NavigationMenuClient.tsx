@@ -34,6 +34,7 @@ export function NavigationMenuClient({
   const pathname = usePathname();
 
   const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
+  const [hasOnPageContactForm, setHasOnPageContactForm] = useState(false);
   const toggleMobileSection = (id: string) => setOpenMobileSections((prev) => ({ ...prev, [id]: !prev[id] }));
 
   useEffect(() => {
@@ -41,6 +42,29 @@ export function NavigationMenuClient({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const targetId = "get-in-touch";
+    const checkForForm = () => {
+      const hasForm = Boolean(document.getElementById(targetId));
+      setHasOnPageContactForm(hasForm);
+      return hasForm;
+    };
+
+    if (checkForForm()) return;
+
+    const observer = new MutationObserver(() => {
+      if (checkForForm()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -83,6 +107,12 @@ export function NavigationMenuClient({
     type MatchCandidate = { topLevel: string; length: number };
     const matches: MatchCandidate[] = [];
 
+    const digitalFallbackRoots = [
+      "/digital/discovery",
+      "/digital/ux",
+      "/digital/web3",
+    ];
+
     data.sections.forEach((section) => {
       const sectionPath = normalizePath(resolveLinkField(section.link));
       section.children.forEach((child) => {
@@ -111,6 +141,17 @@ export function NavigationMenuClient({
 
     let destination = normalizePath(bestMatch) ?? rawCtaLink ?? "/";
 
+    const requiresDigitalFallback = Boolean(
+      destination &&
+        digitalFallbackRoots.some((root) =>
+          destination === root || destination.startsWith(`${root}/`)
+        )
+    );
+
+    if (requiresDigitalFallback && !hasOnPageContactForm) {
+      destination = "/digital";
+    }
+
     if (destination === "/tabb" || destination === "/our-team") {
       destination = "/";
     }
@@ -124,7 +165,7 @@ export function NavigationMenuClient({
     }
 
     return `${destination}${anchor}`;
-  }, [data.sections, pathname, rawCtaLink]);
+  }, [data.sections, hasOnPageContactForm, pathname, rawCtaLink]);
 
   const finalCtaHref = useMemo(() => {
     if (computedCtaHref) return computedCtaHref;
