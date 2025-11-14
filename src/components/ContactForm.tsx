@@ -53,7 +53,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           href={tabbHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-semibold bg-[#BBFEFF] text-black hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+          className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-semibold bg-[#BBFEFF] text-black hover:bg-cyan-300 transition-colors duration-300 shadow-lg no-underline"
         >
           {tabbLabel}
         </a>
