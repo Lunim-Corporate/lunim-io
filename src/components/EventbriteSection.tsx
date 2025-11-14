@@ -185,7 +185,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const locationText =
     locationOverride?.trim() || courseInfo?.venueLine || "Online via Zoom";
   const effectiveEventId = courseInfo?.id || safeEventId;
-  const heading = title?.trim() || "Book Your Place on the AI Academy";
+  const heading = title?.trim() || courseInfo?.name || "Book Your Place on the AI Academy";
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
   const hasRichDescription =
     Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
