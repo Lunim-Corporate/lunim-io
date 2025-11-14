@@ -32,6 +32,14 @@
             "default_value": "gradient_dark"
           }
         },
+        "overlay_strength": {
+          "type": "Select",
+          "config": {
+            "label": "Overlay Strength",
+            "options": ["subtle", "medium", "strong"],
+            "default_value": "medium"
+          }
+        },
         "text_alignment": {
           "type": "Select",
           "config": {
@@ -40,6 +48,20 @@
             "default_value": "left"
           }
         },
+        "content_position": {
+          "type": "Select",
+          "config": {
+            "label": "Content Position",
+            "options": ["top-left", "center"],
+            "default_value": "top-left"
+          }
+        },
+        "accent_color": { "type": "Color", "config": { "label": "Accent Color" } },
+        "text_color": { "type": "Color", "config": { "label": "Text Color" } },
+        "spacing_top": { "type": "Select", "config": { "label": "Top Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "spacing_bottom": { "type": "Select", "config": { "label": "Bottom Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "animation_preset": { "type": "Select", "config": { "label": "Animation Preset", "options": ["none", "fade-up", "slide-left", "stagger-strong"], "default_value": "fade-up" } },
+        "style_preset": { "type": "Select", "config": { "label": "Style Preset", "options": ["default", "cyanGlow", "noir"], "default_value": "default" } },
         "eyebrow_text": { "type": "Text", "config": { "label": "Eyebrow" } },
         "heading": {
           "type": "StructuredText",
@@ -75,10 +97,17 @@
           "type": "Select",
           "config": { "label": "Overlay Style", "options": ["none", "gradient_light", "gradient_dark"], "default_value": "gradient_dark" }
         },
+        "overlay_strength": { "type": "Select", "config": { "label": "Overlay Strength", "options": ["subtle", "medium", "strong"], "default_value": "medium" } },
         "text_alignment": {
           "type": "Select",
           "config": { "label": "Text Alignment", "options": ["left", "center", "right"], "default_value": "left" }
         },
+        "accent_color": { "type": "Color", "config": { "label": "Accent Color" } },
+        "text_color": { "type": "Color", "config": { "label": "Text Color" } },
+        "spacing_top": { "type": "Select", "config": { "label": "Top Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "spacing_bottom": { "type": "Select", "config": { "label": "Bottom Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "animation_preset": { "type": "Select", "config": { "label": "Animation Preset", "options": ["none", "fade-up", "slide-left", "stagger-strong"], "default_value": "fade-up" } },
+        "style_preset": { "type": "Select", "config": { "label": "Style Preset", "options": ["default", "cyanGlow", "noir"], "default_value": "default" } },
         "eyebrow_text": { "type": "Text", "config": { "label": "Eyebrow" } },
         "heading": { "type": "StructuredText", "config": { "label": "Heading", "single": "heading1,heading2" } },
         "subtitle": { "type": "Text", "config": { "label": "Subtitle" } },
@@ -101,7 +130,15 @@
         "enable_parallax": { "type": "Boolean", "config": { "label": "Enable Parallax" } },
         "enable_zoom_effect": { "type": "Boolean", "config": { "label": "Enable Zoom Effect" } },
         "overlay_style": { "type": "Select", "config": { "label": "Overlay Style", "options": ["none", "gradient_light", "gradient_dark"], "default_value": "gradient_dark" } },
+        "overlay_strength": { "type": "Select", "config": { "label": "Overlay Strength", "options": ["subtle", "medium", "strong"], "default_value": "medium" } },
         "text_alignment": { "type": "Select", "config": { "label": "Text Alignment", "options": ["left", "center", "right"], "default_value": "left" } },
+        "content_position": { "type": "Select", "config": { "label": "Content Position", "options": ["top-left", "center"], "default_value": "top-left" } },
+        "accent_color": { "type": "Color", "config": { "label": "Accent Color" } },
+        "text_color": { "type": "Color", "config": { "label": "Text Color" } },
+        "spacing_top": { "type": "Select", "config": { "label": "Top Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "spacing_bottom": { "type": "Select", "config": { "label": "Bottom Spacing", "options": ["tight", "normal", "relaxed"], "default_value": "normal" } },
+        "animation_preset": { "type": "Select", "config": { "label": "Animation Preset", "options": ["none", "fade-up", "slide-left", "stagger-strong"], "default_value": "fade-up" } },
+        "style_preset": { "type": "Select", "config": { "label": "Style Preset", "options": ["default", "cyanGlow", "noir"], "default_value": "default" } },
         "eyebrow_text": { "type": "Text", "config": { "label": "Eyebrow" } },
         "heading": { "type": "StructuredText", "config": { "label": "Heading", "single": "heading1,heading2" } },
         "subtitle": { "type": "Text", "config": { "label": "Subtitle" } },

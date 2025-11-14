@@ -140,7 +140,7 @@ const VirtualProduction = ({ slice }: VirtualProductionProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-start overflow-hidden"
     >
       {/* Background Image with Zoom/Parallax */}
       {backgroundImage && (
@@ -157,7 +157,7 @@ const VirtualProduction = ({ slice }: VirtualProductionProps) => {
             alt=""
           />
           {/* Gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/90 via-[#040a18]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/50 to-transparent" />
         </div>
       )}
 

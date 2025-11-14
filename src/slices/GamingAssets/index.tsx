@@ -54,7 +54,7 @@ const GamingAssets = ({ slice }: GamingAssetsProps) => {
       {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10">
           <PrismicNextImage field={slice.primary.background_image as any} fill className="object-cover" quality={90} fallbackAlt="" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#03070f]/90 via-[#03070f]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#03070f]/70 via-[#03070f]/50 to-transparent" />
         </div>
       )}
 
