@@ -245,7 +245,7 @@ export async function generateMetadata(
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['blog',uid]);
 }
 
 // Static generation for known UIDs (optional)
