@@ -138,7 +138,7 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
       <button
         id={buttonId}
         type="button"
-        className="w-full bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+        className="w-full max-w-md bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
       >
         {buttonLabel}
       </button>
