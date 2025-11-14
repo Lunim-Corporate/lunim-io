@@ -186,7 +186,7 @@ export function NavigationMenuClient({
         {/* Logo */}
         <Link
           href="/"
-          className="relative z-10 block h-12"
+          className="relative z-10 block h-12 no-underline"
           aria-label="Go to homepage"
         >
           {data.logoUrl ? (
@@ -221,7 +221,7 @@ export function NavigationMenuClient({
                 {section.link ? (
                   <PrismicNextLink
                     field={section.link}
-                    className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+                    className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors no-underline"
                   >
                     <span>{section.label}</span>
                     {hasRealChildren && (
@@ -243,7 +243,7 @@ export function NavigationMenuClient({
                         <li key={`${section.id}-${idx}`} className="mb-0">
                           <PrismicNextLink
                             field={child.link}
-                            className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                            className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors no-underline"
                           >
                             {child.label}
                           </PrismicNextLink>
@@ -262,7 +262,7 @@ export function NavigationMenuClient({
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
-              className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+              className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 no-underline"
             >
               {data.ctaLabel}
             </Link>
@@ -270,7 +270,7 @@ export function NavigationMenuClient({
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
-              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors no-underline"
             >
               {data.ctaLabel}
             </Link>
@@ -332,7 +332,7 @@ export function NavigationMenuClient({
                     {section.link ? (
                       <PrismicNextLink
                         field={section.link}
-                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4"
+                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4 no-underline"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {section.label}
@@ -370,7 +370,7 @@ export function NavigationMenuClient({
                       <li key={`${section.id}-m-${idx}`} className="mb-0">
                         <PrismicNextLink
                           field={child.link}
-                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px]"
+                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px] no-underline"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {child.label}
@@ -388,7 +388,7 @@ export function NavigationMenuClient({
             <Link
               href={finalCtaHref}
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black text-center shadow-lg md:hidden"
+              className="block w-full px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black text-center shadow-lg md:hidden no-underline"
             >
               {data.ctaLabel}
             </Link>

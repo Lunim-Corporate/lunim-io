@@ -44,7 +44,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
               <PrismicNextLink
                 field={item.project_link}
                 key={index}
-                className="rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 flex flex-col h-full"
+                className="rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 flex flex-col h-full no-underline"
             >
             <div
                 className="bg-gray-800 h-48 flex items-center justify-center"
@@ -105,7 +105,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
       <div className="mt-16 text-center text-white">
         <PrismicNextLink
             field={slice.primary.case_study_page_link}
-            className='bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300'
+            className='bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:bg-cyan-300 transition-colors duration-300 no-underline'
           />
         </div>
         )}
