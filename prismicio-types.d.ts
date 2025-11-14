@@ -1855,7 +1855,7 @@ interface MediaTempDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type MediaTempDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
+  prismic.PrismicDocumentWithUID<
     Simplify<MediaTempDocumentData>,
     "media_temp",
     Lang
