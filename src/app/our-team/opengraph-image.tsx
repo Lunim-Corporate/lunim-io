@@ -11,8 +11,6 @@ const doc = await client.getSingle("our_team_page").catch(() => null);
 const title = doc?.data?.meta_title ?? "Our Team";
 const backgroundImg = doc?.data?.meta_image?.url;
 
-export const alt = doc?.data?.meta_image?.alt || "Our Team";
-
 export default async function Image() {
     return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }

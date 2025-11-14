@@ -69,6 +69,13 @@
           "label": "Meta URL",
           "placeholder": ""
         }
+      },
+      "meta_image_alt_text": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Image Alt Text",
+          "placeholder": ""
+        }
       }
     }
   }

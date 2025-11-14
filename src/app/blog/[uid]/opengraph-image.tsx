@@ -5,16 +5,6 @@ import { generateOgImageResponse } from "@/lib/ogImage";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export async function alt({params}: {params: { uid: string }}) {
-  const client = createClient();
-  // Fetch the specific doc for this page:
-  const doc = await client
-    .getByUID("blog_post", params.uid)
-    .catch(() => null);
-
-  return doc?.data?.meta_image.alt || "Blog Post";
-}
-
 export default async function Image({
   params,
 }: {
