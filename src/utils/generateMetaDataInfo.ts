@@ -30,6 +30,7 @@ export const generateMetaDataInfo = (
   const getImageAlt = () => {
     return docData?.meta_image?.alt || docData?.meta_image_alt_text || "Lunim";
   };
+  // End Helpers
 
   const normalizePath = (path: string) => {
     if (!path) return "/";
@@ -46,7 +47,6 @@ export const generateMetaDataInfo = (
   const siteBase = getSiteUrl();
   const cacheToken = encodeURIComponent(String(Date.now()));
 
-  // imageEntry will be set when we can determine an image URL
   let imageUrl: string | undefined;
   let imageAlt: string | undefined;
 
@@ -57,8 +57,10 @@ export const generateMetaDataInfo = (
   } else {
     // Non-digital routes: point to the route's `opengraph-image` endpoint
     let routePath = "/";
+    // Use canonicalUrl if provided (this comes from meta_url field in Prismic)
     if (canonicalUrl && canonicalUrl.trim() !== "") {
       routePath = normalizePath(canonicalUrl);
+    // Use UID if canonicalUrl is not provided (see a routes page.tsx file)
     } else if (uid && Array.isArray(uid) && uid.length) {
       routePath = `/${uid.join("/")}`;
     } else if (isHomePage) {
@@ -77,6 +79,7 @@ export const generateMetaDataInfo = (
     imageAlt = getImageAlt();
   }
 
+  // For images that do not provide an "alt" field in Prismic, fallback to "Lunim"
   const imagesEntry = imageUrl
     ? [{ url: imageUrl as string, alt: (imageAlt as string) || "Lunim", width: 1200, height: 630 }]
     : undefined;
