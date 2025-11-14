@@ -6459,7 +6459,7 @@ export interface PrivacyTextBoxSliceDefaultPrimary {
    * title field in *PrivacyTextBox → Default → Primary*
    *
    * - **Field Type**: Rich Text
-   * - **Placeholder**: Title
+   * - **Placeholder**: *None*
    * - **API ID Path**: privacy_text_box.default.primary.title
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
