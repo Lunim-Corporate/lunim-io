@@ -168,7 +168,7 @@ export default function BreadcrumbsClient({
                 ) : (
                   <Link
                     href={crumb.href}
-                    className="text-[#BBFEFF]/80 hover:text-white hover:underline underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none lowercase no-underline"
+                    className="text-[#BBFEFF]/80 hover:text-white underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none lowercase no-underline"
                   >
                     {crumb.label}
                   </Link>
