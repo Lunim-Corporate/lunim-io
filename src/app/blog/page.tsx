@@ -49,7 +49,7 @@ export async function generateMetadata(
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['blog']);
 }
 
 // export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
