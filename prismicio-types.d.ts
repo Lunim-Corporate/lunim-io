@@ -168,6 +168,17 @@ interface AcademyDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Academy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -283,6 +294,17 @@ interface AcademyCourseDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Academy Course*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: academy_course.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -430,17 +452,6 @@ interface AuthorDocumentData {
   meta_image: prismic.ImageField<never>;
 
   /**
-   * Meta Image Alt Text field in *Author*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: author.meta_image_alt_text
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_image_alt_text: prismic.KeyTextField;
-
-  /**
    * Meta Keywords field in *Author*
    *
    * - **Field Type**: Group
@@ -463,6 +474,17 @@ interface AuthorDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -563,6 +585,17 @@ interface AuthorsDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Authors*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -670,6 +703,17 @@ interface BlogHomePageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Blog Home Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -880,6 +924,17 @@ interface BlogPostDocumentData {
   meta_authors: prismic.GroupField<
     Simplify<BlogPostDocumentDataMetaAuthorsItem>
   >;
+
+  /**
+   * Meta Image Alt Text field in *Blog Post*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1044,6 +1099,17 @@ interface CaseStudiesDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Case Studies*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_studies.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1286,6 +1352,17 @@ interface CaseStudySmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Case Study SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: case_study_sm.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1400,6 +1477,17 @@ interface DigitalPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Digital Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: digital_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1441,7 +1529,7 @@ type FilmDocumentDataSlicesSlice =
   | GamingAssetsSlice
   | CollectiblesSlice
   | BusinessAffairsSlice
-  | MediaFinaleSlice;
+  | ParallaxTextImageSlice;
 
 /**
  * Item in *Media → Meta Keywords*
@@ -1525,6 +1613,17 @@ interface FilmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Media*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: film.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1668,6 +1767,17 @@ interface HomepageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Homepage*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: homepage.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -1868,6 +1978,17 @@ interface OurTeamPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Our Team*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_team_page.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -2051,6 +2172,17 @@ interface PrivacyPolicySmDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Privacy Policy SM*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy_sm.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -2165,6 +2297,17 @@ interface TabbDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Tabb*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tabb.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -2476,6 +2619,17 @@ interface TechDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_url: prismic.KeyTextField;
+
+  /**
+   * Meta Image Alt Text field in *Digital*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech.meta_image_alt_text
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_image_alt_text: prismic.KeyTextField;
 }
 
 /**
@@ -5110,6 +5264,31 @@ export type GamingAssetsSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *GlobalCommunity → Default → Primary → Sphere Images*
+ */
+export interface GlobalCommunitySliceDefaultPrimarySphereImagesItem {
+  /**
+   * Image field in *GlobalCommunity → Default → Primary → Sphere Images*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_community.default.primary.sphere_images[].image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  image: prismic.ImageField<never>;
+
+  /**
+   * Alt (optional) field in *GlobalCommunity → Default → Primary → Sphere Images*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_community.default.primary.sphere_images[].alt
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  alt: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *GlobalCommunity → Default → Primary*
  */
 export interface GlobalCommunitySliceDefaultPrimary {
@@ -5166,6 +5345,50 @@ export interface GlobalCommunitySliceDefaultPrimary {
     "dark-blue" | "black" | "gradient-dark",
     "filled"
   >;
+
+  /**
+   * Background Image field in *GlobalCommunity → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_community.default.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Sphere Images field in *GlobalCommunity → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_community.default.primary.sphere_images[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  sphere_images: prismic.GroupField<
+    Simplify<GlobalCommunitySliceDefaultPrimarySphereImagesItem>
+  >;
+
+  /**
+   * Sphere Auto Rotate field in *GlobalCommunity → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: global_community.default.primary.sphere_auto_rotate
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  sphere_auto_rotate: prismic.BooleanField;
+
+  /**
+   * Sphere Size field in *GlobalCommunity → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: medium
+   * - **API ID Path**: global_community.default.primary.sphere_size
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  sphere_size: prismic.SelectField<"small" | "medium" | "large", "filled">;
 }
 
 /**
@@ -5332,102 +5555,6 @@ type HeroSliceVariation = HeroSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
-
-/**
- * Primary content in *MediaFinale → Default → Primary*
- */
-export interface MediaFinaleSliceDefaultPrimary {
-  /**
-   * Logo field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: media_finale.default.primary.logo
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  logo: prismic.ImageField<never>;
-
-  /**
-   * Main Title field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: TRANSMEDIA PLAYBOOK
-   * - **API ID Path**: media_finale.default.primary.main_title
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  main_title: prismic.RichTextField;
-
-  /**
-   * Subtitle field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: Virtual-First, AI-First, Human-Centred
-   * - **API ID Path**: media_finale.default.primary.subtitle
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  subtitle: prismic.KeyTextField;
-
-  /**
-   * CTA Text field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: hello@lunim.io
-   * - **API ID Path**: media_finale.default.primary.cta_text
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  cta_text: prismic.KeyTextField;
-
-  /**
-   * Background Image field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: media_finale.default.primary.background_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  background_image: prismic.ImageField<never>;
-
-  /**
-   * Enable Parallax field in *MediaFinale → Default → Primary*
-   *
-   * - **Field Type**: Boolean
-   * - **Placeholder**: *None*
-   * - **Default Value**: true
-   * - **API ID Path**: media_finale.default.primary.enable_parallax
-   * - **Documentation**: https://prismic.io/docs/fields/boolean
-   */
-  enable_parallax: prismic.BooleanField;
-}
-
-/**
- * Default variation for MediaFinale Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default variation
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type MediaFinaleSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<MediaFinaleSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *MediaFinale*
- */
-type MediaFinaleSliceVariation = MediaFinaleSliceDefault;
-
-/**
- * MediaFinale Shared Slice
- *
- * - **API ID**: `media_finale`
- * - **Description**: Closing hero/outro section for the Media page
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type MediaFinaleSlice = prismic.SharedSlice<
-  "media_finale",
-  MediaFinaleSliceVariation
->;
 
 /**
  * Item in *NavigationMenu → Default → Primary → Menu sections*
@@ -5699,6 +5826,20 @@ export interface ParallaxTextImageSliceDefaultPrimary {
   >;
 
   /**
+   * Overlay Strength field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: medium
+   * - **API ID Path**: parallax_text_image.default.primary.overlay_strength
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_strength: prismic.SelectField<
+    "subtle" | "medium" | "strong",
+    "filled"
+  >;
+
+  /**
    * Text Alignment field in *ParallaxTextImage → Hero → Primary*
    *
    * - **Field Type**: Select
@@ -5708,6 +5849,84 @@ export interface ParallaxTextImageSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Content Position field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: top-left
+   * - **API ID Path**: parallax_text_image.default.primary.content_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  content_position: prismic.SelectField<"top-left" | "center", "filled">;
+
+  /**
+   * Accent Color field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.accent_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  accent_color: prismic.ColorField;
+
+  /**
+   * Text Color field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.text_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  text_color: prismic.ColorField;
+
+  /**
+   * Top Spacing field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.default.primary.spacing_top
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_top: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Bottom Spacing field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.default.primary.spacing_bottom
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_bottom: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Animation Preset field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: fade-up
+   * - **API ID Path**: parallax_text_image.default.primary.animation_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  animation_preset: prismic.SelectField<
+    "none" | "fade-up" | "slide-left" | "stagger-strong",
+    "filled"
+  >;
+
+  /**
+   * Style Preset field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: default
+   * - **API ID Path**: parallax_text_image.default.primary.style_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  style_preset: prismic.SelectField<"default" | "cyanGlow" | "noir", "filled">;
 
   /**
    * Eyebrow field in *ParallaxTextImage → Hero → Primary*
@@ -5822,6 +6041,20 @@ export interface ParallaxTextImageSliceFaceGridPrimary {
   >;
 
   /**
+   * Overlay Strength field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: medium
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.overlay_strength
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_strength: prismic.SelectField<
+    "subtle" | "medium" | "strong",
+    "filled"
+  >;
+
+  /**
    * Text Alignment field in *ParallaxTextImage → Face Grid → Primary*
    *
    * - **Field Type**: Select
@@ -5831,6 +6064,73 @@ export interface ParallaxTextImageSliceFaceGridPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Accent Color field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.accent_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  accent_color: prismic.ColorField;
+
+  /**
+   * Text Color field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.text_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  text_color: prismic.ColorField;
+
+  /**
+   * Top Spacing field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.spacing_top
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_top: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Bottom Spacing field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.spacing_bottom
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_bottom: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Animation Preset field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: fade-up
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.animation_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  animation_preset: prismic.SelectField<
+    "none" | "fade-up" | "slide-left" | "stagger-strong",
+    "filled"
+  >;
+
+  /**
+   * Style Preset field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: default
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.style_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  style_preset: prismic.SelectField<"default" | "cyanGlow" | "noir", "filled">;
 
   /**
    * Eyebrow field in *ParallaxTextImage → Face Grid → Primary*
@@ -5960,6 +6260,20 @@ export interface ParallaxTextImageSliceBulletsPrimary {
   >;
 
   /**
+   * Overlay Strength field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: medium
+   * - **API ID Path**: parallax_text_image.bullets.primary.overlay_strength
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_strength: prismic.SelectField<
+    "subtle" | "medium" | "strong",
+    "filled"
+  >;
+
+  /**
    * Text Alignment field in *ParallaxTextImage → Bullets → Primary*
    *
    * - **Field Type**: Select
@@ -5969,6 +6283,84 @@ export interface ParallaxTextImageSliceBulletsPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/select
    */
   text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Content Position field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: top-left
+   * - **API ID Path**: parallax_text_image.bullets.primary.content_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  content_position: prismic.SelectField<"top-left" | "center", "filled">;
+
+  /**
+   * Accent Color field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.accent_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  accent_color: prismic.ColorField;
+
+  /**
+   * Text Color field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.text_color
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  text_color: prismic.ColorField;
+
+  /**
+   * Top Spacing field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.bullets.primary.spacing_top
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_top: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Bottom Spacing field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: normal
+   * - **API ID Path**: parallax_text_image.bullets.primary.spacing_bottom
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  spacing_bottom: prismic.SelectField<"tight" | "normal" | "relaxed", "filled">;
+
+  /**
+   * Animation Preset field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: fade-up
+   * - **API ID Path**: parallax_text_image.bullets.primary.animation_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  animation_preset: prismic.SelectField<
+    "none" | "fade-up" | "slide-left" | "stagger-strong",
+    "filled"
+  >;
+
+  /**
+   * Style Preset field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: default
+   * - **API ID Path**: parallax_text_image.bullets.primary.style_preset
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  style_preset: prismic.SelectField<"default" | "cyanGlow" | "noir", "filled">;
 
   /**
    * Eyebrow field in *ParallaxTextImage → Bullets → Primary*
@@ -6399,6 +6791,21 @@ export type VirtualProductionSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *VirtualTeamCircle → Default → Primary → Key Points*
+ */
+export interface VirtualTeamCircleSliceDefaultPrimaryBulletsItem {
+  /**
+   * Bullet field in *VirtualTeamCircle → Default → Primary → Key Points*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: virtual_team_circle.default.primary.bullets[].item
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  item: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *VirtualTeamCircle → Default → Primary*
  */
 export interface VirtualTeamCircleSliceDefaultPrimary {
@@ -6433,6 +6840,18 @@ export interface VirtualTeamCircleSliceDefaultPrimary {
   description: prismic.RichTextField;
 
   /**
+   * Key Points field in *VirtualTeamCircle → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: virtual_team_circle.default.primary.bullets[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  bullets: prismic.GroupField<
+    Simplify<VirtualTeamCircleSliceDefaultPrimaryBulletsItem>
+  >;
+
+  /**
    * Center Circle Label field in *VirtualTeamCircle → Default → Primary*
    *
    * - **Field Type**: Text
@@ -6441,6 +6860,16 @@ export interface VirtualTeamCircleSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   center_label: prismic.KeyTextField;
+
+  /**
+   * Center Circle Image field in *VirtualTeamCircle → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: virtual_team_circle.default.primary.center_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  center_image: prismic.ImageField<never>;
 
   /**
    * Background Pattern field in *VirtualTeamCircle → Default → Primary*
@@ -6455,6 +6884,16 @@ export interface VirtualTeamCircleSliceDefaultPrimary {
     "particles" | "gradient" | "solid",
     "filled"
   >;
+
+  /**
+   * Background Image field in *VirtualTeamCircle → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: virtual_team_circle.default.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
 }
 
 /**
@@ -6752,6 +7191,7 @@ declare module "@prismicio/client" {
       GamingAssetsSliceVariation,
       GamingAssetsSliceDefault,
       GlobalCommunitySlice,
+      GlobalCommunitySliceDefaultPrimarySphereImagesItem,
       GlobalCommunitySliceDefaultPrimary,
       GlobalCommunitySliceDefaultItem,
       GlobalCommunitySliceVariation,
@@ -6760,10 +7200,6 @@ declare module "@prismicio/client" {
       HeroSliceDefaultPrimary,
       HeroSliceVariation,
       HeroSliceDefault,
-      MediaFinaleSlice,
-      MediaFinaleSliceDefaultPrimary,
-      MediaFinaleSliceVariation,
-      MediaFinaleSliceDefault,
       NavigationMenuSlice,
       NavigationMenuSliceDefaultPrimarySectionsItem,
       NavigationMenuSliceDefaultPrimary,
@@ -6802,6 +7238,7 @@ declare module "@prismicio/client" {
       VirtualProductionSliceVariation,
       VirtualProductionSliceDefault,
       VirtualTeamCircleSlice,
+      VirtualTeamCircleSliceDefaultPrimaryBulletsItem,
       VirtualTeamCircleSliceDefaultPrimary,
       VirtualTeamCircleSliceDefaultItem,
       VirtualTeamCircleSliceVariation,

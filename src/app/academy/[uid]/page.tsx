@@ -55,7 +55,7 @@ export async function generateMetadata(
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['academy', uid]);
 }
 
 // export async function generateMetadata({ params }: { params: Promise<Params> }, parent: ResolvingMetadata) {

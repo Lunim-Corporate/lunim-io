@@ -11,8 +11,6 @@ const doc = await client.getSingle("privacy_policy_sm").catch(() => null);
 const title = doc?.data?.meta_title ?? "Privacy Policy";
 const backgroundImg = doc?.data?.meta_image?.url;
 
-export const alt = doc?.data?.meta_image?.alt || "Privacy Policy";
-
 export default async function Image() {
     return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }
