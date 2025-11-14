@@ -152,7 +152,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                           href="https://calendly.com/hello-lunim/30min"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100 transition-colors"
+                          className="text-cyan-300 underline underline-offset-4 hover:no-underline hover:text-cyan-100 transition-colors"
                         >
                           Book a meeting with us now
                         </a>

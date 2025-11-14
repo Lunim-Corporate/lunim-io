@@ -122,7 +122,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
               {canShowMainCta && resolvedCtaLink ? (
                 <PrismicLink
                   field={resolvedCtaLink}
-                  className="max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2"
+                  className="max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
                 >
                   {resolvedCtaLabel}
                 </PrismicLink>
@@ -131,7 +131,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
                 <button
                   type="button"
                   onClick={() => setIsLunaOpen(true)}
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer no-underline"
                 >
                   Ask Luna
                 </button>
