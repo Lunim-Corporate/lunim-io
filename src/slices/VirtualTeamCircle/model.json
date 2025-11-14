@@ -37,11 +37,29 @@
             "multi": "paragraph,strong,em"
           }
         },
+        "bullets": {
+          "type": "Group",
+          "config": {
+            "label": "Key Points",
+            "repeat": true,
+            "fields": {
+              "item": { "type": "Text", "config": { "label": "Bullet" } }
+            }
+          }
+        },
         "center_label": {
           "type": "Text",
           "config": {
             "label": "Center Circle Label",
             "placeholder": "Virtual Team"
+          }
+        },
+        "center_image": {
+          "type": "Image",
+          "config": {
+            "label": "Center Circle Image",
+            "constraint": {},
+            "thumbnails": []
           }
         },
         "background_pattern": {
@@ -55,6 +73,14 @@
               "solid"
             ],
             "default_value": "particles"
+          }
+        },
+        "background_image": {
+          "type": "Image",
+          "config": {
+            "label": "Background Image",
+            "constraint": {},
+            "thumbnails": []
           }
         }
       },

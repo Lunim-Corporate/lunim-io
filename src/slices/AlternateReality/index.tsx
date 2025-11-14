@@ -61,7 +61,7 @@ const AlternateReality = ({ slice }: AlternateRealityProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-[90svh] flex items-center overflow-hidden bg-black"
+      className="relative min-h-[90svh] flex items-start overflow-hidden bg-black"
     >
       {/* Background */}
       {backgroundImage && (
@@ -72,8 +72,9 @@ const AlternateReality = ({ slice }: AlternateRealityProps) => {
             priority={false}
             quality={90}
             className="object-cover"
+            fallbackAlt=""
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-transparent" />
         </div>
       )}
 

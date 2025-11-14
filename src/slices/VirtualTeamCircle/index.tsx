@@ -159,6 +159,8 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const centerX = 0;
   const centerY = 0;
 
+  const bgImage = withImageAlt(slice.primary.background_image, "");
+
   return (
     <section
       ref={sectionRef}
@@ -166,6 +168,13 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       data-slice-variation={slice.variation}
       className="relative py-20 md:py-32 bg-gradient-to-b from-[#03070f] via-[#071327] to-[#040a18] overflow-hidden"
     >
+      {/* Optional background image */}
+      {bgImage && (
+        <div className="absolute inset-0 -z-10">
+          <PrismicNextImage field={bgImage} fill className="object-cover" quality={85} alt="" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-transparent" />
+        </div>
+      )}
       {/* Particle/Stars Background */}
       {slice.primary.background_pattern === "particles" && (
         <div className="absolute inset-0 pointer-events-none">
@@ -221,11 +230,23 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                 <PrismicRichText field={slice.primary.description} />
               </div>
             )}
+
+            {/* Bullets (3 items recommended) */}
+            {Array.isArray(slice.primary.bullets) && slice.primary.bullets.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {slice.primary.bullets.slice(0, 3).map((b: any, idx: number) => (
+                  <li key={idx} className="flex items-start gap-3 text-white/90">
+                    <span className="mt-2 w-2 h-2 rounded-full bg-[#8df6ff]" />
+                    <span className="text-sm md:text-base">{b.item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Right Column: Circular Diagram */}
           <div ref={circleContainerRef} className="relative min-h-[600px] lg:min-h-[700px] flex items-center justify-center">
-            {/* SVG for connecting lines */}
+            {/* SVG for connecting lines (touch profile at 180° side) */}
             <svg
               ref={svgRef}
               className="absolute inset-0 w-full h-full pointer-events-none"
@@ -234,13 +255,18 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
             >
               {slice.items.map((item: any, index: number) => {
                 const pos = calculatePosition(item.position || "top-center", radius);
+                // Offset end point inward by circle radius so it touches profile edge at side (180° from center)
+                const profileR = 56; // approx px for 28*2 (md ~ 112) / viewBox scale; tuned visually
+                const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
+                const x2 = pos.x - Math.cos(angle) * profileR;
+                const y2 = pos.y - Math.sin(angle) * profileR;
                 return (
                   <line
                     key={index}
                     x1={centerX}
                     y1={centerY}
-                    x2={pos.x}
-                    y2={pos.y}
+                    x2={x2}
+                    y2={y2}
                     stroke="rgba(141, 246, 255, 0.4)"
                     strokeWidth="2"
                   />
@@ -248,9 +274,20 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               })}
             </svg>
 
-            {/* Center Circle */}
-            <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-[#8df6ff] to-[#BBFEFF] flex items-center justify-center shadow-[0_0_40px_rgba(141,246,255,0.6)] z-10">
-              <span className="text-[#040a18] font-bold text-sm md:text-base text-center px-4">
+            {/* Center Circle with Prismic-controlled image and tinted overlay */}
+            <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 rounded-full ring-4 ring-[#8df6ff] shadow-[0_0_40px_rgba(141,246,255,0.6)] z-10 overflow-hidden relative bg-[#071327]">
+              {slice.primary.center_image?.url && (
+                <PrismicNextImage
+                  field={withImageAlt(slice.primary.center_image, "")}
+                  fill
+                  className="object-cover"
+                  alt=""
+                />
+              )}
+              {/* Color overlay to match current circle tint */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#8df6ff] to-[#BBFEFF] opacity-30 mix-blend-multiply" />
+              {/* Label on top */}
+              <span className="relative z-10 text-[#040a18] font-bold text-sm md:text-base text-center px-4">
                 {slice.primary.center_label || "Virtual Team"}
               </span>
             </div>
@@ -274,16 +311,31 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                   <div className="flex flex-col items-center">
                     {/* Photo Circle */}
                     {teamPhotoField && (
-                      <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] mb-3">
+                      <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] mb-3 relative">
                         <PrismicNextImage
                           field={teamPhotoField}
                           className="w-full h-full object-cover"
                         />
+                        {/* Role card overlap by ~20% from bottom */}
+                        <div className="absolute left-1/2 -translate-x-1/2 translate-y-[20%] bottom-0">
+                          <div className="text-center bg-[#071327]/90 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px] border border-[#8df6ff]/20">
+                            {item.primary_role && (
+                              <p className="text-white font-semibold text-xs md:text-sm leading-tight">
+                                {item.primary_role}
+                              </p>
+                            )}
+                            {item.secondary_role && (
+                              <p className="text-[#8df6ff] text-xs leading-tight mt-1">
+                                {item.secondary_role}
+                              </p>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     )}
 
-                    {/* Role Label */}
-                    <div className="text-center bg-[#071327]/90 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px] border border-[#8df6ff]/20">
+                    {/* Role Label (kept hidden because placed on avatar) */}
+                    <div className="hidden">
                       {item.primary_role && (
                         <p className="text-white font-semibold text-xs md:text-sm leading-tight">
                           {item.primary_role}

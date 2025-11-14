@@ -7,6 +7,7 @@ import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SphereImageGrid from "@/components/ui/img-sphere";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -124,6 +125,8 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       slice.primary.background_color as keyof typeof bgClasses
     ] || bgClasses["dark-blue"];
 
+  const backgroundImage = withImageAlt(slice.primary.background_image, "");
+
   return (
     <section
       ref={sectionRef}
@@ -131,6 +134,12 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       data-slice-variation={slice.variation}
       className={`relative py-20 md:py-32 ${bgClass} overflow-hidden`}
     >
+      {backgroundImage && (
+        <div className="absolute inset-0 -z-10">
+          <PrismicNextImage field={backgroundImage} fill className="object-cover" quality={85} alt="" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-transparent" />
+        </div>
+      )}
       {/* Particle effect overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(141,246,255,0.1),transparent_50%)]" />
@@ -185,26 +194,21 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
           </div>
 
           {/* Right Column: Face Grid */}
-          {slice.items && slice.items.length > 0 && (
-            <div ref={gridRef} className="relative">
-              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
-                {slice.items.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="face-item aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5"
-                  >
-                    {item.face_image?.url && (
-                      <PrismicNextImage
-                        field={item.face_image}
-                        className="w-full h-full object-cover"
-                        alt={item.person_name || "Team member"}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-              {/* Cyan overlay glow */}
-              <div className="absolute inset-0 bg-[#8df6ff]/5 pointer-events-none mix-blend-soft-light" />
+          {((slice.primary as any).sphere_images?.length || slice.items?.length) && (
+            <div ref={gridRef} className="relative flex items-center justify-center">
+              <SphereImageGrid
+                images={((slice.primary as any).sphere_images?.length
+                  ? (slice.primary as any).sphere_images
+                      .filter((it: any) => it.image?.url)
+                      .map((it: any, i: number) => ({ id: String(i + 1), src: it.image.url as string, alt: it.alt || "Community member" }))
+                  : slice.items
+                      .filter((it: any) => it.face_image?.url)
+                      .map((it: any, i: number) => ({ id: String(i + 1), src: it.face_image.url as string, alt: it.person_name || "Community member" })))}
+                containerSize={(() => { const s = (slice.primary as any).sphere_size || "medium"; return s==="small"?420:s==="large"?600:520 })()}
+                sphereRadius={(() => { const s = (slice.primary as any).sphere_size || "medium"; return s==="small"?150:s==="large"?220:180 })()}
+                autoRotate={(slice.primary as any).sphere_auto_rotate !== false}
+                className="w-full max-w-[560px]"
+              />
             </div>
           )}
         </div>

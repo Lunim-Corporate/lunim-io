@@ -4,7 +4,6 @@
 		"variation": "default",
 		"primary": {
 			"logo": {
-				"__TYPE__": "ImageContent",
 				"origin": {
 					"id": "main",
 					"url": "https://images.unsplash.com/photo-1600804931749-2da4ce26c869",
@@ -22,7 +21,9 @@
 					},
 					"background": "transparent"
 				},
-				"alt": "bus",
+				"alt": "horn",
+				"credits": null,
+				"__TYPE__": "ImageContent",
 				"thumbnails": {}
 			},
 			"main_title": {
@@ -47,7 +48,6 @@
 				"type": "Text"
 			},
 			"background_image": {
-				"__TYPE__": "ImageContent",
 				"origin": {
 					"id": "main",
 					"url": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef",
@@ -66,6 +66,8 @@
 					"background": "transparent"
 				},
 				"alt": "frequently",
+				"credits": null,
+				"__TYPE__": "ImageContent",
 				"thumbnails": {}
 			},
 			"enable_parallax": {

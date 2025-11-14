@@ -39,7 +39,9 @@ const TheShoot = ({ slice }: TheShootProps) => {
       // Parallax background
       if (bgRef.current) {
         gsap.to(bgRef.current, {
-          yPercent: 15,
+          yPercent: 18,
+          scale: 1.05,
+          transformOrigin: "center",
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -111,7 +113,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-start justify-start overflow-hidden"
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
@@ -125,15 +127,16 @@ const TheShoot = ({ slice }: TheShootProps) => {
             fill
             className="object-cover"
             quality={90}
+            fallbackAlt=""
           />
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/95 via-[#040a18]/80 to-transparent" />
+          {/* Lighter overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/55 to-transparent" />
         </div>
       )}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className={`flex flex-col ${textAlign} max-w-2xl`}>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10">
+        <div className={`flex flex-col items-start text-left max-w-2xl`}>
           {/* Title */}
           {slice.primary.title && (
             <div ref={titleRef}>
@@ -154,7 +157,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
           {slice.primary.subtitle && (
             <p
               ref={subtitleRef}
-              className="text-white text-xl md:text-2xl lg:text-3xl font-semibold mb-12"
+              className="text-white text-xl md:text-2xl lg:text-3xl font-semibold mb-8 leading-tight"
             >
               {slice.primary.subtitle}
             </p>
@@ -164,7 +167,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
           {slice.items && slice.items.length > 0 && (
             <ul
               ref={listRef}
-              className="space-y-6 list-none"
+              className="space-y-4 list-none"
             >
               {slice.items.map((item: any, index: number) => (
                 <li
@@ -172,8 +175,8 @@ const TheShoot = ({ slice }: TheShootProps) => {
                   className="flex items-start gap-4 text-white text-lg md:text-xl"
                 >
                   {/* Bullet indicator */}
-                  <span className="flex-shrink-0 w-2 h-2 mt-2 md:mt-3 rounded-full bg-[#8df6ff] shadow-[0_0_10px_rgba(141,246,255,0.6)]" />
-                  <span>{item.bullet_point}</span>
+                  <span className="flex-shrink-0 w-2 h-2 mt-2 md:mt-2 rounded-full bg-[#8df6ff] shadow-[0_0_10px_rgba(141,246,255,0.6)]" />
+                  <span className="leading-snug">{item.bullet_point}</span>
                 </li>
               ))}
             </ul>

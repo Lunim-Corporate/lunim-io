@@ -101,7 +101,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
@@ -122,17 +122,19 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       )}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Logo */}
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Logo - Fixed dimensions and clipping */}
         {logoImage && (
           <div
             ref={logoRef}
-            className="mb-12 flex justify-center"
+            className="mb-12 flex justify-center w-full"
           >
-            <div className="relative">
+            <div className="relative z-30 w-full max-w-[834px] aspect-[834/254] mx-auto px-4">
               <PrismicNextImage
                 field={logoImage}
-                className="w-auto h-32 md:h-48 lg:h-56 object-contain drop-shadow-[0_0_30px_rgba(141,246,255,0.6)]"
+                fill
+                sizes="(min-width: 1280px) 834px, (min-width: 1024px) 800px, (min-width: 768px) 700px, 90vw"
+                className="object-contain drop-shadow-[0_0_24px_rgba(141,246,255,0.55)]"
                 priority
               />
             </div>
@@ -143,13 +145,13 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.main_title && (
           <div
             ref={titleRef}
-            className="mb-8"
+            className="mb-8 w-full"
           >
             <PrismicRichText
               field={slice.primary.main_title}
               components={{
                 heading1: ({ children }) => (
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider uppercase">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#FFFBD0] tracking-wider uppercase whitespace-normal lg:whitespace-nowrap">
                     {children}
                   </h1>
                 ),
@@ -180,7 +182,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
           <div className="w-1.5 h-3 bg-[#8df6ff] rounded-full" />
         </div>

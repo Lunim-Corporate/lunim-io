@@ -5651,6 +5651,415 @@ export type OurTeamSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *ParallaxTextImage → Hero → Primary*
+ */
+export interface ParallaxTextImageSliceDefaultPrimary {
+  /**
+   * Background Image field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Enable Parallax field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.enable_parallax
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_parallax: prismic.BooleanField;
+
+  /**
+   * Enable Zoom Effect field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.enable_zoom_effect
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_zoom_effect: prismic.BooleanField;
+
+  /**
+   * Overlay Style field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: gradient_dark
+   * - **API ID Path**: parallax_text_image.default.primary.overlay_style
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_style: prismic.SelectField<
+    "none" | "gradient_light" | "gradient_dark",
+    "filled"
+  >;
+
+  /**
+   * Text Alignment field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: left
+   * - **API ID Path**: parallax_text_image.default.primary.text_alignment
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Eyebrow field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Heading field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Subtitle field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  subtitle: prismic.KeyTextField;
+
+  /**
+   * Body Text field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.body_text
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  body_text: prismic.RichTextField;
+
+  /**
+   * Logo field in *ParallaxTextImage → Hero → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.default.primary.logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  logo: prismic.ImageField<never>;
+}
+
+/**
+ * Hero variation for ParallaxTextImage Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Centered/one-column hero with parallax background, text block, and optional logo.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ParallaxTextImageSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ParallaxTextImageSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Primary content in *ParallaxTextImage → Face Grid → Primary*
+ */
+export interface ParallaxTextImageSliceFaceGridPrimary {
+  /**
+   * Background Image field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Enable Parallax field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.enable_parallax
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_parallax: prismic.BooleanField;
+
+  /**
+   * Enable Zoom Effect field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.enable_zoom_effect
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_zoom_effect: prismic.BooleanField;
+
+  /**
+   * Overlay Style field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: gradient_dark
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.overlay_style
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_style: prismic.SelectField<
+    "none" | "gradient_light" | "gradient_dark",
+    "filled"
+  >;
+
+  /**
+   * Text Alignment field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: left
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.text_alignment
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Eyebrow field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Heading field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Subtitle field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  subtitle: prismic.KeyTextField;
+
+  /**
+   * Body Text field in *ParallaxTextImage → Face Grid → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.faceGrid.primary.body_text
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  body_text: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *ParallaxTextImage → Items*
+ */
+export interface ParallaxTextImageSliceFaceGridItem {
+  /**
+   * Face Image field in *ParallaxTextImage → Items*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.items[].face_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  face_image: prismic.ImageField<never>;
+
+  /**
+   * Person Name field in *ParallaxTextImage → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.items[].person_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  person_name: prismic.KeyTextField;
+}
+
+/**
+ * Face Grid variation for ParallaxTextImage Slice
+ *
+ * - **API ID**: `faceGrid`
+ * - **Description**: Two-column layout: text left, face grid right.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ParallaxTextImageSliceFaceGrid = prismic.SharedSliceVariation<
+  "faceGrid",
+  Simplify<ParallaxTextImageSliceFaceGridPrimary>,
+  Simplify<ParallaxTextImageSliceFaceGridItem>
+>;
+
+/**
+ * Primary content in *ParallaxTextImage → Bullets → Primary*
+ */
+export interface ParallaxTextImageSliceBulletsPrimary {
+  /**
+   * Background Image field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Enable Parallax field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.enable_parallax
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_parallax: prismic.BooleanField;
+
+  /**
+   * Enable Zoom Effect field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.enable_zoom_effect
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_zoom_effect: prismic.BooleanField;
+
+  /**
+   * Overlay Style field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: gradient_dark
+   * - **API ID Path**: parallax_text_image.bullets.primary.overlay_style
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  overlay_style: prismic.SelectField<
+    "none" | "gradient_light" | "gradient_dark",
+    "filled"
+  >;
+
+  /**
+   * Text Alignment field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: left
+   * - **API ID Path**: parallax_text_image.bullets.primary.text_alignment
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  text_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+
+  /**
+   * Eyebrow field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Heading field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Subtitle field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  subtitle: prismic.KeyTextField;
+
+  /**
+   * Body Text field in *ParallaxTextImage → Bullets → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.bullets.primary.body_text
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  body_text: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *ParallaxTextImage → Items*
+ */
+export interface ParallaxTextImageSliceBulletsItem {
+  /**
+   * Bullet Point field in *ParallaxTextImage → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_text_image.items[].bullet_point
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  bullet_point: prismic.KeyTextField;
+}
+
+/**
+ * Bullets variation for ParallaxTextImage Slice
+ *
+ * - **API ID**: `bullets`
+ * - **Description**: One-column text and a list of bullet points (The Shoot pattern).
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ParallaxTextImageSliceBullets = prismic.SharedSliceVariation<
+  "bullets",
+  Simplify<ParallaxTextImageSliceBulletsPrimary>,
+  Simplify<ParallaxTextImageSliceBulletsItem>
+>;
+
+/**
+ * Slice variation for *ParallaxTextImage*
+ */
+type ParallaxTextImageSliceVariation =
+  | ParallaxTextImageSliceDefault
+  | ParallaxTextImageSliceFaceGrid
+  | ParallaxTextImageSliceBullets;
+
+/**
+ * ParallaxTextImage Shared Slice
+ *
+ * - **API ID**: `parallax_text_image`
+ * - **Description**: Unified parallax text + image slice with variations for hero, face grid, and bullets.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ParallaxTextImageSlice = prismic.SharedSlice<
+  "parallax_text_image",
+  ParallaxTextImageSliceVariation
+>;
+
+/**
  * Primary content in *PrivacyTextBox → Default → Primary*
  */
 export interface PrivacyTextBoxSliceDefaultPrimary {
@@ -6365,6 +6774,16 @@ declare module "@prismicio/client" {
       OurTeamSliceDefaultPrimary,
       OurTeamSliceVariation,
       OurTeamSliceDefault,
+      ParallaxTextImageSlice,
+      ParallaxTextImageSliceDefaultPrimary,
+      ParallaxTextImageSliceFaceGridPrimary,
+      ParallaxTextImageSliceFaceGridItem,
+      ParallaxTextImageSliceBulletsPrimary,
+      ParallaxTextImageSliceBulletsItem,
+      ParallaxTextImageSliceVariation,
+      ParallaxTextImageSliceDefault,
+      ParallaxTextImageSliceFaceGrid,
+      ParallaxTextImageSliceBullets,
       PrivacyTextBoxSlice,
       PrivacyTextBoxSliceDefaultPrimary,
       PrivacyTextBoxSliceVariation,

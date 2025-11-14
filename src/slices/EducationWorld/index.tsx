@@ -53,7 +53,7 @@ const EducationWorld = ({ slice }: EducationWorldProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-[90svh] flex items-center overflow-hidden bg-[#071327]"
+      className="relative min-h-[90svh] flex items-start overflow-hidden bg-[#071327]"
     >
       {backgroundImage && (
         <div ref={bgRef} className="absolute inset-0 -z-10">

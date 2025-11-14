@@ -140,12 +140,23 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {slice.primary.title && (
-          <div className="text-center mb-10">
-            <PrismicRichText field={slice.primary.title} components={{ heading2: ({ children }) => (
-              <h2 className="text-[#8df6ff] text-3xl md:text-5xl font-extrabold">{children}</h2>
-            ) }} />
+          <div className="mb-10">
+            <div className="text-left max-w-xl">
+              <PrismicRichText
+                field={slice.primary.title}
+                components={{
+                  heading2: ({ children }) => (
+                    <h2 className="text-[#8df6ff] text-4xl md:text-6xl font-extrabold leading-tight whitespace-normal">
+                      {children}
+                    </h2>
+                  ),
+                }}
+              />
+            </div>
             {slice.primary.subtitle && (
-              <p className="text-white text-lg md:text-xl mt-2">{slice.primary.subtitle}</p>
+              <p className="text-white text-base md:text-lg mt-2 text-center">
+                {slice.primary.subtitle}
+              </p>
             )}
           </div>
         )}
@@ -155,28 +166,40 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
           <HorizontalLine />
           <NodeOverlay />
         </div>
-        {/* Vertical line on mobile */}
-        <VerticalLine />
 
-        {/* Steps (mobile textual list) */}
-        <div className="mt-6 grid grid-cols-1 md:hidden gap-6">
-          {slice.items.map((item: any, idx: number) => (
-            <div key={idx} className="ba-step flex md:flex-col items-center md:items-start gap-3 md:gap-2">
-              <div className="relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/40 shrink-0 overflow-hidden">
-                {item.node_image?.url ? (
-                  <PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.step_title as string) || `Step ${idx + 1}`) }} fill className="object-cover" />
-                ) : (
-                  <span className="text-[#8df6ff] font-bold text-sm">{idx + 1}</span>
-                )}
-              </div>
-              <div>
-                <h3 className="text-white font-semibold text-sm md:text-base">{item.step_title}</h3>
-                {item.step_description && (
-                  <p className="text-white/70 text-xs md:text-sm mt-1">{item.step_description}</p>
-                )}
-              </div>
+        {/* Vertical timeline with nodes and alternating side text (mobile) */}
+        <div className="relative md:hidden mt-6 flex items-stretch justify-center">
+          <div className="relative">
+            <VerticalLine />
+            {/* Nodes overlayed along vertical line */}
+            <div className="absolute inset-0">
+              {slice.items.map((item: any, idx: number) => {
+                const count = Math.max(1, slice.items.length);
+                const topPct = (idx / (count - 1)) * 100;
+                const sideLeft = idx % 2 === 0; // alternate left/right
+                return (
+                  <div key={idx} className="absolute left-1/2 -translate-x-1/2" style={{ top: `${topPct}%` }}>
+                    <div className="relative w-12 h-12 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_16px_rgba(141,246,255,0.35)]">
+                      {item.node_image?.url && (
+                        <PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || `Node ${idx + 1}`) }} fill className="object-cover" />
+                      )}
+                    </div>
+                    {/* Side text */}
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${sideLeft ? "-left-44 text-right" : "left-44 text-left"} w-40`}>
+                      {(item.top_title || item.bottom_title) && (
+                        <p className="text-white font-semibold text-xs">{item.top_title || item.bottom_title}</p>
+                      )}
+                      {(item.top_description || item.bottom_description) && (
+                        <div className="text-white/80 text-[11px] leading-snug mt-1">
+                          <PrismicRichText field={(item.top_description || item.bottom_description)} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
