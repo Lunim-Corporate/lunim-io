@@ -39,7 +39,7 @@ const Imageandtext: React.FC<ImageandtextProps> = ({ slice }) => {
         <p className="text-xl font-medium mb-4">
           {asText(slice.primary.subtitle)}
         </p>
-        <div className="text-gray-200">
+        <div className="text-gray-200 mb-4">
           <PrismicRichText field={slice.primary.description} />
         </div>
         {slice.primary.show_link && (
