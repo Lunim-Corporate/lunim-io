@@ -27,7 +27,7 @@
             "label": "challenge_content",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "paragraph,strong,em,list-item,o-list-item,heading3,heading4,heading5,heading6"
+            "multi": "paragraph,heading3,heading4,heading5,heading6,strong,em,list-item,o-list-item,hyperlink,image"
           }
         }
       },
