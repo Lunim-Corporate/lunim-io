@@ -16,16 +16,16 @@
           "type": "StructuredText",
           "config": {
             "label": "Heading",
-            "placeholder": "Book Your Place on the AI Academy",
+            "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading1,heading2,strong,em,paragraph"
+            "multi": "paragraph,heading1,heading2,strong,em"
           }
         },
         "description": {
           "type": "StructuredText",
           "config": {
             "label": "Description",
-            "placeholder": "Add supporting copy",
+            "placeholder": "",
             "allowTargetBlank": true,
             "multi": "paragraph,heading5,heading6,strong,em"
           }
@@ -41,7 +41,7 @@
           "type": "Text",
           "config": {
             "label": "Location Override",
-            "placeholder": "Online via Zoom"
+            "placeholder": ""
           }
         }
       },
