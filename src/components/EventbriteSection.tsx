@@ -230,7 +230,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
           <dd className="space-y-4 text-white flex flex-col">
             {scheduleMeta.startDateLabel ? (
               <div className="rounded-2xl bg-white/5 px-5 py-4 flex-1 flex flex-col justify-between">
-                <div className="flex items-center justify-between gap-4 text-left">
+                <div className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
                   <div className="flex-1">
                     <p className="text-xs uppercase tracking-[0.4em] text-white/50">
                       Start
@@ -243,7 +243,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
                     </p>
                   </div>
                   <span className="text-white/40 text-2xl">→</span>
-                  <div className="flex-1 text-right">
+                  <div className="flex-1 text-center sm:text-right">
                     <p className="text-xs uppercase tracking-[0.4em] text-white/50">
                       End
                     </p>
