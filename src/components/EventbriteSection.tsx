@@ -23,7 +23,10 @@ interface EventbriteCourseInfo {
 
 type FetchState = "idle" | "loading" | "ready" | "error";
 
-const formatDate = (value?: string | null, options?: Intl.DateTimeFormatOptions) => {
+const formatDate = (
+  value?: string | null,
+  options?: Intl.DateTimeFormatOptions
+) => {
   if (!value) return null;
   try {
     return new Intl.DateTimeFormat("en-GB", options).format(new Date(value));
@@ -78,7 +81,9 @@ const getScheduleMeta = (
       startDateLabel: dayFormatter.format(startDate),
       startTimeLabel: `${timeFormatter.format(startDate)} ${safeTimezone}`,
       endDateLabel: endDate ? dayFormatter.format(endDate) : null,
-      endTimeLabel: endDate ? `${timeFormatter.format(endDate)} ${safeTimezone}` : null,
+      endTimeLabel: endDate
+        ? `${timeFormatter.format(endDate)} ${safeTimezone}`
+        : null,
       timezoneLabel: safeTimezone,
     };
   } catch {
@@ -101,7 +106,7 @@ const buildFallbackCourse = (eventId: string): EventbriteCourseInfo => {
     startLocal: null,
     endLocal: null,
     timezone: "UTC",
-    priceDisplay: "£499",
+    priceDisplay: "TBD",
     url: `https://www.eventbrite.co.uk/e/${safeId}`,
   };
 };
@@ -124,8 +129,12 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   locationOverride,
 }) => {
   const safeEventId = eventId?.trim() || DEFAULT_EVENT_ID;
-  const fallbackCourse = useMemo(() => buildFallbackCourse(safeEventId), [safeEventId]);
-  const [courseInfo, setCourseInfo] = useState<EventbriteCourseInfo>(fallbackCourse);
+  const fallbackCourse = useMemo(
+    () => buildFallbackCourse(safeEventId),
+    [safeEventId]
+  );
+  const [courseInfo, setCourseInfo] =
+    useState<EventbriteCourseInfo>(fallbackCourse);
   const [status, setStatus] = useState<FetchState>("idle");
 
   useEffect(() => {
@@ -140,7 +149,9 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
     const fetchCourse = async () => {
       setStatus("loading");
       try {
-        const response = await fetch(`/api/eventbrite/course?eventId=${safeEventId}`);
+        const response = await fetch(
+          `/api/eventbrite/course?eventId=${safeEventId}`
+        );
         const payload = (await response.json()) as {
           success?: boolean;
           data?: EventbriteCourseInfo;
@@ -172,7 +183,11 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
 
   const scheduleMeta = useMemo(
     () =>
-      getScheduleMeta(courseInfo?.startLocal, courseInfo?.endLocal, courseInfo?.timezone),
+      getScheduleMeta(
+        courseInfo?.startLocal,
+        courseInfo?.endLocal,
+        courseInfo?.timezone
+      ),
     [courseInfo]
   );
   const cohortDate =
@@ -185,7 +200,7 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const locationText =
     locationOverride?.trim() || courseInfo?.venueLine || "Online via Zoom";
   const effectiveEventId = courseInfo?.id || safeEventId;
-  const heading = title?.trim() || courseInfo?.name || "Book Your Place on the AI Academy";
+  const heading = title?.trim() || courseInfo?.name || "";
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
   const hasRichDescription =
     Array.isArray(descriptionRichText) && descriptionRichText.length > 0;

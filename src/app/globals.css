@@ -31,6 +31,18 @@
     margin-bottom: 1rem;
   }
 
+  p:last-child, li:last-child{
+    margin-bottom: 0;
+  }
+
+  a {
+    color: #BBFEFF;
+    text-decoration: underline;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
   ul {
     list-style: disc;
     margin-block-start: 1em;

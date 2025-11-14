@@ -4804,7 +4804,7 @@ export interface EventbriteSliceDefaultPrimary {
    * Heading field in *Eventbrite → Default → Primary*
    *
    * - **Field Type**: Rich Text
-   * - **Placeholder**: Book Your Place on the AI Academy
+   * - **Placeholder**: *None*
    * - **API ID Path**: eventbrite.default.primary.heading
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
@@ -4814,7 +4814,7 @@ export interface EventbriteSliceDefaultPrimary {
    * Description field in *Eventbrite → Default → Primary*
    *
    * - **Field Type**: Rich Text
-   * - **Placeholder**: Add supporting copy
+   * - **Placeholder**: *None*
    * - **API ID Path**: eventbrite.default.primary.description
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
@@ -4834,7 +4834,7 @@ export interface EventbriteSliceDefaultPrimary {
    * Location Override field in *Eventbrite → Default → Primary*
    *
    * - **Field Type**: Text
-   * - **Placeholder**: Online via Zoom
+   * - **Placeholder**: *None*
    * - **API ID Path**: eventbrite.default.primary.location_override
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
