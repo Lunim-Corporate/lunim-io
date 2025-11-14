@@ -243,7 +243,7 @@ export function NavigationMenuClient({
                         <li key={`${section.id}-${idx}`} className="mb-0">
                           <PrismicNextLink
                             field={child.link}
-                            className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors no-underline"
+                            className="block px-4 py-3 text-base text-white/80 hover:text-white hover:bg-white/5 transition-colors no-underline"
                           >
                             {child.label}
                           </PrismicNextLink>
