@@ -17,7 +17,6 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { DigitalPageDocument } from "../../../../prismicio-types";
-import { Content } from "@prismicio/client";
 import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
@@ -25,9 +24,10 @@ import { notFound } from "next/navigation";
 import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
 type Params = { uid: string[] };
-const listOfValidCategories = ["discovery", "ux", "ai", "web3"];
+export const dynamic = "force-dynamic";
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;
@@ -96,8 +96,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 }
 
 export async function generateMetadata(
-  {params}: {params: Promise<Params>},
-  parent: ResolvingMetadata
+    { params }: { params: Promise<Params> },
+    parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { uid } = await params;
     const client = createClient();
@@ -130,30 +130,13 @@ export async function generateMetadata(
         };
     }
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
-  const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${parentKeywords}, ${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}` : parentKeywords;
-  const title = doc.data?.meta_title || parentMetaData.title;
-  const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
-
-  return {
-    ...parentMetaData,
-    title: title,
-    description: description,
-    keywords: keywords,
-    openGraph: {
-      ...parentMetaData.openGraph,
-       title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-      description: `${description}`,
-      url: canonicalUrl,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
-    },
-  }
+    return generateMetaDataInfo(doc.data, parentMetaData, false, true, uid);
 }
+
+/* Notes
+Why you cannot do `digital/[[...uid]]/opengraph-image.tsx` for OG images:
+    Next.js can’t statically predict all possible paths (/, /docs/getting-started, /blog/hello-world, etc.).
+    Because of that, it does not automatically inject OG meta tags for catch-all or optional catch-all routes.
+
+    Instead, it assumes you might want to decide dynamically — so the automatic discovery is skipped.
+*/

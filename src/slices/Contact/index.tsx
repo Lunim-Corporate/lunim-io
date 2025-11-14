@@ -42,25 +42,25 @@ const Contact: FC<ContactProps> = ({ slice }) => {
 
   // Title overrides per page
   const computedMainTitle = (() => {
-    if (variant === "home" || variant === "media") return "Ready to Go?";
-    if (variant === "academy") return "Ready to Transform your Team?";
-    if (isDigital) return "Ready to Innovate?";
-    return asText(slice.primary.main_title) || "Get in Touch";
+    // if (variant === "home" || variant === "media") return "Ready to Go?";
+    // if (variant === "academy") return "Ready to Transform your Team?";
+    // if (isDigital) return "Ready to Innovate?";
+    return asText(slice.primary.main_title) || "Ready to Go?";
   })();
 
   const computedSubtitle = (() => {
-    if (variant === "home" || variant === "media")
-      return "Let’s discuss how we can help you take your next giant leap.";
-    if (variant === "academy")
-      return "Let’s get you on the road to powering up your workflow.";
-    if (isDigital)
-      return "Let's discuss your project and how we can bring it to life.";
+    // if (variant === "home" || variant === "media")
+    //   return "Let’s discuss how we can help you take your next giant leap.";
+    // if (variant === "academy")
+    //   return "Let’s get you on the road to powering up your workflow.";
+    // if (isDigital)
+    //   return "Let's discuss your project and how we can bring it to life.";
     return asText(slice.primary.subtitle) || "";
   })();
 
   // Left panels content adjustments:
-  const waysTitle = isDigital ? "Why Contact Us?" : "Ways to Contact Us";
-  const waysSubtitle = "We respond to all queries within 24 hours";
+  const waysTitle = asText(slice.primary.contact_us_title); //isDigital ? "Why Contact Us?" : "Ways to Contact Us";
+  const waysSubtitle = asText(slice.primary.contact_us_subtitle); // "We respond to all queries within 24 hours";
 
   const contactItems = slice.primary.contact_info || [];
   const officeHourItems = slice.primary.office_info || [];
@@ -123,11 +123,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                     : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
                 }
               >
-                <h3
-                  className={`${
-                    isDigital ? "text-2xl font-semibold text-white mb-6" : "text-xl font-bold text-white !mt-1 !mb-2"
-                  }`}
-                >
+                <h3 className="text-xl font-bold text-white !mt-1 !mb-2">
                   {waysTitle}
                 </h3>
                 {waysSubtitle && (
@@ -156,7 +152,7 @@ const Contact: FC<ContactProps> = ({ slice }) => {
                           href="https://calendly.com/hello-lunim/30min"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100 transition-colors"
+                          className="text-cyan-300 underline underline-offset-4 hover:no-underline hover:text-cyan-100 transition-colors"
                         >
                           Book a meeting with us now
                         </a>

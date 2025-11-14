@@ -10,6 +10,7 @@ interface ContactFormProps {
   fullNameLabel?: string;
   emailLabel?: string;
   companyLabel?: string;
+  phoneLabel?: string;
   budgetLabel?: string;
   goalsLabel?: string;
   buttonLabel?: string;
@@ -23,6 +24,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   fullNameLabel,
   emailLabel,
   companyLabel,
+  phoneLabel,
   budgetLabel,
   goalsLabel,
   buttonLabel,
@@ -64,6 +66,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setFullName,
     workEmail,
     setWorkEmail,
+    phoneNumber,
+    setPhoneNumber,
     company,
     setCompany,
     projectBudget,
@@ -75,16 +79,16 @@ const ContactForm: React.FC<ContactFormProps> = ({
     handleSubmit,
   } = formHook;
 
-  const messageVariants = variant === "home" || variant === "media" || variant === "academy";
+  const messageVariants =
+    variant === "home" || variant === "media" || variant === "academy" || variant === "academy_marketing";
   const showBudget: boolean =
     variant === "digital" && Array.isArray(budgetOptions) && budgetOptions.length > 0;
-  const showGoalsField = variant !== "academy_marketing";
+  const showGoalsField = true;
   const computedGoalsLabel: string =
     messageVariants
       ? "Message *"
       : `${goalsLabel || "Project Goals *"}`;
-  const computedButton: string =
-    variant === "academy_marketing" ? "Book Course" : buttonLabel || "Send Enquiry";
+  const computedButton: string = buttonLabel || "Send Enquiry";
   const placeholderMsg: string =
     messageVariants
       ? "What would you like to talk about?"
@@ -105,10 +109,6 @@ const ContactForm: React.FC<ContactFormProps> = ({
         className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left"
       >
         <input type="hidden" name="source" value={source} />
-        {variant === "academy_marketing" && (
-          <input type="hidden" name="order_status" value="pending" />
-        )}
-
         <FormField
           id="fullName"
           label={fullNameLabel || "Your full name *"}
@@ -128,12 +128,22 @@ const ContactForm: React.FC<ContactFormProps> = ({
           required
         />
 
+        <FormField
+          id="phoneNumber"
+          label={phoneLabel || "Phone Number (optional)"}
+          type="tel"
+          value={phoneNumber}
+          onChange={setPhoneNumber}
+          placeholder="+44 20 1234 5678"
+          autoComplete="tel"
+        />
+
         {/* Company is optional everywhere */}
         <FormField
           id="company"
           label={
             companyLabel
-              ? `${companyLabel} (optional)`
+              ? `${companyLabel}`
               : "Company Name (optional)"
           }
           value={company}
@@ -180,24 +190,6 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 </svg>
               </div>
             </div>
-          </div>
-        )}
-
-        {variant === "academy_marketing" && (
-          <div className="md:col-span-2 bg-[#0f172a] border border-white/10 rounded-lg p-6 space-y-3">
-            <h4 className="text-white font-semibold text-lg">Course Details</h4>
-            <p className="text-gray-200">
-              <span className="font-semibold text-white">Schedule:</span> Weekly live
-              sessions · Tuesdays &amp; Thursdays · 6:00&ndash;8:00pm GMT
-            </p>
-            <p className="text-gray-200">
-              <span className="font-semibold text-white">Next Cohort:</span> Starts 15
-              September 2025
-            </p>
-            <p className="text-gray-200">
-              <span className="font-semibold text-white">Cost:</span> £499 (VAT
-              inclusive)
-            </p>
           </div>
         )}
 
@@ -265,9 +257,10 @@ const FormField: React.FC<{
   label: string;
   value: string;
   onChange: (value: string) => void;
-  type?: "text" | "email";
+  type?: "text" | "email" | "tel";
   placeholder?: string;
   required?: boolean;
+  autoComplete?: string;
 }> = ({
   id,
   label,
@@ -276,6 +269,7 @@ const FormField: React.FC<{
   type = "text",
   placeholder,
   required = false,
+  autoComplete,
 }) => (
   <div>
     <label
@@ -291,6 +285,7 @@ const FormField: React.FC<{
       placeholder={placeholder}
       value={value}
       required={required}
+      autoComplete={autoComplete}
       onChange={(e) => onChange(e.target.value)}
       className="w-full p-3 rounded-lg bg-[#1f2937] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
     />

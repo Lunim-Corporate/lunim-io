@@ -36,7 +36,16 @@
             "label": "contact us title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "multi": "heading2,heading3,heading4,heading5,heading6,strong,em"
+            "multi": "strong,em,hyperlink"
+          }
+        },
+        "contact_us_subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "contact us subtitle",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "strong,em,hyperlink"
           }
         },
         "office_hours_title": {

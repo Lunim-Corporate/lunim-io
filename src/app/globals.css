@@ -23,7 +23,7 @@
     line-height: 1.5;
   }
 
-  p, ul {
+  p, li {
     font-family: var(--font-primary);
     font-size: 1.167rem;
     font-weight: 400;
@@ -31,8 +31,23 @@
     margin-bottom: 1rem;
   }
 
+  p:last-child, li:last-child{
+    margin-bottom: 0;
+  }
+
+  a {
+    color: #BBFEFF;
+    text-decoration: underline;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
   ul {
-    list-style: circle inside;
+    list-style: disc;
+    margin-block-start: 1em;
+    padding-inline-start: 20px;
   }
 
   span {
@@ -63,7 +78,17 @@
 
   h3 {
     font-size: 1.333rem;
-    font-style: normal;
+    font-weight: 800;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  :is(h1+h2, h2+h3, h3+h4, h4+h5, h5+h6){
+    margin-top: -0.5rem;
+    font-weight: normal;
   }
 
   summary::-webkit-details-marker,

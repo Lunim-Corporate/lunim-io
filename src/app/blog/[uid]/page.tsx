@@ -23,6 +23,7 @@ import TableOfContents from "@/components/TableOfContents";
 import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
+import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 // import { getCanonicalUrl } from "@/utils/getCanonical";
 
 // Must use 'force-dynamic' to show meta tags correctly for each blog post
@@ -244,34 +245,7 @@ export async function generateMetadata(
     };
   }
 
-  // const parentUrl = (await parent).openGraph?.images?.[0]?.url || "";
-  // const parentAlt = (await parent).openGraph?.images?.[0]?.alt || "";
-  const parentKeywords = parentMetaData.keywords || "";
-  const keywords = doc.data?.meta_keywords.filter((val: any) => Boolean(val.meta_keywords_text)).length >= 1 ? `${doc.data.meta_keywords.map((k: any) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}` : parentKeywords;
-  const title = doc.data?.meta_title || parentMetaData.title;
-  const description = doc.data?.meta_description || parentMetaData.description;
-  const canonicalUrl = doc.data?.meta_url || "";
-
-  const fallBackPageName = doc.uid.replace(/-/g, ' ').replace(/^./, (c: string) => c.toUpperCase());
-
-  return {
-    ...parentMetaData,
-    title: title,
-    description: description,
-    keywords: keywords,
-    openGraph: {
-      ...parentMetaData.openGraph,
-      title: typeof title ===  "object" ? parentMetaData.title?.absolute : `${title}`,
-      description: `${description}`,
-      url: canonicalUrl,
-      // images: [
-      //   {
-      //     url: `${doc.data?.meta_image}` || `${parentUrl}`,
-      //     alt: `${doc.data?.meta_image_alt_text}` || `${parentAlt}`,
-      //   }
-      // ]
-    },
-  }
+  return generateMetaDataInfo(doc.data, parentMetaData);
 }
 
 // Static generation for known UIDs (optional)

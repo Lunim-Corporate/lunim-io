@@ -17,6 +17,15 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "eventbrite": {
+              "type": "SharedSlice"
+            },
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
+            "case_study_text_panel": {
+              "type": "SharedSlice"
+            },
             "contact": {
               "type": "SharedSlice"
             },

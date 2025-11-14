@@ -70,6 +70,8 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type AcademyDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -185,6 +187,9 @@ export type AcademyDocument<Lang extends string = string> =
   >;
 
 type AcademyCourseDocumentDataSlicesSlice =
+  | EventbriteSlice
+  | BreadcrumbsSlice
+  | CaseStudyTextPanelSlice
   | ContactSlice
   | CompactHeroSlice
   | ProjectShowcaseSlice
@@ -576,7 +581,10 @@ export type AuthorsDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogHomePageDocumentDataSlicesSlice = BlogListSlice | CompactHeroSlice;
+type BlogHomePageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | BlogListSlice
+  | CompactHeroSlice;
 
 /**
  * Item in *Blog Home Page → Meta Keywords*
@@ -680,7 +688,7 @@ export type BlogHomePageDocument<Lang extends string = string> =
     Lang
   >;
 
-type BlogPostDocumentDataSlicesSlice = FaqSlice;
+type BlogPostDocumentDataSlicesSlice = BreadcrumbsSlice | FaqSlice;
 
 /**
  * Item in *Blog Post → Meta Keywords*
@@ -1297,6 +1305,7 @@ export type CaseStudySmDocument<Lang extends string = string> =
   >;
 
 type DigitalPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CaseStudyTextPanelSlice
   | CompactHeroSlice
   | ContactSlice
@@ -1410,6 +1419,7 @@ export type DigitalPageDocument<Lang extends string = string> =
   >;
 
 type FilmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -1431,7 +1441,7 @@ type FilmDocumentDataSlicesSlice =
   | GamingAssetsSlice
   | CollectiblesSlice
   | BusinessAffairsSlice
-  | ParallaxTextImageSlice;
+  | MediaFinaleSlice;
 
 /**
  * Item in *Media → Meta Keywords*
@@ -1769,7 +1779,10 @@ export type NavSectionDocument<Lang extends string = string> =
     Lang
   >;
 
-type OurTeamPageDocumentDataSlicesSlice = NavigationMenuSlice | OurTeamSlice;
+type OurTeamPageDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | NavigationMenuSlice
+  | OurTeamSlice;
 
 /**
  * Item in *Our Team → Meta Keywords*
@@ -1950,7 +1963,9 @@ export type PrivacyPolicyDocument<Lang extends string = string> =
     Lang
   >;
 
-type PrivacyPolicySmDocumentDataSlicesSlice = PrivacyTextBoxSlice;
+type PrivacyPolicySmDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
+  | PrivacyTextBoxSlice;
 
 /**
  * Item in *Privacy Policy SM → Meta Keywords*
@@ -2055,6 +2070,7 @@ export type PrivacyPolicySmDocument<Lang extends string = string> =
   >;
 
 type TabbDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | CompactHeroSlice
   | ContactSlice
   | NavigationMenuSlice
@@ -2366,6 +2382,7 @@ export type TeamPageDocument<Lang extends string = string> =
   >;
 
 type TechDocumentDataSlicesSlice =
+  | BreadcrumbsSlice
   | HeroSlice
   | FaqSlice
   | ProjectShowcaseSlice
@@ -2498,6 +2515,78 @@ export type AllDocumentTypes =
   | TechDocument;
 
 /**
+ * Item in *Expertiseareas → Pure Cards → Primary → Cards*
+ */
+export interface ExpertiseareasSlicePureCardsPrimaryCardsItem {
+  /**
+   * icon_name field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].icon_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  icon_name: prismic.KeyTextField;
+
+  /**
+   * item title field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].item_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_title: prismic.RichTextField;
+
+  /**
+   * item description field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].item_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_description: prismic.RichTextField;
+
+  /**
+   * is card link field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].is_card_link
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_card_link: prismic.BooleanField;
+
+  /**
+   * card link field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].card_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  card_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * button_text field in *Expertiseareas → Pure Cards → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[].button_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  button_text: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *Expertiseareas → Default → Primary*
  */
 export interface ExpertiseareasSliceDefaultPrimary {
@@ -2608,9 +2697,61 @@ export type ExpertiseareasSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Expertiseareas → Pure Cards → Primary*
+ */
+export interface ExpertiseareasSlicePureCardsPrimary {
+  /**
+   * heading field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * paragraph field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.paragraph
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  paragraph: prismic.RichTextField;
+
+  /**
+   * Cards field in *Expertiseareas → Pure Cards → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: Expertiseareas.pureCards.primary.cards[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  cards: prismic.GroupField<
+    Simplify<ExpertiseareasSlicePureCardsPrimaryCardsItem>
+  >;
+}
+
+/**
+ * Pure Cards variation for Expertiseareas Slice
+ *
+ * - **API ID**: `pureCards`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ExpertiseareasSlicePureCards = prismic.SharedSliceVariation<
+  "pureCards",
+  Simplify<ExpertiseareasSlicePureCardsPrimary>,
+  never
+>;
+
+/**
  * Slice variation for *Expertiseareas*
  */
-type ExpertiseareasSliceVariation = ExpertiseareasSliceDefault;
+type ExpertiseareasSliceVariation =
+  | ExpertiseareasSliceDefault
+  | ExpertiseareasSlicePureCards;
 
 /**
  * Expertiseareas Shared Slice
@@ -4253,6 +4394,33 @@ export interface CompactHeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: compact_hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
+
+  /**
+   * Button Link field in *CompactHero → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compact_hero.default.primary.button_link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  button_link: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
 }
 
 /**
@@ -4389,6 +4557,16 @@ export interface ContactSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   contact_us_title: prismic.RichTextField;
+
+  /**
+   * contact us subtitle field in *Contact → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact.default.primary.contact_us_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  contact_us_subtitle: prismic.RichTextField;
 
   /**
    * office hours title field in *Contact → Default → Primary*
@@ -4616,6 +4794,81 @@ type EducationWorldSliceVariation = EducationWorldSliceDefault;
 export type EducationWorldSlice = prismic.SharedSlice<
   "education_world",
   EducationWorldSliceVariation
+>;
+
+/**
+ * Primary content in *Eventbrite → Default → Primary*
+ */
+export interface EventbriteSliceDefaultPrimary {
+  /**
+   * Heading field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: eventbrite.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Description field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: eventbrite.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Eventbrite Event ID field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: eventbrite.default.primary.eventbrite_event_id
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eventbrite_event_id: prismic.KeyTextField;
+
+  /**
+   * Location Override field in *Eventbrite → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: eventbrite.default.primary.location_override
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  location_override: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Eventbrite Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type EventbriteSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<EventbriteSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Eventbrite*
+ */
+type EventbriteSliceVariation = EventbriteSliceDefault;
+
+/**
+ * Eventbrite Shared Slice
+ *
+ * - **API ID**: `eventbrite`
+ * - **Description**: Eventbrite
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type EventbriteSlice = prismic.SharedSlice<
+  "eventbrite",
+  EventbriteSliceVariation
 >;
 
 /**
@@ -5040,6 +5293,17 @@ export interface HeroSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/boolean
    */
   show_ask_luna: prismic.BooleanField;
+
+  /**
+   * Show Main CTA field in *Hero → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: hero.default.primary.show_main_cta
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  show_main_cta: prismic.BooleanField;
 }
 
 /**
@@ -5068,6 +5332,102 @@ type HeroSliceVariation = HeroSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
+
+/**
+ * Primary content in *MediaFinale → Default → Primary*
+ */
+export interface MediaFinaleSliceDefaultPrimary {
+  /**
+   * Logo field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: media_finale.default.primary.logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  logo: prismic.ImageField<never>;
+
+  /**
+   * Main Title field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: TRANSMEDIA PLAYBOOK
+   * - **API ID Path**: media_finale.default.primary.main_title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  main_title: prismic.RichTextField;
+
+  /**
+   * Subtitle field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Virtual-First, AI-First, Human-Centred
+   * - **API ID Path**: media_finale.default.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  subtitle: prismic.KeyTextField;
+
+  /**
+   * CTA Text field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: hello@lunim.io
+   * - **API ID Path**: media_finale.default.primary.cta_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cta_text: prismic.KeyTextField;
+
+  /**
+   * Background Image field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: media_finale.default.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Enable Parallax field in *MediaFinale → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: media_finale.default.primary.enable_parallax
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  enable_parallax: prismic.BooleanField;
+}
+
+/**
+ * Default variation for MediaFinale Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default variation
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaFinaleSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<MediaFinaleSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *MediaFinale*
+ */
+type MediaFinaleSliceVariation = MediaFinaleSliceDefault;
+
+/**
+ * MediaFinale Shared Slice
+ *
+ * - **API ID**: `media_finale`
+ * - **Description**: Closing hero/outro section for the Media page
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MediaFinaleSlice = prismic.SharedSlice<
+  "media_finale",
+  MediaFinaleSliceVariation
+>;
 
 /**
  * Item in *NavigationMenu → Default → Primary → Menu sections*
@@ -6291,8 +6651,11 @@ declare module "@prismicio/client" {
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
       ExpertiseareasSliceDefaultItem,
+      ExpertiseareasSlicePureCardsPrimaryCardsItem,
+      ExpertiseareasSlicePureCardsPrimary,
       ExpertiseareasSliceVariation,
       ExpertiseareasSliceDefault,
+      ExpertiseareasSlicePureCards,
       FaqSlice,
       FaqSliceDefaultPrimary,
       FaqSliceDefaultItem,
@@ -6375,6 +6738,10 @@ declare module "@prismicio/client" {
       EducationWorldSliceDefaultPrimary,
       EducationWorldSliceVariation,
       EducationWorldSliceDefault,
+      EventbriteSlice,
+      EventbriteSliceDefaultPrimary,
+      EventbriteSliceVariation,
+      EventbriteSliceDefault,
       FooterSlice,
       FooterSliceDefaultPrimaryLinksItem,
       FooterSliceDefaultPrimary,
@@ -6393,6 +6760,10 @@ declare module "@prismicio/client" {
       HeroSliceDefaultPrimary,
       HeroSliceVariation,
       HeroSliceDefault,
+      MediaFinaleSlice,
+      MediaFinaleSliceDefaultPrimary,
+      MediaFinaleSliceVariation,
+      MediaFinaleSliceDefault,
       NavigationMenuSlice,
       NavigationMenuSliceDefaultPrimarySectionsItem,
       NavigationMenuSliceDefaultPrimary,

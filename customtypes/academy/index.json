@@ -18,6 +18,12 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
+            "case_study_text_panel": {
+              "type": "SharedSlice"
+            },
             "compact_hero": {
               "type": "SharedSlice"
             },

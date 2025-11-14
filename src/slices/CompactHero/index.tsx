@@ -66,9 +66,15 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
   const title1Old = primary.hero_title_part1;
   const title2Old = primary.hero_title_part2;
   const description = primary.hero_description;
-  const ctaLink = primary.button_1_link;
-  const ctaLabel = primary.button_1_label;
+  const legacyCtaLink = primary.button_1_link;
+  const legacyCtaLabel = primary.button_1_label;
+  const primaryCtaLink = primary.button_link;
+  const showMainCta = primary.show_main_cta ?? true;
   const showAskLuna = primary.show_ask_luna ?? true;
+  const resolvedCtaLink = primaryCtaLink?.url ? primaryCtaLink : legacyCtaLink;
+  const resolvedCtaLabel = primaryCtaLink?.text || legacyCtaLabel || "Learn more";
+  const canShowMainCta = showMainCta && Boolean(resolvedCtaLink?.url);
+  const shouldShowCtaRow = canShowMainCta || showAskLuna;
 
   return (
     <section
@@ -111,21 +117,21 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
           ) : null}
 
           {/* CTA row */}
-          {showAskLuna || (ctaLink && ctaLabel) ? (
+          {shouldShowCtaRow ? (
             <div className="flex flex-col gap-4 items-center justify-center sm:flex-row">
-              {ctaLink && ctaLabel ? (
+              {canShowMainCta && resolvedCtaLink ? (
                 <PrismicLink
-                  field={ctaLink}
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-md font-semibold shadow-lg transition-colors duration-300 bg-[#BBFEFF] text-black hover:bg-cyan-300"
+                  field={resolvedCtaLink}
+                  className="max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
                 >
-                  {ctaLabel}
+                  {resolvedCtaLabel}
                 </PrismicLink>
               ) : null}
               {showAskLuna ? (
                 <button
                   type="button"
                   onClick={() => setIsLunaOpen(true)}
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer no-underline"
                 >
                   Ask Luna
                 </button>

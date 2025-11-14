@@ -34,6 +34,7 @@ export function NavigationMenuClient({
   const pathname = usePathname();
 
   const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
+  const [hasOnPageContactForm, setHasOnPageContactForm] = useState(false);
   const toggleMobileSection = (id: string) => setOpenMobileSections((prev) => ({ ...prev, [id]: !prev[id] }));
 
   useEffect(() => {
@@ -41,6 +42,29 @@ export function NavigationMenuClient({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const targetId = "get-in-touch";
+    const checkForForm = () => {
+      const hasForm = Boolean(document.getElementById(targetId));
+      setHasOnPageContactForm(hasForm);
+      return hasForm;
+    };
+
+    if (checkForForm()) return;
+
+    const observer = new MutationObserver(() => {
+      if (checkForForm()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -83,17 +107,22 @@ export function NavigationMenuClient({
     type MatchCandidate = { topLevel: string; length: number };
     const matches: MatchCandidate[] = [];
 
+    const digitalFallbackRoots = [
+      "/digital/discovery",
+      "/digital/ux",
+      "/digital/web3",
+    ];
+
     data.sections.forEach((section) => {
       const sectionPath = normalizePath(resolveLinkField(section.link));
       section.children.forEach((child) => {
         const childPath = normalizePath(resolveLinkField(child.link));
         if (!childPath) return;
-        const topLevel = sectionPath ?? childPath;
         if (
           currentPath === childPath ||
           currentPath.startsWith(`${childPath}/`)
         ) {
-          matches.push({ topLevel, length: childPath.length });
+          matches.push({ topLevel: childPath, length: childPath.length });
         }
       });
 
@@ -112,6 +141,17 @@ export function NavigationMenuClient({
 
     let destination = normalizePath(bestMatch) ?? rawCtaLink ?? "/";
 
+    const requiresDigitalFallback = Boolean(
+      destination &&
+        digitalFallbackRoots.some((root) =>
+          destination === root || destination.startsWith(`${root}/`)
+        )
+    );
+
+    if (requiresDigitalFallback && !hasOnPageContactForm) {
+      destination = "/digital";
+    }
+
     if (destination === "/tabb" || destination === "/our-team") {
       destination = "/";
     }
@@ -125,7 +165,7 @@ export function NavigationMenuClient({
     }
 
     return `${destination}${anchor}`;
-  }, [data.sections, pathname, rawCtaLink]);
+  }, [data.sections, hasOnPageContactForm, pathname, rawCtaLink]);
 
   const finalCtaHref = useMemo(() => {
     if (computedCtaHref) return computedCtaHref;
@@ -146,7 +186,7 @@ export function NavigationMenuClient({
         {/* Logo */}
         <Link
           href="/"
-          className="relative z-10 block h-12"
+          className="relative z-10 block h-12 no-underline"
           aria-label="Go to homepage"
         >
           {data.logoUrl ? (
@@ -181,7 +221,7 @@ export function NavigationMenuClient({
                 {section.link ? (
                   <PrismicNextLink
                     field={section.link}
-                    className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+                    className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors no-underline"
                   >
                     <span>{section.label}</span>
                     {hasRealChildren && (
@@ -198,12 +238,12 @@ export function NavigationMenuClient({
                 )}
                 {hasRealChildren && (
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute left-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-[#0a0a1a] shadow-xl transition-all duration-200">
-                    <ul className="py-2 list-none m-0">
+                    <ul className="my-0 px-0 py-2 list-none m-0">
                       {children.map((child, idx) => (
-                        <li key={`${section.id}-${idx}`}>
+                        <li key={`${section.id}-${idx}`} className="mb-0">
                           <PrismicNextLink
                             field={child.link}
-                            className="block px-4 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                            className="block px-4 py-3 text-base text-white/80 hover:text-white hover:bg-white/5 transition-colors no-underline"
                           >
                             {child.label}
                           </PrismicNextLink>
@@ -222,7 +262,7 @@ export function NavigationMenuClient({
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
-              className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+              className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 no-underline"
             >
               {data.ctaLabel}
             </Link>
@@ -230,7 +270,7 @@ export function NavigationMenuClient({
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
-              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors"
+              className="md:hidden flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors no-underline"
             >
               {data.ctaLabel}
             </Link>
@@ -292,7 +332,7 @@ export function NavigationMenuClient({
                     {section.link ? (
                       <PrismicNextLink
                         field={section.link}
-                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4"
+                        className="flex-1 text-white/90 hover:text-white font-medium text-left p-4 no-underline"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {section.label}
@@ -325,12 +365,12 @@ export function NavigationMenuClient({
                   </div>
                 </div>
                 {hasRealChildren && openMobileSections[section.id] && (
-                  <ul className="list-none m-0 px-2 pb-2 pt-2 space-y-1">
+                  <ul className="list-none my-0 m-0 px-2 pb-2 pt-2 space-y-1">
                     {children.map((child, idx) => (
-                      <li key={`${section.id}-m-${idx}`}>
+                      <li key={`${section.id}-m-${idx}`} className="mb-0">
                         <PrismicNextLink
                           field={child.link}
-                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px]"
+                          className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px] no-underline"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {child.label}
@@ -348,7 +388,7 @@ export function NavigationMenuClient({
             <Link
               href={finalCtaHref}
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black text-center shadow-lg md:hidden"
+              className="block w-full px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black text-center shadow-lg md:hidden no-underline"
             >
               {data.ctaLabel}
             </Link>
