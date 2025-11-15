@@ -97,18 +97,7 @@ const TheShoot = ({ slice }: TheShootProps) => {
     return () => ctx.revert();
   }, []);
 
-  const alignmentClass = {
-    left: "items-start text-left",
-    center: "items-center text-center",
-    right: "items-end text-right",
-  };
-
-  const textAlign =
-    alignmentClass[
-      slice.primary.text_alignment as keyof typeof alignmentClass
-    ] || alignmentClass.left;
-
-  return (
+   return (
     <section
       ref={sectionRef}
       data-slice-type={slice.slice_type}
