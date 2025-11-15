@@ -41,103 +41,41 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
-      // Title fade in
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-        },
-      });
+      // Scrubbed reveal for header text
+      gsap
+        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 85%", end: "top 35%", scrub: 0.6 } })
+        .from(titleRef.current, { opacity: 0, y: 32, filter: "blur(6px)" })
+        .from(subtitleRef.current, { opacity: 0, y: 24, filter: "blur(4px)" }, "-=0.1")
+        .from(descRef.current, { opacity: 0, x: -28, filter: "blur(4px)" }, "-=0.05");
 
-      // Subtitle fade in
-      gsap.from(subtitleRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        delay: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-        },
-      });
-
-      // Description fade in
-      gsap.from(descRef.current, {
-        opacity: 0,
-        x: -30,
-        duration: 0.8,
-        delay: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-        },
-      });
-
-      // Circle animation
+      // Scroll-scrub sequence: center -> lines -> members (clockwise)
       if (circleContainerRef.current) {
-        // Center circle appears first
         const centerCircle = circleContainerRef.current.querySelector(".center-circle");
-        gsap.from(centerCircle, {
-          scale: 0,
-          opacity: 0,
-          duration: 0.8,
-          ease: "back.out(1.5)",
-          scrollTrigger: {
-            trigger: circleContainerRef.current,
-            start: "top 70%",
-          },
-        });
+        const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top top", end: "+=160%", scrub: 0.9, pin: true, anticipatePin: 1 } });
 
-        // Team members appear sequentially
-        const teamMembers = circleContainerRef.current.querySelectorAll(".team-member");
-        gsap.from(teamMembers, {
-          scale: 0,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.15,
-          ease: "back.out(1.5)",
-          scrollTrigger: {
-            trigger: circleContainerRef.current,
-            start: "top 65%",
-          },
-          delay: 0.5,
-        });
+        if (centerCircle) {
+          tl.from(centerCircle, { scale: 0.8, autoAlpha: 0, filter: "blur(6px)", duration: 0.3, ease: "none" }, 0);
+        }
 
-        // Animate SVG lines (draw from center)
         if (svgRef.current) {
-          const lines = svgRef.current.querySelectorAll("line");
+          const lines = Array.from(svgRef.current.querySelectorAll("line"));
           lines.forEach((line) => {
             const length = Math.hypot(
               parseFloat(line.getAttribute("x2")!) - parseFloat(line.getAttribute("x1")!),
               parseFloat(line.getAttribute("y2")!) - parseFloat(line.getAttribute("y1")!)
             );
-            line.style.strokeDasharray = `${length}`;
-            line.style.strokeDashoffset = `${length}`;
-
-            gsap.to(line, {
-              strokeDashoffset: 0,
-              duration: 1,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: circleContainerRef.current,
-                start: "top 65%",
-              },
-              delay: 0.5,
-            });
+            (line as SVGLineElement).style.strokeDasharray = `${length}`;
+            (line as SVGLineElement).style.strokeDashoffset = `${length}`;
           });
+          tl.to(lines, { strokeDashoffset: 0, duration: 0.4, stagger: 0.03, ease: "none" }, "+=0.05");
+        }
+
+        const members = Array.from(circleContainerRef.current.querySelectorAll<HTMLElement>(".team-member"));
+        const angleKey = (el: HTMLElement) => ((parseFloat(el.dataset.angle || "0") - 270 + 360) % 360);
+        const ordered = members.sort((a, b) => angleKey(a) - angleKey(b));
+        if (ordered.length) {
+          tl.from(ordered, { scale: 0.85, autoAlpha: 0, filter: "blur(6px)", duration: 0.6, stagger: 0.12, ease: "none" }, "+=0.05");
         }
       }
     }, sectionRef);
@@ -167,6 +105,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="relative py-20 md:py-32 overflow-hidden"
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {/* Optional background image */}
       {bgImage && (
@@ -300,6 +239,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                 <div
                   key={index}
                   className="team-member absolute"
+                  data-angle={`${POSITION_ANGLES[item.position || "top-center"] || 0}`}
                   style={{
                     left: "50%",
                     top: "50%",

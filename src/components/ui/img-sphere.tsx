@@ -46,7 +46,6 @@ export default function SphereImageGrid({
   const [velocity, setVelocity] = useState<VelocityState>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [positions, setPositions] = useState<{ theta: number; phi: number }[]>([]);
-  const [reduceMotion, setReduceMotion] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const lastMousePos = useRef<MousePosition>({ x: 0, y: 0 });
@@ -92,16 +91,8 @@ export default function SphereImageGrid({
   const onMouseUp = useCallback(() => setIsDragging(false), []);
 
   useEffect(() => {
-    // Respect prefers-reduced-motion
-    const m = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const set = () => setReduceMotion(!!m?.matches);
-    set();
-    m?.addEventListener?.("change", set);
-    return () => m?.removeEventListener?.("change", set);
-  }, []);
-
-  useEffect(() => {
-    const finalAutoRotate = autoRotate && !reduceMotion;
+    // Keep auto-rotate enabled when requested (ignoring reduced-motion here per requirements)
+    const finalAutoRotate = autoRotate;
     const step = () => {
       setVelocity((prev) => ({ x: prev.x * momentumDecay, y: prev.y * momentumDecay }));
       setRotation((p) => ({ x: p.x + velocity.x + (finalAutoRotate ? 0 : 0), y: p.y + velocity.y + (finalAutoRotate ? autoRotateSpeed : 0), z: p.z }));
@@ -115,7 +106,7 @@ export default function SphereImageGrid({
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
     };
-  }, [momentumDecay, velocity.x, velocity.y, autoRotate, autoRotateSpeed, onMouseMove, onMouseUp, reduceMotion]);
+  }, [momentumDecay, velocity.x, velocity.y, autoRotate, autoRotateSpeed, onMouseMove, onMouseUp]);
 
   const nodes = images.map((img, i) => {
     const { theta, phi } = positions[i] || { theta: 0, phi: 0 };
@@ -170,6 +161,7 @@ export default function SphereImageGrid({
       onMouseDown={onMouseDown}
     >
       <div className="relative w-full h-full cursor-grab active:cursor-grabbing">
+        <div className="pointer-events-none absolute inset-0 rounded-full blur-md" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(141,246,255,0.08), rgba(141,246,255,0.04) 45%, transparent 70%)' }} />
         {nodes}
       </div>
     </div>

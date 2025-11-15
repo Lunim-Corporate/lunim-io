@@ -28,6 +28,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const sweepRef = useRef<HTMLDivElement>(null);
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
   const logoImage = withImageAlt(
     slice.primary.logo,
@@ -35,58 +36,55 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   );
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
-      // Logo fade in with glow
-      gsap.from(logoRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 1.2,
-        ease: "power3.out",
-        delay: 0.2,
+      // WOW pinned sequence: pin section, animate bg, sweep, logo, and text
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=140%",
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+        },
       });
 
-      // Title fade in
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.6,
-      });
+      if (bgRef.current) {
+        heroTl.fromTo(
+          bgRef.current,
+          { scale: 1.12, yPercent: -6 },
+          { scale: 1, yPercent: 0, ease: "none" },
+          0
+        );
+      }
 
-      // Subtitle fade in
-      gsap.from(subtitleRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.9,
-      });
+      if (sweepRef.current) {
+        heroTl.fromTo(
+          sweepRef.current,
+          { xPercent: -120, opacity: 0 },
+          { xPercent: 120, opacity: 1, ease: "none" },
+          0.1
+        );
+      }
 
-      // Tagline fade in
-      gsap.from(taglineRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 1,
-        ease: "power3.out",
-        delay: 1.2,
-      });
+      heroTl.from(logoRef.current, { opacity: 0, y: 80, scale: 0.92, filter: "blur(10px)", ease: "none" }, 0.15)
+            .to(logoRef.current, { filter: "drop-shadow(0 0 24px rgba(141,246,255,0.75))", duration: 0.2 }, ">-0.05");
 
-      // Parallax background on scroll
+      heroTl.from(titleRef.current, { opacity: 0, y: 90, filter: "blur(12px)", letterSpacing: "0.15em", ease: "none" }, 0.25)
+            .to(titleRef.current, { letterSpacing: "0em", ease: "none" }, ">");
+
+      heroTl.from(subtitleRef.current, { opacity: 0, y: 60, filter: "blur(6px)", ease: "none" }, ">-0.05")
+            .from(taglineRef.current, { opacity: 0, y: 40, filter: "blur(4px)", ease: "none" }, ">-0.03");
+
+      // Background subtle parallax while pinned
       if (slice.primary.enable_parallax && bgRef.current) {
         gsap.to(bgRef.current, {
-          yPercent: 20,
+          yPercent: 12,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "bottom top",
+            end: "+=140%",
             scrub: 1,
           },
         });
@@ -102,6 +100,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
@@ -129,7 +128,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
             ref={logoRef}
             className="mb-12 flex justify-center w-full"
           >
-            <div className="relative z-30 w-full max-w-[834px] aspect-[834/254] mx-auto px-4">
+            <div className="relative z-30 w-full max-w-[834px] aspect-[834/254] mx-auto px-4" style={{ transform: "translate(-5px, -10px)" }}>
               <PrismicNextImage
                 field={logoImage}
                 fill
@@ -180,6 +179,9 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
           </p>
         )}
       </div>
+
+      {/* Sweep light effect */}
+      <div ref={sweepRef} className="pointer-events-none absolute inset-y-0 left-[-20%] w-[40%] bg-[linear-gradient(90deg,transparent,rgba(141,246,255,0.35),transparent)] mix-blend-screen blur-md" />
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">

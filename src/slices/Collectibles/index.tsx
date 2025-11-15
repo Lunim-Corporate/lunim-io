@@ -19,20 +19,11 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.from(cards, {
-          opacity: 0,
-          y: 30,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: { trigger: gridRef.current, start: "top 85%" },
-        });
+        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 } })
+          .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
       }
     }, sectionRef);
 
@@ -40,7 +31,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   }, []);
 
   return (
-    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]">
+    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}>
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} fallbackAlt="" />

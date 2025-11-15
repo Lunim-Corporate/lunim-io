@@ -30,12 +30,6 @@ const VirtualProduction = ({ slice }: VirtualProductionProps) => {
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
       // Zoom effect on background
       if (bgRef.current && slice.primary.enable_zoom_effect) {

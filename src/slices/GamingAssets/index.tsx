@@ -23,9 +23,6 @@ const GamingAssets = ({ slice }: GamingAssetsProps) => {
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const ctx = gsap.context(() => {
       gsap.from([titleRef.current, subtitleRef.current, bodyRef.current], {
         opacity: 0,

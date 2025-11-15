@@ -29,9 +29,6 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const preset = (slice.primary.animation_preset as string) || "fade-up";
 
     const ctx = gsap.context(() => {
@@ -67,32 +64,47 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
       const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
       if (textEls?.length && preset !== "none") {
-        const base = {
-          opacity: 0,
-          duration: 0.8,
-          stagger: preset === "stagger-strong" ? 0.18 : 0.12,
-          ease: preset === "stagger-strong" ? "back.out(1.4)" : "power3.out",
-          scrollTrigger: { trigger: sectionRef.current!, start: "top 80%" },
-        } as any;
-
+        const isStrong = preset === "stagger-strong";
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current!,
+            start: "top 80%",
+            end: "top 20%",
+            scrub: 0.6,
+          },
+        });
         if (preset === "slide-left") {
-          gsap.from(textEls, { ...base, x: -30 });
+          tl.from(textEls, {
+            opacity: 0,
+            x: -40,
+            filter: "blur(6px)",
+            stagger: isStrong ? 0.2 : 0.12,
+            ease: "none",
+          });
         } else {
-          gsap.from(textEls, { ...base, y: 24 });
+          tl.from(textEls, {
+            opacity: 0,
+            y: 48,
+            filter: "blur(6px)",
+            stagger: isStrong ? 0.2 : 0.12,
+            ease: "none",
+          });
         }
       }
 
       if (gridRef.current && preset !== "none") {
         const cards = gridRef.current.querySelectorAll("[data-pt-card]");
         if (cards.length) {
-          gsap.from(cards, {
+          gsap.timeline({
+            scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 },
+          }).from(cards, {
             opacity: 0,
-            y: preset === "slide-left" ? 0 : 20,
-            x: preset === "slide-left" ? -20 : 0,
-            duration: 0.6,
-            stagger: preset === "stagger-strong" ? 0.12 : 0.08,
-            ease: preset === "stagger-strong" ? "back.out(1.4)" : "power3.out",
-            scrollTrigger: { trigger: gridRef.current, start: "top 85%" },
+            y: preset === "slide-left" ? 0 : 30,
+            x: preset === "slide-left" ? -30 : 0,
+            rotate: 0.001,
+            filter: "blur(4px)",
+            stagger: preset === "stagger-strong" ? 0.14 : 0.1,
+            ease: "none",
           });
         }
       }

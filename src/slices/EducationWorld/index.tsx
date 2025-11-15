@@ -23,9 +23,6 @@ const EducationWorld = ({ slice }: EducationWorldProps) => {
   const backgroundImage = withImageAlt(slice.primary.background_image, "Education World background");
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const ctx = gsap.context(() => {
       if (bgRef.current) {
         gsap.to(bgRef.current, {
