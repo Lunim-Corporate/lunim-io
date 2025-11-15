@@ -123,7 +123,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
 
       {/* Content */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Logo - Fixed dimensions and clipping */}
+        {/* Logo  */}
         {logoImage && (
           <div
             ref={logoRef}

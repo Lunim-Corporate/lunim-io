@@ -113,18 +113,6 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     return () => ctx.revert();
   }, []);
 
-  const bgClasses = {
-    "dark-blue": "bg-[#071327]",
-    black: "bg-black",
-    "gradient-dark":
-      "bg-gradient-to-b from-[#040a18] via-[#071327] to-[#03070f]",
-  };
-
-  const bgClass =
-    bgClasses[
-      slice.primary.background_color as keyof typeof bgClasses
-    ] || bgClasses["dark-blue"];
-
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   return (
@@ -132,7 +120,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className={`relative py-20 md:py-32 ${bgClass} overflow-hidden`}
+      className={`relative py-20 md:py-32 overflow-hidden`}
     >
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">

@@ -56,7 +56,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
           </div>
         )}
 
-        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
           {slice.items.map((item: any, idx: number) => (
             <article key={idx} className="collectible-card rounded-xl overflow-hidden bg-[#0b1222] border border-white/5 shadow-[0_0_20px_rgba(141,246,255,0.1)]">
               <div className="aspect-[4/3] relative">
@@ -69,7 +69,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
                 <div className="mt-2 flex items-center justify-between text-xs text-white/70">
                   <span>{item.price_label}</span>
                   {item.cta_label && (
-                    <span className="px-2 py-1 rounded-md bg-[#8df6ff]/15 text-[#8df6ff] border border-[#8df6ff]/30">{item.cta_label}</span>
+                    <span className="px-2 py-1 rounded-md bg-[#8df6ff]/15 text-[#8df6ff] border border-[#8df6ff]/30 cursor-pointer hover:bg-[#8df6ff]/20 transition-colors">{item.cta_label}</span>
                   )}
                 </div>
               </div>

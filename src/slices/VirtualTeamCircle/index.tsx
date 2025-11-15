@@ -166,13 +166,13 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative py-20 md:py-32 bg-gradient-to-b from-[#03070f] via-[#071327] to-[#040a18] overflow-hidden"
+      className="relative py-20 md:py-32 overflow-hidden"
     >
       {/* Optional background image */}
       {bgImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={bgImage} fill className="object-cover" quality={85} alt="" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-transparent" />
         </div>
       )}
       {/* Particle/Stars Background */}
@@ -234,7 +234,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
             {/* Bullets (3 items recommended) */}
             {Array.isArray(slice.primary.bullets) && slice.primary.bullets.length > 0 && (
               <ul className="mt-4 space-y-2">
-                {slice.primary.bullets.slice(0, 3).map((b: any, idx: number) => (
+                {slice.primary.bullets.slice(0, 8).map((b: any, idx: number) => (
                   <li key={idx} className="flex items-start gap-3 text-white/90">
                     <span className="mt-2 w-2 h-2 rounded-full bg-[#8df6ff]" />
                     <span className="text-sm md:text-base">{b.item}</span>
@@ -244,72 +244,93 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
             )}
           </div>
 
-          {/* Right Column: Radial Diagram with arrows */}
-          <div ref={circleContainerRef} className="relative min-h-[620px] lg:min-h-[720px]">
-            {/* Arrow canvas */}
-            <svg ref={svgRef} className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <marker id="vtc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff" />
-                </marker>
-              </defs>
-              {(() => {
-                const cx = 440; const cy = 350; const hubR = 96; const nodeR = 44; const r = 220;
-                const count = Math.min((slice.items || []).length, 8);
-                const degs = count >= 8 ? [140, 20, 0, 330, 270, 210, 180, 110] : [30, 0, 300, 270, 225, 180];
-                const list = (slice.items || []).slice(0, count);
-                return list.map((_: any, i: number) => {
-                  const a = (degs[i] * Math.PI) / 180;
-                  const nx = cx + r * Math.cos(a);
-                  const ny = cy + r * Math.sin(a);
-                  const ux = (cx - nx) / Math.hypot(cx - nx, cy - ny);
-                  const uy = (cy - ny) / Math.hypot(cx - nx, cy - ny);
-                  const x1 = nx + ux * nodeR;
-                  const y1 = ny + uy * nodeR;
-                  const x2 = cx - ux * hubR;
-                  const y2 = cy - uy * hubR;
-                  return <line key={`arr-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#ffffff" strokeWidth="3" markerEnd="url(#vtc-arrow)" />;
-                });
-              })()}
+          {/* Right Column: Circular Diagram */}
+          <div className="relative min-h-[600px] lg:min-h-[700px] flex items-center justify-center">
+            <div ref={circleContainerRef} className="relative mx-auto w-full max-w-[700px] aspect-square">
+              {/* SVG for connecting lines (touch profile at 180° side) */}
+              <svg
+                ref={svgRef}
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="-350 -350 700 700"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+              {slice.items.map((item: any, index: number) => {
+                const pos = calculatePosition(item.position || "top-center", radius);
+                // Offset end point inward by circle radius so it touches profile edge at side (180° from center)
+                const profileR = 56; // approx px for 28*2 (md ~ 112) / viewBox scale; tuned visually
+                const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
+                const x2 = pos.x - Math.cos(angle) * profileR;
+                const y2 = pos.y - Math.sin(angle) * profileR;
+                return (
+                  <line
+                    key={index}
+                    x1={centerX}
+                    y1={centerY}
+                    x2={x2}
+                    y2={y2}
+                    stroke="rgba(141, 246, 255, 0.4)"
+                    strokeWidth="2"
+                  />
+                );
+              })}
             </svg>
 
-            {/* Center hub (photo + glow) positioned middle-right */}
-            <div className="absolute" style={{ left: 440, top: 350, transform: "translate(-50%, -50%)" }}>
-              <div className="relative rounded-full ring-4 ring-[#8df6ff] shadow-[0_0_40px_rgba(141,246,255,0.6)] overflow-hidden" style={{ width: 192, height: 192 }}>
-                {slice.primary.center_image?.url && (
-                  <PrismicNextImage field={withImageAlt(slice.primary.center_image, "") as any} fill className="object-cover" alt="" />
-                )}
-                <div className="absolute inset-0 bg-cyan-300/20 mix-blend-multiply" />
+            {/* Center Circle with Prismic-controlled image and tinted overlay */}
+            <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 rounded-full ring-4 ring-[#8df6ff] shadow-[0_0_40px_rgba(141,246,255,0.6)] z-10 overflow-hidden bg-[#071327]">
+              {slice.primary.center_image?.url && (
+                <PrismicNextImage field={withImageAlt(slice.primary.center_image, "") as any} fill className="object-cover" alt="" />
+              )}
+              {/* Light tint overlay */}
+              <div className="absolute inset-0 bg-cyan-300/10 mix-blend-multiply" />
+              {/* Centered title */}
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <span className="text-gray-500 text-center p-4 font-bold text-lg md:text-2xl tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+                  {slice.primary.center_label || "Virtual Team"}
+                </span>
               </div>
             </div>
 
-            {/* Six profile nodes with neon labels */}
-            {(() => {
-              const cx = 440; const cy = 350; const r = 220; const nodeSize = 88;
-              const count = Math.min((slice.items || []).length, 8);
-              const degs = count >= 8 ? [140, 20, 0, 330, 270, 210, 180, 110] : [30, 0, 300, 270, 225, 180];
-              const list = (slice.items || []).slice(0, count);
-              return list.map((item: any, i: number) => {
-                const a = (degs[i] * Math.PI) / 180;
-                const nx = cx + r * Math.cos(a);
-                const ny = cy + r * Math.sin(a);
-                return (
-                  <div key={`n-${i}`} className="absolute team-member" style={{ left: nx, top: ny, transform: "translate(-50%, -50%)" }}>
-                    <div className="relative rounded-full overflow-hidden ring-2 ring-[#8df6ff] shadow-[0_0_18px_rgba(141,246,255,0.5)]" style={{ width: nodeSize, height: nodeSize }}>
-                      {item.team_photo?.url && (
-                        <PrismicNextImage field={withImageAlt(item.team_photo, item.primary_role || "Member") as any} fill className="object-cover" />
+            {/* Team Members */}
+            {slice.items.map((item: any, index: number) => {
+              const pos = calculatePosition(item.position || "top-center", radius);
+              const memberAlt =
+                item.primary_role || item.secondary_role || `Team member ${index + 1}`;
+              const teamPhotoField = withImageAlt(item.team_photo, memberAlt);
+              return (
+                <div
+                  key={index}
+                  className="team-member absolute"
+                  style={{
+                    left: "50%",
+                    top: "50%",
+                    transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))`,
+                  }}
+                >
+                  <div className="flex flex-col items-center">
+                    {/* Photo Circle */}
+                    {teamPhotoField && (
+                      <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] mb-2 relative">
+                        <PrismicNextImage
+                          field={teamPhotoField}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+
+                    {/* Role Label under the photo */}
+                    <div className="px-3 py-2 rounded-xl bg-[#071327]/90 backdrop-blur-sm border border-[#8df6ff]/25 text-center shadow-[0_0_16px_rgba(141,246,255,0.35)] min-w-[150px]">
+                      {item.primary_role && (
+                        <p className="text-white font-semibold text-xs md:text-sm leading-tight">{item.primary_role}</p>
                       )}
-                    </div>
-                    <div className="mt-2 px-3 py-1 rounded-full bg-[#071327]/80 border border-[#8df6ff]/30 text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[140px] mx-auto">
-                      <p className="text-white text-xs font-semibold leading-tight">{item.primary_role}</p>
                       {item.secondary_role && (
-                        <p className="text-[#8df6ff] text-[11px] leading-tight">{item.secondary_role}</p>
+                        <p className="text-[#8df6ff] text-[11px] leading-tight mt-0.5">{item.secondary_role}</p>
                       )}
                     </div>
                   </div>
-                );
-              });
-            })()}
+                </div>
+              );
+            })}
+            </div>
           </div>
         </div>
 

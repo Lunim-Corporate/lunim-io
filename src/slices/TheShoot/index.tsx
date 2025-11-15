@@ -130,12 +130,12 @@ const TheShoot = ({ slice }: TheShootProps) => {
             fallbackAlt=""
           />
           {/* Lighter overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/75 to-transparent" />
         </div>
       )}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className={`flex flex-col items-start text-left max-w-2xl`}>
           {/* Title */}
           {slice.primary.title && (

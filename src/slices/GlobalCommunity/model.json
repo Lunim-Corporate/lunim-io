@@ -45,19 +45,6 @@
             "thumbnails": []
           }
         },
-        "background_color": {
-          "type": "Select",
-          "config": {
-            "label": "Background Color",
-            "placeholder": "Select background",
-            "options": [
-              "dark-blue",
-              "black",
-              "gradient-dark"
-            ],
-            "default_value": "dark-blue"
-          }
-        },
         "background_image": {
           "type": "Image",
           "config": {
@@ -72,13 +59,42 @@
             "label": "Sphere Images",
             "repeat": true,
             "fields": {
-              "image": { "type": "Image", "config": { "label": "Image", "constraint": {}, "thumbnails": [] } },
-              "alt": { "type": "Text", "config": { "label": "Alt (optional)" } }
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "alt": {
+                "type": "Text",
+                "config": {
+                  "label": "Alt (optional)"
+                }
+              }
             }
           }
         },
-        "sphere_auto_rotate": { "type": "Boolean", "config": { "label": "Sphere Auto Rotate", "default_value": true } },
-        "sphere_size": { "type": "Select", "config": { "label": "Sphere Size", "options": ["small","medium","large"], "default_value": "medium" } }
+        "sphere_auto_rotate": {
+          "type": "Boolean",
+          "config": {
+            "label": "Sphere Auto Rotate",
+            "default_value": true
+          }
+        },
+        "sphere_size": {
+          "type": "Select",
+          "config": {
+            "label": "Sphere Size",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ],
+            "default_value": "medium"
+          }
+        }
       },
       "items": {
         "face_image": {
