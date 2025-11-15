@@ -29,6 +29,9 @@ import {
   FileText as FileTextIcon,
   MessagesSquare as MessagesSquareIcon,
   Mail as MailIcon,
+  Handshake as HandshakeIcon,
+  Coins as CoinsIcon,
+  SquareStack as SquareStackIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -66,6 +69,9 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Waypoints: WaypointsIcon,
   FileText: FileTextIcon,
   MessagesSquare: MessagesSquareIcon,
+  Handshake: HandshakeIcon,
+  Coins: CoinsIcon,
+  SquareStack: SquareStackIcon,
   Mail: MailIcon,
 };
 
