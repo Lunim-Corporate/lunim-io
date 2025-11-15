@@ -23,9 +23,6 @@ const GamingAssets = ({ slice }: GamingAssetsProps) => {
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const ctx = gsap.context(() => {
       gsap.from([titleRef.current, subtitleRef.current, bodyRef.current], {
         opacity: 0,
@@ -57,7 +54,7 @@ const GamingAssets = ({ slice }: GamingAssetsProps) => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="max-w-2xl space-y-6">
           {slice.primary.title && (
             <div ref={titleRef}>

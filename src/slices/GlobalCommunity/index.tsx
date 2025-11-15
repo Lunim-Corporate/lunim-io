@@ -34,49 +34,14 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   );
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
-      // Eyebrow text fade in
-      gsap.from(eyebrowRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-        },
+      // Scrubbed reveal for eyebrow, heading, body
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: sectionRef.current, start: "top 85%", end: "top 35%", scrub: 0.6 },
       });
-
-      // Heading slide in
-      gsap.from(headingRef.current, {
-        opacity: 0,
-        x: -30,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-        },
-      });
-
-      // Body text fade in
-      gsap.from(bodyRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        delay: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-        },
-      });
+      tl.from(eyebrowRef.current, { opacity: 0, y: 24, filter: "blur(4px)" })
+        .from(headingRef.current, { opacity: 0, x: -40, filter: "blur(6px)" }, "-=0.2")
+        .from(bodyRef.current, { opacity: 0, y: 28, filter: "blur(6px)" }, "-=0.1");
 
       // Logo parallax
       gsap.to(logoRef.current, {
@@ -113,18 +78,6 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     return () => ctx.revert();
   }, []);
 
-  const bgClasses = {
-    "dark-blue": "bg-[#071327]",
-    black: "bg-black",
-    "gradient-dark":
-      "bg-gradient-to-b from-[#040a18] via-[#071327] to-[#03070f]",
-  };
-
-  const bgClass =
-    bgClasses[
-      slice.primary.background_color as keyof typeof bgClasses
-    ] || bgClasses["dark-blue"];
-
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   return (
@@ -132,7 +85,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className={`relative py-20 md:py-32 ${bgClass} overflow-hidden`}
+      className={`relative py-20 md:py-32 overflow-hidden`}
     >
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">

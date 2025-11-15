@@ -19,20 +19,11 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.from(cards, {
-          opacity: 0,
-          y: 30,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: { trigger: gridRef.current, start: "top 85%" },
-        });
+        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 } })
+          .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
       }
     }, sectionRef);
 
@@ -40,7 +31,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   }, []);
 
   return (
-    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]">
+    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}>
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} fallbackAlt="" />
@@ -56,7 +47,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
           </div>
         )}
 
-        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
           {slice.items.map((item: any, idx: number) => (
             <article key={idx} className="collectible-card rounded-xl overflow-hidden bg-[#0b1222] border border-white/5 shadow-[0_0_20px_rgba(141,246,255,0.1)]">
               <div className="aspect-[4/3] relative">
@@ -69,7 +60,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
                 <div className="mt-2 flex items-center justify-between text-xs text-white/70">
                   <span>{item.price_label}</span>
                   {item.cta_label && (
-                    <span className="px-2 py-1 rounded-md bg-[#8df6ff]/15 text-[#8df6ff] border border-[#8df6ff]/30">{item.cta_label}</span>
+                    <span className="px-2 py-1 rounded-md bg-[#8df6ff]/15 text-[#8df6ff] border border-[#8df6ff]/30 cursor-pointer hover:bg-[#8df6ff]/20 transition-colors">{item.cta_label}</span>
                   )}
                 </div>
               </div>

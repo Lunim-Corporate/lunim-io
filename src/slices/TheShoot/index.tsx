@@ -29,12 +29,6 @@ const TheShoot = ({ slice }: TheShootProps) => {
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
       // Parallax background
       if (bgRef.current) {
@@ -52,63 +46,21 @@ const TheShoot = ({ slice }: TheShootProps) => {
         });
       }
 
-      // Title fade in
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-        },
-      });
-
-      // Subtitle fade in
-      gsap.from(subtitleRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        delay: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 65%",
-        },
-      });
-
-      // Bullet points stagger animation
+      // Scrubbed reveal for title/subtitle and bullets
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 80%", end: "top 30%", scrub: 0.6 } });
+      tl.from(titleRef.current, { opacity: 0, y: 48, filter: "blur(6px)" })
+        .from(subtitleRef.current, { opacity: 0, y: 28, filter: "blur(4px)" }, "-=0.1");
       if (listRef.current) {
         const bullets = listRef.current.querySelectorAll("li");
-        gsap.from(bullets, {
-          opacity: 0,
-          x: -50,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: listRef.current,
-            start: "top 75%",
-          },
-        });
+        gsap.timeline({ scrollTrigger: { trigger: listRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 } })
+          .from(bullets, { opacity: 0, x: -36, filter: "blur(4px)", stagger: 0.12, ease: "none" });
       }
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const alignmentClass = {
-    left: "items-start text-left",
-    center: "items-center text-center",
-    right: "items-end text-right",
-  };
-
-  const textAlign =
-    alignmentClass[
-      slice.primary.text_alignment as keyof typeof alignmentClass
-    ] || alignmentClass.left;
-
-  return (
+   return (
     <section
       ref={sectionRef}
       data-slice-type={slice.slice_type}
@@ -130,12 +82,12 @@ const TheShoot = ({ slice }: TheShootProps) => {
             fallbackAlt=""
           />
           {/* Lighter overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040a18]/70 via-[#040a18]/75 to-transparent" />
         </div>
       )}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className={`flex flex-col items-start text-left max-w-2xl`}>
           {/* Title */}
           {slice.primary.title && (

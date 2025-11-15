@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
+import { withImageAlt } from "@/lib/prismicImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,49 +18,75 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const svgRefH = useRef<SVGSVGElement>(null);
   const svgRefV = useRef<SVGSVGElement>(null);
-  const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
+  const titleRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
 
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+  const backgroundImage = slice.primary.background_image?.url
+    ? withImageAlt(slice.primary.background_image, "")
+    : null;
 
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: sectionRef.current, start: "top 70%" }
-    });
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Soft header fade-in on scroll-in
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            end: "top 40%",
+            scrub: 0.6,
+          },
+        })
+        .from(titleRef.current, { autoAlpha: 0, y: 32, filter: "blur(6px)" })
+        .from(subtitleRef.current, { autoAlpha: 0, y: 20, filter: "blur(4px)" }, "-=0.1");
 
-    // Animate line draw horizontal
-    if (svgRefH.current) {
-      const path = svgRefH.current.querySelector("path");
-      if (path) {
-        const length = (path as SVGPathElement).getTotalLength();
-        (path as SVGPathElement).style.strokeDasharray = `${length}`;
-        (path as SVGPathElement).style.strokeDashoffset = `${length}`;
-        tl.to(path, { strokeDashoffset: 0, duration: 1.2, ease: "power2.out" }, 0);
-      }
-    }
-    // Animate line draw vertical (mobile)
-    if (svgRefV.current) {
-      const path = svgRefV.current.querySelector("path");
-      if (path) {
-        const length = (path as SVGPathElement).getTotalLength();
-        (path as SVGPathElement).style.strokeDasharray = `${length}`;
-        (path as SVGPathElement).style.strokeDashoffset = `${length}`;
-        tl.to(path, { strokeDashoffset: 0, duration: 1.2, ease: "power2.out" }, 0);
-      }
-    }
-
-    // Stagger steps
-    const stepEls = sectionRef.current?.querySelectorAll(".ba-step");
-    if (stepEls?.length) {
-      gsap.from(stepEls, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current!, start: "top 75%" },
+      // Scroll-driven reveal for the line and nodes (no pinning to avoid layout gaps)
+      const master = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "bottom 20%",
+          scrub: 0.9,
+        },
       });
-    }
+
+      // Draw timeline line (desktop)
+      if (svgRefH.current) {
+        const path = svgRefH.current.querySelector("path") as SVGPathElement | null;
+        if (path) {
+          const length = path.getTotalLength();
+          path.style.strokeDasharray = `${length}`;
+          path.style.strokeDashoffset = `${length}`;
+          master.to(path, { strokeDashoffset: 0, ease: "none", duration: 0.45 }, 0);
+        }
+      }
+      // Draw timeline line (mobile)
+      if (svgRefV.current) {
+        const path = svgRefV.current.querySelector("path") as SVGPathElement | null;
+        if (path) {
+          const length = path.getTotalLength();
+          path.style.strokeDasharray = `${length}`;
+          path.style.strokeDashoffset = `${length}`;
+          master.to(path, { strokeDashoffset: 0, ease: "none", duration: 0.45 }, 0);
+        }
+      }
+
+      // Nodes appear one-by-one aligned to the line
+      const stepEls = sectionRef.current?.querySelectorAll(".ba-step");
+      if (stepEls?.length) {
+        master.from(stepEls, {
+          autoAlpha: 0,
+          scale: 0.9,
+          y: 8,
+          filter: "blur(5px)",
+          stagger: 0.18,
+          ease: "none",
+          duration: 0.7,
+        }, ">-0.05");
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   const hasRichText = (field: any): boolean => {
@@ -70,56 +97,88 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
 
   // SVG helper
   const HorizontalLine = () => (
-    <svg ref={svgRefH} className="hidden md:block w-full h-16" viewBox="0 0 1000 64" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 32 H984" stroke="rgba(141,246,255,0.6)" strokeWidth="3" fill="none" />
+    <svg
+      ref={svgRefH}
+      className="hidden md:block w-full h-16"
+      viewBox="0 0 1000 64"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Line spans full width so it starts/ends directly under the first and last nodes */}
+      <path
+        d="M0 32 H1000"
+        stroke="rgba(141,246,255,0.6)"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
     </svg>
   );
 
   const NodeOverlay = () => {
     const count = Math.max(1, slice.items.length);
     return (
-      <div className="relative hidden md:block" aria-hidden>
-        {/* absolute container over the line height */}
-        <div className="absolute inset-0 h-16">
-          {slice.items.map((item: any, idx: number) => {
-            const left = (idx / (count - 1)) * 100;
-            const hasTopDescription = hasRichText(item.top_description);
-            const hasBottomDescription = hasRichText(item.bottom_description);
-            return (
-              <div key={idx} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${left}%`, transform: 'translate(-50%, -50%)' }}>
-                <div className="relative w-16 h-16 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_20px_rgba(141,246,255,0.3)]">
-                  {item.node_image?.url && (
-                    <PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || "Timeline node") }} fill className="object-cover" />
+      <div className="absolute inset-0 h-16 hidden md:block pointer-events-none" aria-hidden>
+        {slice.items.map((item: any, idx: number) => {
+          const denom = Math.max(1, count - 1);
+          const marginPct = 0;
+          const leftPct = count === 1 ? 50 : marginPct + (idx / denom) * (100 - 2 * marginPct);
+          const hasTopDescription = hasRichText(item.top_description);
+          const hasBottomDescription = hasRichText(item.bottom_description);
+
+          const isFirst = idx === 0;
+          const isLast = idx === count - 1;
+
+          const baseClasses = "ba-step absolute top-1/2 -translate-y-1/2";
+          let className = baseClasses;
+          const style: React.CSSProperties = {};
+
+          if (isFirst) {
+            className += " left-0"; // first node anchored to far left edge
+          } else if (isLast) {
+            className += " right-0"; // last node anchored to far right edge
+          } else {
+            className += " -translate-x-1/2";
+            style.left = `${leftPct}%`;
+          }
+
+          return (
+            <div
+              key={idx}
+              className={className}
+              style={style}
+            >
+              <div className="relative w-16 h-16 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_20px_rgba(141,246,255,0.3)]">
+                {item.node_image?.url && (
+                  <PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || "Timeline node") }} fill className="object-cover" />
+                )}
+              </div>
+              {/* Top connector + text */}
+              {item.top_title || hasTopDescription ? (
+                <div className="absolute -top-36 left-1/2 -translate-x-1/2 w-56 text-center">
+                  <div className="mx-auto mb-3 h-24 w-px bg-[#8df6ff]/40" />
+                  {item.top_title && <p className="text-white font-semibold text-sm">{item.top_title}</p>}
+                  {hasTopDescription && (
+                    <div className="text-white/80 text-xs leading-snug mt-1">
+                      <PrismicRichText field={item.top_description} />
+                    </div>
                   )}
                 </div>
-                {/* Top connector + text */}
-                {item.top_title || hasTopDescription ? (
-                  <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-56 text-center">
-                    <div className="mx-auto mb-2 h-14 w-px bg-[#8df6ff]/40" />
-                    {item.top_title && <p className="text-white font-semibold text-sm">{item.top_title}</p>}
-                    {hasTopDescription && (
-                      <div className="text-white/80 text-xs leading-snug mt-1">
-                        <PrismicRichText field={item.top_description} />
-                      </div>
-                    )}
-                  </div>
-                ) : null}
-                {/* Bottom connector + text */}
-                {item.bottom_title || hasBottomDescription ? (
-                  <div className="absolute -bottom-36 left-1/2 -translate-x-1/2 w-56 text-center">
-                    <div className="mx-auto mb-2 h-14 w-px bg-[#8df6ff]/40" />
-                    {item.bottom_title && <p className="text-white font-semibold text-sm">{item.bottom_title}</p>}
-                    {hasBottomDescription && (
-                      <div className="text-white/80 text-xs leading-snug mt-1">
-                        <PrismicRichText field={item.bottom_description} />
-                      </div>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
+              ) : null}
+              {/* Bottom connector + text */}
+              {item.bottom_title || hasBottomDescription ? (
+                <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-56 text-center">
+                  <div className="mx-auto mb-3 h-24 w-px bg-[#8df6ff]/40" />
+                  {item.bottom_title && <p className="text-white font-semibold text-sm">{item.bottom_title}</p>}
+                  {hasBottomDescription && (
+                    <div className="text-white/80 text-xs leading-snug mt-1">
+                      <PrismicRichText field={item.bottom_description} />
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -130,18 +189,24 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
   );
 
   return (
-    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 bg-[#040a18] overflow-hidden">
+    <section
+      ref={sectionRef}
+      data-slice-type={slice.slice_type}
+      data-slice-variation={slice.variation}
+      className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-[#040a18] overflow-hidden"
+    >
       {/* Background Image */}
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
-          <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} fallbackAlt="" />
+          <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} alt="" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {slice.primary.title && (
           <div className="mb-10">
-            <div className="text-left max-w-xl">
+            {/* Top-left stacked headlines */}
+            <div ref={titleRef} className="text-left max-w-3xl">
               <PrismicRichText
                 field={slice.primary.title}
                 components={{
@@ -154,17 +219,22 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
               />
             </div>
             {slice.primary.subtitle && (
-              <p className="text-white text-base md:text-lg mt-2 text-center">
+              <p
+                ref={subtitleRef}
+                className="text-white text-base md:text-lg mt-2 text-center"
+              >
                 {slice.primary.subtitle}
               </p>
             )}
           </div>
         )}
 
-        {/* Horizontal line on md+ */}
-        <div className="relative hidden md:block">
-          <HorizontalLine />
-          <NodeOverlay />
+        {/* Horizontal timeline across lower third (desktop) */}
+        <div className="hidden md:block mt-16" aria-hidden>
+          <div className="relative w-full h-16">
+            <HorizontalLine />
+            <NodeOverlay />
+          </div>
         </div>
 
         {/* Vertical timeline with nodes and alternating side text (mobile) */}
@@ -175,10 +245,11 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
             <div className="absolute inset-0">
               {slice.items.map((item: any, idx: number) => {
                 const count = Math.max(1, slice.items.length);
-                const topPct = (idx / (count - 1)) * 100;
+                const denom = Math.max(1, count - 1);
+                const topPct = count === 1 ? 50 : (idx / denom) * 100;
                 const sideLeft = idx % 2 === 0; // alternate left/right
                 return (
-                  <div key={idx} className="absolute left-1/2 -translate-x-1/2" style={{ top: `${topPct}%` }}>
+                  <div key={idx} className="ba-step absolute left-1/2 -translate-x-1/2" style={{ top: `${topPct}%` }}>
                     <div className="relative w-12 h-12 rounded-full bg-[#0b1222] border-2 border-[#8df6ff]/60 overflow-hidden shadow-[0_0_16px_rgba(141,246,255,0.35)]">
                       {item.node_image?.url && (
                         <PrismicNextImage field={{ ...(item.node_image as any), alt: ((item.top_title as string) || (item.bottom_title as string) || `Node ${idx + 1}`) }} fill className="object-cover" />
@@ -202,6 +273,14 @@ const BusinessAffairs = ({ slice }: BusinessAffairsProps) => {
           </div>
         </div>
       </div>
+      {/* Optional brand logo bottom-right */}
+      {slice.primary.brand_logo?.url && (
+        <div className="absolute bottom-4 right-4 opacity-80">
+          <div className="relative w-16 h-16">
+            <PrismicNextImage field={slice.primary.brand_logo as any} fill className="object-contain" alt="" />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
