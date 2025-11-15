@@ -11,8 +11,6 @@ const doc = await client.getSingle("homepage").catch(() => null);
 const title = doc?.data?.meta_title ? doc.data.meta_title : "Lunim";
 const backgroundImg = doc?.data?.meta_image?.url ?? null;
 
-export const alt = doc?.data?.meta_image?.alt || "Lunim";
-
 export default async function Image() {
   return generateOgImageResponse(title, backgroundImg, size);
 }

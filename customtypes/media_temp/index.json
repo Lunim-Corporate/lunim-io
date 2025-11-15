@@ -1,7 +1,7 @@
 {
   "format": "page",
-  "id": "authors",
-  "label": "Authors",
+  "id": "media_temp",
+  "label": "Media Temp",
   "repeatable": false,
   "status": true,
   "json": {
@@ -17,7 +17,14 @@
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {}
+          "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
+            "hero": {
+              "type": "SharedSlice"
+            }
+          }
         }
       }
     },
@@ -46,36 +53,6 @@
           "thumbnails": []
         },
         "type": "Image"
-      },
-      "meta_keywords": {
-        "type": "Group",
-        "config": {
-          "label": "Meta Keywords",
-          "repeat": true,
-          "fields": {
-            "meta_keywords_text": {
-              "type": "Text",
-              "config": {
-                "label": "Meta Keywords Text",
-                "placeholder": ""
-              }
-            }
-          }
-        }
-      },
-      "meta_url": {
-        "type": "Text",
-        "config": {
-          "label": "Meta URL",
-          "placeholder": ""
-        }
-      },
-      "meta_image_alt_text": {
-        "type": "Text",
-        "config": {
-          "label": "Meta Image Alt Text",
-          "placeholder": ""
-        }
       }
     }
   }

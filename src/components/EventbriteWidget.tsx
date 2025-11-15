@@ -125,7 +125,7 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
           href={fallbackUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-full max-w-md justify-center bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+          className="inline-flex w-full max-w-md justify-center bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg no-underline"
         >
           {buttonLabel}
         </a>
@@ -138,7 +138,7 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
       <button
         id={buttonId}
         type="button"
-        className="w-full bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg"
+        className="w-full max-w-md bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg cursor-pointer"
       >
         {buttonLabel}
       </button>

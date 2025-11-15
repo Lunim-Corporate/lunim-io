@@ -14,12 +14,12 @@ export const revalidate = 60;
 export default async function Page() {
   const client = createClient();
   const doc = (await (client as any)
-    .getSingle("our_team_page")
-    .catch(() => null)) as Content.OurTeamPageDocument | null;
+    .getSingle("film")
+    .catch(() => null)) as Content.FilmDocument | null;
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
-      <main className="p-6 text-white bg-black">Our team page not published.</main>
+      <main className="p-6 text-white bg-black">Media page not published.</main>
     );
   }
 
@@ -34,6 +34,7 @@ export default async function Page() {
   );
 }
 
+
 export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
@@ -42,20 +43,20 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const doc = (await (client as any)
-  .getSingle("our_team_page")
+  .getSingle("film")
   .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim",
-      description: "Welcome to Lunim's official team page."
+      description: "Welcome to Lunim's official media page."
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['our_team']);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['media']);
 }
 
 // export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
-//   const pathname = "/our-team";
+//   const pathname = "/media";
 
 //   return getMetaDataInfo(pathname, parent);
 //   }
