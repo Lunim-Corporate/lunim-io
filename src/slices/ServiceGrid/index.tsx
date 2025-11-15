@@ -12,6 +12,14 @@ import {
   Kanban, 
   Images,
   LucideProps,
+  Network,
+  FileText,
+  Coins,
+  LockKeyhole,
+  Route,
+  BookOpen,
+  Stamp,
+  CircleUserRound,
   HelpCircle 
 } from 'lucide-react';
 
@@ -20,6 +28,14 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   UserStar: UserStar,
   Cpu: Cpu,
   Kanban: Kanban,
+  Network: Network,
+  FileText: FileText,
+  Coins: Coins,
+  LockKeyhole: LockKeyhole,
+  Route: Route,
+  BookOpen: BookOpen,
+  Stamp: Stamp,
+  CircleUserRound: CircleUserRound,
   Images: Images,
 };
 
