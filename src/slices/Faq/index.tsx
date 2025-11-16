@@ -29,15 +29,15 @@ const Faq: React.FC<FaqProps> = ({ slice }) => {
               className="bg-[#1f2937] rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg"
             >
               <details className="group">
-                <summary className="w-full flex justify-between items-center p-6 text-left cursor-pointer focus:outline-none list-none">
-                  <h3 className="text-lg font-semibold text-white pr-4">
+                <summary className="w-full flex justify-between items-center p-4 md:p-6 text-left cursor-pointer focus:outline-none list-none">
+                  <h3 className="text-lg font-semibold text-white pr-4 mt-0 mb-0">
                     {/* Use the Key Text field directly for the question */}
                     {item.question}
                   </h3>
                   <ChevronDown className="w-6 h-6 text-white flex-shrink-0 transition-transform duration-300 group-open:rotate-180" />
                 </summary>
                 {/* Use PrismicRichText for the answer, which handles paragraphs automatically */}
-                <div className="p-6 pt-0 text-gray-300 prose prose-invert max-w-none">
+                <div className="p-4 md:p-6 pt-0 text-gray-300 prose prose-invert max-w-none">
                   <PrismicRichText field={item.answer} />
                 </div>
               </details>
