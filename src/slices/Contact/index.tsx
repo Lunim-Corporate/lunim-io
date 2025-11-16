@@ -119,8 +119,8 @@ const Contact: FC<ContactProps> = ({ slice }) => {
               <div
                 className={
                   isDigital
-                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
-                    : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
+                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-4 md:p-6 lg:p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
+                    : "bg-[#1a202c] p-4 md:p-6 lg:p-8 rounded-lg shadow-xl border border-white"
                 }
               >
                 <h3 className="text-xl font-bold text-white !mt-1 !mb-2">
@@ -197,8 +197,8 @@ const Contact: FC<ContactProps> = ({ slice }) => {
               <div
                 className={
                   isDigital
-                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
-                    : "bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
+                    ? "relative overflow-hidden rounded-2xl border border-white/10 bg-[#111d33]/90 p-4 md:p-6 lg:p-8 shadow-[0_24px_45px_rgba(5,12,32,0.55)] backdrop-blur"
+                    : "bg-[#1a202c] p-4 md:p-6 lg:p-8 rounded-lg shadow-xl border border-white"
                 }
               >
                 <h3

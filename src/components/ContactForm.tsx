@@ -41,7 +41,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
     const tabbLabel = buttonLabel || "Visit Tabb";
     return (
       <div
-        className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white text-center space-y-6"
+        className="bg-[#1a202c] p-4 md:p-6 lg:p-8 rounded-lg shadow-xl border border-white text-center space-y-6"
         style={{ scrollMarginTop: "5rem" }}
       >
         <h3 className="text-xl font-bold text-white mt-1">{resolvedTitle}</h3>
@@ -97,7 +97,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   return (
     <div
       id="get-in-touch"
-      className="bg-[#1a202c] p-8 rounded-lg shadow-xl border border-white"
+      className="bg-[#1a202c] p-4 md:p-6 lg:p-8 rounded-lg shadow-xl border border-white"
       style={{ scrollMarginTop: "5rem" }}
     >
       <h3 className="text-xl font-bold text-white !mt-1 !mb-6 text-center">
