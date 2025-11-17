@@ -1,8 +1,8 @@
 {
-  "id": "business_affairs",
+  "id": "parallax_line",
   "type": "SharedSlice",
-  "name": "BusinessAffairs",
-  "description": "Timeline of business affairs underpinned by Web3 smart contracts. Horizontal on desktop, vertical on mobile.",
+  "name": "ParallaxLine",
+  "description": "Timeline with progressive line animation and alternating content. Horizontal on desktop, vertical on mobile.",
   "variations": [
     {
       "id": "default",
@@ -14,6 +14,7 @@
       "primary": {
         "title": { "type": "StructuredText", "config": { "label": "Title", "single": "heading2", "placeholder": "Business Affairs" } },
         "subtitle": { "type": "Text", "config": { "label": "Subtitle", "placeholder": "Underpinned by Web3 Smart Contracts" } },
+        "description": { "type": "StructuredText", "config": { "label": "Description", "multi": "paragraph,strong,em", "placeholder": "Ensuring IP protection whilst enabling automated, transparent revenue distribution." } },
         "background_image": { "type": "Image", "config": { "label": "Background Image", "constraint": { "width": 1920, "height": 1080 }, "thumbnails": [] } }
       },
       "items": {

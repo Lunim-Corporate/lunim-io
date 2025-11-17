@@ -113,8 +113,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
     return () => ctx.revert();
   }, [slice.primary.enable_parallax, slice.primary.enable_zoom_effect, slice.primary.animation_preset]);
 
-  const bgField = slice.primary.background_image as ImageLike | null;
-  const bgDecorative = bgField?.url ? bgField : null;
+  const bgImage = withImageAlt(slice.primary.background_image, "");
 
   const variation = slice.variation || "default";
   const align = (slice.primary.text_alignment as string) || "left";
@@ -142,11 +141,12 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={variation}
-      className={`relative ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
+      className={`relative min-h-screen ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
-      {bgDecorative?.url && (
-        <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
-          <PrismicNextImage field={bgDecorative as any} fill className="object-cover" quality={90} fallbackAlt="" />
+      {bgImage && (
+        <div ref={bgRef} className="absolute inset-0 z-0 will-change-transform">
+          <PrismicNextImage field={bgImage as any} fill priority className="object-cover" quality={90} alt="" />
           {slice.primary.overlay_style === "gradient_dark" && (
             <div className={`absolute inset-0 bg-gradient-to-r ${overlayStrength === "subtle" ? "from-black/60 via-black/35" : overlayStrength === "strong" ? "from-black/90 via-black/70" : "from-black/80 via-black/50"} to-transparent`} />
           )}
@@ -157,7 +157,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ color: textColor }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ color: textColor }}>
         <div className={wrapperClass}>
           {/* Left/Text column (or centered) */}
           <div className={textAlignClass}>
@@ -168,38 +168,28 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
             )}
 
             {hasRT(slice.primary.heading) && (
-              <div data-pt-text className="mt-3">
+              <div data-pt-text className="mt-4">
                 <PrismicRichText
                   field={slice.primary.heading}
                   components={{
-                    heading1: ({ children }) => <h1 className="text-white text-4xl md:text-5xl font-extrabold">{children}</h1>,
-                    heading2: ({ children }) => <h2 className="text-white text-3xl md:text-4xl font-extrabold">{children}</h2>,
+                    heading1: ({ children }) => <h1 className="text-[#8df6ff] text-4xl md:text-5xl lg:text-6xl font-bold">{children}</h1>,
+                    heading2: ({ children }) => <h2 className="text-[#8df6ff] text-4xl md:text-5xl lg:text-6xl font-bold">{children}</h2>,
                   }}
                 />
               </div>
             )}
 
             {hasRT(slice.primary.subtitle) && (
-              <p data-pt-text className="text-white/90 text-xl md:text-2xl mt-3">
+              <p data-pt-text className="text-white text-xl md:text-2xl lg:text-3xl font-semibold mb-8 leading-tight mt-4">
                 {slice.primary.subtitle}
               </p>
             )}
 
             {hasRT(slice.primary.body_text) && (
-              <div data-pt-text className="text-white/85 text-lg leading-relaxed mt-4">
+              <div data-pt-text className="text-white text-lg md:text-xl leading-snug mt-4">
                 <PrismicRichText field={slice.primary.body_text} />
               </div>
             )}
-
-            {/* Optional logo (shown for any variation if provided) */}
-            {slice.primary.logo?.url ? (
-              <div data-pt-text className="mt-8">
-                <PrismicNextImage
-                  field={withImageAlt(slice.primary.logo, "Logo") as any}
-                  className="max-w-full h-auto max-h-16 md:max-h-20 lg:max-h-24 object-contain"
-                />
-              </div>
-            ) : null}
           </div>
 
           {/* Right column for faceGrid */}
@@ -224,9 +214,9 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
           {variation === "bullets" && slice.items?.length ? (
             <div className="mt-8 space-y-4 max-w-2xl">
               {slice.items.map((item: any, i: number) => (
-                <div key={i} data-pt-text className="flex items-start gap-3">
-                  <span className="mt-2 w-2 h-2 rounded-full" style={{ backgroundColor: accent }} />
-                  <span className="text-white/90 text-base md:text-lg">{item.bullet_point}</span>
+                <div key={i} data-pt-text className="flex items-start gap-4">
+                  <span className="flex-shrink-0 w-2 h-2 mt-2 md:mt-2 rounded-full shadow-[0_0_10px_rgba(141,246,255,0.6)]" style={{ backgroundColor: accent }} />
+                  <span className="text-white text-lg md:text-xl leading-snug">{item.bullet_point}</span>
                 </div>
               ))}
             </div>

@@ -43,11 +43,11 @@ const CaseStudyTextPanel: FC<CaseStudyTextPanelProps> = ({ slice }) => {
       data-slice-variation={variation}
       className={`py-8 ${bgColor}`}
     >
-      <div className="container mx-auto px-6 max-w-4xl">
+      <div className="container mx-auto px-4 md:px-6 max-w-4xl">
         <div className="text-3xl font-bold mb-8 text-[#BBFEFF]">
           <PrismicRichText field={headingField} />
         </div>
-        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed">
+        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 md:p-6 prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed">
           <PrismicRichText field={contentField} />
         </div>
       </div>

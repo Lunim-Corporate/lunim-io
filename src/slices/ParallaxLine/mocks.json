@@ -3,6 +3,7 @@
   "primary": {
     "title": [{ "type": "heading2", "text": "Business Affairs" }],
     "subtitle": "Underpinned by Web3 Smart Contracts",
+    "description": [{ "type": "paragraph", "text": "Ensuring IP protection whilst enabling automated, transparent revenue distribution." }],
     "background_image": { "dimensions": { "width": 1600, "height": 900 }, "url": "https://images.prismic.io/lunim-v3/ba-bg.jpg" }
   },
   "items": [

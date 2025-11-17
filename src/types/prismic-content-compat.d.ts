@@ -33,7 +33,7 @@ declare module "@prismicio/client" {
     type EducationWorldSlice = any;
     type GamingAssetsSlice = any;
     type CollectiblesSlice = any;
-    type BusinessAffairsSlice = any;
+    type ParallaxLineSlice = any;
     type MediaFinaleSlice = any;
   }
 }

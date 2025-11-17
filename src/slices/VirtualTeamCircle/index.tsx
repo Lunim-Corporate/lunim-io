@@ -276,21 +276,24 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
         {/* Mobile fallback: Stacked grid */}
         <div className="lg:hidden mt-12 grid grid-cols-2 gap-6">
-          {slice.items.map((item: any, index: number) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              {item.team_photo?.url && (
-                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">
-                  <PrismicNextImage
-                    field={item.team_photo}
-                    className="w-full h-full object-cover"
-                    alt={item.primary_role || "Team member"}
-                  />
-                </div>
-              )}
-              <p className="text-white font-semibold text-sm">{item.primary_role}</p>
-              <p className="text-[#8df6ff] text-xs">{item.secondary_role}</p>
-            </div>
-          ))}
+          {slice.items.map((item: any, index: number) => {
+            const memberAlt = item.primary_role || item.secondary_role || `Team member ${index + 1}`;
+            const teamPhotoField = withImageAlt(item.team_photo, memberAlt);
+            return (
+              <div key={index} className="flex flex-col items-center text-center">
+                {teamPhotoField?.url && (
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#8df6ff] mb-3">
+                    <PrismicNextImage
+                      field={teamPhotoField}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <p className="text-white font-semibold text-sm">{item.primary_role}</p>
+                <p className="text-[#8df6ff] text-xs">{item.secondary_role}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

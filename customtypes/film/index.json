@@ -63,28 +63,13 @@
             "virtual_team_circle": {
               "type": "SharedSlice"
             },
-            "the_shoot": {
-              "type": "SharedSlice"
-            },
-            "virtual_production": {
-              "type": "SharedSlice"
-            },
-            "alternate_reality": {
-              "type": "SharedSlice"
-            },
-            "education_world": {
-              "type": "SharedSlice"
-            },
-            "gaming_assets": {
-              "type": "SharedSlice"
-            },
             "collectibles": {
               "type": "SharedSlice"
             },
-            "business_affairs": {
+            "parallax_text_image": {
               "type": "SharedSlice"
             },
-            "parallax_text_image": {
+            "parallax_line": {
               "type": "SharedSlice"
             }
           }

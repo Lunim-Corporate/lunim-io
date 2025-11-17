@@ -67,14 +67,26 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         );
       }
 
-      heroTl.from(logoRef.current, { opacity: 0, y: 80, scale: 0.92, filter: "blur(10px)", ease: "none" }, 0.15)
+      heroTl.fromTo(logoRef.current, 
+              { opacity: 0, y: 80, scale: 0.92, filter: "blur(10px)" },
+              { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "none" },
+              0.15)
             .to(logoRef.current, { filter: "drop-shadow(0 0 24px rgba(141,246,255,0.75))", duration: 0.2 }, ">-0.05");
 
-      heroTl.from(titleRef.current, { opacity: 0, y: 90, filter: "blur(12px)", letterSpacing: "0.15em", ease: "none" }, 0.25)
+      heroTl.fromTo(titleRef.current,
+              { opacity: 0, y: 90, filter: "blur(12px)", letterSpacing: "0.15em" },
+              { opacity: 1, y: 0, filter: "blur(0px)", letterSpacing: "0.15em", ease: "none" },
+              0.25)
             .to(titleRef.current, { letterSpacing: "0em", ease: "none" }, ">");
 
-      heroTl.from(subtitleRef.current, { opacity: 0, y: 60, filter: "blur(6px)", ease: "none" }, ">-0.05")
-            .from(taglineRef.current, { opacity: 0, y: 40, filter: "blur(4px)", ease: "none" }, ">-0.03");
+      heroTl.fromTo(subtitleRef.current,
+              { opacity: 0, y: 60, filter: "blur(6px)" },
+              { opacity: 1, y: 0, filter: "blur(0px)", ease: "none" },
+              ">-0.05")
+            .fromTo(taglineRef.current,
+              { opacity: 0, y: 40, filter: "blur(4px)" },
+              { opacity: 1, y: 0, filter: "blur(0px)", ease: "none" },
+              ">-0.03");
 
       // Background subtle parallax while pinned
       if (slice.primary.enable_parallax && bgRef.current) {
@@ -120,13 +132,13 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         </div>
       )}
 
-      {/* Content */}
+      {/* Content - Hidden initially, revealed by GSAP */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Logo  */}
         {logoImage && (
           <div
             ref={logoRef}
-            className="mb-12 flex justify-center w-full"
+            className="mb-12 flex justify-center w-full opacity-0"
           >
             <div className="relative z-30 w-full max-w-[834px] aspect-[834/254] mx-auto px-4" style={{ transform: "translate(-5px, -10px)" }}>
               <PrismicNextImage
@@ -144,7 +156,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.main_title && (
           <div
             ref={titleRef}
-            className="mb-8 w-full"
+            className="mb-8 w-full opacity-0"
           >
             <PrismicRichText
               field={slice.primary.main_title}
@@ -163,7 +175,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.subtitle && (
           <p
             ref={subtitleRef}
-            className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-6 max-w-4xl mx-auto font-light"
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-6 max-w-4xl mx-auto font-light opacity-0"
           >
             {slice.primary.subtitle}
           </p>
@@ -173,7 +185,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.tagline && (
           <p
             ref={taglineRef}
-            className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#8df6ff] font-medium tracking-wide"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#8df6ff] font-medium tracking-wide opacity-0"
           >
             {slice.primary.tagline}
           </p>
