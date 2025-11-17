@@ -23,6 +23,7 @@ export function generateOgImageResponse(
             boxSizing: "border-box",
             color: "white",
             fontSize: 75,
+            textShadow: "2px 2px 4px #000"
         }}
         >
         <div
