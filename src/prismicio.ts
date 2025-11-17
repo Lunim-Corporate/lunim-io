@@ -1,7 +1,6 @@
 import * as prismic from "@prismicio/client";
 import { enableAutoPreviews } from "@prismicio/next";
 import sm from "../slicemachine.config.json";
-import { revalidate } from "./app/page";
 
 // Local type fallbacks to avoid CLI/type version mismatches
 type ClientConfig = any;
@@ -101,8 +100,7 @@ export const createClient = (config: ClientConfig = {}) => {
     routes,
     fetchOptions:
       process.env.NODE_ENV === "production"
-        // ? { next: { tags: ["prismic"] }, cache: "force-cache" }
-        ? { next: { tags: ["prismic"], revalidate: 5 }}
+        ? { next: { tags: ["prismic"] }, cache: "force-cache" }
         : { next: { revalidate: 5 } },
     ...config,
   });
