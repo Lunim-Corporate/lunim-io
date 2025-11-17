@@ -17,7 +17,8 @@ declare global {
 }
 
 const EVENTBRITE_SCRIPT_ID = "eventbrite-widget-script";
-const EVENTBRITE_WIDGET_SRC = "https://www.eventbrite.co.uk/static/widgets/eb_widgets.js";
+const EVENTBRITE_WIDGET_SRC =
+  "https://www.eventbrite.com/static/widgets/eb_widgets.js";
 
 const loadEventbriteScript = () =>
   new Promise<void>((resolve, reject) => {
@@ -101,9 +102,8 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
         top: preservedScrollY,
         left: preservedScrollX,
       });
-      scrollLockFrameRef.current = window.requestAnimationFrame(
-        enforcePosition
-      );
+      scrollLockFrameRef.current =
+        window.requestAnimationFrame(enforcePosition);
     };
 
     enforcePosition();
@@ -168,8 +168,7 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
 
   if (!isSecureContext) {
     const fallbackUrl =
-      eventUrl ??
-      `https://www.eventbrite.com/e/${eventId}?aff=website_embed`;
+      eventUrl ?? `https://www.eventbrite.com/e/${eventId}?aff=website_embed`;
     return (
       <div className="space-y-3 text-center">
         <p className="text-sm text-amber-200">
