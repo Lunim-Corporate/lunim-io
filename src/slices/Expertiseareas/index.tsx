@@ -29,6 +29,13 @@ import {
   FileText as FileTextIcon,
   MessagesSquare as MessagesSquareIcon,
   Mail as MailIcon,
+  Handshake as HandshakeIcon,
+  Coins as CoinsIcon,
+  SquareStack as SquareStackIcon,
+  Frame as FrameIcon,
+  Map as MapIcon,
+  Eye as EyeIcon,
+  Sunset as SunsetIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -66,6 +73,13 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Waypoints: WaypointsIcon,
   FileText: FileTextIcon,
   MessagesSquare: MessagesSquareIcon,
+  Handshake: HandshakeIcon,
+  Coins: CoinsIcon,
+  SquareStack: SquareStackIcon,
+  Frame: FrameIcon,
+  Map: MapIcon,
+  Eye: EyeIcon,
+  Sunset: SunsetIcon,
   Mail: MailIcon,
 };
 
@@ -116,7 +130,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
           field={item.card_link}
           className="transform transition-transform duration-300 hover:scale-105 no-underline"
         >
-          <div className="rounded-2xl p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full">
+          <div className="rounded-2xl p-4 md:p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:border-[#BBFEFF]/40 transition-colors h-full">
             <CardContent />
             <div>
               <button className="after:content-['_>'] cursor-pointer rounded-[0.3rem] text-[#BBFEFF] text-base hover:text-cyan-300">
@@ -131,7 +145,7 @@ const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
     return (
       <div
         key={idx}
-        className="rounded-2xl p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] h-full"
+        className="rounded-2xl p-4 md:p-6 bg-black/40 border border-white/16 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] h-full"
       >
         <CardContent />
       </div>
