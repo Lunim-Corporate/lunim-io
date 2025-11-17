@@ -31,8 +31,7 @@ export function generateOgImageResponse(
             inset: 0,
             width: "100%",
             height: "100%",
-            background: "black",
-            opacity: 0.7,
+            background: "black"
             }}
         />
         <div style={{padding: 50}}>
