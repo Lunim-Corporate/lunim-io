@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -64,9 +64,60 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
   eventUrl,
 }) => {
   const [isSecureContext, setIsSecureContext] = useState(true);
+  const scrollLockFrameRef = useRef<number | null>(null);
+  const scrollLockTimeoutRef = useRef<number | null>(null);
   const buttonId = useMemo(
     () => `eventbrite-widget-modal-trigger-${eventId}`,
     [eventId]
+  );
+
+  const stopScrollMaintenance = useCallback(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (scrollLockFrameRef.current !== null) {
+      window.cancelAnimationFrame(scrollLockFrameRef.current);
+      scrollLockFrameRef.current = null;
+    }
+
+    if (scrollLockTimeoutRef.current !== null) {
+      window.clearTimeout(scrollLockTimeoutRef.current);
+      scrollLockTimeoutRef.current = null;
+    }
+  }, []);
+
+  const maintainScrollPosition = useCallback(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const preservedScrollY = window.scrollY;
+    const preservedScrollX = window.scrollX;
+
+    stopScrollMaintenance();
+
+    const enforcePosition = () => {
+      window.scrollTo({
+        top: preservedScrollY,
+        left: preservedScrollX,
+      });
+      scrollLockFrameRef.current = window.requestAnimationFrame(
+        enforcePosition
+      );
+    };
+
+    enforcePosition();
+
+    scrollLockTimeoutRef.current = window.setTimeout(() => {
+      stopScrollMaintenance();
+    }, 1200);
+  }, [stopScrollMaintenance]);
+
+  useEffect(
+    () => () => {
+      stopScrollMaintenance();
+    },
+    [stopScrollMaintenance]
   );
 
   useEffect(() => {
@@ -102,6 +153,10 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
       cancelled = true;
     };
   }, [eventId, buttonId, isSecureContext]);
+
+  const handleButtonClick = useCallback(() => {
+    maintainScrollPosition();
+  }, [maintainScrollPosition]);
 
   if (!eventId) {
     return (
@@ -139,6 +194,7 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
         id={buttonId}
         type="button"
         className="w-full max-w-md bg-[#BBFEFF] text-black px-8 py-4 rounded-lg font-semibold hover:bg-cyan-300 transition-colors duration-300 shadow-lg cursor-pointer"
+        onClick={handleButtonClick}
       >
         {buttonLabel}
       </button>
