@@ -7,3 +7,9 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "https://studio.lunim.io/*"
+  to = "https://lunim.io/digital/:splat"
+  status = 301
+  force = true
