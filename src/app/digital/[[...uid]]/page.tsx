@@ -133,48 +133,6 @@ export async function generateMetadata(
     return generateMetaDataInfo(doc.data, parentMetaData, false, true, uid);
 }
 
-// export async function generateStaticParams(): Promise<Array<{ uid: string[] }>> {
-//   const client = createClient();
-
-//   // Always include the root /digital
-//   const params: Array<{ uid: string[] }> = [{ uid: [] }];
-
-//   // 1) /digital/{category}  (digital_page)
-//   const digitalPages = await (client as any).getAllByType("digital_page").catch(() => []);
-//   for (const p of digitalPages) {
-//     if (p?.uid) params.push({ uid: [String(p.uid)] });
-//   }
-
-//   // 2) /digital/{category}/case-studies  (list page for each category)
-//   //    create one per category we found above
-//   for (const p of digitalPages) {
-//     if (p?.uid) params.push({ uid: [String(p.uid), "case-studies"] });
-//   }
-
-//   // 3) /digital/{category}/case-studies/{caseUid}  (individual case studies)
-//   const caseStudies = await (client as any).getAllByType("case_study_sm").catch(() => []);
-//   for (const cs of caseStudies) {
-//     // Preferred: if your doc includes a category field
-//     const category = (cs?.data?.digital_category || "").toString().trim();
-//     if (category) {
-//       if (cs?.uid) params.push({ uid: [category, "case-studies", String(cs.uid)] });
-//       continue;
-//     }
-//   }
-
-//   // Deduplicate entries (simple JSON key)
-//   const seen = new Set<string>();
-//   const deduped = params.filter((p) => {
-//     const key = JSON.stringify(p.uid);
-//     if (seen.has(key)) return false;
-//     seen.add(key);
-//     return true;
-//   });
-
-//   return deduped;
-// }
-
-
 /* Notes
 Why you cannot do `digital/[[...uid]]/opengraph-image.tsx` for OG images:
     Next.js can’t statically predict all possible paths (/, /docs/getting-started, /blog/hello-world, etc.).

@@ -42,11 +42,6 @@ export async function GET(req: Request) {
     const segments = uidParam ? uidParam.split("/").filter(Boolean) : [];
 
     const client = createClient();
-    // Create a client that does NOT use aggressive caching for OG generation.
-    // This ensures the image generator always reads fresh Prismic data in prod.
-    // const client = createClient({
-    //   fetchOptions: { next: { revalidate: 0 }, cache: "no-store" },
-    // });
     const doc = await fetchDocForSegments(client, segments);
     const title = doc?.data?.meta_title ?? "Lunim";
     const backgroundImg = doc?.data?.meta_image?.url ?? null;
@@ -79,4 +74,6 @@ An Edge route handler (e.g., app/api/og/route.tsx) that accepts `?uid=`, generat
 
 Next will try to statically optimise/cache them and routing around optional catch-all segments is ambiguous (and can error)
 
+Links to "netlify.toml"
+  A header rule was added for `api/og*` to enforce Cache-Control: no-store,... at Netlify's edge.
 */
