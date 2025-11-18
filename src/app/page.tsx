@@ -9,8 +9,6 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { notFound } from "next/navigation";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
-import type { Organization, WebSite } from "schema-dts";
-import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 60;
 
@@ -22,28 +20,8 @@ export default async function Page() {
   if (!doc) notFound();
 
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
-  const jsonLd: {
-    "@context": "https://schema.org";
-    "@graph": [Organization, WebSite];
-  } = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        name: "Lunim",
-        url: "https://lunim.io",
-        logo: "https://lunim.io/logo.png",
-      },
-      {
-        "@type": "WebSite",
-        name: "Lunim",
-        url: "https://lunim.io",
-      },
-    ],
-  };
   return (
     <>
-      <JsonLd data={jsonLd} />
       <main className="bg-black">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>
