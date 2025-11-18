@@ -5,6 +5,8 @@ import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
 // Next
 import type { Metadata, ResolvingMetadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
+import type { WithContext, Organization, WebSite } from "schema-dts";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { notFound } from "next/navigation";
@@ -19,9 +21,26 @@ export default async function Page() {
     .catch(() => null)) as Content.HomepageDocument | null;
   if (!doc) notFound();
 
+  const orgJsonLd: WithContext<Organization> = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Lunim",
+    url: "https://lunim.io",
+    logo: "https://lunim.io/logo.png",
+  };
+
+  const siteJsonLd: WithContext<WebSite> = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Lunim",
+    url: "https://lunim.io",
+  };
+
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
   return (
     <>
+      <JsonLd data={orgJsonLd} />
+      <JsonLd data={siteJsonLd} />
       <main className="bg-black">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>
