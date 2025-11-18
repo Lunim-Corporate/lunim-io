@@ -41,12 +41,12 @@ export async function GET(req: Request) {
     const uidParam = url.searchParams.get("uid") ?? "";
     const segments = uidParam ? uidParam.split("/").filter(Boolean) : [];
 
-    // const client = createClient();
+    const client = createClient();
     // Create a client that does NOT use aggressive caching for OG generation.
     // This ensures the image generator always reads fresh Prismic data in prod.
-    const client = createClient({
-      fetchOptions: { next: { revalidate: 0 }, cache: "no-store" },
-    });
+    // const client = createClient({
+    //   fetchOptions: { next: { revalidate: 0 }, cache: "no-store" },
+    // });
     const doc = await fetchDocForSegments(client, segments);
     const title = doc?.data?.meta_title ?? "Lunim";
     const backgroundImg = doc?.data?.meta_image?.url ?? null;
