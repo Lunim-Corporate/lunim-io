@@ -30,6 +30,7 @@
     "react-tsparticles": "^2.12.2",
     "react-xarrows": "^2.0.2",
     "resend": "^6.4.2",
+    "schema-dts": "^1.1.5",
     "stripe": "^19.1.0",
     "tsparticles": "^3.9.1"
   },
