@@ -1,13 +1,15 @@
-"use client"
+"use client";
 import Avatar from "boring-avatars";
 // React
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 // Prismic
 import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 import { SliceComponentProps } from "@prismicio/react";
 // Next
 import Image from "next/image";
+import { JsonLd } from "@/components/JsonLd";
+import type { ItemList, ListItem, Person, WithContext } from "schema-dts";
 
 /**
  * Props for `OurTeam`.
@@ -20,6 +22,7 @@ export type OurTeamProps = SliceComponentProps<Content.OurTeamSlice>;
 const OurTeam: FC<OurTeamProps> = ({ slice }) => {
   const [active, setActive] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const members = (slice.primary.team_member as any[]) ?? [];
 
   // Check if device is mobile
   useEffect(() => {
@@ -33,9 +36,42 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
+  const teamJsonLd = useMemo<WithContext<ItemList> | null>(() => {
+    if (!members.length) return null;
+    const itemListElement: ListItem[] = [];
+    members.forEach((member: any, index: number) => {
+      const name = asText(member?.name);
+      if (!name) {
+        return;
+      }
+      const person: Person = {
+        "@type": "Person",
+        name,
+        ...(member?.role ? { jobTitle: member.role } : {}),
+        ...(member?.description ? { description: member.description } : {}),
+        ...(member?.headshot?.url ? { image: member.headshot.url } : {}),
+      };
+      itemListElement.push({
+        "@type": "ListItem",
+        position: index + 1,
+        item: person,
+      });
+    });
+
+    if (!itemListElement.length) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement,
+    };
+  }, [members]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200">
-      <div className="w-full max-w-6xl px-4 mx-auto py-16">
+    <>
+      {teamJsonLd ? <JsonLd data={teamJsonLd} /> : null}
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200">
+        <div className="w-full max-w-6xl px-4 mx-auto py-16">
         <div className="mb-12 mt-12 text-center">
         {/* Start header */}
         <header className="text-center mb-12 px-4">
@@ -51,7 +87,7 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
         {/* Team Section */}
         <section className="max-w-6xl mx-auto px-4">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {(slice.primary.team_member as any[]).map((member: any, i: number) => {
+            {members.map((member: any, i: number) => {
               const memberName = asText(member?.name);
               return (
                 <div
@@ -75,8 +111,9 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
         </section>
         {/* End Team Section */}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -92,7 +129,7 @@ const TeamMember: FC<{
   isMobile: boolean;
 }> = ({ member, isActive, setActive, isMobile }) => {
   const [imageError, setImageError] = useState(false);
-  const memberName = asText(member?.name)
+  const memberName = asText(member?.name);
    // Fallback image if `member.headshot.url` is null or undefined
   const imageUrl = member?.headshot?.url || "/placeholder-image.png";
 

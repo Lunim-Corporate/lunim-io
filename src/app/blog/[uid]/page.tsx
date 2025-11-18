@@ -24,7 +24,13 @@ import ViewCounter from "@/components/ViewCounter";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
+import { JsonLdServer } from "@/components/JsonLdServer";
+import type { BlogPosting, BreadcrumbList, WithContext } from "schema-dts";
 // import { getCanonicalUrl } from "@/utils/getCanonical";
+
+const DEFAULT_SITE_URL = "https://lunim.io";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
 
 // Must use 'force-dynamic' to show meta tags correctly for each blog post
 // export const dynamic = 'force-dynamic';
@@ -90,8 +96,67 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     authorName || "Blog author portrait"
   );
 
+  const canonicalUrl =
+    (docData.meta_url && docData.meta_url.trim()) ||
+    doc.url ||
+    `${SITE_URL}/blog/${uid}`;
+  const mainContentText = asText(docData.main_article_content);
+  const articleBody = mainContentText || undefined;
+  const blogPostingJsonLd: WithContext<BlogPosting> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: headingText || doc.uid,
+    description:
+      docData.meta_description ||
+      (mainContentText ? mainContentText.slice(0, 320) : undefined),
+    url: canonicalUrl,
+    mainEntityOfPage: canonicalUrl,
+    datePublished: docData.publication_date || undefined,
+    dateModified: docData.publication_date || undefined,
+    image: articleImageWithAlt?.url || undefined,
+    author: {
+      "@type": "Person",
+      name: authorDisplayName,
+      ...(authorImageWithAlt?.url ? { image: authorImageWithAlt.url } : {}),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Lunim",
+      url: SITE_URL,
+    },
+    ...(articleBody ? { articleBody } : {}),
+  };
+
+  const breadcrumbJsonLd: WithContext<BreadcrumbList> = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${SITE_URL}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: headingText || doc.uid,
+        item: canonicalUrl,
+      },
+    ],
+  };
+
   return (
-    <main className="bg-black text-white mb-15">
+    <>
+      <JsonLdServer data={blogPostingJsonLd} />
+      <JsonLdServer data={breadcrumbJsonLd} />
+      <main className="bg-black text-white mb-15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen mt-50">
         <article>
           <div className="container grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -223,7 +288,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
           </div>
         </article>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 
