@@ -45,7 +45,7 @@ export const generateMetaDataInfo = (
 
   // Build canonical site base and cache token
   const siteBase = getSiteUrl();
-  const cacheToken = encodeURIComponent(String(Date.now()));
+  const cacheToken = encodeURIComponent(docData?.meta_image?.url ?? String(Date.now()));
 
   let imageUrl: string | undefined;
   let imageAlt: string | undefined;

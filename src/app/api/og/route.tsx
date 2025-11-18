@@ -51,10 +51,25 @@ export async function GET(req: Request) {
     const title = doc?.data?.meta_title ?? "Lunim";
     const backgroundImg = doc?.data?.meta_image?.url ?? null;
 
-    return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+    // Generate the image response, then ensure conservative cache headers so
+    // Netlify/CDN won't aggressively cache the generated image for long periods.
+    const imageResp = generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+    try {
+      imageResp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+    } catch {
+      // Some runtimes might freeze headers — ignore and return the response anyway.
+    }
+
+    return imageResp;
   } catch (err) {
     // ImageResponse must return something valid; here we return a very small fallback.
-    return new Response(`Image generation failed: ${err}`, { status: 500 });
+    const resp = new Response(`Image generation failed: ${err}`, { status: 500 });
+    try {
+      resp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+    } catch {
+      /* ignore header set errors */
+    }
+    return resp;
   }
 }
 
