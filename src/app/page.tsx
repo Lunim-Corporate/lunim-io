@@ -5,7 +5,7 @@ import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
 // Next
 import type { Metadata, ResolvingMetadata } from "next";
-import { JsonLd } from "@/components/JsonLd";
+import { JsonLdServer } from "@/components/JsonLdServer";
 import type { WithContext, Organization, WebSite } from "schema-dts";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
@@ -39,8 +39,8 @@ export default async function Page() {
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
   return (
     <>
-      <JsonLd data={orgJsonLd} />
-      <JsonLd data={siteJsonLd} />
+      <JsonLdServer data={orgJsonLd} />
+      <JsonLdServer data={siteJsonLd} />
       <main className="bg-black">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>

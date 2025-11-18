@@ -5,9 +5,38 @@ import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
 import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/types";
+import { JsonLd } from "@/components/JsonLd";
+import type { EducationEvent, Offer, WithContext } from "schema-dts";
 
 const DEFAULT_EVENT_ID =
   process.env.NEXT_PUBLIC_EVENTBRITE_EVENT_ID ?? "1967972076457";
+const PRICE_SYMBOL_TO_CURRENCY: Record<string, string> = {
+  $: "USD",
+  "£": "GBP",
+  "€": "EUR",
+};
+
+const buildOfferFromDisplay = (
+  value?: string | null,
+  url?: string | null
+): Offer | null => {
+  if (!value) return null;
+  const match = value.match(/([£$€])?\s*([\d,.]+)/);
+  if (!match) return null;
+  const [, symbol, priceRaw] = match;
+  const normalized = priceRaw.replace(/,/g, "");
+  const price = Number(normalized);
+  if (!Number.isFinite(price)) return null;
+  const priceCurrency =
+    (symbol && PRICE_SYMBOL_TO_CURRENCY[symbol]) || "USD";
+  return {
+    "@type": "Offer",
+    priceCurrency,
+    price: price.toFixed(2),
+    availability: "https://schema.org/InStock",
+    ...(url ? { url } : {}),
+  };
+};
 
 interface EventbriteCourseInfo {
   id: string;
@@ -204,12 +233,63 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
   const hasRichDescription =
     Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
+  const canonicalEventUrl =
+    courseInfo?.url || `https://www.eventbrite.com/e/${effectiveEventId}`;
+  const isOnlineEvent = /online|virtual|zoom/i.test(locationText);
+  const eventOffer = useMemo(
+    () => buildOfferFromDisplay(courseInfo?.priceDisplay, canonicalEventUrl),
+    [courseInfo?.priceDisplay, canonicalEventUrl]
+  );
+  const startDate = courseInfo?.startLocal ?? null;
+  const endDate = courseInfo?.endLocal ?? null;
+
+  const eventJsonLd = useMemo<WithContext<EducationEvent> | null>(() => {
+    if (!heading) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "EducationEvent",
+      name: heading,
+      ...(supportingCopy ? { description: supportingCopy } : {}),
+      startDate: startDate ?? undefined,
+      endDate: endDate ?? undefined,
+      eventStatus: "https://schema.org/EventScheduled",
+      url: canonicalEventUrl,
+      eventAttendanceMode: isOnlineEvent
+        ? "https://schema.org/OnlineEventAttendanceMode"
+        : "https://schema.org/MixedEventAttendanceMode",
+      location: isOnlineEvent
+        ? {
+            "@type": "VirtualLocation",
+            url: canonicalEventUrl,
+          }
+        : {
+            "@type": "Place",
+            name: locationText,
+          },
+      organizer: {
+        "@type": "Organization",
+        name: "Lunim",
+        url: "https://lunim.io",
+      },
+      ...(eventOffer ? { offers: eventOffer } : {}),
+    };
+  }, [
+    canonicalEventUrl,
+    endDate,
+    eventOffer,
+    heading,
+    isOnlineEvent,
+    locationText,
+    startDate,
+    supportingCopy,
+  ]);
 
   return (
     <div
       id="book-event"
       className={`bg-[#0f172a] border border-white/20 rounded-3xl p-8 md:p-10 shadow-[0_24px_65px_rgba(0,0,0,0.45)] space-y-8 ${className}`}
     >
+      {eventJsonLd ? <JsonLd data={eventJsonLd} /> : null}
       <div className="text-center space-y-3">
         <h3 className="text-white text-3xl md:text-4xl font-semibold tracking-tight">
           {heading}
