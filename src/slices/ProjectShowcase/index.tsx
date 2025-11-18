@@ -4,20 +4,68 @@ import {
   type SliceComponentProps,
 } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
-import { asText } from "@prismicio/helpers";
+import { asLink, asText } from "@prismicio/helpers";
 // React
 import { FC } from "react";
 import { PrismicNextLink } from "@prismicio/next";
+import { JsonLd } from "@/components/JsonLd";
+import type { ItemList, ListItem, WithContext } from "schema-dts";
 
 type ProjectShowcaseProps = SliceComponentProps<Content.ProjectShowcaseSlice>;
 
+const DEFAULT_SITE_URL = "https://lunim.io";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
+
+const toAbsoluteUrl = (value?: string | null): string | null => {
+  if (!value) return null;
+  if (/^https?:\/\//i.test(value)) return value;
+  return `${SITE_URL}${value.startsWith("/") ? value : `/${value}`}`;
+};
+
 const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
+  const caseStudies = (slice.primary.case_study as any[]) ?? [];
+  const showcaseJsonLd: WithContext<ItemList> | null = caseStudies.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: caseStudies.reduce<ListItem[]>((acc, item: any, index: number) => {
+          const name = asText(item.project_title) || `Project ${index + 1}`;
+          if (!name) {
+            return acc;
+          }
+          const description = asText(item.project_description);
+          const projectLink = toAbsoluteUrl(asLink(item.project_link));
+          const image = item.project_image?.url || undefined;
+          const tagsArray: string[] = item.tags
+            ? item.tags.split(",").map((tag: string) => tag.trim())
+            : [];
+          const keywords = tagsArray.filter(Boolean).join(", ");
+          acc.push({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "CreativeWork",
+              name,
+              ...(description ? { description } : {}),
+              ...(projectLink ? { url: projectLink } : {}),
+              ...(image ? { image } : {}),
+              ...(keywords ? { keywords } : {}),
+            },
+          });
+          return acc;
+        }, []),
+      }
+    : null;
+
   return (
-    <section
-      id="case-studies"
-      className="bg-[#0f172a] py-16"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
+    <>
+      {showcaseJsonLd ? <JsonLd data={showcaseJsonLd} /> : null}
+      <section
+        id="case-studies"
+        className="bg-[#0f172a] py-16"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         {/* Only show title for this slice */}
         {slice.variation === "projectShowcaseHero" && (
           <div className="mb-22">
@@ -34,8 +82,8 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
           <PrismicRichText field={slice.primary.heading} />
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        {slice.primary.case_study && slice.primary.case_study.length > 0 && (
-          slice.primary.case_study.map((item: any, index: number) => {
+        {caseStudies.length > 0 && (
+          caseStudies.map((item: any, index: number) => {
             const tagsArray: string[] = item.tags
                   ? item.tags.split(",").map((tag: string) => tag.trim())
                   : [];
@@ -110,7 +158,8 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
         </div>
         )}
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 
