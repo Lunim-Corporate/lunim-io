@@ -1,13 +1,7 @@
-"use client";
-
-import React from "react";
+// src/components/JsonLd.tsx
 import type { WithContext } from "schema-dts";
 
-interface JsonLdProps<T extends WithContext<any>> {
-  data: T;
-}
-
-export function JsonLd<T extends WithContext<any>>({ data }: JsonLdProps<T>) {
+export function JsonLd<T extends WithContext<any>>({ data }: { data: T }) {
   return (
     <script
       type="application/ld+json"
