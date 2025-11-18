@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { asLink } from "@prismicio/helpers";
 import type { LinkField } from "@prismicio/types";
+import { JsonLd } from "@/components/JsonLd";
+import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
 
 type ChildLink = {
   label: string;
@@ -23,6 +25,10 @@ type BreadcrumbsClientProps = {
   sections: Section[];
   hiddenSegments?: string[];
 };
+
+const DEFAULT_SITE_URL = "https://lunim.io";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
 
 const resolveLinkField = (link: LinkField | null | undefined): string | null => {
   if (!link) return null;
@@ -139,6 +145,28 @@ export default function BreadcrumbsClient({
     return items;
   }, [segments, pathLabelMap, hiddenSet]);
 
+  const breadcrumbJsonLd = useMemo<WithContext<BreadcrumbList>>(() => {
+    const toAbsoluteUrl = (path: string): string => {
+      if (!path || path === "/") {
+        return SITE_URL;
+      }
+      return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+    };
+
+    const itemListElement: ListItem[] = crumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.label,
+      item: toAbsoluteUrl(crumb.href),
+    }));
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement,
+    };
+  }, [crumbs]);
+
   if (!showBreadcrumbs) {
     return null;
   }
@@ -146,39 +174,42 @@ export default function BreadcrumbsClient({
   const lastIndex = crumbs.length - 1;
 
   return (
-    <nav
-      aria-label="Breadcrumb"
-      className="w-full border-b border-white/10 bg-black/30/80 backdrop-blur-sm"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol className="flex flex-wrap items-center gap-1 text-[11px] sm:text-xs md:text-sm text-white/55">
-          {crumbs.map((crumb, index) => {
-            const isLast = index === lastIndex;
-            return (
-              <li key={crumb.href} className="mb-0 flex items-center min-w-0">
-                {index > 0 && (
-                  <ChevronRight
-                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/60"
-                    aria-hidden="true"
-                  />
-                )}
-                {isLast ? (
-                  <span className="text-white/70 truncate max-w-[200px] sm:max-w-none lowercase">
-                    {crumb.label}
-                  </span>
-                ) : (
-                  <Link
-                    href={crumb.href}
-                    className="text-[#BBFEFF]/80 hover:text-white underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none lowercase no-underline"
-                  >
-                    {crumb.label}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </nav>
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <nav
+        aria-label="Breadcrumb"
+        className="w-full border-b border-white/10 bg-black/30/80 backdrop-blur-sm"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <ol className="flex flex-wrap items-center gap-1 text-[11px] sm:text-xs md:text-sm text-white/55">
+            {crumbs.map((crumb, index) => {
+              const isLast = index === lastIndex;
+              return (
+                <li key={crumb.href} className="mb-0 flex items-center min-w-0">
+                  {index > 0 && (
+                    <ChevronRight
+                      className="w-3 h-3 sm:w-3.5 sm:h-3.5 mx-1 text-white/60"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {isLast ? (
+                    <span className="text-white/70 truncate max-w-[200px] sm:max-w-none lowercase">
+                      {crumb.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={crumb.href}
+                      className="text-[#BBFEFF]/80 hover:text-white underline-offset-4 transition-colors truncate max-w-[140px] sm:max-w-none lowercase no-underline"
+                    >
+                      {crumb.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </nav>
+    </>
   );
 }
