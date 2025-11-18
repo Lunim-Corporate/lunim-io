@@ -100,11 +100,7 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { uid } = await params;
-    // const client = createClient();
-    // Use a no-store client so metadata generation reads fresh Prismic content
-    const client = createClient({
-    fetchOptions: { next: { revalidate: 0 }, cache: "no-store" },
-    });
+    const client = createClient();
     const parentMetaData = await pickBaseMetadata(parent);
     let doc;
 
