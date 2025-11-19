@@ -25,22 +25,15 @@ export default async function Page() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Lunim",
-    url: "https://lunim.io",
-    logo: "https://lunim.io/logo.png",
-  };
-
-  const siteJsonLd: WithContext<WebSite> = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Lunim",
-    url: "https://lunim.io",
+    alternateName: "Lunim.io",
+    url: "https://lunim.io/",
+    logo: "https://lunim.io/_next/image?url=https%3A%2F%2Fimages.prismic.io%2Flunim-v3%2FaO4uRJ5xUNkB17lv_lunim-logo.png%3Fauto%3Dformat%2Ccompress&w=384&q=75",
   };
 
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
   return (
     <>
       <JsonLdServer data={orgJsonLd} />
-      <JsonLdServer data={siteJsonLd} />
       <main className="bg-black">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>

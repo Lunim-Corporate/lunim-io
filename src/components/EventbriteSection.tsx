@@ -6,38 +6,10 @@ import EventbriteWidget from "./EventbriteWidget";
 import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/types";
 import { JsonLd } from "@/components/JsonLd";
-import type { EducationEvent, Offer, WithContext } from "schema-dts";
+import type { Event as SchemaEvent, WithContext } from "schema-dts";
 
 const DEFAULT_EVENT_ID =
   process.env.NEXT_PUBLIC_EVENTBRITE_EVENT_ID ?? "1967972076457";
-const PRICE_SYMBOL_TO_CURRENCY: Record<string, string> = {
-  $: "USD",
-  "£": "GBP",
-  "€": "EUR",
-};
-
-const buildOfferFromDisplay = (
-  value?: string | null,
-  url?: string | null
-): Offer | null => {
-  if (!value) return null;
-  const match = value.match(/([£$€])?\s*([\d,.]+)/);
-  if (!match) return null;
-  const [, symbol, priceRaw] = match;
-  const normalized = priceRaw.replace(/,/g, "");
-  const price = Number(normalized);
-  if (!Number.isFinite(price)) return null;
-  const priceCurrency =
-    (symbol && PRICE_SYMBOL_TO_CURRENCY[symbol]) || "USD";
-  return {
-    "@type": "Offer",
-    priceCurrency,
-    price: price.toFixed(2),
-    availability: "https://schema.org/InStock",
-    ...(url ? { url } : {}),
-  };
-};
-
 interface EventbriteCourseInfo {
   id: string;
   name: string;
@@ -140,6 +112,15 @@ const buildFallbackCourse = (eventId: string): EventbriteCourseInfo => {
   };
 };
 
+const toIsoString = (value?: string | null): string | undefined => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+  return date.toISOString();
+};
+
 interface EventbriteSectionProps {
   className?: string;
   eventId?: string;
@@ -235,54 +216,42 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
     Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
   const canonicalEventUrl =
     courseInfo?.url || `https://www.eventbrite.com/e/${effectiveEventId}`;
-  const isOnlineEvent = /online|virtual|zoom/i.test(locationText);
-  const eventOffer = useMemo(
-    () => buildOfferFromDisplay(courseInfo?.priceDisplay, canonicalEventUrl),
-    [courseInfo?.priceDisplay, canonicalEventUrl]
-  );
-  const startDate = courseInfo?.startLocal ?? null;
-  const endDate = courseInfo?.endLocal ?? null;
+  const startDateIso = toIsoString(courseInfo?.startLocal);
+  const priceDisplay = courseInfo?.priceDisplay?.trim() || null;
 
-  const eventJsonLd = useMemo<WithContext<EducationEvent> | null>(() => {
+  const eventJsonLd = useMemo<WithContext<SchemaEvent> | null>(() => {
     if (!heading) return null;
+    const place = {
+      "@type": "Place" as const,
+      name: locationText,
+      address: {
+        "@type": "PostalAddress" as const,
+        addressLocality: locationText,
+      },
+    };
     return {
       "@context": "https://schema.org",
-      "@type": "EducationEvent",
+      "@type": "Event",
       name: heading,
       ...(supportingCopy ? { description: supportingCopy } : {}),
-      startDate: startDate ?? undefined,
-      endDate: endDate ?? undefined,
-      eventStatus: "https://schema.org/EventScheduled",
+      startDate: startDateIso ?? "Please insert valid ISO 8601 date/time here. Examples: 2015-07-27 or 2015-07-27T15:30",
       url: canonicalEventUrl,
-      eventAttendanceMode: isOnlineEvent
-        ? "https://schema.org/OnlineEventAttendanceMode"
-        : "https://schema.org/MixedEventAttendanceMode",
-      location: isOnlineEvent
-        ? {
-            "@type": "VirtualLocation",
-            url: canonicalEventUrl,
-          }
-        : {
-            "@type": "Place",
-            name: locationText,
-          },
+      location: place,
       organizer: {
         "@type": "Organization",
         name: "Lunim",
         url: "https://lunim.io",
       },
-      ...(eventOffer ? { offers: eventOffer } : {}),
+      ...(priceDisplay
+        ? {
+            offers: {
+              "@type": "Offer" as const,
+              price: priceDisplay,
+            },
+          }
+        : {}),
     };
-  }, [
-    canonicalEventUrl,
-    endDate,
-    eventOffer,
-    heading,
-    isOnlineEvent,
-    locationText,
-    startDate,
-    supportingCopy,
-  ]);
+  }, [canonicalEventUrl, heading, locationText, startDateIso, supportingCopy, priceDisplay]);
 
   return (
     <div
