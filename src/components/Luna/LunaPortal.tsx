@@ -567,11 +567,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 <button
                   type="button"
                   onClick={handleResetChat}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
                   aria-label="Reset chat"
                 >
                   <RotateCcw size={14} className="text-gray-400" />
-                  <span>Reset</span>
+                  <span className="hidden sm:inline">Reset</span>
                 </button>
                 <button
                   type="button"
