@@ -528,7 +528,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             {/* Header - thin, controls + compact selections */}
             <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
               {/* Compact summary of mode + privacy once session started (shares layout with intro selector) */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 max-w-[65%]">
                 {state.session && (
                   <motion.div
                     layoutId="interaction-mode-pill"
@@ -536,7 +536,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: reduceMotion ? 0.1 : 0.25 }}
-                    className="hidden sm:inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-sm text-gray-200/90"
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-xs sm:text-sm text-gray-200/90"
                   >
                     <span className="inline-flex items-center gap-1">
                       <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
