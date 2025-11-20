@@ -466,27 +466,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               </div>
             )}
 
-            {/* Header with gradient accent */}
-            <div className="relative flex items-center justify-between p-6 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
-                  <Image
-                    src={lunaImage}
-                    alt="Luna"
-                    width={40}
-                    height={40}
-                    className="object-cover"
-                  />
-                </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight">
-                  Luna
-                </h2>
-              </div>
+            {/* Header - thin, controls only */}
+            <div className="relative flex items-center justify-end px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={handleResetChat}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-[11px] font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
                   aria-label="Reset chat"
                 >
                   <RotateCcw size={14} className="text-gray-400" />
@@ -527,7 +513,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   <h3 className="text-sm font-semibold text-white">
                     Luna Settings
                   </h3>
-                  <div className="space-y-3 text-xs text-gray-300">
+                  <div className="space-y-3 text-sm text-gray-300">
                     {/* Speech speed */}
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
@@ -554,19 +540,19 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       onClick={() =>
                         setReduceMotionManual((current) => !current)
                       }
-                      className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-[11px] text-gray-200 hover:bg-zinc-800/70 transition-colors"
+                      className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-sm text-gray-200 hover:bg-zinc-800/70 transition-colors"
                       aria-pressed={reduceMotion}
                     >
                       <span className="flex flex-col text-left">
                         <span className="font-medium">Reduced motion</span>
-                        <span className="text-[10px] text-gray-400">
+                        <span className="text-sm text-gray-400">
                           {prefersReducedMotion
                             ? 'Following system preference'
                             : 'Limit animations in Luna'}
                         </span>
                       </span>
                       <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] ${
+                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-sm ${
                           reduceMotion ? 'bg-emerald-400 text-black' : 'bg-zinc-700 text-gray-300'
                         }`}
                       >
@@ -583,12 +569,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             {/* Conversation area like a chat screen */}
             <div className="flex-1 overflow-y-auto p-6">
               {/* Luna Portrait pinned at top */}
-              <div className="flex justify-center mb-6">
+              <div className="flex flex-col items-center mb-6 gap-6">
                 <LunaPortrait
                   state={state.state}
                   isListening={state.isListening}
                   isSpeaking={state.isSpeaking}
                 />
+                <p className="text-sm font-semibold text-white">Luna</p>
               </div>
 
               {/* Session not started - intro bubble */}
@@ -599,7 +586,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   className="max-w-xl mx-auto space-y-4"
                 >
                   <div className="flex justify-center">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-xs text-gray-400 border border-zinc-800/80">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-sm text-gray-400 border border-zinc-800/80">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       <span>Start a conversation with Luna</span>
                     </div>
@@ -609,39 +596,39 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       <p className="font-semibold text-white mb-2">
                         How would you like this chat to be handled?
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-sm text-gray-400">
                         You can choose to keep this session private, or allow us to use anonymised insights
                         to improve Luna.
                       </p>
                       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
                           onClick={() => startSession('on-the-record')}
-                          className="group flex items-start gap-3 rounded-2xl bg-white text-black px-4 py-3 text-left text-xs font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                          className="group flex items-start gap-3 rounded-2xl bg-white text-black px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
                         >
                           <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
                           </span>
                           <span>
-                            <span className="block text-xs font-semibold">
+                            <span className="block text-sm font-semibold">
                               On-the-record
                             </span>
-                            <span className="block text-[11px] text-gray-700">
+                            <span className="block text-sm text-gray-700">
                               Save anonymised notes so we can learn from patterns.
                             </span>
                           </span>
                         </button>
                         <button
                           onClick={() => startSession('confidential')}
-                          className="group flex items-start gap-3 rounded-2xl bg-zinc-900 border border-zinc-700 px-4 py-3 text-left text-xs font-medium text-white transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-900/90 hover:scale-[1.02]"
+                          className="group flex items-start gap-3 rounded-2xl bg-zinc-900 border border-zinc-700 px-4 py-3 text-left text-sm font-medium text-white transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-900/90 hover:scale-[1.02]"
                         >
                           <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
                             <span className="w-2 h-2 rounded-full bg-cyan-400" />
                           </span>
                           <span>
-                            <span className="block text-xs font-semibold">
+                            <span className="block text-sm font-semibold">
                               Confidential
                             </span>
-                            <span className="block text-[11px] text-gray-400">
+                            <span className="block text-sm text-gray-400">
                               Keep this conversation just between you and Luna.
                             </span>
                           </span>
@@ -704,11 +691,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             {message.content}
                           </motion.div>
                           <div
-                            className={`flex items-center gap-2 text-[10px] text-gray-500 ${
+                            className={`flex items-center gap-2 text-sm text-gray-500 ${
                               isUser ? 'justify-end pr-1' : 'justify-start pl-1'
                             }`}
                           >
-                            <span className="uppercase tracking-[0.16em]">
+                            <span className="uppercase tracking-[0.08em]">
                               {isUser ? 'You' : 'Luna'}
                             </span>
                             {timeLabel && (
@@ -736,7 +723,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: reduceMotion ? 0.12 : 0.2 }}
-                        className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-xs text-gray-300"
+                        className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-sm text-gray-300"
                       >
                         {state.caption}
                       </motion.div>
@@ -746,7 +733,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   {/* Error bubble */}
                   {state.error && (
                     <div className="flex justify-center mt-2">
-                      <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-xs text-red-200">
+                      <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-sm text-red-200">
                         {state.error}
                       </div>
                     </div>
@@ -770,7 +757,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             className="object-cover"
                           />
                         </div>
-                        <p className="text-xs font-semibold text-gray-300">
+                        <p className="text-sm font-semibold text-gray-300">
                           Luna&apos;s plan summary
                         </p>
                       </div>
@@ -783,10 +770,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             key={index}
                             className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
                           >
-                            <p className="text-xs font-semibold text-gray-100">
+                            <p className="text-sm font-semibold text-gray-100">
                               {index + 1}. {step.title}
                             </p>
-                            <p className="text-xs text-gray-400 mt-0.5">
+                            <p className="text-sm text-gray-400 mt-0.5">
                               {step.description}
                             </p>
                           </div>
@@ -795,14 +782,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       <div className="flex flex-wrap gap-3">
                         <button
                           onClick={handleReadSummary}
-                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
                         >
                           <Play size={14} />
                           <span>Read summary</span>
                         </button>
                         <button
                           onClick={handleDownloadPDF}
-                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-xs font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-sm font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
                         >
                           <Download size={14} />
                           <span>Download PDF</span>
