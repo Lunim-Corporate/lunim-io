@@ -2,7 +2,7 @@
 
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { X, Download, Play, Settings } from 'lucide-react';
+import { X, Download, Play, Settings, RotateCcw } from 'lucide-react';
 import Image from 'next/image';
 import lunaImage from '@/assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
@@ -372,6 +372,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     }
   }, [state.session]);
 
+  // Reset chat: end current session and analytics, keep portal open
+  const handleResetChat = useCallback(() => {
+    // End current analytics session if any
+    lunaAnalytics.endSession();
+    // Clear Luna state back to idle (no session/messages)
+    dispatch({ type: 'END_SESSION' });
+  }, []);
+
   // Read summary aloud
   const handleReadSummary = useCallback(() => {
     if (state.session?.plan) {
@@ -474,7 +482,16 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   Luna
                 </h2>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleResetChat}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-[11px] font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                  aria-label="Reset chat"
+                >
+                  <RotateCcw size={14} className="text-gray-400" />
+                  <span>Reset</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setIsSettingsOpen((open) => !open)}
