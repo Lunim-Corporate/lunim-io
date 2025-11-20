@@ -49,7 +49,7 @@ export class SpeechErrorBoundary extends React.Component<
             <p className="text-sm font-medium text-red-700 dark:text-red-300">
               Voice feature temporarily unavailable
             </p>
-            <p className="text-xs text-red-600 dark:text-red-400">
+            <p className="text-sm text-red-600 dark:text-red-400">
               You can continue using text mode
             </p>
             <button
