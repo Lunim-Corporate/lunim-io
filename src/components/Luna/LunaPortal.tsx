@@ -418,7 +418,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
           onClick={onClose}
         >
           <motion.div
@@ -431,7 +431,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               stiffness: reduceMotion ? 200 : 300,
             }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl max-h-[90vh] bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+            className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-8"
             style={{
               boxShadow:
                 '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
@@ -562,168 +562,250 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             </div>
 
           {/* Main Content with subtle gradient background */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-zinc-950 to-black">
-            {/* Luna Portrait */}
-            <div className="flex justify-center">
-              <LunaPortrait
-                state={state.state}
-                isListening={state.isListening}
-                isSpeaking={state.isSpeaking}
-              />
-            </div>
-
-            {/* Caption Display */}
-            {state.caption && (
-              <LunaCaption
-                caption={state.caption}
-                role={state.isListening ? 'user' : 'luna'}
-              />
-            )}
-
-            {/* Error Display */}
-            {state.error && (
-              <div className="p-4 bg-red-950 border border-red-800 rounded-lg">
-                <p className="text-sm text-red-300">{state.error}</p>
-              </div>
-            )}
-
-            {/* Session not started */}
-            {!state.session && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center space-y-6 py-8"
-              >
-                <div className="space-y-2">
-                  <p className="text-gray-400 text-lg">
-                    Choose your privacy preference
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Select how you&apos;d like to interact with Luna
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                  <button
-                    onClick={() => startSession('on-the-record')}
-                    className="group flex-1 px-6 py-4 bg-white hover:bg-gray-100 text-black rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-                  >
-                    <span className="block font-semibold">On-the-record</span>
-                    <span className="block text-xs text-gray-600 mt-1">Save conversation history</span>
-                  </button>
-                  <button
-                    onClick={() => startSession('confidential')}
-                    className="group flex-1 px-6 py-4 bg-zinc-900 hover:bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-600 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105"
-                  >
-                    <span className="block font-semibold">Confidential</span>
-                    <span className="block text-xs text-gray-400 mt-1">Private session</span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Voice Controls */}
-            {state.session && (
-              <VoiceControls
-                interactionMode={state.interactionMode}
-                privacyMode={state.session.privacyMode}
-                isListening={state.isListening}
-                isSpeaking={state.isSpeaking}
-                onModeChange={handleModeChange}
-                onPrivacyChange={handlePrivacyChange}
-                onMicClick={handleMicClick}
-                disabled={state.state === 'thinking'}
-              />
-            )}
-
-            {/* Text Input */}
-            {state.session && state.interactionMode === 'text' && (
-              <form onSubmit={handleTextSubmit} className="flex gap-2">
-                <input
-                  type="text"
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-zinc-700 rounded-lg bg-zinc-800 text-white placeholder-gray-500"
-                  disabled={state.state === 'thinking'}
+          <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col">
+            {/* Conversation area like a chat screen */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Luna Portrait pinned at top */}
+              <div className="flex justify-center mb-6">
+                <LunaPortrait
+                  state={state.state}
+                  isListening={state.isListening}
+                  isSpeaking={state.isSpeaking}
                 />
-                <button
-                  type="submit"
-                  disabled={!textInput.trim() || state.state === 'thinking'}
-                  className="px-6 py-2 bg-white hover:bg-gray-200 disabled:bg-gray-600 text-black rounded-lg font-medium transition-colors"
-                >
-                  Send
-                </button>
-              </form>
-            )}
+              </div>
 
-            {/* Plan Display */}
-            {state.session?.plan && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-5 p-6 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/50 rounded-2xl shadow-xl"
-              >
-                <div className="flex items-center gap-3 pb-4 border-b border-zinc-800/50">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
-                    <Image
-                      src={lunaImage}
-                      alt="Luna"
-                      width={32}
-                      height={32}
-                      className="object-cover"
-                    />
+              {/* Session not started - intro bubble */}
+              {!state.session && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="max-w-xl mx-auto space-y-4"
+                >
+                  <div className="flex justify-center">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-xs text-gray-400 border border-zinc-800/80">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Start a conversation with Luna</span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white">
-                    Your Personalized Plan
-                  </h3>
-                </div>
-                
-                <div className="space-y-3">
-                  {state.session.plan.nextSteps.map((step, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="group p-5 bg-zinc-950 border border-zinc-800/50 hover:border-zinc-700 rounded-xl transition-all duration-200 hover:shadow-lg"
+                  <div className="flex justify-center">
+                    <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/80 px-5 py-4 text-sm text-gray-300 shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
+                      <p className="font-semibold text-white mb-2">
+                        How would you like this chat to be handled?
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        You can choose to keep this session private, or allow us to use anonymised insights
+                        to improve Luna.
+                      </p>
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                          onClick={() => startSession('on-the-record')}
+                          className="group flex items-start gap-3 rounded-2xl bg-white text-black px-4 py-3 text-left text-xs font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                        >
+                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                          </span>
+                          <span>
+                            <span className="block text-xs font-semibold">
+                              On-the-record
+                            </span>
+                            <span className="block text-[11px] text-gray-700">
+                              Save anonymised notes so we can learn from patterns.
+                            </span>
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => startSession('confidential')}
+                          className="group flex items-start gap-3 rounded-2xl bg-zinc-900 border border-zinc-700 px-4 py-3 text-left text-xs font-medium text-white transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-900/90 hover:scale-[1.02]"
+                        >
+                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
+                            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                          </span>
+                          <span>
+                            <span className="block text-xs font-semibold">
+                              Confidential
+                            </span>
+                            <span className="block text-[11px] text-gray-400">
+                              Keep this conversation just between you and Luna.
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Active conversation thread */}
+              {state.session && (
+                <div className="max-w-2xl mx-auto space-y-3">
+                  {state.session.messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex w-full ${
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                      }`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white">
-                          {index + 1}
+                      {message.role === 'luna' && (
+                        <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                          <Image
+                            src={lunaImage}
+                            alt="Luna"
+                            width={24}
+                            height={24}
+                            className="object-cover"
+                          />
                         </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-white mb-2 group-hover:text-gray-100">
-                            {step.title}
-                          </h4>
-                          <p className="text-sm text-gray-400 leading-relaxed">
-                            {step.description}
-                          </p>
+                      )}
+                      <motion.div
+                        initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
+                          message.role === 'user'
+                            ? 'bg-cyan-500 text-black rounded-br-sm'
+                            : 'bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm'
+                        }`}
+                      >
+                        {message.content}
+                      </motion.div>
+                    </div>
+                  ))}
+
+                  {/* Live caption as typing preview */}
+                  {state.caption && (
+                    <div className="flex justify-start mt-1">
+                      <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                        <Image
+                          src={lunaImage}
+                          alt="Luna"
+                          width={24}
+                          height={24}
+                          className="object-cover"
+                        />
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: reduceMotion ? 0.12 : 0.2 }}
+                        className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-xs text-gray-300"
+                      >
+                        {state.caption}
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* Error bubble */}
+                  {state.error && (
+                    <div className="flex justify-center mt-2">
+                      <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-xs text-red-200">
+                        {state.error}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Plan summary as final system bubble with actions */}
+                  {state.session.plan && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
+                      className="mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
+                          <Image
+                            src={lunaImage}
+                            alt="Luna"
+                            width={28}
+                            height={28}
+                            className="object-cover"
+                          />
                         </div>
+                        <p className="text-xs font-semibold text-gray-300">
+                          Luna&apos;s plan summary
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-200 mb-3">
+                        {state.session.plan.summary}
+                      </p>
+                      <div className="grid gap-2 mb-3">
+                        {state.session.plan.nextSteps.map((step, index) => (
+                          <div
+                            key={index}
+                            className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
+                          >
+                            <p className="text-xs font-semibold text-gray-100">
+                              {index + 1}. {step.title}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              {step.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          onClick={handleReadSummary}
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                        >
+                          <Play size={14} />
+                          <span>Read summary</span>
+                        </button>
+                        <button
+                          onClick={handleDownloadPDF}
+                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-xs font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                        >
+                          <Download size={14} />
+                          <span>Download PDF</span>
+                        </button>
                       </div>
                     </motion.div>
-                  ))}
+                  )}
                 </div>
+              )}
+            </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3 pt-4">
+            {/* Controls + input docked at bottom */}
+            <div className="border-t border-zinc-900/80 bg-black/70 px-6 py-4 space-y-4">
+              {state.session && (
+                <VoiceControls
+                  interactionMode={state.interactionMode}
+                  privacyMode={state.session.privacyMode}
+                  isListening={state.isListening}
+                  isSpeaking={state.isSpeaking}
+                  onModeChange={handleModeChange}
+                  onPrivacyChange={handlePrivacyChange}
+                  onMicClick={handleMicClick}
+                  disabled={state.state === 'thinking'}
+                />
+              )}
+
+              {state.interactionMode === 'text' && (
+                <form onSubmit={handleTextSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder={
+                      state.session
+                        ? 'Type your message...'
+                        : 'Choose a privacy mode above to start'
+                    }
+                    className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={state.state === 'thinking' || !state.session}
+                  />
                   <button
-                    onClick={handleReadSummary}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-100 text-black rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105"
+                    type="submit"
+                    disabled={
+                      !textInput.trim() || state.state === 'thinking' || !state.session
+                    }
+                    className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
                   >
-                    <Play size={16} />
-                    <span>Read Summary</span>
+                    Send
                   </button>
-                  <button
-                    onClick={handleDownloadPDF}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 text-white rounded-xl transition-all duration-200 font-medium hover:scale-105"
-                  >
-                    <Download size={16} />
-                    <span>Download PDF</span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
+                </form>
+              )}
+            </div>
           </div>
         </motion.div>
       </motion.div>
