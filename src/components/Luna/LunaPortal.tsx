@@ -220,8 +220,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     
     const greeting = "Hi! I'm Luna, your guide at Lunim Studio. Tell me about your project and I'll help you find the perfect next steps.";
     
+    // Add greeting as a chat message (caption is reserved for live voice transcription)
     dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: greeting } });
-    dispatch({ type: 'SET_CAPTION', payload: greeting });
     lunaAnalytics.trackMessage('luna', greeting);
     
     // Delay speaking slightly to ensure state is updated
@@ -264,7 +264,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         
         const firstQuestion = data.understanding + ' ' + data.questions[0];
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: firstQuestion } });
-        dispatch({ type: 'SET_CAPTION', payload: firstQuestion });
         lunaAnalytics.trackMessage('luna', firstQuestion);
         lunaAnalytics.trackClarifyPhase(1);
         
@@ -283,7 +282,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         const nextQuestion = state.session.clarify.questions[nextIndex];
         
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: nextQuestion } });
-        dispatch({ type: 'SET_CAPTION', payload: nextQuestion });
         dispatch({ type: 'SET_STATE', payload: 'clarify' });
         lunaAnalytics.trackMessage('luna', nextQuestion);
         lunaAnalytics.trackClarifyPhase(nextIndex + 1);
@@ -313,7 +311,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         
         const planMessage = `Great! ${data.summary}`;
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
-        dispatch({ type: 'SET_CAPTION', payload: planMessage });
         lunaAnalytics.trackMessage('luna', planMessage);
         lunaAnalytics.trackPlanGenerated({
           summary: data.summary,
