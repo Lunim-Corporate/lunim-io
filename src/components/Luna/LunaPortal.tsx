@@ -671,8 +671,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                     </div>
                   ))}
 
-                  {/* Live caption as typing preview */}
-                  {state.caption && (
+                  {/* Live caption as typing preview (user speech only) */}
+                  {state.caption && state.isListening && (
                     <div className="flex justify-start mt-1">
                       <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
                         <Image
