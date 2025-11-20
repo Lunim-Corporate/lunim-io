@@ -16,6 +16,12 @@ export interface LunaSessionMetrics {
   messagesExchanged: number;
   clarifyQuestionsAsked: number;
   planGenerated: boolean;
+  /**
+   * High-level, PII-light summary of the session outcome.
+   * Only populated for on-the-record sessions and sent to the backend,
+   * not forwarded to third-party analytics.
+   */
+  planSummary?: string;
   pdfDownloaded: boolean;
   summaryRead: boolean;
   completionRate: number;
@@ -167,6 +173,9 @@ class LunaAnalytics {
     if (!this.sessionMetrics) return;
 
     this.sessionMetrics.planGenerated = true;
+     // Store the summary only in session metrics so it can be persisted
+     // for on-the-record sessions; avoid sending it to external analytics.
+     this.sessionMetrics.planSummary = plan.summary;
 
     this.track('plan_generated', {
       nextStepsCount: plan.nextStepsCount,

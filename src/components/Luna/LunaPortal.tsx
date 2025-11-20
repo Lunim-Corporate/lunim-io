@@ -1,8 +1,8 @@
 'use client';
 
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Play } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { X, Download, Play, Settings, RotateCcw } from 'lucide-react';
 import Image from 'next/image';
 import lunaImage from '@/assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
@@ -26,6 +26,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [state, dispatch] = useReducer(lunaReducer, initialLunaState);
   const [textInput, setTextInput] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [ttsRate, setTtsRate] = useState(0.95);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const [reduceMotionManual, setReduceMotionManual] = useState(false);
+  const reduceMotion = prefersReducedMotion || reduceMotionManual;
+  const wasOpenRef = useRef(isOpen);
 
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
@@ -43,6 +50,25 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  // Detect when the portal is closed to end the analytics session
+  useEffect(() => {
+    if (wasOpenRef.current && !isOpen) {
+      console.log('[Luna] Portal closed, ending analytics session');
+      lunaAnalytics.endSession();
+    }
+    wasOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  // Auto-hide confetti after a short duration
+  useEffect(() => {
+    if (!showConfetti) return;
+    const timeout = setTimeout(
+      () => setShowConfetti(false),
+      reduceMotion ? 500 : 1500
+    );
+    return () => clearTimeout(timeout);
+  }, [showConfetti, reduceMotion]);
   
   const { speak: speakRaw, cancel: cancelSpeech, isSpeaking } = useSpeechSynthesis({
     onStart: () => {
@@ -77,6 +103,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       dispatch({ type: 'SET_ERROR', payload: error.message });
       speechQueueRef.current = null;
     },
+    rate: ttsRate,
   });
   
   // Wrap speak function to prevent duplicates
@@ -345,6 +372,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     }
   }, [state.session]);
 
+  // Reset chat: end current session and analytics, keep portal open
+  const handleResetChat = useCallback(() => {
+    // End current analytics session if any
+    lunaAnalytics.endSession();
+    // Clear Luna state back to idle (no session/messages)
+    dispatch({ type: 'END_SESSION' });
+  }, []);
+
   // Read summary aloud
   const handleReadSummary = useCallback(() => {
     if (state.session?.plan) {
@@ -374,6 +409,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       lunaAnalytics.trackPDFDownload();
       
       dispatch({ type: 'SET_STATE', payload: 'plan-ready' });
+      setShowConfetti(true);
     } catch (error) {
       console.error('PDF generation error:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to generate PDF. Please try again.' });
@@ -386,211 +422,439 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     <SpeechErrorBoundary>
       <AnimatePresence>
         <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-4xl max-h-[90vh] bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-          style={{
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+          onClick={onClose}
         >
-          {/* Header with gradient accent */}
-          <div className="relative flex items-center justify-between p-6 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
-                <Image
-                  src={lunaImage}
-                  alt="Luna"
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{
+              type: "spring",
+              damping: reduceMotion ? 40 : 25,
+              stiffness: reduceMotion ? 200 : 300,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-8"
+            style={{
+              boxShadow:
+                '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            }}
+          >
+            {/* Confetti on PDF ready (disabled in reduced-motion) */}
+            {showConfetti && !reduceMotion && (
+              <div className="pointer-events-none absolute inset-0 flex justify-center items-start">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="text-yellow-200"
+                    initial={{ y: 0, opacity: 0, x: (i - 2.5) * 24 }}
+                    animate={{ y: 80, opacity: [0, 1, 0] }}
+                    transition={{
+                      duration: 1.2,
+                      delay: i * 0.05,
+                      ease: 'easeOut',
+                    }}
+                  >
+                    ✦
+                  </motion.div>
+                ))}
               </div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">
-                Luna
-              </h2>
+            )}
+
+            {/* Header with gradient accent */}
+            <div className="relative flex items-center justify-between p-6 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                  <Image
+                    src={lunaImage}
+                    alt="Luna"
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                </div>
+                <h2 className="text-2xl font-bold text-white tracking-tight">
+                  Luna
+                </h2>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleResetChat}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-[11px] font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                  aria-label="Reset chat"
+                >
+                  <RotateCcw size={14} className="text-gray-400" />
+                  <span>Reset</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsOpen((open) => !open)}
+                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                  aria-label="Open Luna settings"
+                >
+                  <Settings
+                    size={18}
+                    className="text-gray-400 group-hover:text-white transition-colors"
+                  />
+                </button>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                  aria-label="Close"
+                >
+                  <X
+                    size={20}
+                    className="text-gray-400 group-hover:text-white transition-colors"
+                  />
+                </button>
+              </div>
+
+              {/* Settings panel */}
+              {isSettingsOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                  className="absolute right-4 top-16 w-72 rounded-2xl border border-zinc-800 bg-black/95 shadow-xl p-4 space-y-4 z-20"
+                >
+                  <h3 className="text-sm font-semibold text-white">
+                    Luna Settings
+                  </h3>
+                  <div className="space-y-3 text-xs text-gray-300">
+                    {/* Speech speed */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span>Speech speed</span>
+                        <span className="tabular-nums">
+                          {ttsRate.toFixed(2)}x
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0.75}
+                        max={1.25}
+                        step={0.05}
+                        value={ttsRate}
+                        onChange={(e) => setTtsRate(Number(e.target.value))}
+                        className="w-full accent-white"
+                        aria-label="Adjust Luna speech speed"
+                      />
+                    </div>
+
+                    {/* Reduced motion */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setReduceMotionManual((current) => !current)
+                      }
+                      className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-[11px] text-gray-200 hover:bg-zinc-800/70 transition-colors"
+                      aria-pressed={reduceMotion}
+                    >
+                      <span className="flex flex-col text-left">
+                        <span className="font-medium">Reduced motion</span>
+                        <span className="text-[10px] text-gray-400">
+                          {prefersReducedMotion
+                            ? 'Following system preference'
+                            : 'Limit animations in Luna'}
+                        </span>
+                      </span>
+                      <span
+                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] ${
+                          reduceMotion ? 'bg-emerald-400 text-black' : 'bg-zinc-700 text-gray-300'
+                        }`}
+                      >
+                        {reduceMotion ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
-              aria-label="Close"
-            >
-              <X size={20} className="text-gray-400 group-hover:text-white transition-colors" />
-            </button>
-          </div>
 
           {/* Main Content with subtle gradient background */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-zinc-950 to-black">
-            {/* Luna Portrait */}
-            <div className="flex justify-center">
-              <LunaPortrait
-                state={state.state}
-                isListening={state.isListening}
-                isSpeaking={state.isSpeaking}
-              />
-            </div>
-
-            {/* Caption Display */}
-            {state.caption && (
-              <LunaCaption
-                caption={state.caption}
-                role={state.isListening ? 'user' : 'luna'}
-              />
-            )}
-
-            {/* Error Display */}
-            {state.error && (
-              <div className="p-4 bg-red-950 border border-red-800 rounded-lg">
-                <p className="text-sm text-red-300">{state.error}</p>
-              </div>
-            )}
-
-            {/* Session not started */}
-            {!state.session && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center space-y-6 py-8"
-              >
-                <div className="space-y-2">
-                  <p className="text-gray-400 text-lg">
-                    Choose your privacy preference
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Select how you&apos;d like to interact with Luna
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                  <button
-                    onClick={() => startSession('on-the-record')}
-                    className="group flex-1 px-6 py-4 bg-white hover:bg-gray-100 text-black rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-                  >
-                    <span className="block font-semibold">On-the-record</span>
-                    <span className="block text-xs text-gray-600 mt-1">Save conversation history</span>
-                  </button>
-                  <button
-                    onClick={() => startSession('confidential')}
-                    className="group flex-1 px-6 py-4 bg-zinc-900 hover:bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-600 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105"
-                  >
-                    <span className="block font-semibold">Confidential</span>
-                    <span className="block text-xs text-gray-400 mt-1">Private session</span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Voice Controls */}
-            {state.session && (
-              <VoiceControls
-                interactionMode={state.interactionMode}
-                privacyMode={state.session.privacyMode}
-                isListening={state.isListening}
-                isSpeaking={state.isSpeaking}
-                onModeChange={handleModeChange}
-                onPrivacyChange={handlePrivacyChange}
-                onMicClick={handleMicClick}
-                disabled={state.state === 'thinking'}
-              />
-            )}
-
-            {/* Text Input */}
-            {state.session && state.interactionMode === 'text' && (
-              <form onSubmit={handleTextSubmit} className="flex gap-2">
-                <input
-                  type="text"
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-zinc-700 rounded-lg bg-zinc-800 text-white placeholder-gray-500"
-                  disabled={state.state === 'thinking'}
+          <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col">
+            {/* Conversation area like a chat screen */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Luna Portrait pinned at top */}
+              <div className="flex justify-center mb-6">
+                <LunaPortrait
+                  state={state.state}
+                  isListening={state.isListening}
+                  isSpeaking={state.isSpeaking}
                 />
-                <button
-                  type="submit"
-                  disabled={!textInput.trim() || state.state === 'thinking'}
-                  className="px-6 py-2 bg-white hover:bg-gray-200 disabled:bg-gray-600 text-black rounded-lg font-medium transition-colors"
-                >
-                  Send
-                </button>
-              </form>
-            )}
+              </div>
 
-            {/* Plan Display */}
-            {state.session?.plan && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-5 p-6 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/50 rounded-2xl shadow-xl"
-              >
-                <div className="flex items-center gap-3 pb-4 border-b border-zinc-800/50">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
-                    <Image
-                      src={lunaImage}
-                      alt="Luna"
-                      width={32}
-                      height={32}
-                      className="object-cover"
-                    />
+              {/* Session not started - intro bubble */}
+              {!state.session && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="max-w-xl mx-auto space-y-4"
+                >
+                  <div className="flex justify-center">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-xs text-gray-400 border border-zinc-800/80">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Start a conversation with Luna</span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white">
-                    Your Personalized Plan
-                  </h3>
-                </div>
-                
-                <div className="space-y-3">
-                  {state.session.plan.nextSteps.map((step, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="group p-5 bg-zinc-950 border border-zinc-800/50 hover:border-zinc-700 rounded-xl transition-all duration-200 hover:shadow-lg"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white">
-                          {index + 1}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-white mb-2 group-hover:text-gray-100">
-                            {step.title}
-                          </h4>
-                          <p className="text-sm text-gray-400 leading-relaxed">
-                            {step.description}
-                          </p>
+                  <div className="flex justify-center">
+                    <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/80 px-5 py-4 text-sm text-gray-300 shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
+                      <p className="font-semibold text-white mb-2">
+                        How would you like this chat to be handled?
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        You can choose to keep this session private, or allow us to use anonymised insights
+                        to improve Luna.
+                      </p>
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                          onClick={() => startSession('on-the-record')}
+                          className="group flex items-start gap-3 rounded-2xl bg-white text-black px-4 py-3 text-left text-xs font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                        >
+                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                          </span>
+                          <span>
+                            <span className="block text-xs font-semibold">
+                              On-the-record
+                            </span>
+                            <span className="block text-[11px] text-gray-700">
+                              Save anonymised notes so we can learn from patterns.
+                            </span>
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => startSession('confidential')}
+                          className="group flex items-start gap-3 rounded-2xl bg-zinc-900 border border-zinc-700 px-4 py-3 text-left text-xs font-medium text-white transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-900/90 hover:scale-[1.02]"
+                        >
+                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
+                            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                          </span>
+                          <span>
+                            <span className="block text-xs font-semibold">
+                              Confidential
+                            </span>
+                            <span className="block text-[11px] text-gray-400">
+                              Keep this conversation just between you and Luna.
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Active conversation thread */}
+              {state.session && (
+                <div className="max-w-2xl mx-auto space-y-3">
+                  {state.session.messages.map((message) => {
+                    const isUser = message.role === 'user';
+                    const timeLabel = (() => {
+                      try {
+                        const date =
+                          typeof message.timestamp === 'string'
+                            ? new Date(message.timestamp)
+                            : message.timestamp;
+                        return date.toLocaleTimeString([], {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        });
+                      } catch {
+                        return '';
+                      }
+                    })();
+
+                    return (
+                      <div
+                        key={message.id}
+                        className={`flex w-full ${
+                          isUser ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        {!isUser && (
+                          <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                            <Image
+                              src={lunaImage}
+                              alt="Luna"
+                              width={24}
+                              height={24}
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex flex-col items-end gap-1 max-w-[80%]">
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
+                            className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
+                              isUser
+                                ? 'bg-cyan-500 text-black rounded-br-sm'
+                                : 'bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm'
+                            }`}
+                          >
+                            {message.content}
+                          </motion.div>
+                          <div
+                            className={`flex items-center gap-2 text-[10px] text-gray-500 ${
+                              isUser ? 'justify-end pr-1' : 'justify-start pl-1'
+                            }`}
+                          >
+                            <span className="uppercase tracking-[0.16em]">
+                              {isUser ? 'You' : 'Luna'}
+                            </span>
+                            {timeLabel && (
+                              <span className="text-gray-600/80">{timeLabel}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
+                    );
+                  })}
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3 pt-4">
-                  <button
-                    onClick={handleReadSummary}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-100 text-black rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105"
-                  >
-                    <Play size={16} />
-                    <span>Read Summary</span>
-                  </button>
-                  <button
-                    onClick={handleDownloadPDF}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 text-white rounded-xl transition-all duration-200 font-medium hover:scale-105"
-                  >
-                    <Download size={16} />
-                    <span>Download PDF</span>
-                  </button>
+                  {/* Live caption as typing preview (user speech only) */}
+                  {state.caption && state.isListening && (
+                    <div className="flex justify-start mt-1">
+                      <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                        <Image
+                          src={lunaImage}
+                          alt="Luna"
+                          width={24}
+                          height={24}
+                          className="object-cover"
+                        />
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: reduceMotion ? 0.12 : 0.2 }}
+                        className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-xs text-gray-300"
+                      >
+                        {state.caption}
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* Error bubble */}
+                  {state.error && (
+                    <div className="flex justify-center mt-2">
+                      <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-xs text-red-200">
+                        {state.error}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Plan summary as final system bubble with actions */}
+                  {state.session.plan && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
+                      className="mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
+                          <Image
+                            src={lunaImage}
+                            alt="Luna"
+                            width={28}
+                            height={28}
+                            className="object-cover"
+                          />
+                        </div>
+                        <p className="text-xs font-semibold text-gray-300">
+                          Luna&apos;s plan summary
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-200 mb-3">
+                        {state.session.plan.summary}
+                      </p>
+                      <div className="grid gap-2 mb-3">
+                        {state.session.plan.nextSteps.map((step, index) => (
+                          <div
+                            key={index}
+                            className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
+                          >
+                            <p className="text-xs font-semibold text-gray-100">
+                              {index + 1}. {step.title}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              {step.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          onClick={handleReadSummary}
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                        >
+                          <Play size={14} />
+                          <span>Read summary</span>
+                        </button>
+                        <button
+                          onClick={handleDownloadPDF}
+                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-xs font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                        >
+                          <Download size={14} />
+                          <span>Download PDF</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
-              </motion.div>
-            )}
+              )}
+            </div>
+
+            {/* Controls + input docked at bottom */}
+            <div className="border-t border-zinc-900/80 bg-black/70 px-6 py-4 space-y-4">
+              {state.session && (
+                <VoiceControls
+                  interactionMode={state.interactionMode}
+                  privacyMode={state.session.privacyMode}
+                  isListening={state.isListening}
+                  isSpeaking={state.isSpeaking}
+                  onModeChange={handleModeChange}
+                  onPrivacyChange={handlePrivacyChange}
+                  onMicClick={handleMicClick}
+                  disabled={state.state === 'thinking'}
+                />
+              )}
+
+              {state.interactionMode === 'text' && (
+                <form onSubmit={handleTextSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder={
+                      state.session
+                        ? 'Type your message...'
+                        : 'Choose a privacy mode above to start'
+                    }
+                    className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={state.state === 'thinking' || !state.session}
+                  />
+                  <button
+                    type="submit"
+                    disabled={
+                      !textInput.trim() || state.state === 'thinking' || !state.session
+                    }
+                    className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Send
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </motion.div>
       </motion.div>
