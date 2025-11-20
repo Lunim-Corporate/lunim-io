@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion, LayoutGroup } from 'framer-motion';
 import {
   X,
   Download,
@@ -444,22 +444,23 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
           onClick={onClose}
         >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{
-              type: "spring",
-              damping: reduceMotion ? 40 : 25,
-              stiffness: reduceMotion ? 200 : 300,
-            }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-8"
-            style={{
-              boxShadow:
-                '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-            }}
-          >
+          <LayoutGroup>
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{
+                type: "spring",
+                damping: reduceMotion ? 40 : 25,
+                stiffness: reduceMotion ? 200 : 300,
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-8"
+              style={{
+                boxShadow:
+                  '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+              }}
+            >
             {/* Confetti on PDF ready (disabled in reduced-motion) */}
             {showConfetti && !reduceMotion && (
               <div className="pointer-events-none absolute inset-0 flex justify-center items-start">
@@ -483,14 +484,15 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
             {/* Header - thin, controls + compact selections */}
             <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
-              {/* Compact summary of mode + privacy once session started */}
+              {/* Compact summary of mode + privacy once session started (shares layout with intro selector) */}
               <div className="flex items-center gap-3">
                 {state.session && (
                   <motion.div
+                    layoutId="interaction-mode-pill"
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                    transition={{ duration: reduceMotion ? 0.1 : 0.25 }}
                     className="hidden sm:inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-sm text-gray-200/90"
                   >
                     <span className="inline-flex items-center gap-1">
@@ -697,7 +699,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
                       {/* Pre-select interaction mode (voice / text) */}
                       <div className="mt-4 flex justify-center">
-                        <div className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.7)]">
+                        <motion.div
+                          layoutId="interaction-mode-pill"
+                          className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
+                        >
                           <button
                             type="button"
                             onClick={() => setPendingInteractionMode('voice')}
@@ -707,10 +712,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                                 : 'text-gray-300 hover:bg-white/5'
                             }`}
                           >
-                            <span className="inline-flex items-center gap-1.5">
-                              <Volume2 size={14} />
-                              <span>Voice</span>
-                            </span>
+                              <span className="inline-flex items-center gap-1.5">
+                                <Volume2 size={14} />
+                                <span>Voice</span>
+                              </span>
                           </button>
                           <button
                             type="button"
@@ -721,12 +726,12 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                                 : 'text-gray-300 hover:bg-white/5'
                             }`}
                           >
-                            <span className="inline-flex items-center gap-1.5">
-                              <MessageSquare size={14} />
-                              <span>Text</span>
-                            </span>
+                              <span className="inline-flex items-center gap-1.5">
+                                <MessageSquare size={14} />
+                                <span>Text</span>
+                              </span>
                           </button>
-                        </div>
+                        </motion.div>
                       </div>
 
                       <div className="mt-5 flex justify-center">
@@ -984,6 +989,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             </div>
           </div>
         </motion.div>
+      </LayoutGroup>
       </motion.div>
       </AnimatePresence>
     </SpeechErrorBoundary>
