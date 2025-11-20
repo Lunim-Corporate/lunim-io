@@ -260,11 +260,12 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   // Initialize session with greeting
   const startSession = useCallback(async (privacyMode?: PrivacyMode) => {
     const mode = privacyMode ?? pendingPrivacyMode;
-    console.log('[Luna] Starting session with privacy mode:', mode);
+    const interactionMode = pendingInteractionMode;
+    console.log('[Luna] Starting session with privacy mode:', mode, 'interaction mode:', interactionMode);
     
     dispatch({ type: 'START_SESSION', payload: mode });
     // Apply the pre-selected interaction mode when starting
-    dispatch({ type: 'SET_MODE', payload: pendingInteractionMode });
+    dispatch({ type: 'SET_MODE', payload: interactionMode });
     
     // Start analytics tracking
     const sessionId = `session-${Date.now()}`;
@@ -273,8 +274,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     const greeting = "Hi! I'm Luna, your guide at Lunim Studio. Tell me about your project and I'll help you find the perfect next steps.";
     
     // In voice mode, speak first, then show the message; in text mode, show immediately.
-    const currentMode = stateRef.current.interactionMode;
-    if (currentMode === 'voice') {
+    if (interactionMode === 'voice') {
       await speakAndWait(greeting);
     }
 
