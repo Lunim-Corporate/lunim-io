@@ -12,7 +12,7 @@ import { LunaPortrait } from './components/LunaPortrait';
 import { VoiceControls } from './components/VoiceControls';
 import { LunaCaption } from './components/LunaCaption';
 import { SpeechErrorBoundary } from './components/SpeechErrorBoundary';
-import { PrivacyMode } from './types';
+import { PrivacyMode, InteractionMode } from './types';
 import { lunaAnalytics } from './utils/analytics';
 import { generatePlanPDF, downloadPDF } from './utils/pdf';
 import { speechManager } from './utils/speechManager';
@@ -30,6 +30,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [pendingPrivacyMode, setPendingPrivacyMode] = useState<PrivacyMode>('on-the-record');
+  const [pendingInteractionMode, setPendingInteractionMode] =
+    useState<InteractionMode>('voice');
   const prefersReducedMotion = useReducedMotion();
   const [reduceMotionManual, setReduceMotionManual] = useState(false);
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
@@ -215,6 +217,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     console.log('[Luna] Starting session with privacy mode:', mode);
     
     dispatch({ type: 'START_SESSION', payload: mode });
+    // Apply the pre-selected interaction mode when starting
+    dispatch({ type: 'SET_MODE', payload: pendingInteractionMode });
     
     // Start analytics tracking
     const sessionId = `session-${Date.now()}`;
@@ -235,7 +239,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         speak(greeting);
       }
     }, 100);
-  }, [speak, pendingPrivacyMode]);
+  }, [speak, pendingPrivacyMode, pendingInteractionMode]);
 
   // Handle user input from voice or text
   const handleUserInput = useCallback(async (input: string) => {
@@ -364,12 +368,16 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     }
   }, [isListening, isSpeaking, stopListening, cancelSpeech]);
 
-  const handlePrivacyChange = useCallback((mode: PrivacyMode) => {
-    if (state.session) {
-      // Update existing session privacy
-      dispatch({ type: 'START_SESSION', payload: mode });
-    }
-  }, [state.session]);
+  const handlePrivacyChange = useCallback(
+    (mode: PrivacyMode) => {
+      // Before a session starts, update the pending selection only.
+      if (!state.session) {
+        setPendingPrivacyMode(mode);
+      }
+      // Once a conversation is active, privacy is locked for this session.
+    },
+    [state.session]
+  );
 
   // Reset chat: end current session and analytics, keep portal open
   const handleResetChat = useCallback(() => {
@@ -644,6 +652,34 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                         </button>
                       </div>
 
+                      {/* Pre-select interaction mode (voice / text) */}
+                      <div className="mt-4 flex justify-center">
+                        <div className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1">
+                          <button
+                            type="button"
+                            onClick={() => setPendingInteractionMode('voice')}
+                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                              pendingInteractionMode === 'voice'
+                                ? 'bg-white text-black shadow-md'
+                                : 'text-gray-300 hover:bg-white/5'
+                            }`}
+                          >
+                            Voice
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPendingInteractionMode('text')}
+                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                              pendingInteractionMode === 'text'
+                                ? 'bg-white text-black shadow-md'
+                                : 'text-gray-300 hover:bg-white/5'
+                            }`}
+                          >
+                            Text
+                          </button>
+                        </div>
+                      </div>
+
                       <div className="mt-5 flex justify-center">
                         <button
                           type="button"
@@ -863,6 +899,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   privacyMode={state.session.privacyMode}
                   isListening={state.isListening}
                   isSpeaking={state.isSpeaking}
+                  privacyLocked={true}
                   onModeChange={handleModeChange}
                   onPrivacyChange={handlePrivacyChange}
                   onMicClick={handleMicClick}

@@ -9,6 +9,7 @@ interface VoiceControlsProps {
   privacyMode: PrivacyMode;
   isListening: boolean;
   isSpeaking: boolean;
+  privacyLocked?: boolean;
   onModeChange: (mode: InteractionMode) => void;
   onPrivacyChange: (mode: PrivacyMode) => void;
   onMicClick: () => void;
@@ -20,11 +21,14 @@ export function VoiceControls({
   privacyMode,
   isListening,
   isSpeaking,
+  privacyLocked = false,
   onModeChange,
   onPrivacyChange,
   onMicClick,
   disabled = false,
 }: VoiceControlsProps) {
+  const privacyDisabled = disabled || privacyLocked;
+
   return (
     <div className="w-full max-w-xl mx-auto rounded-2xl border border-zinc-800/70 bg-gradient-to-b from-zinc-900/60 via-black/70 to-black/90 px-5 py-4 shadow-[0_18px_45px_rgba(0,0,0,0.85)] backdrop-blur-md flex flex-col items-center gap-6">
       {/* Mode Toggle - Voice/Text */}
@@ -79,7 +83,7 @@ export function VoiceControls({
                 ? 'bg-white text-black shadow-lg shadow-white/40'
                 : 'text-gray-200/80 hover:bg-white/5'
             }`}
-            disabled={disabled}
+            disabled={privacyDisabled}
           >
             <span className="inline-flex w-4 h-4 items-center justify-center rounded-full bg-emerald-400/20 mr-1">
               <Lock size={10} className="text-emerald-300" />
@@ -93,7 +97,7 @@ export function VoiceControls({
                 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-400/40'
                 : 'text-gray-200/80 hover:bg-white/5'
             }`}
-            disabled={disabled}
+            disabled={privacyDisabled}
           >
             <span className="inline-flex w-4 h-4 items-center justify-center rounded-full bg-black/20 mr-1">
               <Shield size={10} className={privacyMode === 'confidential' ? 'text-black' : 'text-cyan-300'} />
