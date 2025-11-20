@@ -10,6 +10,13 @@ interface UseSpeechSynthesisOptions {
   volume?: number;
 }
 
+// Decide once (at build time) whether to use OpenAI TTS instead of browser TTS
+const USE_OPENAI_TTS =
+  typeof process !== 'undefined' &&
+  (process.env.NEXT_PUBLIC_USE_OPENAI_TTS === 'true' ||
+    process.env.USE_OPENAI_TTS === 'true' ||
+    process.env.USE_OPENAI_TTS === '1');
+
 export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
@@ -17,16 +24,45 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const isMountedRef = useRef(true);
   const isCleaningUpRef = useRef(false);
+  const preferredVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     isMountedRef.current = true;
-    setIsSupported(typeof window !== 'undefined' && 'speechSynthesis' in window);
-    
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+
+    const hasSpeechSynthesis =
+      typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+    // TTS is considered "supported" if we have either browser TTS or OpenAI TTS enabled
+    setIsSupported(hasSpeechSynthesis || USE_OPENAI_TTS);
+
+    if (hasSpeechSynthesis) {
       const loadVoices = () => {
-        if (isMountedRef.current) {
-          const availableVoices = window.speechSynthesis.getVoices();
-          setVoices(availableVoices);
+        if (!isMountedRef.current) return;
+        const availableVoices = window.speechSynthesis.getVoices();
+        setVoices(availableVoices);
+
+        // Choose a stable, high-quality default voice once
+        if (!preferredVoiceRef.current && availableVoices.length > 0) {
+          const preferenceOrder: RegExp[] = [
+            /Google UK English Female/i,
+            /Google US English/i,
+            /Google.*English/i,
+            /Samantha/i,
+            /Karen/i,
+          ];
+
+          const byName =
+            availableVoices.find((v) =>
+              preferenceOrder.some((pattern) => pattern.test(v.name))
+            ) ?? null;
+
+          const byLang =
+            byName ||
+            availableVoices.find((v) => v.lang?.toLowerCase().startsWith('en')) ||
+            availableVoices[0];
+
+          preferredVoiceRef.current = byLang || null;
         }
       };
 
@@ -39,7 +75,7 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
 
       return () => {
         isMountedRef.current = false;
-        
+
         // Cancel any ongoing speech on unmount
         if (window.speechSynthesis && utteranceRef.current) {
           isCleaningUpRef.current = true;
@@ -59,12 +95,102 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
 
   const speak = useCallback(
     (text: string) => {
-      // Check if supported and component is still mounted
-      if (!isSupported || !isMountedRef.current) {
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      // OpenAI TTS path (server-side generation + HTMLAudio playback)
+      if (USE_OPENAI_TTS) {
+        if (isSpeaking) {
+          console.log('[Speech] Prevented duplicate - already speaking (OpenAI TTS)');
+          return;
+        }
+
+        const run = async () => {
+          try {
+            setIsSpeaking(true);
+            options.onStart?.();
+
+            // Stop any existing audio
+            if (audioRef.current) {
+              try {
+                audioRef.current.pause();
+              } catch {
+                // ignore
+              }
+              audioRef.current = null;
+            }
+
+            const response = await fetch('/api/luna/tts', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(
+                `TTS request failed: ${response.status} ${response.statusText} - ${errorText}`
+              );
+            }
+
+            const blob = await response.blob();
+            if (!isMountedRef.current) return;
+
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audioRef.current = audio;
+
+            audio.onended = () => {
+              URL.revokeObjectURL(url);
+              if (!isMountedRef.current) return;
+              setIsSpeaking(false);
+              audioRef.current = null;
+              options.onEnd?.();
+            };
+
+            audio.onerror = () => {
+              URL.revokeObjectURL(url);
+              if (!isMountedRef.current) return;
+              setIsSpeaking(false);
+              audioRef.current = null;
+              const error = new Error('Failed to play TTS audio');
+              console.error('[Speech] Failed to play TTS audio');
+              options.onError?.(error);
+            };
+
+            try {
+              await audio.play();
+            } catch (error) {
+              URL.revokeObjectURL(url);
+              if (!isMountedRef.current) return;
+              setIsSpeaking(false);
+              audioRef.current = null;
+              console.error('[Speech] Audio play error:', error);
+              options.onError?.(error as Error);
+            }
+          } catch (error) {
+            if (!isMountedRef.current) return;
+            setIsSpeaking(false);
+            console.error('[Speech] OpenAI TTS error:', error);
+            options.onError?.(
+              error instanceof Error
+                ? error
+                : new Error('OpenAI TTS error (unknown)')
+            );
+          }
+        };
+
+        void run();
+        return;
+      }
+
+      // Browser speech synthesis path
+      if (!isSupported) {
         console.warn('Speech synthesis not available');
         return;
       }
-      
+
       // Prevent duplicate speech
       if (isSpeaking && utteranceRef.current) {
         console.log('[Speech] Prevented duplicate - already speaking');
@@ -88,16 +214,17 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
             utterance.pitch = options.pitch ?? 1.0;
             utterance.volume = options.volume ?? 1.0;
 
-            // Select voice - prefer female voices for Luna
+            // Select voice: prefer caller-provided voice, otherwise our preferred cached voice
             if (options.voice) {
               utterance.voice = options.voice;
-            } else {
-              const femaleVoice = voices.find(
-                (v) => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Zira')
-              ) || voices.find((v) => v.lang.startsWith('en')) || voices[0];
-              
-              if (femaleVoice) {
-                utterance.voice = femaleVoice;
+            } else if (preferredVoiceRef.current) {
+              utterance.voice = preferredVoiceRef.current;
+            } else if (voices.length > 0) {
+              const fallback =
+                voices.find((v) => v.lang?.toLowerCase().startsWith('en')) ||
+                voices[0];
+              if (fallback) {
+                utterance.voice = fallback;
               }
             }
 
@@ -191,10 +318,26 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
   );
 
   const cancel = useCallback(() => {
+    if (!isMountedRef.current) return;
+
+    if (USE_OPENAI_TTS) {
+      try {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
+      } catch (error) {
+        console.warn('[Speech] Error during OpenAI TTS cancel:', error);
+      } finally {
+        setIsSpeaking(false);
+      }
+      return;
+    }
+
     if (!isSupported || typeof window === 'undefined') return;
-    
+
     isCleaningUpRef.current = true;
-    
+
     try {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
