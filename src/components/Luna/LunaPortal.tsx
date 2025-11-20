@@ -2,7 +2,15 @@
 
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { X, Download, Play, Settings, RotateCcw } from 'lucide-react';
+import {
+  X,
+  Download,
+  Play,
+  Settings,
+  RotateCcw,
+  Volume2,
+  MessageSquare,
+} from 'lucide-react';
 import Image from 'next/image';
 import lunaImage from '@/assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
@@ -473,8 +481,43 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               </div>
             )}
 
-            {/* Header - thin, controls only */}
-            <div className="relative flex items-center justify-end px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
+            {/* Header - thin, controls + compact selections */}
+            <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
+              {/* Compact summary of mode + privacy once session started */}
+              <div className="flex items-center gap-3">
+                {state.session && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                    className="hidden sm:inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-sm text-gray-200/90"
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
+                        {state.interactionMode === 'voice' ? (
+                          <Volume2 size={13} />
+                        ) : (
+                          <MessageSquare size={13} />
+                        )}
+                      </span>
+                      <span className="capitalize">
+                        {state.interactionMode === 'voice' ? 'Voice' : 'Text'}
+                      </span>
+                    </span>
+                    <span className="h-4 w-px bg-zinc-700/80" />
+                    <span className="flex items-center gap-1 text-gray-300">
+                      <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                      <span>
+                        {state.session.privacyMode === 'on-the-record'
+                          ? 'On the record'
+                          : 'Confidential'}
+                      </span>
+                    </span>
+                  </motion.div>
+                )}
+              </div>
+
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
@@ -654,28 +697,34 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
                       {/* Pre-select interaction mode (voice / text) */}
                       <div className="mt-4 flex justify-center">
-                        <div className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1">
+                        <div className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.7)]">
                           <button
                             type="button"
                             onClick={() => setPendingInteractionMode('voice')}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                               pendingInteractionMode === 'voice'
-                                ? 'bg-white text-black shadow-md'
+                                ? 'bg-white text-black shadow-md shadow-white/30'
                                 : 'text-gray-300 hover:bg-white/5'
                             }`}
                           >
-                            Voice
+                            <span className="inline-flex items-center gap-1.5">
+                              <Volume2 size={14} />
+                              <span>Voice</span>
+                            </span>
                           </button>
                           <button
                             type="button"
                             onClick={() => setPendingInteractionMode('text')}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                               pendingInteractionMode === 'text'
-                                ? 'bg-white text-black shadow-md'
+                                ? 'bg-white text-black shadow-md shadow-white/30'
                                 : 'text-gray-300 hover:bg-white/5'
                             }`}
                           >
-                            Text
+                            <span className="inline-flex items-center gap-1.5">
+                              <MessageSquare size={14} />
+                              <span>Text</span>
+                            </span>
                           </button>
                         </div>
                       </div>

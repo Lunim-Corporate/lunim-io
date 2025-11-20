@@ -75,7 +75,13 @@ export function VoiceControls({
           </span>
           <span>Privacy</span>
         </div>
-        <div className="inline-flex items-center justify-center gap-1 rounded-2xl border border-zinc-700/80 bg-zinc-950/80 px-1 py-1 shadow-[0_10px_40px_rgba(0,0,0,0.85)] backdrop-blur">
+        <div
+          className={`inline-flex items-center justify-center gap-1 rounded-2xl border px-1 py-1 backdrop-blur shadow-[0_10px_40px_rgba(0,0,0,0.85)] ${
+            privacyLocked
+              ? 'border-zinc-800/80 bg-zinc-900/70 opacity-60 cursor-not-allowed'
+              : 'border-zinc-700/80 bg-zinc-950/80'
+          }`}
+        >
           <button
             onClick={() => onPrivacyChange('on-the-record')}
             className={`flex items-center justify-center gap-1.5 rounded-xl px-4 py-1.5 text-sm font-medium transition-all ${
