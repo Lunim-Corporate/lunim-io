@@ -29,6 +29,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [ttsRate, setTtsRate] = useState(0.95);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [pendingPrivacyMode, setPendingPrivacyMode] = useState<PrivacyMode>('on-the-record');
   const prefersReducedMotion = useReducedMotion();
   const [reduceMotionManual, setReduceMotionManual] = useState(false);
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
@@ -209,14 +210,15 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   }, [cancelSpeech, isListening, stopListening]);
 
   // Initialize session with greeting
-  const startSession = useCallback((privacyMode: PrivacyMode) => {
-    console.log('[Luna] Starting session with privacy mode:', privacyMode);
+  const startSession = useCallback((privacyMode?: PrivacyMode) => {
+    const mode = privacyMode ?? pendingPrivacyMode;
+    console.log('[Luna] Starting session with privacy mode:', mode);
     
-    dispatch({ type: 'START_SESSION', payload: privacyMode });
+    dispatch({ type: 'START_SESSION', payload: mode });
     
     // Start analytics tracking
     const sessionId = `session-${Date.now()}`;
-    lunaAnalytics.startSession(sessionId, privacyMode);
+    lunaAnalytics.startSession(sessionId, mode);
     
     const greeting = "Hi! I'm Luna, your guide at Lunim Studio. Tell me about your project and I'll help you find the perfect next steps.";
     
@@ -233,7 +235,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         speak(greeting);
       }
     }, 100);
-  }, [speak]);
+  }, [speak, pendingPrivacyMode]);
 
   // Handle user input from voice or text
   const handleUserInput = useCallback(async (input: string) => {
@@ -575,7 +577,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 <p className="text-sm font-semibold text-white">Luna</p>
               </div>
 
-              {/* Session not started - intro bubble */}
+              {/* Session not started - intro bubble & privacy selection */}
               {!state.session && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -599,15 +601,20 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       </p>
                       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
-                          onClick={() => startSession('on-the-record')}
-                          className="group flex items-start gap-3 rounded-2xl bg-white text-black px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                          type="button"
+                          onClick={() => setPendingPrivacyMode('on-the-record')}
+                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
+                            pendingPrivacyMode === 'on-the-record'
+                              ? 'bg-white text-black'
+                              : 'bg-zinc-900/80 text-white border border-zinc-700'
+                          }`}
                         >
                           <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
                           </span>
                           <span>
                             <span className="block text-sm font-semibold">
-                              On-the-record
+                              On the record
                             </span>
                             <span className="block text-sm text-gray-700">
                               Save anonymised notes so we can learn from patterns.
@@ -615,8 +622,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                           </span>
                         </button>
                         <button
-                          onClick={() => startSession('confidential')}
-                          className="group flex items-start gap-3 rounded-2xl bg-zinc-900 border border-zinc-700 px-4 py-3 text-left text-sm font-medium text-white transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-900/90 hover:scale-[1.02]"
+                          type="button"
+                          onClick={() => setPendingPrivacyMode('confidential')}
+                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 hover:scale-[1.02] ${
+                            pendingPrivacyMode === 'confidential'
+                              ? 'bg-zinc-900 border border-zinc-500 text-white'
+                              : 'bg-zinc-900/60 border border-zinc-700 text-gray-300'
+                          }`}
                         >
                           <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
                             <span className="w-2 h-2 rounded-full bg-cyan-400" />
@@ -629,6 +641,16 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                               Keep this conversation just between you and Luna.
                             </span>
                           </span>
+                        </button>
+                      </div>
+
+                      <div className="mt-5 flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => startSession()}
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                        >
+                          <span>Consult Luna</span>
                         </button>
                       </div>
                     </div>

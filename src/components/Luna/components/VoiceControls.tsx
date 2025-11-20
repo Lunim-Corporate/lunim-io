@@ -84,7 +84,7 @@ export function VoiceControls({
             <span className="inline-flex w-4 h-4 items-center justify-center rounded-full bg-emerald-400/20 mr-1">
               <Lock size={10} className="text-emerald-300" />
             </span>
-            On-the-record
+            On the record
           </button>
           <button
             onClick={() => onPrivacyChange('confidential')}
@@ -102,7 +102,7 @@ export function VoiceControls({
           </button>
         </div>
         <p className="text-sm text-gray-500 mt-1 text-center max-w-sm">
-          On-the-record sessions help us learn from anonymised patterns. Confidential keeps this chat just between you and Luna.
+          On the record sessions help us learn from anonymised patterns. Confidential keeps this chat just between you and Luna.
         </p>
       </div>
 
