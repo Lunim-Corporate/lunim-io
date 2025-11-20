@@ -26,6 +26,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [state, dispatch] = useReducer(lunaReducer, initialLunaState);
   const [textInput, setTextInput] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const wasOpenRef = useRef(isOpen);
 
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
@@ -43,6 +44,15 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  // Detect when the portal is closed to end the analytics session
+  useEffect(() => {
+    if (wasOpenRef.current && !isOpen) {
+      console.log('[Luna] Portal closed, ending analytics session');
+      lunaAnalytics.endSession();
+    }
+    wasOpenRef.current = isOpen;
+  }, [isOpen]);
   
   const { speak: speakRaw, cancel: cancelSpeech, isSpeaking } = useSpeechSynthesis({
     onStart: () => {
