@@ -119,23 +119,46 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   });
   
   // Wrap speak function to prevent duplicates
-  const speak = useCallback((text: string) => {
-    // Only prevent if currently speaking (not based on text content)
-    if (isSpeaking) {
-      console.log('[Luna] Prevented speech - already speaking');
-      return;
-    }
-    
-    // Prevent duplicate speech requests in quick succession
-    if (speechQueueRef.current === text) {
-      console.log('[Luna] Prevented duplicate speech request:', text.substring(0, 50));
-      return;
-    }
-    
-    console.log('[Luna] Speaking:', text.substring(0, 100));
-    speechQueueRef.current = text;
-    speakRaw(text);
-  }, [speakRaw, isSpeaking]);
+  const speak = useCallback(
+    (text: string) => {
+      if (isSpeaking) {
+        console.log('[Luna] Prevented speech - already speaking');
+        return;
+      }
+      if (speechQueueRef.current === text) {
+        console.log('[Luna] Prevented duplicate speech request:', text.substring(0, 50));
+        return;
+      }
+      console.log('[Luna] Speaking:', text.substring(0, 100));
+      speechQueueRef.current = text;
+      void speakRaw(text);
+    },
+    [speakRaw, isSpeaking]
+  );
+
+  // Helper: speak and wait until speech completes before continuing
+  const speakAndWait = useCallback(
+    async (text: string) => {
+      speak(text);
+      // Poll isSpeaking flag until speech actually starts and then finishes
+      await new Promise<void>((resolve) => {
+        let hasStarted = false;
+        const check = () => {
+          const current = stateRef.current;
+          if (current.isSpeaking) {
+            hasStarted = true;
+          }
+          if (hasStarted && !current.isSpeaking) {
+            resolve();
+            return;
+          }
+          setTimeout(check, 60);
+        };
+        check();
+      });
+    },
+    [speak]
+  );
 
   // Speech recognition for user input
   const processedInputRef = useRef<Set<string>>(new Set());
@@ -221,7 +244,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   }, [cancelSpeech, isListening, stopListening]);
 
   // Initialize session with greeting
-  const startSession = useCallback((privacyMode?: PrivacyMode) => {
+  const startSession = useCallback(async (privacyMode?: PrivacyMode) => {
     const mode = privacyMode ?? pendingPrivacyMode;
     console.log('[Luna] Starting session with privacy mode:', mode);
     
@@ -235,20 +258,15 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     
     const greeting = "Hi! I'm Luna, your guide at Lunim Studio. Tell me about your project and I'll help you find the perfect next steps.";
     
-    // Add greeting as a chat message (caption is reserved for live voice transcription)
+    // In voice mode, speak first, then show the message; in text mode, show immediately.
+    const currentMode = stateRef.current.interactionMode;
+    if (currentMode === 'voice') {
+      await speakAndWait(greeting);
+    }
+
     dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: greeting } });
     lunaAnalytics.trackMessage('luna', greeting);
-    
-    // Delay speaking slightly to ensure state is updated
-    // Use stateRef to get the current interaction mode
-    setTimeout(() => {
-      const currentMode = stateRef.current.interactionMode;
-      console.log('[Luna] Current interaction mode:', currentMode);
-      if (currentMode === 'voice') {
-        speak(greeting);
-      }
-    }, 100);
-  }, [speak, pendingPrivacyMode, pendingInteractionMode]);
+  }, [speakAndWait, pendingPrivacyMode, pendingInteractionMode]);
 
   // Handle user input from voice or text
   const handleUserInput = useCallback(async (input: string) => {
@@ -278,36 +296,36 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         dispatch({ type: 'SET_CLARIFY', payload: data });
         
         const firstQuestion = data.understanding + ' ' + data.questions[0];
+
+        // Use stateRef to get current mode to avoid stale closure
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Clarify question, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(firstQuestion);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: firstQuestion } });
         lunaAnalytics.trackMessage('luna', firstQuestion);
         lunaAnalytics.trackClarifyPhase(1);
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking clarify question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(firstQuestion);
-        }
-        
+
         setCurrentQuestionIndex(0);
       } 
       // Continue with clarifying questions
       else if (state.session.clarify && currentQuestionIndex < state.session.clarify.questions.length - 1) {
         const nextIndex = currentQuestionIndex + 1;
         const nextQuestion = state.session.clarify.questions[nextIndex];
-        
+
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Follow-up question, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(nextQuestion);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: nextQuestion } });
         dispatch({ type: 'SET_STATE', payload: 'clarify' });
         lunaAnalytics.trackMessage('luna', nextQuestion);
         lunaAnalytics.trackClarifyPhase(nextIndex + 1);
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking follow-up question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(nextQuestion);
-        }
-        
+
         setCurrentQuestionIndex(nextIndex);
       }
       // Phase 2: Generate plan
@@ -325,6 +343,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         dispatch({ type: 'SET_PLAN', payload: data });
         
         const planMessage = `Great! ${data.summary}`;
+
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Plan message, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(planMessage);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
         lunaAnalytics.trackMessage('luna', planMessage);
         lunaAnalytics.trackPlanGenerated({
@@ -333,13 +358,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           estimatedScope: data.estimatedScope,
           tags: data.tags,
         });
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking plan message, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(planMessage);
-        }
       }
     } catch (error) {
       console.error('Error processing input:', error);
