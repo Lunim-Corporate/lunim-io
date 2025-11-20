@@ -638,38 +638,70 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               {/* Active conversation thread */}
               {state.session && (
                 <div className="max-w-2xl mx-auto space-y-3">
-                  {state.session.messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex w-full ${
-                        message.role === 'user' ? 'justify-end' : 'justify-start'
-                      }`}
-                    >
-                      {message.role === 'luna' && (
-                        <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
-                          <Image
-                            src={lunaImage}
-                            alt="Luna"
-                            width={24}
-                            height={24}
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
-                      <motion.div
-                        initial={{ opacity: 0, y: 4, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
-                        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
-                          message.role === 'user'
-                            ? 'bg-cyan-500 text-black rounded-br-sm'
-                            : 'bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm'
+                  {state.session.messages.map((message) => {
+                    const isUser = message.role === 'user';
+                    const timeLabel = (() => {
+                      try {
+                        const date =
+                          typeof message.timestamp === 'string'
+                            ? new Date(message.timestamp)
+                            : message.timestamp;
+                        return date.toLocaleTimeString([], {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        });
+                      } catch {
+                        return '';
+                      }
+                    })();
+
+                    return (
+                      <div
+                        key={message.id}
+                        className={`flex w-full ${
+                          isUser ? 'justify-end' : 'justify-start'
                         }`}
                       >
-                        {message.content}
-                      </motion.div>
-                    </div>
-                  ))}
+                        {!isUser && (
+                          <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                            <Image
+                              src={lunaImage}
+                              alt="Luna"
+                              width={24}
+                              height={24}
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex flex-col items-end gap-1 max-w-[80%]">
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
+                            className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
+                              isUser
+                                ? 'bg-cyan-500 text-black rounded-br-sm'
+                                : 'bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm'
+                            }`}
+                          >
+                            {message.content}
+                          </motion.div>
+                          <div
+                            className={`flex items-center gap-2 text-[10px] text-gray-500 ${
+                              isUser ? 'justify-end pr-1' : 'justify-start pl-1'
+                            }`}
+                          >
+                            <span className="uppercase tracking-[0.16em]">
+                              {isUser ? 'You' : 'Luna'}
+                            </span>
+                            {timeLabel && (
+                              <span className="text-gray-600/80">{timeLabel}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
 
                   {/* Live caption as typing preview (user speech only) */}
                   {state.caption && state.isListening && (
