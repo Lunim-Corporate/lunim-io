@@ -268,7 +268,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               {authorUid ? (
                 <Link
                   href={`/blog/authors/${authorUid}`}
-                  className="inline-flex items-center justify-center px-5 py-2 mt-4 text-sm font-semibold text-black bg-cyan-300 rounded-full hover:bg-cyan-200 transition-colors"
+                  className="inline-flex items-center justify-center px-5 py-2 mt-4 text-sm font-semibold text-black bg-cyan-300 rounded-full hover:bg-cyan-200 transition-colors no-underline"
                 >
                   More from {authorDisplayName}
                 </Link>

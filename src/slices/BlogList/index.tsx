@@ -73,7 +73,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
-    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors no-underline">
       {articleImageField?.url ? (
         <PrismicNextImage
           field={articleImageField}
@@ -267,7 +267,7 @@ export default async function BlogList({ slice, context }: Props) {
         <div className="flex flex-wrap items-center gap-2 mb-8">
           <a
             href={withParams({ page: 1 })}
-            className={`px-3 py-1 rounded-full text-sm border ${
+            className={`px-3 py-1 rounded-full text-sm border no-underline ${
               !effectiveFilter
                 ? "bg-cyan-300 text-black border-cyan-300"
                 : "border-white/20 text-white/80 hover:text-white"
@@ -279,7 +279,7 @@ export default async function BlogList({ slice, context }: Props) {
             <a
               key={normalizedCat}
               href={withParams({ page: 1, cat: normalizedCat })}
-              className={`px-3 py-1 rounded-full text-sm border ${
+              className={`px-3 py-1 rounded-full text-sm border no-underline ${
                 normalizedCat === effectiveFilter
                   ? "bg-cyan-300 text-black border-cyan-300"
                   : "border-white/20 text-white/80 hover:text-white"
