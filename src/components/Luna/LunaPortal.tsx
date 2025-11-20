@@ -162,12 +162,26 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
   // Speech recognition for user input
   const processedInputRef = useRef<Set<string>>(new Set());
+  const ignoreVoiceResultsRef = useRef(false);
   
   const { startListening, stopListening, isListening, resetTranscript } = 
     useSpeechRecognition({
       onResult: (text, isFinal) => {
+        // If we've switched away from voice mode and decided to ignore any
+        // leftover mic results, drop them immediately.
+        if (ignoreVoiceResultsRef.current) {
+          return;
+        }
+
         dispatch({ type: 'SET_CAPTION', payload: text });
         if (isFinal && text.trim()) {
+          // Extra safety: if mode is no longer voice, ignore any final voice result
+          const currentMode = stateRef.current.interactionMode;
+          if (currentMode !== 'voice') {
+            console.log('[Luna] Ignoring voice result because mode is now text');
+            return;
+          }
+
           // Prevent processing the same input multiple times
           const inputKey = text.trim().toLowerCase();
           if (!processedInputRef.current.has(inputKey)) {
@@ -387,13 +401,23 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const handleModeChange = useCallback((mode: 'voice' | 'text') => {
     dispatch({ type: 'SET_MODE', payload: mode });
     lunaAnalytics.trackModeChange(mode);
-    if (mode === 'text' && isListening) {
-      stopListening();
+    if (mode === 'text') {
+      // When switching to text, stop any live mic session and ignore all
+      // pending voice recognition results from that session.
+      if (isListening) {
+        stopListening();
+      }
+      resetTranscript();
+      processedInputRef.current.clear();
+      ignoreVoiceResultsRef.current = true;
+    } else {
+      // When switching back to voice, allow voice results again
+      ignoreVoiceResultsRef.current = false;
     }
     if (isSpeaking) {
       cancelSpeech();
     }
-  }, [isListening, isSpeaking, stopListening, cancelSpeech]);
+  }, [isListening, isSpeaking, stopListening, resetTranscript, cancelSpeech]);
 
   const handlePrivacyChange = useCallback(
     (mode: PrivacyMode) => {
