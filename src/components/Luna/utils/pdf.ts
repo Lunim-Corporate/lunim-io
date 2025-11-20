@@ -219,7 +219,7 @@ export async function generatePlanPDF(plan: LunaPlan, privacyMode: string): Prom
   <div class="cta-box">
     <div class="cta-title">Ready to Get Started?</div>
     <div class="cta-text">${plan.calendlyPurpose}</div>
-    <a href="https://calendly.com/lunim-studio" class="cta-link">Book Your Free Consultation</a>
+    <a href="https://calendly.com/hello-lunim/30min" class="cta-link">Book Your Free Consultation</a>
   </div>
 
   <div class="metadata">
@@ -245,7 +245,7 @@ export async function generatePlanPDF(plan: LunaPlan, privacyMode: string): Prom
 
   <div class="footer">
     <p>Lunim Studio • Digital Solutions That Transform</p>
-    <p>www.lunim.studio • hello@lunim.studio</p>
+    <p>www.lunim.io • hello@lunim.io</p>
   </div>
 </body>
 </html>

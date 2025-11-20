@@ -119,32 +119,69 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   });
   
   // Wrap speak function to prevent duplicates
-  const speak = useCallback((text: string) => {
-    // Only prevent if currently speaking (not based on text content)
-    if (isSpeaking) {
-      console.log('[Luna] Prevented speech - already speaking');
-      return;
-    }
-    
-    // Prevent duplicate speech requests in quick succession
-    if (speechQueueRef.current === text) {
-      console.log('[Luna] Prevented duplicate speech request:', text.substring(0, 50));
-      return;
-    }
-    
-    console.log('[Luna] Speaking:', text.substring(0, 100));
-    speechQueueRef.current = text;
-    speakRaw(text);
-  }, [speakRaw, isSpeaking]);
+  const speak = useCallback(
+    (text: string) => {
+      if (isSpeaking) {
+        console.log('[Luna] Prevented speech - already speaking');
+        return;
+      }
+      if (speechQueueRef.current === text) {
+        console.log('[Luna] Prevented duplicate speech request:', text.substring(0, 50));
+        return;
+      }
+      console.log('[Luna] Speaking:', text.substring(0, 100));
+      speechQueueRef.current = text;
+      void speakRaw(text);
+    },
+    [speakRaw, isSpeaking]
+  );
+
+  // Helper: speak and wait until speech completes before continuing
+  const speakAndWait = useCallback(
+    async (text: string) => {
+      speak(text);
+      // Poll isSpeaking flag until speech actually starts and then finishes
+      await new Promise<void>((resolve) => {
+        let hasStarted = false;
+        const check = () => {
+          const current = stateRef.current;
+          if (current.isSpeaking) {
+            hasStarted = true;
+          }
+          if (hasStarted && !current.isSpeaking) {
+            resolve();
+            return;
+          }
+          setTimeout(check, 60);
+        };
+        check();
+      });
+    },
+    [speak]
+  );
 
   // Speech recognition for user input
   const processedInputRef = useRef<Set<string>>(new Set());
+  const ignoreVoiceResultsRef = useRef(false);
   
   const { startListening, stopListening, isListening, resetTranscript } = 
     useSpeechRecognition({
       onResult: (text, isFinal) => {
+        // If we've switched away from voice mode and decided to ignore any
+        // leftover mic results, drop them immediately.
+        if (ignoreVoiceResultsRef.current) {
+          return;
+        }
+
         dispatch({ type: 'SET_CAPTION', payload: text });
         if (isFinal && text.trim()) {
+          // Extra safety: if mode is no longer voice, ignore any final voice result
+          const currentMode = stateRef.current.interactionMode;
+          if (currentMode !== 'voice') {
+            console.log('[Luna] Ignoring voice result because mode is now text');
+            return;
+          }
+
           // Prevent processing the same input multiple times
           const inputKey = text.trim().toLowerCase();
           if (!processedInputRef.current.has(inputKey)) {
@@ -221,13 +258,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   }, [cancelSpeech, isListening, stopListening]);
 
   // Initialize session with greeting
-  const startSession = useCallback((privacyMode?: PrivacyMode) => {
+  const startSession = useCallback(async (privacyMode?: PrivacyMode) => {
     const mode = privacyMode ?? pendingPrivacyMode;
-    console.log('[Luna] Starting session with privacy mode:', mode);
+    const interactionMode = pendingInteractionMode;
+    console.log('[Luna] Starting session with privacy mode:', mode, 'interaction mode:', interactionMode);
     
     dispatch({ type: 'START_SESSION', payload: mode });
     // Apply the pre-selected interaction mode when starting
-    dispatch({ type: 'SET_MODE', payload: pendingInteractionMode });
+    dispatch({ type: 'SET_MODE', payload: interactionMode });
     
     // Start analytics tracking
     const sessionId = `session-${Date.now()}`;
@@ -235,20 +273,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     
     const greeting = "Hi! I'm Luna, your guide at Lunim Studio. Tell me about your project and I'll help you find the perfect next steps.";
     
-    // Add greeting as a chat message (caption is reserved for live voice transcription)
+    // In voice mode, speak first, then show the message; in text mode, show immediately.
+    if (interactionMode === 'voice') {
+      await speakAndWait(greeting);
+    }
+
     dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: greeting } });
     lunaAnalytics.trackMessage('luna', greeting);
-    
-    // Delay speaking slightly to ensure state is updated
-    // Use stateRef to get the current interaction mode
-    setTimeout(() => {
-      const currentMode = stateRef.current.interactionMode;
-      console.log('[Luna] Current interaction mode:', currentMode);
-      if (currentMode === 'voice') {
-        speak(greeting);
-      }
-    }, 100);
-  }, [speak, pendingPrivacyMode, pendingInteractionMode]);
+  }, [speakAndWait, pendingPrivacyMode, pendingInteractionMode]);
 
   // Handle user input from voice or text
   const handleUserInput = useCallback(async (input: string) => {
@@ -278,36 +310,36 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         dispatch({ type: 'SET_CLARIFY', payload: data });
         
         const firstQuestion = data.understanding + ' ' + data.questions[0];
+
+        // Use stateRef to get current mode to avoid stale closure
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Clarify question, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(firstQuestion);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: firstQuestion } });
         lunaAnalytics.trackMessage('luna', firstQuestion);
         lunaAnalytics.trackClarifyPhase(1);
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking clarify question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(firstQuestion);
-        }
-        
+
         setCurrentQuestionIndex(0);
       } 
       // Continue with clarifying questions
       else if (state.session.clarify && currentQuestionIndex < state.session.clarify.questions.length - 1) {
         const nextIndex = currentQuestionIndex + 1;
         const nextQuestion = state.session.clarify.questions[nextIndex];
-        
+
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Follow-up question, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(nextQuestion);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: nextQuestion } });
         dispatch({ type: 'SET_STATE', payload: 'clarify' });
         lunaAnalytics.trackMessage('luna', nextQuestion);
         lunaAnalytics.trackClarifyPhase(nextIndex + 1);
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking follow-up question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(nextQuestion);
-        }
-        
+
         setCurrentQuestionIndex(nextIndex);
       }
       // Phase 2: Generate plan
@@ -325,6 +357,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         dispatch({ type: 'SET_PLAN', payload: data });
         
         const planMessage = `Great! ${data.summary}`;
+
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Plan message, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(planMessage);
+        }
+
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
         lunaAnalytics.trackMessage('luna', planMessage);
         lunaAnalytics.trackPlanGenerated({
@@ -333,13 +372,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           estimatedScope: data.estimatedScope,
           tags: data.tags,
         });
-        
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Speaking plan message, mode:', currentMode);
-        if (currentMode === 'voice') {
-          speak(planMessage);
-        }
       }
     } catch (error) {
       console.error('Error processing input:', error);
@@ -369,13 +401,23 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const handleModeChange = useCallback((mode: 'voice' | 'text') => {
     dispatch({ type: 'SET_MODE', payload: mode });
     lunaAnalytics.trackModeChange(mode);
-    if (mode === 'text' && isListening) {
-      stopListening();
+    if (mode === 'text') {
+      // When switching to text, stop any live mic session and ignore all
+      // pending voice recognition results from that session.
+      if (isListening) {
+        stopListening();
+      }
+      resetTranscript();
+      processedInputRef.current.clear();
+      ignoreVoiceResultsRef.current = true;
+    } else {
+      // When switching back to voice, allow voice results again
+      ignoreVoiceResultsRef.current = false;
     }
     if (isSpeaking) {
       cancelSpeech();
     }
-  }, [isListening, isSpeaking, stopListening, cancelSpeech]);
+  }, [isListening, isSpeaking, stopListening, resetTranscript, cancelSpeech]);
 
   const handlePrivacyChange = useCallback(
     (mode: PrivacyMode) => {
@@ -486,7 +528,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             {/* Header - thin, controls + compact selections */}
             <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
               {/* Compact summary of mode + privacy once session started (shares layout with intro selector) */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 max-w-[65%]">
                 {state.session && (
                   <motion.div
                     layoutId="interaction-mode-pill"
@@ -494,7 +536,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: reduceMotion ? 0.1 : 0.25 }}
-                    className="hidden sm:inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-sm text-gray-200/90"
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-xs sm:text-sm text-gray-200/90"
                   >
                     <span className="inline-flex items-center gap-1">
                       <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
@@ -525,11 +567,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 <button
                   type="button"
                   onClick={handleResetChat}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
                   aria-label="Reset chat"
                 >
                   <RotateCcw size={14} className="text-gray-400" />
-                  <span>Reset</span>
+                  <span className="hidden sm:inline">Reset</span>
                 </button>
                 <button
                   type="button"
