@@ -704,6 +704,41 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                     );
                   })}
 
+                  {/* Typing indicator when Luna is thinking */}
+                  {state.state === 'thinking' && (
+                    <div className="flex justify-start mt-2">
+                      <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                        <Image
+                          src={lunaImage}
+                          alt="Luna"
+                          width={24}
+                          height={24}
+                          className="object-cover"
+                        />
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                        className="inline-flex items-center gap-1 rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2"
+                      >
+                        {[0, 1, 2].map((i) => (
+                          <motion.span
+                            key={i}
+                            className="h-2 w-2 rounded-full bg-gray-400"
+                            animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
+                            transition={{
+                              duration: 0.9,
+                              repeat: Infinity,
+                              delay: i * 0.15,
+                              ease: 'easeInOut',
+                            }}
+                          />
+                        ))}
+                      </motion.div>
+                    </div>
+                  )}
+
                   {/* Live caption as typing preview (user speech only) */}
                   {state.caption && state.isListening && (
                     <div className="flex justify-start mt-1">
