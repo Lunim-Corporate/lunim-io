@@ -1,8 +1,8 @@
 'use client';
 
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Play } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { X, Download, Play, Settings } from 'lucide-react';
 import Image from 'next/image';
 import lunaImage from '@/assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
@@ -26,6 +26,12 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [state, dispatch] = useReducer(lunaReducer, initialLunaState);
   const [textInput, setTextInput] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [ttsRate, setTtsRate] = useState(0.95);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const [reduceMotionManual, setReduceMotionManual] = useState(false);
+  const reduceMotion = prefersReducedMotion || reduceMotionManual;
   const wasOpenRef = useRef(isOpen);
 
   // Speech synthesis for Luna's voice
@@ -53,6 +59,16 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     }
     wasOpenRef.current = isOpen;
   }, [isOpen]);
+
+  // Auto-hide confetti after a short duration
+  useEffect(() => {
+    if (!showConfetti) return;
+    const timeout = setTimeout(
+      () => setShowConfetti(false),
+      reduceMotion ? 500 : 1500
+    );
+    return () => clearTimeout(timeout);
+  }, [showConfetti, reduceMotion]);
   
   const { speak: speakRaw, cancel: cancelSpeech, isSpeaking } = useSpeechSynthesis({
     onStart: () => {
@@ -87,6 +103,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       dispatch({ type: 'SET_ERROR', payload: error.message });
       speechQueueRef.current = null;
     },
+    rate: ttsRate,
   });
   
   // Wrap speak function to prevent duplicates
@@ -384,6 +401,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       lunaAnalytics.trackPDFDownload();
       
       dispatch({ type: 'SET_STATE', payload: 'plan-ready' });
+      setShowConfetti(true);
     } catch (error) {
       console.error('PDF generation error:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to generate PDF. Please try again.' });
@@ -396,47 +414,152 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     <SpeechErrorBoundary>
       <AnimatePresence>
         <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-4xl max-h-[90vh] bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-          style={{
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          onClick={onClose}
         >
-          {/* Header with gradient accent */}
-          <div className="relative flex items-center justify-between p-6 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
-                <Image
-                  src={lunaImage}
-                  alt="Luna"
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{
+              type: "spring",
+              damping: reduceMotion ? 40 : 25,
+              stiffness: reduceMotion ? 200 : 300,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl max-h-[90vh] bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+            style={{
+              boxShadow:
+                '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            }}
+          >
+            {/* Confetti on PDF ready (disabled in reduced-motion) */}
+            {showConfetti && !reduceMotion && (
+              <div className="pointer-events-none absolute inset-0 flex justify-center items-start">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="text-yellow-200"
+                    initial={{ y: 0, opacity: 0, x: (i - 2.5) * 24 }}
+                    animate={{ y: 80, opacity: [0, 1, 0] }}
+                    transition={{
+                      duration: 1.2,
+                      delay: i * 0.05,
+                      ease: 'easeOut',
+                    }}
+                  >
+                    ✦
+                  </motion.div>
+                ))}
               </div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">
-                Luna
-              </h2>
+            )}
+
+            {/* Header with gradient accent */}
+            <div className="relative flex items-center justify-between p-6 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                  <Image
+                    src={lunaImage}
+                    alt="Luna"
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                </div>
+                <h2 className="text-2xl font-bold text-white tracking-tight">
+                  Luna
+                </h2>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsOpen((open) => !open)}
+                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                  aria-label="Open Luna settings"
+                >
+                  <Settings
+                    size={18}
+                    className="text-gray-400 group-hover:text-white transition-colors"
+                  />
+                </button>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                  aria-label="Close"
+                >
+                  <X
+                    size={20}
+                    className="text-gray-400 group-hover:text-white transition-colors"
+                  />
+                </button>
+              </div>
+
+              {/* Settings panel */}
+              {isSettingsOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                  className="absolute right-4 top-16 w-72 rounded-2xl border border-zinc-800 bg-black/95 shadow-xl p-4 space-y-4 z-20"
+                >
+                  <h3 className="text-sm font-semibold text-white">
+                    Luna Settings
+                  </h3>
+                  <div className="space-y-3 text-xs text-gray-300">
+                    {/* Speech speed */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span>Speech speed</span>
+                        <span className="tabular-nums">
+                          {ttsRate.toFixed(2)}x
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0.75}
+                        max={1.25}
+                        step={0.05}
+                        value={ttsRate}
+                        onChange={(e) => setTtsRate(Number(e.target.value))}
+                        className="w-full accent-white"
+                        aria-label="Adjust Luna speech speed"
+                      />
+                    </div>
+
+                    {/* Reduced motion */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setReduceMotionManual((current) => !current)
+                      }
+                      className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-[11px] text-gray-200 hover:bg-zinc-800/70 transition-colors"
+                      aria-pressed={reduceMotion}
+                    >
+                      <span className="flex flex-col text-left">
+                        <span className="font-medium">Reduced motion</span>
+                        <span className="text-[10px] text-gray-400">
+                          {prefersReducedMotion
+                            ? 'Following system preference'
+                            : 'Limit animations in Luna'}
+                        </span>
+                      </span>
+                      <span
+                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] ${
+                          reduceMotion ? 'bg-emerald-400 text-black' : 'bg-zinc-700 text-gray-300'
+                        }`}
+                      >
+                        {reduceMotion ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
-              aria-label="Close"
-            >
-              <X size={20} className="text-gray-400 group-hover:text-white transition-colors" />
-            </button>
-          </div>
 
           {/* Main Content with subtle gradient background */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-zinc-950 to-black">
