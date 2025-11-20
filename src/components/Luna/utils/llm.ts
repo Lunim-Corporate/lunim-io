@@ -96,15 +96,17 @@ Your task is to understand the user's project needs and ask 2 clarifying questio
 
 Format your response EXACTLY as JSON:
 {
-  "understanding": "Brief statement showing you understand their need",
+  "understanding": "Brief statement showing you understand their need. If the user has already mentioned specific details like timeline, budget, or audience, naturally weave those into this sentence, but do not ask for them again.",
   "questions": ["Question 1", "Question 2"]
 }
 
 Questions should be specific, helpful, and focused on:
 - Project goals and desired outcomes
-- Timeline and budget considerations
+- Timeline and budget considerations (only if they haven't been clear yet)
 - Technical requirements
-- Target audience
+- Target audience or demographics (only if they haven't been clear yet)
+
+If the user already provided a detail, you may skip asking about it again and focus on other useful gaps instead.
 
 Be warm, professional, and concise.`,
     },
@@ -127,8 +129,12 @@ export function generatePlanPrompt(conversation: Array<{ role: string; content: 
 
 Format your response EXACTLY as JSON:
 {
-  "summary": "2-3 sentence summary of their project needs and how Lunim can help",
-  "keyInsights": ["Insight 1", "Insight 2", "Insight 3"],
+  "summary": "2-3 sentence summary of their project needs and how Lunim can help. When the user has mentioned specific details like timeline, budget, or target audience, naturally weave those into the summary, but do not invent numbers or facts they never gave.",
+  "keyInsights": [
+    "Insight 1 that reflects an important detail they shared (for example, their audience, industry, or stage)",
+    "Insight 2 that can reference timeline or urgency if they talked about when they want to launch",
+    "Insight 3 that can reference budget, constraints, or success criteria if they mentioned any"
+  ],
   "nextSteps": [
     {
       "title": "Step Title",
@@ -140,6 +146,13 @@ Format your response EXACTLY as JSON:
   "calendlyPurpose": "Why they should book a call",
   "tags": ["tag1", "tag2", "tag3"]
 }
+
+When you write "summary" and "keyInsights":
+- If the user gave a clear timeline, you may mention it (e.g. "launch in Q4"), otherwise do not guess.
+- If the user gave a budget range, you may refer to it in general terms (e.g. "a lean MVP budget"), otherwise stay neutral.
+- If they described a target audience or demographics, mention it; if not, keep the language broader.
+
+Never demand missing details or pressure the user to provide them; simply make the plan as concrete as their input allows.
 
 Next steps should be actionable and specific. Include:
 1. Booking a consultation
