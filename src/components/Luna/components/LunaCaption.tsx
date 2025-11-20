@@ -40,7 +40,7 @@ export function LunaCaption({ caption, role = 'luna' }: LunaCaptionProps) {
                 />
               </div>
             ) : (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs bg-white/10 border border-white/20">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm bg-white/10 border border-white/20">
                 <span className="text-white">👤</span>
               </div>
             )}
