@@ -16,6 +16,7 @@ import { Content } from "@prismicio/client";
 import "./globals.css";
 // Components
 import SmoothScroll from "@/components/SmoothScroll";
+import ScrollManager from "@/components/ScrollManager";
 
 
 export const metadata: Metadata = {
@@ -88,6 +89,7 @@ export default async function RootLayout({
         ></script>
       </head>
       <body className="bg-black">
+        <ScrollManager />
         <Suspense fallback={null}>
           <SmoothScroll />
         </Suspense>
