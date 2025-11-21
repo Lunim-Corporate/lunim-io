@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const text = body?.text as string | undefined;
     const voice = (body?.voice as string | undefined) ?? 'alloy';
+    const instructions = "Calm female voice with British or soft global accent; slight warmth, 85–90% human realism; faint lunar echo.";
 
     if (!text || !text.trim()) {
       return NextResponse.json(
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
         model: 'gpt-4o-mini-tts',
         voice,
         input: text,
+        instructions,
       }),
     });
 

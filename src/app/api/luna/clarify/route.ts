@@ -4,28 +4,27 @@ import { callLLM, generateClarifyPrompt } from '@/components/Luna/utils/llm';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userMessage, privacyMode } = body;
+    const { conversation, metadata, privacyMode } = body;
 
-    if (!userMessage) {
+    if (!conversation || !Array.isArray(conversation) || conversation.length === 0) {
       return NextResponse.json(
-        { error: 'User message is required' },
+        { error: 'Conversation history is required' },
         { status: 400 }
       );
     }
 
-    // Generate prompt for LLM
-    const messages = generateClarifyPrompt(userMessage);
-
-    // Call LLM (with fallback to mock if no API key)
-    const llmResponse = await callLLM(messages, {
-      temperature: 0.7,
-      maxTokens: 500,
+    const messages = generateClarifyPrompt(conversation, {
+      ...metadata,
+      privacyMode,
     });
 
-    // Parse JSON response
+    const llmResponse = await callLLM(messages, {
+      temperature: 0.4,
+      maxTokens: 700,
+    });
+
     let clarifyResponse;
     try {
-      // Try to extract JSON from response
       const jsonMatch = llmResponse.content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         clarifyResponse = JSON.parse(jsonMatch[0]);
@@ -33,13 +32,23 @@ export async function POST(request: NextRequest) {
         throw new Error('No JSON found in response');
       }
     } catch {
-      // Fallback to structured response
       clarifyResponse = {
-        understanding: `I understand you're looking for ${userMessage.toLowerCase().includes('website') ? 'website development' : userMessage.toLowerCase().includes('app') ? 'mobile app development' : 'digital solutions'}. Let me ask a few questions to better understand your needs.`,
+        understanding: 'I understand the general outline of your project. Let me confirm a few details so we can shape a strong plan.',
+        questionIntro: 'Appreciate the context. Before we move forward, may I ask:',
         questions: [
-          "What's your primary goal for this project? (e.g., increase sales, improve user experience, expand reach)",
-          "Do you have a specific timeline or budget in mind for this project?"
-        ]
+          "What's the most important outcome you want to see from this initiative?",
+          'Is there a specific launch window or constraint we should be aware of?',
+        ],
+        decision: {
+          readinessScore: 0.35,
+          clarityScore: 0.35,
+          confidence: 0.4,
+          recommendedAction: 'ask_more',
+          shouldNudgeHuman: false,
+          nudgeMessage: '',
+          suggestedFollowUpAngle: 'overall goals and timeline',
+          rationale: 'Fallback response: continue clarifying core goals and timing before planning.',
+        },
       };
     }
 
@@ -49,7 +58,6 @@ export async function POST(request: NextRequest) {
       privacyMode,
       tokensUsed: llmResponse.tokensUsed,
     });
-
   } catch (error) {
     console.error('Error in clarify endpoint:', error);
     return NextResponse.json(
