@@ -41,6 +41,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [pendingPrivacyMode, setPendingPrivacyMode] = useState<PrivacyMode>('on-the-record');
   const [pendingInteractionMode, setPendingInteractionMode] =
     useState<InteractionMode>('voice');
+  const [showTranscript, setShowTranscript] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const [reduceMotionManual, setReduceMotionManual] = useState(false);
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
@@ -482,6 +483,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
   if (!isOpen) return null;
 
+  const lunaBusy = state.state === 'thinking' || state.isSpeaking;
+
   return (
     <SpeechErrorBoundary>
       <AnimatePresence>
@@ -570,6 +573,22 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               </div>
 
               <div className="flex items-center gap-1.5">
+                {/* Transcript toggle (voice mode only) */}
+                {state.session && state.interactionMode === 'voice' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowTranscript((prev) => !prev)}
+                    className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-xs sm:text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                    aria-label={showTranscript ? 'Hide text transcript' : 'Show text transcript'}
+                  >
+                    <span className="hidden sm:inline">
+                      {showTranscript ? 'Hide text' : 'Show text'}
+                    </span>
+                    <span className="sm:hidden">
+                      {showTranscript ? 'TXT–' : 'TXT+'}
+                    </span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleResetChat}
@@ -676,7 +695,9 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   isListening={state.isListening}
                   isSpeaking={state.isSpeaking}
                 />
-                <p className="text-sm font-semibold text-white">Luna</p>
+                <p className="text-lg font-semibold text-white text-center px-4">
+                  {lunaBusy ? 'Luna is consulting the oracle…' : 'Luna'}
+                </p>
               </div>
 
               {/* Session not started - intro bubble & privacy selection */}
@@ -797,8 +818,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 </motion.div>
               )}
 
-              {/* Active conversation thread */}
-              {state.session && (
+              {/* Active conversation thread (user + Luna messages, typing, errors) */}
+              {state.session && (state.interactionMode === 'text' || showTranscript) && (
                 <div className="max-w-2xl mx-auto space-y-3">
                   {state.session.messages.map((message) => {
                     const isUser = message.role === 'user';
@@ -931,122 +952,136 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
 
-                  {/* Plan summary as final system bubble with actions */}
-                  {state.session.plan && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
-                      className="mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
-                    >
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
-                          <Image
-                            src={lunaImage}
-                            alt="Luna"
-                            width={28}
-                            height={28}
-                            className="object-cover"
-                          />
-                        </div>
-                        <p className="text-sm font-semibold text-gray-300">
-                          Luna&apos;s plan summary
+              {/* Plan summary as final system bubble with actions */}
+              {state.session?.plan && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
+                  className="max-w-2xl mx-auto mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
+                      <Image
+                        src={lunaImage}
+                        alt="Luna"
+                        width={28}
+                        height={28}
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="text-sm font-semibold text-gray-300">
+                      Luna&apos;s plan summary
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-200 mb-3">
+                    {state.session.plan.summary}
+                  </p>
+                  <div className="grid gap-2 mb-3">
+                    {state.session.plan.nextSteps.map((step, index) => (
+                      <div
+                        key={index}
+                        className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
+                      >
+                        <p className="text-sm font-semibold text-gray-100">
+                          {index + 1}. {step.title}
+                        </p>
+                        <p className="text-sm text-gray-400 mt-0.5">
+                          {step.description}
                         </p>
                       </div>
-                      <p className="text-sm text-gray-200 mb-3">
-                        {state.session.plan.summary}
-                      </p>
-                      <div className="grid gap-2 mb-3">
-                        {state.session.plan.nextSteps.map((step, index) => (
-                          <div
-                            key={index}
-                            className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
-                          >
-                            <p className="text-sm font-semibold text-gray-100">
-                              {index + 1}. {step.title}
-                            </p>
-                            <p className="text-sm text-gray-400 mt-0.5">
-                              {step.description}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap gap-3">
-                        <button
-                          onClick={handleReadSummary}
-                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
-                        >
-                          <Play size={14} />
-                          <span>Read summary</span>
-                        </button>
-                        <button
-                          onClick={handleDownloadPDF}
-                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-sm font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
-                        >
-                          <Download size={14} />
-                          <span>Download PDF</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={handleReadSummary}
+                      className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                    >
+                      <Play size={14} />
+                      <span>Read summary</span>
+                    </button>
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-sm font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                    >
+                      <Download size={14} />
+                      <span>Download PDF</span>
+                    </button>
+                  </div>
+                </motion.div>
               )}
             </div>
 
             {/* Controls + input docked at bottom */}
             <div className="border-t border-zinc-900/80 bg-black/70 px-6 py-4 space-y-4">
-              {state.session && (
-                <VoiceControls
-                  interactionMode={state.interactionMode}
-                  privacyMode={state.session.privacyMode}
-                  isListening={state.isListening}
-                  isSpeaking={state.isSpeaking}
-                  privacyLocked={true}
-                  onModeChange={handleModeChange}
-                  onPrivacyChange={handlePrivacyChange}
-                  onMicClick={handleMicClick}
-                  disabled={state.state === 'thinking'}
-                />
-              )}
-
-              {state.interactionMode === 'text' && (
-                <form onSubmit={handleTextSubmit} className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    value={textInput}
-                    onChange={(e) => setTextInput(e.target.value)}
-                    placeholder={
-                      state.session
-                        ? 'Type your message...'
-                        : 'Choose a privacy mode above to start'
-                    }
-                    className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={state.state === 'thinking' || !state.session}
-                  />
-                  {/* Mic icon inline with input to switch back to voice mode */}
+              {state.session?.plan ? (
+                <div className="flex justify-center">
                   <button
                     type="button"
-                    onClick={() => {
-                      handleModeChange('voice');
-                      handleMicClick();
-                    }}
-                    disabled={state.state === 'thinking' || !state.session}
-                    className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Switch to voice mode"
+                    onClick={handleResetChat}
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
                   >
-                    <Mic size={16} />
+                    Start again
                   </button>
-                  <button
-                    type="submit"
-                    disabled={
-                      !textInput.trim() || state.state === 'thinking' || !state.session
-                    }
-                    className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Send
-                  </button>
-                </form>
+                </div>
+              ) : (
+                <>
+                  {state.session && (
+                    <VoiceControls
+                      interactionMode={state.interactionMode}
+                      privacyMode={state.session.privacyMode}
+                      isListening={state.isListening}
+                      isSpeaking={state.isSpeaking}
+                      privacyLocked={true}
+                      onModeChange={handleModeChange}
+                      onPrivacyChange={handlePrivacyChange}
+                      onMicClick={handleMicClick}
+                      disabled={state.state === 'thinking'}
+                    />
+                  )}
+
+                  {state.interactionMode === 'text' && (
+                    <form onSubmit={handleTextSubmit} className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder={
+                          state.session
+                            ? 'Type your message...'
+                            : 'Choose a privacy mode above to start'
+                        }
+                        className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={state.state === 'thinking' || !state.session}
+                      />
+                      {/* Mic icon inline with input to switch back to voice mode */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleModeChange('voice');
+                          handleMicClick();
+                        }}
+                        disabled={state.state === 'thinking' || !state.session}
+                        className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Switch to voice mode"
+                      >
+                        <Mic size={16} />
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={
+                          !textInput.trim() || state.state === 'thinking' || !state.session
+                        }
+                        className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Send
+                      </button>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           </div>
