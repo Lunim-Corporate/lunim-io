@@ -249,7 +249,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
           : new Error('Unable to access microphone for recording.')
       );
     }
-  }, [isSupported, isListening, options, startSilenceDetection]);
+  }, [isSupported, isListening, options, startSilenceDetection, cleanupSilenceDetection]);
 
   const stopListening = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
