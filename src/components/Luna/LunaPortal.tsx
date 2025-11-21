@@ -357,7 +357,16 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         
         const planMessage = `Great! ${data.summary}`;
 
-        // Show Luna's message immediately
+        // In voice mode, let Luna finish speaking before revealing both
+        // the plan message bubble and the summary card.
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Plan message, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(planMessage);
+        }
+
+        // Now show Luna's message and the summary card, and ensure
+        // the plan summary is persisted in analytics metrics.
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
         lunaAnalytics.trackMessage('luna', planMessage);
         lunaAnalytics.trackPlanGenerated({
@@ -367,15 +376,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           tags: data.tags,
         });
 
-        // In voice mode, let Luna finish speaking before revealing the plan summary card
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Plan message, mode:', currentMode);
-        if (currentMode === 'voice') {
-          await speakAndWait(planMessage);
-        }
-
-        // Now set the plan in state so the summary card appears,
-        // and ensure the plan summary is persisted in analytics metrics.
         dispatch({ type: 'SET_PLAN', payload: data });
         lunaAnalytics.updateMetrics({ planSummary: data.summary });
       }
