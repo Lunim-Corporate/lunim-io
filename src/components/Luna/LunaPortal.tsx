@@ -376,12 +376,19 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       }
 
       const decision = clarifyData?.decision;
+      const readinessScore = decision?.readinessScore ?? 0;
+      const clarityScore = decision?.clarityScore ?? 0;
       const recommendedAction = decision?.recommendedAction ?? 'ask_more';
       const shouldNudgeHuman = decision?.shouldNudgeHuman ?? false;
+      const meetsSoftPlanThreshold =
+        currentUserTurn >= MIN_USER_TURNS_FOR_PLAN &&
+        readinessScore >= 0.65 &&
+        clarityScore >= 0.5;
       const shouldGeneratePlan =
         shouldForcePlan ||
         recommendedAction === 'generate_plan' ||
-        recommendedAction === 'handoff';
+        recommendedAction === 'handoff' ||
+        meetsSoftPlanThreshold;
 
       if (!shouldGeneratePlan && recommendedAction === 'ask_more') {
         const nextQuestion =
@@ -409,6 +416,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       }
 
       // Phase 2: Generate plan
+      dispatch({ type: 'SET_STATE', payload: 'thinking' });
       const response = await fetch('/api/luna/plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
