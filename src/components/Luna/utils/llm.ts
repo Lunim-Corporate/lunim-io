@@ -87,37 +87,55 @@ function mockLLMResponse(messages: LLMMessage[]): LLMResponse {
   return { content: response };
 }
 
-export function generateClarifyPrompt(userMessage: string): LLMMessage[] {
+export function generateClarifyPrompt(
+  conversation: Array<{ role: string; content: string }>,
+  metadata?: Record<string, unknown>
+): LLMMessage[] {
+  const conversationText = conversation
+    .map((msg, index) => `${index + 1}. ${msg.role.toUpperCase()}: ${msg.content}`)
+    .join('\n');
+  const metaText = metadata ? JSON.stringify(metadata, null, 2) : '{}';
+
   return [
     {
       role: 'system',
       content: `You are Luna, a helpful AI assistant for Lunim Studio, a digital agency. 
-Your task is to understand the user's project needs and ask 2 clarifying questions (occasionally 3 only if they are genuinely useful and non-redundant).
+Review the conversation so far, ensure you deeply understand the project, and decide whether to ask another clarifying question or move forward to a plan.
 
 Format your response EXACTLY as JSON:
 {
-  "understanding": "Brief statement (1–2 sentences) showing you understand their need. If the user has already mentioned specific details like timeline, budget, current stage, industry, or audience, naturally weave those into this sentence, but do not ask for them again.",
-  "questions": ["Question 1", "Question 2"]
+  "understanding": "Brief statement (1–2 sentences) summarizing what they need and any key details they've already provided.",
+  "questionIntro": "Friendly, on-brand sentence Luna would say before the next question (e.g., 'Got it. One more thing:')",
+  "questions": ["Question 1", "Question 2"],
+  "decision": {
+    "readinessScore": 0-1,
+    "clarityScore": 0-1,
+    "confidence": 0-1,
+    "recommendedAction": "ask_more" | "generate_plan" | "handoff",
+    "shouldNudgeHuman": boolean,
+    "nudgeMessage": "Short sentence nudging them to speak to Lunim if applicable, otherwise empty string.",
+    "suggestedFollowUpAngle": "If recommendedAction is ask_more, describe the most valuable topic to clarify (e.g., 'launch timeline'). Otherwise empty string.",
+    "rationale": "1-2 sentences explaining your call referencing what the user actually said."
+  }
 }
 
-Questions should be specific, helpful, and focused on:
-- Project goals, desired outcomes, and what “success” would look like
-- Timeline and budget considerations (only if they haven't been clear yet)
-- Technical or content requirements
-- Current status (e.g. idea, MVP, live product) or main constraints
-- Target audience or segments (only if it actually matters for this project AND they haven't already been clear about it)
-
-Important:
-- Avoid generic or boilerplate questions.
-- Do NOT always ask the same audience question like "Who is your target audience?". Only ask about audience if it is clearly relevant and phrase it in a way that connects to what they already said.
-- Each question should feel like a natural follow-up to their previous message, not a questionnaire.
-- Prefer depth over breadth: it's better to go a bit deeper on the most important uncertainty than to repeat basics.
+Guidelines:
+- Ask at most 2 clarifying questions, and only when recommendedAction is "ask_more".
+- Questions should be specific, contextual, and avoid repeating information the user already gave.
+- Skip target-audience questions unless the audience truly matters and hasn't been clearly described.
+- If the user sounds uncertain or overwhelmed, lean toward "handoff" with a warm nudge to talk to Lunim.
+- If there is already enough information for a plan, set recommendedAction to "generate_plan".
+- Never invent details or ask boilerplate questions.
 
 Be warm, human, and concise.`,
     },
     {
       role: 'user',
-      content: userMessage,
+      content: `Conversation so far:
+${conversationText || 'No conversation yet.'}
+
+Metadata:
+${metaText}`,
     },
   ];
 }
@@ -150,8 +168,6 @@ Format your response EXACTLY as JSON:
   "estimatedScope": "Time estimate (e.g., '2-4 months') or level of effort (e.g., 'small discovery sprint', 'full product engagement')",
   "calendlyPurpose": "A short, friendly explanation of what a call with Lunim will cover and why it will be valuable for this user.",
   "tags": ["tag1", "tag2", "tag3"]
-}
-
 When you write "summary" and "keyInsights":
 - If the user gave a clear timeline, you may mention it (e.g. "launch in Q4"), otherwise do not guess.
 - If the user gave a budget range, you may refer to it in general terms (e.g. "a lean MVP budget"), otherwise stay neutral.

@@ -21,7 +21,7 @@ import { LunaPortrait } from './components/LunaPortrait';
 import { VoiceControls } from './components/VoiceControls';
 import { LunaCaption } from './components/LunaCaption';
 import { SpeechErrorBoundary } from './components/SpeechErrorBoundary';
-import { PrivacyMode, InteractionMode } from './types';
+import { PrivacyMode, InteractionMode, LunaConversationDecision } from './types';
 import { lunaAnalytics } from './utils/analytics';
 import { generatePlanPDF, downloadPDF } from './utils/pdf';
 import { speechManager } from './utils/speechManager';
@@ -31,17 +31,9 @@ interface LunaPortalProps {
   onClose: () => void;
 }
 
-const dynamicFollowUpPrompts = [
-  "Thanks for sharing that. Before I map out next steps, are there specific timelines or launch moments I should keep in mind?",
-  "Great context. Are there existing assets, platforms, or team members I should factor in as we plan?",
-  "Understood. What would make this engagement an undeniable success for you?",
-];
-
 function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [state, dispatch] = useReducer(lunaReducer, initialLunaState);
   const [textInput, setTextInput] = useState('');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [extraFollowUpsAsked, setExtraFollowUpsAsked] = useState(0);
   const [ttsRate, setTtsRate] = useState(0.95);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -272,8 +264,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     console.log('[Luna] Starting session with privacy mode:', mode, 'interaction mode:', interactionMode);
     
     dispatch({ type: 'START_SESSION', payload: mode });
-    setCurrentQuestionIndex(0);
-    setExtraFollowUpsAsked(0);
     // Apply the pre-selected interaction mode when starting
     dispatch({ type: 'SET_MODE', payload: interactionMode });
     
@@ -304,8 +294,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     ];
     const previousUserMessages = state.session.messages.filter((m) => m.role === 'user').length;
     const currentUserTurn = previousUserMessages + 1;
-    const MAX_USER_TURNS = 9;
-    const MIN_USER_TURNS_FOR_PLAN = 5;
+    const MAX_USER_TURNS = 6;
+    const MIN_USER_TURNS_FOR_PLAN = 3;
     const normalizedInput = input.toLowerCase();
     const confusionKeywords = [
       'not sure',
@@ -354,142 +344,125 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     lunaAnalytics.trackMessage('user', input);
 
     try {
-      const reachedTurnLimit = currentUserTurn >= MAX_USER_TURNS || seemsConfused;
-      const clarifyCount = state.session.clarify?.questions.length ?? 0;
-      const hasClarifyData = clarifyCount > 0;
-      const outOfClarifyQuestions =
-        hasClarifyData && currentQuestionIndex >= Math.max(clarifyCount - 1, 0);
-      const shouldAskAdditionalFollowUp =
-        outOfClarifyQuestions &&
-        !reachedTurnLimit &&
-        currentUserTurn < MIN_USER_TURNS_FOR_PLAN;
+      const reachedTurnLimit = currentUserTurn >= MAX_USER_TURNS;
+      const shouldForcePlan = reachedTurnLimit || seemsConfused;
 
-      // Phase 1: Get clarifying questions
-      if (!state.session.clarify && !reachedTurnLimit) {
+      let clarifyData: {
+        understanding: string;
+        questions: string[];
+        questionIntro?: string;
+        decision?: LunaConversationDecision;
+      } | null = null;
+
+      if (!shouldForcePlan) {
         const response = await fetch('/api/luna/clarify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userMessage: input,
-            privacyMode: state.session.privacyMode,
-          }),
-        });
-
-        const { data } = await response.json();
-        dispatch({ type: 'SET_CLARIFY', payload: data });
-        
-        const firstQuestion = data.understanding + ' ' + data.questions[0];
-
-        // Use stateRef to get current mode to avoid stale closure
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Clarify question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          await speakAndWait(firstQuestion);
-        }
-
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: firstQuestion } });
-        lunaAnalytics.trackMessage('luna', firstQuestion);
-        lunaAnalytics.trackClarifyPhase(1);
-
-        setCurrentQuestionIndex(0);
-      } 
-      // Continue with clarifying questions
-      else if (
-        state.session.clarify &&
-        currentQuestionIndex < state.session.clarify.questions.length - 1 &&
-        !reachedTurnLimit
-      ) {
-        const nextIndex = currentQuestionIndex + 1;
-        const nextQuestion = state.session.clarify.questions[nextIndex];
-
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Follow-up question, mode:', currentMode);
-        if (currentMode === 'voice') {
-          await speakAndWait(nextQuestion);
-        }
-
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: nextQuestion } });
-        dispatch({ type: 'SET_STATE', payload: 'clarify' });
-        lunaAnalytics.trackMessage('luna', nextQuestion);
-        lunaAnalytics.trackClarifyPhase(nextIndex + 1);
-        setCurrentQuestionIndex(nextIndex);
-      }
-      // Additional follow-ups to gather more context before the plan
-      else if (shouldAskAdditionalFollowUp) {
-        const followUp =
-          dynamicFollowUpPrompts[extraFollowUpsAsked % dynamicFollowUpPrompts.length] ??
-          dynamicFollowUpPrompts[dynamicFollowUpPrompts.length - 1];
-        const followUpMessage =
-          extraFollowUpsAsked === 0
-            ? `Thanks for clarifying that. ${followUp}`
-            : followUp;
-
-        const currentMode = stateRef.current.interactionMode;
-        if (currentMode === 'voice') {
-          await speakAndWait(followUpMessage);
-        }
-
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: followUpMessage } });
-        dispatch({ type: 'SET_STATE', payload: 'clarify' });
-        lunaAnalytics.trackMessage('luna', followUpMessage);
-        setExtraFollowUpsAsked((count) => count + 1);
-        return;
-      }
-      // Phase 2: Generate plan
-      else {
-        // Use the updated conversation so the latest user turn
-        // is always reflected in the plan request.
-        const response = await fetch('/api/luna/plan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             conversation: updatedConversation,
             privacyMode: state.session.privacyMode,
+            metadata: {
+              userMessageCount: currentUserTurn,
+              totalMessages: updatedConversation.length,
+              minTurnsForPlan: MIN_USER_TURNS_FOR_PLAN,
+              maxTurns: MAX_USER_TURNS,
+              detectedConfusion: seemsConfused,
+            },
           }),
         });
-
         const { data } = await response.json();
-        
-        let intro: string;
-        if (seemsConfused) {
-          intro =
-            "It sounds like there are still a few open questions about the right next move. Let me pull everything together into a clear plan, and a Lunim teammate can help you get full clarity on the details.";
-        } else if (currentUserTurn >= MAX_USER_TURNS) {
-          intro =
-            "We've covered quite a bit already. Let me summarise what you've shared into a plan, and if you'd like more nuance afterwards a Lunim team member can dive deeper with you.";
-        } else {
-          intro = "Great! Based on what you've shared, here is a plan that could work well.";
-        }
-
-        const planMessage = `${intro} ${data.summary}`;
-
-        // In voice mode, let Luna finish speaking before revealing both
-        // the plan message bubble and the summary card.
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Plan message, mode:', currentMode);
-        if (currentMode === 'voice') {
-          await speakAndWait(planMessage);
-        }
-
-        // Now show Luna's message and the summary card, and ensure
-        // the plan summary is persisted in analytics metrics.
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
-        lunaAnalytics.trackMessage('luna', planMessage);
-        lunaAnalytics.trackPlanGenerated({
-          summary: data.summary,
-          nextStepsCount: data.nextSteps.length,
-          estimatedScope: data.estimatedScope,
-          tags: data.tags,
-        });
-
-        dispatch({ type: 'SET_PLAN', payload: data });
-        lunaAnalytics.updateMetrics({ planSummary: data.summary });
+        clarifyData = data;
+        dispatch({ type: 'SET_CLARIFY', payload: data });
       }
+
+      const decision = clarifyData?.decision;
+      const recommendedAction = decision?.recommendedAction ?? 'ask_more';
+      const shouldNudgeHuman = decision?.shouldNudgeHuman ?? false;
+      const shouldGeneratePlan =
+        shouldForcePlan ||
+        recommendedAction === 'generate_plan' ||
+        recommendedAction === 'handoff';
+
+      if (!shouldGeneratePlan && recommendedAction === 'ask_more') {
+        const nextQuestion =
+          clarifyData?.questions?.[0] ??
+          (decision?.suggestedFollowUpAngle && decision.suggestedFollowUpAngle.length > 0
+            ? `Could you share a bit more about ${decision.suggestedFollowUpAngle}?`
+            : "Before I map out your plan, is there anything about success metrics or timing you'd like me to know?");
+        const intro =
+          clarifyData?.questionIntro && clarifyData.questionIntro.trim().length > 0
+            ? clarifyData.questionIntro.trim()
+            : 'Got it. One more thing:';
+        const questionMessage = `${intro} ${nextQuestion}`.trim();
+
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Clarify question, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(questionMessage);
+        }
+
+        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: questionMessage } });
+        dispatch({ type: 'SET_STATE', payload: 'clarify' });
+        lunaAnalytics.trackMessage('luna', questionMessage);
+        lunaAnalytics.trackClarifyPhase(currentUserTurn);
+        return;
+      }
+
+      // Phase 2: Generate plan
+      const response = await fetch('/api/luna/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversation: updatedConversation,
+          privacyMode: state.session.privacyMode,
+        }),
+      });
+
+      const { data } = await response.json();
+
+      let intro: string;
+      if (recommendedAction === 'handoff' || shouldNudgeHuman) {
+        intro =
+          decision?.nudgeMessage ??
+          "It sounds like the best way to get complete clarity is to talk with someone from Lunim directly. I'll outline a plan now so you can step into that conversation with confidence.";
+      } else if (seemsConfused) {
+        intro =
+          "It sounds like there are still a few open questions about the right next move. Let me pull everything together into a clear plan, and a Lunim teammate can help you get full clarity on the details.";
+      } else if (reachedTurnLimit) {
+        intro =
+          "We've covered quite a bit already. Let me summarise what you've shared into a plan, and if you'd like more nuance afterwards a Lunim team member can dive deeper with you.";
+      } else if (recommendedAction === 'generate_plan') {
+        intro =
+          decision?.rationale ??
+          "Based on everything you've shared, it sounds like we're ready to move forward with a concrete plan.";
+      } else {
+        intro = "Great! Based on what you've shared, here is a plan that could work well.";
+      }
+
+      const planMessage = `${intro} ${data.summary}`;
+
+      const currentMode = stateRef.current.interactionMode;
+      console.log('[Luna] Plan message, mode:', currentMode);
+      if (currentMode === 'voice') {
+        await speakAndWait(planMessage);
+      }
+
+      dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
+      lunaAnalytics.trackMessage('luna', planMessage);
+      lunaAnalytics.trackPlanGenerated({
+        summary: data.summary,
+        nextStepsCount: data.nextSteps.length,
+        estimatedScope: data.estimatedScope,
+        tags: data.tags,
+      });
+
+      dispatch({ type: 'SET_PLAN', payload: data });
+      lunaAnalytics.updateMetrics({ planSummary: data.summary });
     } catch (error) {
       console.error('Error processing input:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Something went wrong. Please try again.' });
     }
-  }, [state, speakAndWait, resetTranscript, currentQuestionIndex, extraFollowUpsAsked]);
+  }, [state, speakAndWait, resetTranscript]);
 
   // Handle microphone click
   const handleMicClick = useCallback(() => {
@@ -548,8 +521,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     lunaAnalytics.endSession();
     // Clear Luna state back to idle (no session/messages)
     dispatch({ type: 'END_SESSION' });
-    setCurrentQuestionIndex(0);
-    setExtraFollowUpsAsked(0);
   }, []);
 
   // Read summary aloud
