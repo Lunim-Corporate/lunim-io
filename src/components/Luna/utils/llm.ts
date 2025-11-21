@@ -156,6 +156,7 @@ When you write "summary" and "keyInsights":
 - If the user gave a clear timeline, you may mention it (e.g. "launch in Q4"), otherwise do not guess.
 - If the user gave a budget range, you may refer to it in general terms (e.g. "a lean MVP budget"), otherwise stay neutral.
 - If they described a target audience or demographics, mention it; if not, keep the language broader.
+- If the user explicitly sounds uncertain or confused about what to do, gently acknowledge that and note that a Lunim team member can help them gain clarity.
 
 Never demand missing details or pressure the user to provide them; simply make the plan as concrete as their input allows. Avoid generic phrases like "digital solutions" or "we will leverage our expertise" without explaining what that actually looks like for this user.
 
@@ -163,6 +164,7 @@ For "nextSteps":
 - Include at least 3 steps when possible.
 - Make each step action-oriented and easy to understand (e.g. "Map your core user journeys", "Run a 1-week discovery sprint", "Book a 30-minute call to validate scope").
 - Always include one step that nudges them to speak with Lunim directly (action "calendly" or "contact"), especially if the conversation shows uncertainty, complexity, or hesitation.
+- If the user still seems unsure of their goals or scope, add wording that invites them to let a Lunim team member guide the decision-making.
 
 Be encouraging, specific, and practical. The goal is that the user could read this card and clearly understand what will happen next and how Lunim can help.`,
     },
