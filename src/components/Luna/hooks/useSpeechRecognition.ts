@@ -26,6 +26,95 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const isMountedRef = useRef(true);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const analyserDataRef = useRef<Float32Array | null>(null);
+  const silenceMonitorRef = useRef<number | null>(null);
+  const silenceTimeoutRef = useRef<number | null>(null);
+
+  const cleanupSilenceDetection = useCallback(() => {
+    if (silenceMonitorRef.current !== null) {
+      cancelAnimationFrame(silenceMonitorRef.current);
+      silenceMonitorRef.current = null;
+    }
+    if (silenceTimeoutRef.current !== null) {
+      window.clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
+    if (analyserRef.current) {
+      analyserRef.current.disconnect();
+      analyserRef.current = null;
+    }
+    analyserDataRef.current = null;
+    if (audioContextRef.current) {
+      const context = audioContextRef.current;
+      context
+        .close()
+        .catch(() => undefined);
+      audioContextRef.current = null;
+    }
+  }, []);
+
+  const startSilenceDetection = useCallback(() => {
+    if (!streamRef.current || typeof window === 'undefined') return;
+    cleanupSilenceDetection();
+
+    try {
+      const audioContext = new window.AudioContext();
+      audioContextRef.current = audioContext;
+      const source = audioContext.createMediaStreamSource(streamRef.current);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      analyserRef.current = analyser;
+      source.connect(analyser);
+      analyserDataRef.current = new Float32Array(
+        new ArrayBuffer(analyser.fftSize * Float32Array.BYTES_PER_ELEMENT)
+      );
+
+      const SILENCE_THRESHOLD = 0.02;
+      const SILENCE_DURATION_MS = 1200;
+
+      const checkSilence = () => {
+        if (!analyserRef.current || !analyserDataRef.current) return;
+        analyserRef.current.getFloatTimeDomainData(
+          analyserDataRef.current as unknown as Float32Array<ArrayBuffer>
+        );
+        let sumSquares = 0;
+        for (let i = 0; i < analyserDataRef.current.length; i += 1) {
+          const sample = analyserDataRef.current[i];
+          sumSquares += sample * sample;
+        }
+        const rms = Math.sqrt(sumSquares / analyserDataRef.current.length);
+
+        if (rms < SILENCE_THRESHOLD) {
+            if (silenceTimeoutRef.current === null) {
+              silenceTimeoutRef.current = window.setTimeout(() => {
+                silenceTimeoutRef.current = null;
+                if (
+                  mediaRecorderRef.current &&
+                  mediaRecorderRef.current.state === 'recording'
+                ) {
+                try {
+                  mediaRecorderRef.current.stop();
+                } catch (error) {
+                  console.warn('Error stopping recorder after silence:', error);
+                }
+              }
+            }, SILENCE_DURATION_MS);
+          }
+        } else if (silenceTimeoutRef.current !== null) {
+          window.clearTimeout(silenceTimeoutRef.current);
+          silenceTimeoutRef.current = null;
+        }
+
+        silenceMonitorRef.current = window.requestAnimationFrame(checkSilence);
+      };
+
+      checkSilence();
+    } catch (error) {
+      console.warn('Unable to start silence detection:', error);
+    }
+  }, [cleanupSilenceDetection]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -46,8 +135,9 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
       }
+      cleanupSilenceDetection();
     };
-  }, []);
+  }, [cleanupSilenceDetection]);
 
   const startListening = useCallback(async () => {
     if (!isSupported) {
@@ -70,6 +160,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
         if (!isMountedRef.current) return;
         setIsListening(true);
         setTranscript('');
+        startSilenceDetection();
       };
 
       recorder.ondataavailable = (event: BlobEvent) => {
@@ -86,6 +177,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
       };
 
       recorder.onstop = async () => {
+        cleanupSilenceDetection();
         if (!isMountedRef.current) return;
 
         setIsListening(false);
@@ -157,7 +249,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
           : new Error('Unable to access microphone for recording.')
       );
     }
-  }, [isSupported, isListening, options]);
+  }, [isSupported, isListening, options, startSilenceDetection]);
 
   const stopListening = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
@@ -166,8 +258,12 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
       } catch (error) {
         console.warn('Error stopping recorder:', error);
       }
+    } else if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
     }
-  }, []);
+    cleanupSilenceDetection();
+  }, [cleanupSilenceDetection]);
 
   const resetTranscript = useCallback(() => {
     setTranscript('');
@@ -182,4 +278,3 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
     transcript,
   };
 }
-
