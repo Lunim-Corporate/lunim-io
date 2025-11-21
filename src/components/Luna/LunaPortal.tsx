@@ -354,16 +354,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         });
 
         const { data } = await response.json();
-        dispatch({ type: 'SET_PLAN', payload: data });
         
         const planMessage = `Great! ${data.summary}`;
 
-        const currentMode = stateRef.current.interactionMode;
-        console.log('[Luna] Plan message, mode:', currentMode);
-        if (currentMode === 'voice') {
-          await speakAndWait(planMessage);
-        }
-
+        // Show Luna's message immediately
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
         lunaAnalytics.trackMessage('luna', planMessage);
         lunaAnalytics.trackPlanGenerated({
@@ -372,6 +366,18 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           estimatedScope: data.estimatedScope,
           tags: data.tags,
         });
+
+        // In voice mode, let Luna finish speaking before revealing the plan summary card
+        const currentMode = stateRef.current.interactionMode;
+        console.log('[Luna] Plan message, mode:', currentMode);
+        if (currentMode === 'voice') {
+          await speakAndWait(planMessage);
+        }
+
+        // Now set the plan in state so the summary card appears,
+        // and ensure the plan summary is persisted in analytics metrics.
+        dispatch({ type: 'SET_PLAN', payload: data });
+        lunaAnalytics.updateMetrics({ planSummary: data.summary });
       }
     } catch (error) {
       console.error('Error processing input:', error);
@@ -859,8 +865,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                     );
                   })}
 
-                  {/* Typing indicator when Luna is thinking */}
-                  {state.state === 'thinking' && (
+                  {/* Typing indicator when Luna is thinking or speaking */}
+                  {(state.state === 'thinking' || state.isSpeaking) && (
                     <div className="flex justify-start mt-2">
                       <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
                         <Image
