@@ -808,7 +808,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                         <button
                           type="button"
                           onClick={() => startSession()}
-                          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                          className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
                         >
                           <span>Consult Luna</span>
                         </button>
@@ -1022,7 +1022,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   <button
                     type="button"
                     onClick={handleResetChat}
-                    className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                    className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
                   >
                     Start again
                   </button>
