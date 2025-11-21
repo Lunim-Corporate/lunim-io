@@ -41,6 +41,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [pendingPrivacyMode, setPendingPrivacyMode] = useState<PrivacyMode>('on-the-record');
   const [pendingInteractionMode, setPendingInteractionMode] =
     useState<InteractionMode>('voice');
+  const [showTranscript, setShowTranscript] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const [reduceMotionManual, setReduceMotionManual] = useState(false);
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
@@ -482,6 +483,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
   if (!isOpen) return null;
 
+  const lunaBusy = state.state === 'thinking' || state.isSpeaking;
+
   return (
     <SpeechErrorBoundary>
       <AnimatePresence>
@@ -570,6 +573,22 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               </div>
 
               <div className="flex items-center gap-1.5">
+                {/* Transcript toggle (voice mode only) */}
+                {state.session && state.interactionMode === 'voice' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowTranscript((prev) => !prev)}
+                    className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-xs sm:text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                    aria-label={showTranscript ? 'Hide text transcript' : 'Show text transcript'}
+                  >
+                    <span className="hidden sm:inline">
+                      {showTranscript ? 'Hide text' : 'Show text'}
+                    </span>
+                    <span className="sm:hidden">
+                      {showTranscript ? 'TXT–' : 'TXT+'}
+                    </span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleResetChat}
@@ -676,7 +695,9 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   isListening={state.isListening}
                   isSpeaking={state.isSpeaking}
                 />
-                <p className="text-sm font-semibold text-white">Luna</p>
+                <p className="text-sm font-semibold text-white text-center px-4">
+                  {lunaBusy ? 'Luna is consulting the oracle…' : 'Luna'}
+                </p>
               </div>
 
               {/* Session not started - intro bubble & privacy selection */}
@@ -798,7 +819,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               )}
 
               {/* Active conversation thread */}
-              {state.session && (
+              {state.session && (state.interactionMode === 'text' || showTranscript) && (
                 <div className="max-w-2xl mx-auto space-y-3">
                   {state.session.messages.map((message) => {
                     const isUser = message.role === 'user';
