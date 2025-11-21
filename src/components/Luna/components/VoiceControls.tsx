@@ -93,6 +93,11 @@ export function VoiceControls({
               Click the mic to stop speaking
             </p>
           )}
+          {!isListening && isSpeaking && (
+            <p className="text-sm text-gray-300/90">
+              Luna is speaking…
+            </p>
+          )}
           <div className="flex justify-center gap-4 items-center">
             <motion.button
               onClick={onMicClick}
@@ -147,7 +152,6 @@ export function VoiceControls({
       {/* Status text */}
       <div className="text-center text-sm text-gray-300/80">
         {isListening && 'Listening...'}
-        {isSpeaking && 'Luna is speaking...'}
         {!isListening && !isSpeaking && interactionMode === 'voice' && 'Click the mic to start speaking'}
         {!isListening && !isSpeaking && interactionMode === 'text' && 'Type your message below to chat with Luna'}
       </div>
