@@ -72,10 +72,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
       );
 
       const SILENCE_THRESHOLD = 0.02;
-      const SILENCE_DURATION_MS =
-        mediaRecorderRef.current && mediaRecorderRef.current.state === 'inactive'
-          ? 5500
-          : 1200;
+      const SILENCE_DURATION_MS = 4000;
 
       const checkSilence = () => {
         if (!analyserRef.current || !analyserDataRef.current) return;
