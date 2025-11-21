@@ -287,6 +287,32 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const handleUserInput = useCallback(async (input: string) => {
     if (!input.trim() || !state.session) return;
 
+    // Compute updated conversation and turn count up front so the latest
+    // user message is always included in planning decisions.
+    const updatedConversation = [
+      ...state.session.messages.map((m) => ({ role: m.role, content: m.content })),
+      { role: 'user' as const, content: input },
+    ];
+    const previousUserMessages = state.session.messages.filter((m) => m.role === 'user').length;
+    const currentUserTurn = previousUserMessages + 1;
+    const MAX_USER_TURNS = 5;
+
+    // If a plan is already present, avoid looping endlessly. Gently
+    // redirect the user toward speaking with Lunim for deeper clarity.
+    if (state.session.plan) {
+      const closingMessage =
+        "I've already shared a tailored plan based on what you've told me so far. For anything more nuanced or if you still have doubts, the best next step is to talk with the Lunim team directly so we can look at your situation in detail together.";
+
+      const currentMode = stateRef.current.interactionMode;
+      if (currentMode === 'voice') {
+        await speakAndWait(closingMessage);
+      }
+
+      dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: closingMessage } });
+      lunaAnalytics.trackMessage('luna', closingMessage);
+      return;
+    }
+
     dispatch({ type: 'ADD_MESSAGE', payload: { role: 'user', content: input } });
     dispatch({ type: 'SET_STATE', payload: 'thinking' });
     dispatch({ type: 'SET_CAPTION', payload: '' });
@@ -296,8 +322,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     lunaAnalytics.trackMessage('user', input);
 
     try {
+      const reachedTurnLimit = currentUserTurn >= MAX_USER_TURNS;
+
       // Phase 1: Get clarifying questions
-      if (!state.session.clarify) {
+      if (!state.session.clarify && !reachedTurnLimit) {
         const response = await fetch('/api/luna/clarify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -326,7 +354,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         setCurrentQuestionIndex(0);
       } 
       // Continue with clarifying questions
-      else if (state.session.clarify && currentQuestionIndex < state.session.clarify.questions.length - 1) {
+      else if (
+        state.session.clarify &&
+        currentQuestionIndex < state.session.clarify.questions.length - 1 &&
+        !reachedTurnLimit
+      ) {
         const nextIndex = currentQuestionIndex + 1;
         const nextQuestion = state.session.clarify.questions[nextIndex];
 
@@ -345,11 +377,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       }
       // Phase 2: Generate plan
       else {
+        // Use the updated conversation so the latest user turn
+        // is always reflected in the plan request.
         const response = await fetch('/api/luna/plan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            conversation: state.session.messages,
+            conversation: updatedConversation,
             privacyMode: state.session.privacyMode,
           }),
         });
