@@ -695,7 +695,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                   isListening={state.isListening}
                   isSpeaking={state.isSpeaking}
                 />
-                <p className="text-sm font-semibold text-white text-center px-4">
+                <p className="text-lg font-semibold text-white text-center px-4">
                   {lunaBusy ? 'Luna is consulting the oracle…' : 'Luna'}
                 </p>
               </div>

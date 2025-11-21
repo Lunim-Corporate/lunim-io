@@ -87,53 +87,60 @@ export function VoiceControls({
 
       {/* Microphone + keyboard controls in voice mode */}
       {interactionMode === 'voice' && (
-        <div className="flex justify-center gap-4 items-center">
-          <motion.button
-            onClick={onMicClick}
-            disabled={disabled || isSpeaking}
-            className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
-              isListening
-                ? 'bg-rose-500 shadow-[0_0_40px_rgba(244,63,94,0.75)]'
-                : 'bg-white/95 hover:bg-gray-100 shadow-[0_14px_40px_rgba(0,0,0,0.65)]'
-            } ${disabled || isSpeaking ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            whileTap={!disabled && !isSpeaking ? { scale: 0.95 } : {}}
-            whileHover={!disabled && !isSpeaking ? { scale: 1.05 } : {}}
-          >
-            {/* Pulsing ring when listening */}
-            {isListening && (
-              <motion.div
-                className="absolute inset-0 rounded-full bg-red-400"
-                initial={{ scale: 1, opacity: 0.7 }}
-                animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.7, 0, 0.7],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: 'easeOut',
-                }}
-              />
-            )}
+        <div className="flex flex-col items-center gap-2">
+          {isListening && (
+            <p className="text-sm text-gray-300/90">
+              Click the mic to stop speaking
+            </p>
+          )}
+          <div className="flex justify-center gap-4 items-center">
+            <motion.button
+              onClick={onMicClick}
+              disabled={disabled || isSpeaking}
+              className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                isListening
+                  ? 'bg-rose-500 shadow-[0_0_40px_rgba(244,63,94,0.75)]'
+                  : 'bg-white/95 hover:bg-gray-100 shadow-[0_14px_40px_rgba(0,0,0,0.65)]'
+              } ${disabled || isSpeaking ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              whileTap={!disabled && !isSpeaking ? { scale: 0.95 } : {}}
+              whileHover={!disabled && !isSpeaking ? { scale: 1.05 } : {}}
+            >
+              {/* Pulsing ring when listening */}
+              {isListening && (
+                <motion.div
+                  className="absolute inset-0 rounded-full bg-red-400"
+                  initial={{ scale: 1, opacity: 0.7 }}
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [0.7, 0, 0.7],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: 'easeOut',
+                  }}
+                />
+              )}
 
-            {isListening ? (
-              <MicOff className="relative z-10 text-white" size={24} />
-            ) : (
-              <Mic className="relative z-10 text-black" size={24} />
-            )}
-          </motion.button>
+              {isListening ? (
+                <MicOff className="relative z-10 text-white" size={24} />
+              ) : (
+                <Mic className="relative z-10 text-black" size={24} />
+              )}
+            </motion.button>
 
-          {/* Keyboard icon to switch to text mode */}
-          <button
-            type="button"
-            onClick={() => onModeChange('text')}
-            disabled={disabled}
-            className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Switch to text mode"
-          >
-            <Keyboard size={16} />
-            <span>Use keyboard</span>
-          </button>
+            {/* Keyboard icon to switch to text mode */}
+            <button
+              type="button"
+              onClick={() => onModeChange('text')}
+              disabled={disabled}
+              className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Switch to text mode"
+            >
+              <Keyboard size={16} />
+              <span>Use keyboard</span>
+            </button>
+          </div>
         </div>
       )}
 
