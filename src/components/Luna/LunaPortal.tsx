@@ -493,7 +493,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center md:items-start bg-black/80 backdrop-blur-md p-3 sm:p-4 overflow-y-auto"
           onClick={onClose}
         >
           <LayoutGroup>
@@ -507,7 +507,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 stiffness: reduceMotion ? 200 : 300,
               }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-8"
+              className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col min-h-0 my-6 sm:my-8 max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-4rem)]"
               style={{
                 boxShadow:
                   '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
@@ -685,9 +685,9 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
             </div>
 
           {/* Main Content with subtle gradient background */}
-          <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col">
+          <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col min-h-0">
             {/* Conversation area like a chat screen */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               {/* Luna Portrait pinned at top */}
               <div className="flex flex-col items-center mb-6 gap-6">
                 <LunaPortrait
