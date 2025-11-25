@@ -2,26 +2,26 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.prismic.io",
-        // narrow to your repo (optional but safer):
         pathname: "/lunim-v3/**",
       },
     ],
+    qualities: [85, 90],
   },
+
   turbopack: {
     root: path.resolve(__dirname),
   },
+
   async redirects() {
     return [
-      // Only redirect the "container" page, not inner slugs
       {
-        source: '/:path*/case-studies',
-        destination: '/:path*',
+        source: "/:path*/case-studies",
+        destination: "/:path*",
         permanent: true,
       },
     ];
