@@ -466,6 +466,43 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
       dispatch({ type: 'SET_PLAN', payload: data });
       lunaAnalytics.updateMetrics({ planSummary: data.summary });
+
+      const activeSession = state.session;
+      if (activeSession?.privacyMode === 'on-the-record') {
+        const conversationForPersistence = [
+          ...updatedConversation,
+          { role: 'luna' as const, content: planMessage },
+        ];
+
+        const persistConversation = async () => {
+          try {
+            const response = await fetch('/api/luna/conversation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sessionId: activeSession.id,
+                privacyMode: activeSession.privacyMode,
+                interactionMode: state.interactionMode,
+                messages: conversationForPersistence,
+                plan: data,
+              }),
+            });
+
+            if (!response.ok) {
+              const errorBody = await response.json().catch(() => ({}));
+              console.error(
+                '[Luna] Failed to persist conversation:',
+                response.status,
+                errorBody?.error
+              );
+            }
+          } catch (error) {
+            console.error('[Luna] Conversation persistence error:', error);
+          }
+        };
+
+        void persistConversation();
+      }
     } catch (error) {
       console.error('Error processing input:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Something went wrong. Please try again.' });
