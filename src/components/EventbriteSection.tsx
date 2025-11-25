@@ -5,10 +5,11 @@ import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
 import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/types";
+import { JsonLd } from "@/components/JsonLd";
+import type { Event as SchemaEvent, WithContext } from "schema-dts";
 
 const DEFAULT_EVENT_ID =
   process.env.NEXT_PUBLIC_EVENTBRITE_EVENT_ID ?? "1967972076457";
-
 interface EventbriteCourseInfo {
   id: string;
   name: string;
@@ -111,6 +112,15 @@ const buildFallbackCourse = (eventId: string): EventbriteCourseInfo => {
   };
 };
 
+const toIsoString = (value?: string | null): string | undefined => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+  return date.toISOString();
+};
+
 interface EventbriteSectionProps {
   className?: string;
   eventId?: string;
@@ -204,12 +214,51 @@ const EventbriteSection: React.FC<EventbriteSectionProps> = ({
   const supportingCopy = description?.trim() || courseInfo?.summary || null;
   const hasRichDescription =
     Array.isArray(descriptionRichText) && descriptionRichText.length > 0;
+  const canonicalEventUrl =
+    courseInfo?.url || `https://www.eventbrite.com/e/${effectiveEventId}`;
+  const startDateIso = toIsoString(courseInfo?.startLocal);
+  const priceDisplay = courseInfo?.priceDisplay?.trim() || null;
+
+  const eventJsonLd = useMemo<WithContext<SchemaEvent> | null>(() => {
+    if (!heading) return null;
+    const place = {
+      "@type": "Place" as const,
+      name: locationText,
+      address: {
+        "@type": "PostalAddress" as const,
+        addressLocality: locationText,
+      },
+    };
+    return {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: heading,
+      ...(supportingCopy ? { description: supportingCopy } : {}),
+      startDate: startDateIso ?? "Please insert valid ISO 8601 date/time here. Examples: 2015-07-27 or 2015-07-27T15:30",
+      url: canonicalEventUrl,
+      location: place,
+      organizer: {
+        "@type": "Organization",
+        name: "Lunim",
+        url: "https://lunim.io",
+      },
+      ...(priceDisplay
+        ? {
+            offers: {
+              "@type": "Offer" as const,
+              price: priceDisplay,
+            },
+          }
+        : {}),
+    };
+  }, [canonicalEventUrl, heading, locationText, startDateIso, supportingCopy, priceDisplay]);
 
   return (
     <div
       id="book-event"
       className={`bg-[#0f172a] border border-white/20 rounded-3xl p-8 md:p-10 shadow-[0_24px_65px_rgba(0,0,0,0.45)] space-y-8 ${className}`}
     >
+      {eventJsonLd ? <JsonLd data={eventJsonLd} /> : null}
       <div className="text-center space-y-3">
         <h3 className="text-white text-3xl md:text-4xl font-semibold tracking-tight">
           {heading}

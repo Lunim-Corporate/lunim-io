@@ -155,8 +155,19 @@ export const EventbriteWidget: React.FC<EventbriteWidgetProps> = ({
   }, [eventId, buttonId, isSecureContext]);
 
   const handleButtonClick = useCallback(() => {
-    maintainScrollPosition();
-  }, [maintainScrollPosition]);
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    // Only apply the scroll lock on larger (desktop-ish) viewports.
+    // On small/mobile viewports this was causing the page to jump to the top
+    // when opening the Eventbrite checkout.
+    if (window.innerWidth >= 768) {
+      maintainScrollPosition();
+    } else {
+      stopScrollMaintenance();
+    }
+  }, [maintainScrollPosition, stopScrollMaintenance]);
 
   if (!eventId) {
     return (

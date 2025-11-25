@@ -10,6 +10,8 @@ import { createClient } from "@/prismicio";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
+import { JsonLdServer } from "@/components/JsonLdServer";
+import type { ItemList, Person, WithContext } from "schema-dts";
 
 /** Slice context passed from the page (we read search params here). */
 type BlogListSliceContext = {
@@ -17,6 +19,10 @@ type BlogListSliceContext = {
 };
 
 type Props = SliceComponentProps<Content.BlogListSlice, BlogListSliceContext>;
+
+const DEFAULT_SITE_URL = "https://lunim.io";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
 
 function getFirstParam(
   value: string | string[] | undefined
@@ -39,6 +45,15 @@ function extractCategoryText(
   return field.trim();
 }
 
+const resolveDocumentUrl = (
+  doc: Content.BlogPostDocument
+): string | null => {
+  if (doc.url) return doc.url;
+  const uid = doc.uid?.trim();
+  if (!uid) return null;
+  return `${SITE_URL}/blog/${uid}`;
+};
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const d = doc.data;
   const title = asText(d.blog_article_heading) || doc.uid || "Untitled";
@@ -58,7 +73,7 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
-    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors no-underline">
       {articleImageField?.url ? (
         <PrismicNextImage
           field={articleImageField}
@@ -188,8 +203,53 @@ export default async function BlogList({ slice, context }: Props) {
       ? withParams({ page: currentPage + 1, cat: effectiveFilter || undefined })
       : null;
 
+  const blogListJsonLd: WithContext<ItemList> | null = visiblePosts.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: visiblePosts.map(
+          (doc: Content.BlogPostDocument, index: number) => {
+          const data = doc.data;
+          const title =
+            asText(data.blog_article_heading) ||
+            doc.uid ||
+            `Article ${index + 1}`;
+          const url = resolveDocumentUrl(doc);
+          const description =
+            data.meta_description || asText(data.main_article_content);
+          const image = data.article_main_image?.url || undefined;
+          const datePublished = data.publication_date || undefined;
+          const authorInfo = data.author_info;
+          const authorData =
+            authorInfo && "data" in authorInfo ? authorInfo.data : null;
+          const rawAuthorName =
+            authorData?.author_name?.trim() ||
+            (authorInfo && "uid" in authorInfo ? authorInfo.uid ?? "" : "");
+          const author: Person | undefined = rawAuthorName
+            ? { "@type": "Person", name: rawAuthorName }
+            : undefined;
+
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "Article",
+              headline: title,
+              ...(description ? { description } : {}),
+              ...(url ? { url } : {}),
+              ...(image ? { image } : {}),
+              ...(datePublished ? { datePublished } : {}),
+              ...(author ? { author } : {}),
+            },
+          };
+        }),
+      }
+    : null;
+
   return (
-    <section className="py-16 bg-black">
+    <>
+      {blogListJsonLd ? <JsonLdServer data={blogListJsonLd} /> : null}
+      <section className="py-16 bg-black">
       <div className="max-w-7xl mx-auto px-6">
         {slice.primary.heading?.length ? (
           <h2 className="text-3xl font-bold text-white mb-3">
@@ -207,7 +267,7 @@ export default async function BlogList({ slice, context }: Props) {
         <div className="flex flex-wrap items-center gap-2 mb-8">
           <a
             href={withParams({ page: 1 })}
-            className={`px-3 py-1 rounded-full text-sm border ${
+            className={`px-3 py-1 rounded-full text-sm border no-underline ${
               !effectiveFilter
                 ? "bg-cyan-300 text-black border-cyan-300"
                 : "border-white/20 text-white/80 hover:text-white"
@@ -219,7 +279,7 @@ export default async function BlogList({ slice, context }: Props) {
             <a
               key={normalizedCat}
               href={withParams({ page: 1, cat: normalizedCat })}
-              className={`px-3 py-1 rounded-full text-sm border ${
+              className={`px-3 py-1 rounded-full text-sm border no-underline ${
                 normalizedCat === effectiveFilter
                   ? "bg-cyan-300 text-black border-cyan-300"
                   : "border-white/20 text-white/80 hover:text-white"
@@ -275,5 +335,6 @@ export default async function BlogList({ slice, context }: Props) {
         </div>
       </div>
     </section>
+    </>
   );
 }

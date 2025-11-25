@@ -14,9 +14,22 @@ export type PrivacyMode = 'on-the-record' | 'confidential';
 
 export type InteractionMode = 'voice' | 'text';
 
+export interface LunaConversationDecision {
+  readinessScore: number;
+  clarityScore: number;
+  confidence: number;
+  recommendedAction: 'ask_more' | 'generate_plan' | 'handoff';
+  shouldNudgeHuman: boolean;
+  nudgeMessage?: string;
+  rationale?: string;
+  suggestedFollowUpAngle?: string;
+}
+
 export interface LunaClarify {
-  questions: string[];
   understanding: string;
+  questions: string[];
+  questionIntro?: string;
+  decision?: LunaConversationDecision;
 }
 
 export interface LunaNextStep {

@@ -285,8 +285,15 @@ interface Session {
 **Request**:
 ```json
 {
-  "userMessage": "I want to build a mobile app",
-  "privacyMode": "on-the-record"
+  "conversation": [
+    { "role": "user", "content": "I want to build a mobile app" }
+  ],
+  "privacyMode": "on-the-record",
+  "metadata": {
+    "userMessageCount": 1,
+    "minTurnsForPlan": 3,
+    "maxTurns": 6
+  }
 }
 ```
 
@@ -294,11 +301,21 @@ interface Session {
 ```json
 {
   "data": {
-    "understanding": "I see you're interested in mobile development.",
+    "understanding": "Sounds like you're exploring a mobile experience to reach customers on iOS and Android.",
     "questions": [
-      "What's your budget range?",
-      "What's your timeline?"
-    ]
+      "Is there a target launch window or milestone you're aiming for?",
+      "What would success look like in terms of engagement or revenue?"
+    ],
+    "decision": {
+      "readinessScore": 0.42,
+      "clarityScore": 0.38,
+      "confidence": 0.55,
+      "recommendedAction": "ask_more",
+      "shouldNudgeHuman": false,
+      "nudgeMessage": "",
+      "suggestedFollowUpAngle": "your launch timeline",
+      "rationale": "They described the product concept but haven't shared timing or success criteria yet."
+    }
   }
 }
 ```

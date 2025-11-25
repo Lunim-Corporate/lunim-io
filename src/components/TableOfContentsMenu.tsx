@@ -102,7 +102,7 @@ function TableOfContentsListItem({isActive, activeItemRef, itemId, val, marginSt
     <li
       ref={isActive ? activeItemRef : null}
       className={`${isActive ? "text-cyan-400 before:content-['•'] before:text-current-400 before:absolute before:-left-1" : ""} relative ps-2 mb-2 last:mb-0 ${textSize} hover:text-[#1f2937] transition-colours duration-300 ${marginStartVal}`}>
-      <Link href={`#${itemId}`}>
+      <Link className="no-underline" href={`#${itemId}`}>
           {val.text}
       </Link>
     </li>
