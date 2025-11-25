@@ -466,6 +466,43 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
 
       dispatch({ type: 'SET_PLAN', payload: data });
       lunaAnalytics.updateMetrics({ planSummary: data.summary });
+
+      const activeSession = state.session;
+      if (activeSession?.privacyMode === 'on-the-record') {
+        const conversationForPersistence = [
+          ...updatedConversation,
+          { role: 'luna' as const, content: planMessage },
+        ];
+
+        const persistConversation = async () => {
+          try {
+            const response = await fetch('/api/luna/conversation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sessionId: activeSession.id,
+                privacyMode: activeSession.privacyMode,
+                interactionMode: state.interactionMode,
+                messages: conversationForPersistence,
+                plan: data,
+              }),
+            });
+
+            if (!response.ok) {
+              const errorBody = await response.json().catch(() => ({}));
+              console.error(
+                '[Luna] Failed to persist conversation:',
+                response.status,
+                errorBody?.error
+              );
+            }
+          } catch (error) {
+            console.error('[Luna] Conversation persistence error:', error);
+          }
+        };
+
+        void persistConversation();
+      }
     } catch (error) {
       console.error('Error processing input:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Something went wrong. Please try again.' });
@@ -825,7 +862,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             <span className="block text-sm font-semibold">
                               On the record
                             </span>
-                            <span className="block text-sm text-gray-700">
+                            <span
+                              className={`block text-sm ${
+                                pendingPrivacyMode === 'on-the-record'
+                                  ? 'text-gray-700'
+                                  : 'text-gray-400'
+                              }`}
+                            >
                               Save anonymised notes so we can learn from patterns.
                             </span>
                           </span>
@@ -833,10 +876,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                         <button
                           type="button"
                           onClick={() => setPendingPrivacyMode('confidential')}
-                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 hover:scale-[1.02] ${
+                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
                             pendingPrivacyMode === 'confidential'
-                              ? 'bg-zinc-900 border border-zinc-500 text-white'
-                              : 'bg-zinc-900/60 border border-zinc-700 text-gray-300'
+                              ? 'bg-white text-black'
+                              : 'bg-zinc-900/80 text-white border border-zinc-700'
                           }`}
                         >
                           <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
@@ -846,7 +889,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             <span className="block text-sm font-semibold">
                               Confidential
                             </span>
-                            <span className="block text-sm text-gray-400">
+                            <span
+                              className={`block text-sm ${
+                                pendingPrivacyMode === 'confidential'
+                                  ? 'text-gray-700'
+                                  : 'text-gray-400'
+                              }`}
+                            >
                               Keep this conversation just between you and Luna.
                             </span>
                           </span>
@@ -1115,7 +1164,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 </div>
               ) : (
                 <>
-                  {state.session && (
+                  {state.session && state.interactionMode === 'voice' && (
                     <VoiceControls
                       interactionMode={state.interactionMode}
                       privacyMode={state.session.privacyMode}
