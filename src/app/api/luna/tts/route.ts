@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const text = body?.text as string | undefined;
-    const voice = (body?.voice as string | undefined) ?? 'alloy';
-    const instructions = "Calm female voice with British or soft global accent; slight warmth, 85–90% human realism; faint lunar echo.";
+    const voice = (body?.voice as string | undefined) ?? 'nova';
+    const instructions = "Accent/Affect: British mixed with East African accent; slow, sophisticated yet friendly, clearly understandable with a charming touch of East African intonation.\n\nTone: Warm and a little snooty. Speak with pride and knowledge for the art being presented.\n\nPacing: Moderate, with deliberate pauses at key observations to allow listeners to appreciate details.\n\nEmotion: Calm, knowledgeable enthusiasm; show genuine reverence and fascination for the artwork.\n\nPronunciation: Clearly articulate French words (e.g., \"Mes amis,\" \"incroyable\") in French and artist names (e.g., \"Leonardo da Vinci\") with authentic French pronunciation.\n\nPersonality Affect: Cultured, engaging, and refined, guiding visitors with a blend of artistic passion and welcoming charm.";
 
     if (!text || !text.trim()) {
       return NextResponse.json(
