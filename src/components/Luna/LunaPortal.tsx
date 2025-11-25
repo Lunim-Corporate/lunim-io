@@ -1152,7 +1152,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                 </div>
               ) : (
                 <>
-                  {state.session && (
+                  {state.session && state.interactionMode === 'voice' && (
                     <VoiceControls
                       interactionMode={state.interactionMode}
                       privacyMode={state.session.privacyMode}

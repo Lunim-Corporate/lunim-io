@@ -153,7 +153,7 @@ export function VoiceControls({
       <div className="text-center text-sm text-gray-300/80">
         {isListening && 'Listening...'}
         {!isListening && !isSpeaking && interactionMode === 'voice' && 'Click the mic to start speaking'}
-        {!isListening && !isSpeaking && interactionMode === 'text' && 'Type your message below to chat with Luna'}
+        {!isListening && !isSpeaking && interactionMode === 'text' && null}
       </div>
     </div>
   );
