@@ -53,7 +53,32 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const supabase = supabaseServer();
+    const supabaseUrl =
+      process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey =
+      process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('[Luna Conversation] Supabase not configured, skipping persistence.');
+      return NextResponse.json({
+        success: true,
+        stored: false,
+        sessionId,
+        reason: 'supabase_not_configured',
+      });
+    }
+
+    let supabase;
+    try {
+      supabase = supabaseServer();
+    } catch (error) {
+      console.error('[Luna Conversation] Failed to init Supabase client:', error);
+      return NextResponse.json({
+        success: true,
+        stored: false,
+        sessionId,
+        reason: 'supabase_client_error',
+      });
+    }
     const { error } = await supabase
       .from('luna_conversations')
       .insert({

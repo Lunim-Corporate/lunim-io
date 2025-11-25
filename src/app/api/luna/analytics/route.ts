@@ -32,6 +32,21 @@ export async function POST(request: NextRequest) {
     // 2. Send to analytics service (Mixpanel, Amplitude, etc.)
     // 3. Integrate with CRM for lead tracking
 
+    const supabaseUrl =
+      process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey =
+      process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('[Luna Analytics] Supabase not configured, skipping persistence.');
+      return NextResponse.json({
+        success: true,
+        stored: false,
+        sessionId: sessionMetrics.sessionId,
+        reason: 'supabase_not_configured',
+      });
+    }
+
     // Persist on-the-record session metrics + summary to Supabase
     try {
       const supabase = supabaseServer();
