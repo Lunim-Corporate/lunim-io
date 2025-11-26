@@ -40,7 +40,6 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
           gsap.fromTo(
             bgRef.current,
             {
-              clipPath: "inset(0% 0% 50% 0%)",
               WebkitClipPath: "inset(0% 0% 50% 0%)",
               scale: enableZoom ? 1.02 : 1,
             },

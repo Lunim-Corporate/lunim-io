@@ -22,7 +22,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 } })
+        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 10%", scrub: 0.5 } })
           .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
       }
     }, sectionRef);

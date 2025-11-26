@@ -58,7 +58,6 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   useEffect(() => {
     const updateResponsiveValues = () => {
       const width = window.innerWidth;
-
       if (width < 480) {
         setRadius(80);
         setContainerMaxWidth("240px");
@@ -89,7 +88,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         .timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 85%",
+            start: "top bottom",
             end: "top 35%",
             scrub: 0.6,
           },
@@ -113,13 +112,18 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
       // Scroll sequence: center -> lines -> members (clockwise)
       if (circleContainerRef.current) {
+        // Freedom or Asish: radius and containerMaxWidth appear to be
+        // default values here - not set from updateResponsiveValues
+        console.log(radius);
+        console.log(containerMaxWidth);
+
         const centerCircle =
           circleContainerRef.current.querySelector(".center-circle");
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: circleContainerRef.current,
-            start: "top bottom",
-            end: "top 25%",
+            start: radius == 80 ? "top bottom" : "top bottom",
+            end: radius == 80 ? "top 70%" : "top 25%",
             scrub: 0.5,
           },
         });
@@ -311,7 +315,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                         className="flex items-start gap-3 text-white/90"
                       >
                         <span className="mt-2 w-2 h-2 rounded-full bg-[#8df6ff]" />
-                        <span className="text-sm md:text-base">{b.item}</span>
+                        <span className="text-md">{b.item}</span>
                       </li>
                     ))}
                 </ul>
@@ -324,7 +328,6 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               ref={circleContainerRef}
               className="
                 relative w-full aspect-square overflow-visible mx-auto
-                max-[480px]:scale-[0.68]
                 max-[480px]:-mt-6
               "
               style={{
@@ -398,7 +401,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
                     <div className="flex flex-col items-center">
                       {/* Photo Circle */}
                       {teamPhotoField && (
-                        <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-22 lg:h-22 xl:w-24 xl:h-24 rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10">
+                        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10">
                           <PrismicNextImage
                             field={teamPhotoField}
                             className="w-full h-full object-cover"

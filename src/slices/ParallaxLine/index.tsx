@@ -43,7 +43,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
     const ctx = gsap.context(() => {
       // Header fade on scroll-in (before pinning)
       gsap
-        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 90%", end: "center center", scrub: 0.6 } })
+        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "top 50%", scrub: 0.6 } })
         .from(titleRef.current, { opacity: 0, y: 40, filter: "blur(6px)" })
         .from(subtitleRef.current, { opacity: 0, y: 30, filter: "blur(4px)" }, "-=0.1")
         .from(descriptionRef.current, { opacity: 0, y: 20, filter: "blur(3px)" }, "-=0.1");
@@ -56,8 +56,8 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
         scrollTrigger: {
           trigger: sectionRef.current,
           // Shorter scroll distance so the full effect completes quickly
-          start: "top 90%",
-          end: "center center",
+          start: "top 40%",
+          end: "center 40%",
           scrub: 0.7,
         },
       });
