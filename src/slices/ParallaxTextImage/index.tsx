@@ -40,12 +40,9 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
           gsap.fromTo(
             bgRef.current,
             {
-              WebkitClipPath: "inset(0% 0% 50% 0%)",
               scale: enableZoom ? 1.02 : 1,
             },
             {
-              clipPath: "inset(0% 0% 0% 0%)",
-              WebkitClipPath: "inset(0% 0% 0% 0%)",
               scale: enableZoom ? 1.06 : 1,
               ease: "none",
               scrollTrigger: {
@@ -117,7 +114,12 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         const cards = gridRef.current.querySelectorAll("[data-pt-card]");
         if (cards.length) {
           gsap.timeline({
-            scrollTrigger: { trigger: gridRef.current, start: "top 95%", end: "center center", scrub: 0.5 },
+            scrollTrigger: { 
+              trigger: gridRef.current,
+              start: "top 95%",
+              end: "center center",
+              scrub: 0.5
+            },
           }).from(cards, {
             opacity: 0,
             y: preset === "slide-left" ? 0 : 30,
@@ -162,14 +164,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={variation}
-      className={`relative min-h-screen ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
+      className={`relative ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {bgImage && (
         <div
           ref={bgRef}
           className="absolute inset-0 z-0 will-change-transform overflow-hidden"
-          style={{ clipPath: "inset(0% 0% 50% 0%)", WebkitClipPath: "inset(0% 0% 50% 0%)" }}
         >
           <div
             ref={bgParallaxRef}
