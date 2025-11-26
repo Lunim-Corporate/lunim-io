@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
@@ -26,6 +26,14 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const bgRef = useRef<HTMLDivElement>(null);
   const bgParallaxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const preset = (slice.primary.animation_preset as string) || "fade-up";
@@ -82,12 +90,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
       const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
       if (textEls?.length && preset !== "none") {
+        console.log(isMobile);
         const isStrong = preset === "stagger-strong";
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current!,
-            start: "top 90%",
-            end: "center center",
+            start: isMobile ? "top bottom": "top 90%",
+            end: isMobile ? "top 70%" : "center center",
             scrub: 0.6,
           },
         });
