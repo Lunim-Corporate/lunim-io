@@ -24,6 +24,7 @@ const hasRT = (field: any): boolean => {
 export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const bgParallaxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,11 +52,35 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
               scrollTrigger: {
                 trigger: sectionRef.current,
                 start: "top bottom",
-                end: "bottom top",
+                end: "center center",
                 scrub: 0.9,
               },
             }
           );
+
+          if (enableParallax && bgParallaxRef.current) {
+            const getParallaxRange = () => {
+              if (typeof window === "undefined") return 20;
+              return window.innerWidth < 640 ? 10 : 20;
+            };
+
+            gsap.fromTo(
+              bgParallaxRef.current,
+              { yPercent: () => -getParallaxRange() },
+              {
+                yPercent: () => getParallaxRange(),
+                ease: "none",
+                force3D: true,
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                  invalidateOnRefresh: true,
+                },
+              }
+            );
+          }
         }
       }
 
@@ -65,8 +90,8 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current!,
-            start: "top 80%",
-            end: "top 20%",
+            start: "top 90%",
+            end: "center center",
             scrub: 0.6,
           },
         });
@@ -93,7 +118,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         const cards = gridRef.current.querySelectorAll("[data-pt-card]");
         if (cards.length) {
           gsap.timeline({
-            scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 },
+            scrollTrigger: { trigger: gridRef.current, start: "top 95%", end: "center center", scrub: 0.5 },
           }).from(cards, {
             opacity: 0,
             y: preset === "slide-left" ? 0 : 30,
@@ -144,10 +169,15 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
       {bgImage && (
         <div
           ref={bgRef}
-          className="absolute inset-0 z-0 will-change-transform"
+          className="absolute inset-0 z-0 will-change-transform overflow-hidden"
           style={{ clipPath: "inset(0% 0% 50% 0%)", WebkitClipPath: "inset(0% 0% 50% 0%)" }}
         >
-          <PrismicNextImage field={bgImage as any} fill priority className="object-cover" quality={90} alt="" />
+          <div
+            ref={bgParallaxRef}
+            className="absolute inset-0 sm:-top-[4%] sm:-bottom-[4%] sm:-left-[2%] sm:-right-[2%] md:-top-[12%] md:-bottom-[12%] md:-left-[6%] md:-right-[6%]"
+          >
+            <PrismicNextImage field={bgImage as any} fill priority className="object-cover" quality={90} alt="" />
+          </div>
           {slice.primary.overlay_style === "gradient_dark" && (
             <div className={`absolute inset-0 bg-gradient-to-r ${overlayStrength === "subtle" ? "from-black/60 via-black/35" : overlayStrength === "strong" ? "from-black/90 via-black/70" : "from-black/80 via-black/50"} to-transparent`} />
           )}
