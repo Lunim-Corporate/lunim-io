@@ -161,7 +161,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const spacingTop = slice.primary.spacing_top as string;
   const spacingBottom = slice.primary.spacing_bottom as string;
   const ptClass = spacingTop === "tight" ? "pt-16 md:pt-20" : spacingTop === "relaxed" ? "pt-28 md:pt-36" : "pt-20 md:pt-28";
-  const pbClass = spacingBottom === "tight" ? "pb-16 md:pb-20" : spacingBottom === "relaxed" ? "pb-28 md:pb-36" : "pb-20 md:pb-28";
+  const pbClass = spacingBottom === "tight" ? "pb-16 md:pb-20" : spacingBottom === "relaxed" ? "pb-36 md:pb-48" : "pb-20 md:pb-28";
 
   const stylePreset = (slice.primary.style_preset as string) || "default";
   const overlayStrength = (slice.primary.overlay_strength as string) || "medium";
