@@ -121,16 +121,16 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       if (circleContainerRef.current) {
         // Freedom or Asish: radius and containerMaxWidth appear to be
         // default values here - not set from updateResponsiveValues
-        console.log(radius);
-        console.log(containerMaxWidth);
+        // console.log(radius);
+        // console.log(containerMaxWidth);
 
         const centerCircle =
           circleContainerRef.current.querySelector(".center-circle");
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: circleContainerRef.current,
-            start: radius === 80 ? "top bottom" : "top bottom",
-            end: radius === 80 ? "top 70%" : "top 25%",
+            start: isMobile ? "top bottom" : "top bottom",
+            end: isMobile ? "top 70%" : "top 25%",
             scrub: 0.5,
           },
         });
@@ -352,6 +352,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               >
                 {teamMembers.map((member: any, index: number) => {
                   const pos = member.calculatedPosition;
+                  console.log(pos)
                   const profileR = 44;
                   const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
                   const x2 = pos.x - Math.cos(angle) * profileR;
