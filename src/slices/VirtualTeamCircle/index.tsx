@@ -122,8 +122,8 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: circleContainerRef.current,
-            start: radius == 80 ? "top bottom" : "top bottom",
-            end: radius == 80 ? "top 70%" : "top 25%",
+            start: radius === 80 ? "top bottom" : "top bottom",
+            end: radius === 80 ? "top 70%" : "top 25%",
             scrub: 0.5,
           },
         });
