@@ -185,7 +185,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [radius]);
+  }, [radius, containerMaxWidth]);
 
   // Calculate positions for circular layout
   const calculatePosition = (position: string, radius: number) => {
