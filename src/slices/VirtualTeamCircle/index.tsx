@@ -62,11 +62,11 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       setIsMobile(width < 768);
 
       if (width < 480) {
-        setRadius(80);
-        setContainerMaxWidth("240px");
+        setRadius(45);
+        setContainerMaxWidth("200px");
       } else if (width < 768) {
-        setRadius(140);
-        setContainerMaxWidth("380px");
+        setRadius(90);
+        setContainerMaxWidth("300px");
       } else if (width < 1024) {
         setRadius(200);
         setContainerMaxWidth("500px");
@@ -272,7 +272,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Equal grid columns applied to both sides */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Text Content */}
           <div className="space-y-6">
             {/* Title */}
@@ -331,12 +331,11 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
           </div>
 
           {/* Right Column: Circular Diagram */}
-          <div className="relative w-full flex items-center justify-center mt-8 lg:mt-0 max-[480px]:mt-16">
+          <div className="relative w-full flex items-center justify-center mt-40 mb-64 md:mt-8 md:mb-0 lg:mt-0">
             <div
               ref={circleContainerRef}
               className="
                 relative w-full aspect-square overflow-visible mx-auto
-                max-[480px]:-mt-6
               "
               style={{
                 maxWidth: containerMaxWidth,
