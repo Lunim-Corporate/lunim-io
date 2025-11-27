@@ -53,11 +53,14 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [radius, setRadius] = useState(260);
   const [containerMaxWidth, setContainerMaxWidth] = useState("600px");
+  const [isMobile, setIsMobile] = useState(false);
 
   // Combined radius and container max-width calculation
   useEffect(() => {
     const updateResponsiveValues = () => {
       const width = window.innerWidth;
+      setIsMobile(width < 768);
+
       if (width < 480) {
         setRadius(80);
         setContainerMaxWidth("240px");
@@ -230,6 +233,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         maskImage:
           "linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)",
       }}
+      data-device={isMobile ? "mobile" : "desktop"}
     >
       {/* Optional background image */}
       {bgImage && (

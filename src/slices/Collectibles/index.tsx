@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -17,6 +17,14 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -31,7 +39,14 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   }, []);
 
   return (
-    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}>
+    <section
+      ref={sectionRef}
+      data-slice-type={slice.slice_type}
+      data-slice-variation={slice.variation}
+      data-device={isMobile ? "mobile" : "desktop"}
+      className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]"
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
+    >
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} fallbackAlt="" />
