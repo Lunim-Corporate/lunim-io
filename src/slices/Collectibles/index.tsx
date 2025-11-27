@@ -27,6 +27,10 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("Collectibles isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");

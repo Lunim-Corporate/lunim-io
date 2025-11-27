@@ -39,6 +39,10 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("ParallaxLine isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {

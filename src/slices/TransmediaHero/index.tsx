@@ -44,6 +44,10 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("TransmediaHero isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Soft fade-in for the whole hero on initial load (does not block scroll)
       if (sectionRef.current) {

@@ -36,6 +36,10 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   }, []);
 
   useEffect(() => {
+    console.log("ParallaxTextImage isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const preset = (slice.primary.animation_preset as string) || "fade-up";
 
     const ctx = gsap.context(() => {

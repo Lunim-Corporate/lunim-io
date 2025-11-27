@@ -85,6 +85,10 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("VirtualTeamCircle isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Scrubbed reveal for header text, including bullets
       gsap

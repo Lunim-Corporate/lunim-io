@@ -59,6 +59,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   }, [slice.primary]);
 
   useEffect(() => {
+    console.log("GlobalCommunity isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Scrubbed reveal for eyebrow, heading, body
       const tl = gsap.timeline({
