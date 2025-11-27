@@ -90,14 +90,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
       const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
       if (textEls?.length && preset !== "none") {
-        console.log(isMobile);
         const isStrong = preset === "stagger-strong";
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current!,
-            start: isMobile ? "top bottom": "top 90%",
-            end: isMobile ? "top 70%" : "center center",
-            scrub: 0.6,
+            start: isMobile ? "top 95%" : "top 90%",
+            end: "center center",
+            scrub: isMobile ? 0.45 : 0.6,
           },
         });
         if (preset === "slide-left") {
@@ -143,7 +142,12 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [slice.primary.enable_parallax, slice.primary.enable_zoom_effect, slice.primary.animation_preset]);
+  }, [
+    slice.primary.enable_parallax,
+    slice.primary.enable_zoom_effect,
+    slice.primary.animation_preset,
+    isMobile,
+  ]);
 
   const bgImage = withImageAlt(slice.primary.background_image, "");
 
