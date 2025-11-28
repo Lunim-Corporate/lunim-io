@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -28,12 +28,24 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
   const showDownScroll = slice.primary.show_down_scroll ?? true;
   const logoImage = withImageAlt(
     slice.primary.logo,
     slice.primary.subtitle || "Transmedia hero logo"
   );
+
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
+
+  useEffect(() => {
+    console.log("TransmediaHero isMobile:", isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -117,6 +129,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
+      data-device={isMobile ? "mobile" : "desktop"}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >

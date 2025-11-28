@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -17,21 +17,44 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
+  const [isMobile, setIsMobile] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
+    const updateResponsiveValues = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsInitialized(true);
+    };
+
+    updateResponsiveValues();
+    window.addEventListener("resize", updateResponsiveValues);
+    return () => window.removeEventListener("resize", updateResponsiveValues);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    console.log("Collectibles isMobile:", isMobile);
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 } })
+        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: isMobile ? "top bottom" : "top 90%", end: isMobile ? "bottom bottom" : "top 10%", scrub: 0.5 } })
           .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
       }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile, isInitialized]);
 
   return (
-    <section ref={sectionRef} data-slice-type={slice.slice_type} data-slice-variation={slice.variation} className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}>
+    <section
+      ref={sectionRef}
+      data-slice-type={slice.slice_type}
+      data-slice-variation={slice.variation}
+      data-device={isMobile ? "mobile" : "desktop"}
+      className="relative py-20 md:py-28 overflow-hidden bg-[#03070f]"
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
+    >
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={backgroundImage as any} fill className="object-cover" quality={85} fallbackAlt="" />

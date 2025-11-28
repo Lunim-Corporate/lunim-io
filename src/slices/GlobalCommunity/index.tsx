@@ -29,6 +29,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   const logoRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [sphereSize, setSphereSize] = useState({ container: 520, radius: 180 });
+  const [isMobile, setIsMobile] = useState(false);
   
   const tabbLogoImage = withImageAlt(
     slice.primary.tabb_logo,
@@ -40,6 +41,8 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       const width = window.innerWidth;
       const s = (slice.primary as any).sphere_size || "medium";
       
+      setIsMobile(width < 768);
+
       if (width < 640) {
         setSphereSize({ container: 320, radius: 120 });
       } else if (width < 1024) {
@@ -54,6 +57,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     window.addEventListener('resize', updateSphereSize);
     return () => window.removeEventListener('resize', updateSphereSize);
   }, [slice.primary]);
+
+  useEffect(() => {
+    console.log("GlobalCommunity isMobile:", isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -109,6 +116,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
+      data-device={isMobile ? "mobile" : "desktop"}
       className={`relative py-20 md:py-32 overflow-hidden`}
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >

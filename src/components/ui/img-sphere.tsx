@@ -142,7 +142,7 @@ export default function SphereImageGrid({
 
     const depthScale = (z + sphereRadius) / (2 * sphereRadius);
     const scale = 0.8 + depthScale * 0.4;
-    const size = containerSize * baseImageScale * scale;
+    const size = 80;
     const visible = z > -30;
     if (!visible) return null;
 

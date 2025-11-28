@@ -25,10 +25,11 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
 
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
   const brandLogo = withImageAlt(slice.primary.brand_logo, "");
+  const itemCount = slice.items?.length || 0;
 
   // Used to give the mobile vertical timeline enough height so side content
   // never collides/overlaps even with many items.
-  const mobileTimelineHeight = Math.max(650, (slice.items?.length || 1) * 150);
+  const mobileTimelineHeight = Math.max(650, ((itemCount || 1) * 150));
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -38,26 +39,30 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("ParallaxLine isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       // Header fade on scroll-in (before pinning)
       gsap
-        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 80%", end: "top 40%", scrub: 0.6 } })
+        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "top 50%", scrub: 0.6 } })
         .from(titleRef.current, { opacity: 0, y: 40, filter: "blur(6px)" })
         .from(subtitleRef.current, { opacity: 0, y: 30, filter: "blur(4px)" }, "-=0.1")
         .from(descriptionRef.current, { opacity: 0, y: 20, filter: "blur(3px)" }, "-=0.1");
 
       // Scroll-scrubbed sequence along the line without pinning the page
       // We use the slice item count so desktop and mobile stay in sync.
-      const nodeCount = slice.items?.length || 0;
+      const nodeCount = itemCount;
       
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           // Shorter scroll distance so the full effect completes quickly
-          start: "top 80%",
-          end: "bottom 60%",
+          start: "top 40%",
+          end: "center 40%",
           scrub: 0.7,
         },
       });
@@ -172,7 +177,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isMobile]);
+  }, [isMobile, itemCount]);
 
   const hasRichText = (field: any): boolean => {
     if (!field) return false;
