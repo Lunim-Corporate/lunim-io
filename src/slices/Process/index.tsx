@@ -28,7 +28,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
   useEffect(() => {
     setIsMounted(true);
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth || ScrollTrigger.isTouch === 1);
     };
 
     checkIsMobile();

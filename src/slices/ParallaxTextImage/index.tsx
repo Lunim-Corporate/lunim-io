@@ -31,10 +31,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth || ScrollTrigger.isTouch === 1);
       setIsInitialized(true);
     };
     checkMobile();
+    if (isMobile) {
+      ScrollTrigger.normalizeScroll(true);
+    }
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);

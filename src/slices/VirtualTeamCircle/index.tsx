@@ -61,7 +61,10 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   useEffect(() => {
     const updateResponsiveValues = () => {
       const width = window.innerWidth;
-      setIsMobile(width < 768);
+      setIsMobile(width < 768 || ScrollTrigger.isTouch === 1);
+      if (isMobile) {
+        ScrollTrigger.normalizeScroll(true);
+      }
 
       if (width < 480) {
         setRadius(175);
@@ -90,7 +93,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
   useEffect(() => {
     if (!isInitialized) return;
-    
+
     const ctx = gsap.context(() => {
       // Scrubbed reveal for header text, including bullets
       gsap
@@ -192,6 +195,8 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   }, [radius, containerMaxWidth, isMobile, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     const orbitEl = orbitRef.current;
     if (!orbitEl) return;
 
@@ -222,7 +227,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     return () => {
       tween.kill();
     };
-  }, [isMobile]);
+  }, [isMobile, isInitialized]);
 
   // Calculate positions for circular layout
   const calculatePosition = (position: string, radius: number) => {
@@ -383,7 +388,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   );
 
   const renderMobileCircle = () => (
-    <div className="w-full flex flex-col items-center gap-8 mt-16 mb-16 md:mt-0 md:mb-0">
+    <div className="w-full flex flex-col items-center gap-8 mt-8 md:mt-0 md:mb-0">
       <div
         ref={circleContainerRef}
         className="relative w-full aspect-square overflow-visible mx-auto"
@@ -446,7 +451,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Equal grid columns applied to both sides */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 md:gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Text Content */}
           <div className="space-y-6">
             {/* Title */}

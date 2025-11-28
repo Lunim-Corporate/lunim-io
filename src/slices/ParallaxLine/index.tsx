@@ -32,11 +32,14 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   const mobileTimelineHeight = Math.max(650, ((itemCount || 1) * 100));
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkMobile = () => setIsMobile(window.innerWidth || ScrollTrigger.isTouch === 1);
     checkMobile();
+    if (isMobile) {
+      ScrollTrigger.normalizeScroll(true);
+    }
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     console.log("ParallaxLine isMobile:", isMobile);

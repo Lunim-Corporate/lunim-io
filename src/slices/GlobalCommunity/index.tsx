@@ -41,9 +41,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       const width = window.innerWidth;
       const s = (slice.primary as any).sphere_size || "medium";
       
-      setIsMobile(width < 768);
+      setIsMobile(width < 768 || ScrollTrigger.isTouch === 1);
 
-      if (width < 640) {
+      if (isMobile) {
+        ScrollTrigger.normalizeScroll(true);
         setSphereSize({ container: 320, radius: 120 });
       } else if (width < 1024) {
         setSphereSize({ container: 380, radius: 140 });
