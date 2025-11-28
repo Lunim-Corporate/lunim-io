@@ -130,20 +130,19 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       data-device={isMobile ? "mobile" : "desktop"}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
+      className="relative max-h-[844px] sm:max-h-[1024px] md:max-h-[1125px] h-screen flex pt-55 sm:pt-62 md:pt-76 lg:pt-78 xl:pt-93 justify-center overflow-visible bg-[#040a18] isolate"
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
         <div
           ref={bgRef}
-          className="absolute inset-0 z-0 will-change-transform"
+          className="absolute flex items-top justify-center top-[0px] right-[67px] sm:top-[0px] sm:right-[66px] md:top-[0px] md:right-[62px] lg:top-[-24px] lg:right-[52px] xl:top-[4px] xl:right-[52px] -ml-[80px] -mr-[80px] inset-0 z-0 will-change-transform"
           style={{ transform: "translate3d(0, 0, 0)" }}
         >
           <PrismicNextImage
             field={backgroundImage}
-            fill
-            className="object-cover"
+            className="w-[1500px] h-[844px] sm:w-[1820px] sm:h-[1024px] md:w-[2000px] md:h-[1125px] max-w-none"
             priority
             quality={90}
             alt=""
@@ -159,7 +158,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
             ref={logoRef}
             className="mb-6 md:mb-8 flex justify-center w-full opacity-0 -mt-14 md:-mt-24 lg:-mt-32 xl:-mt-40"
           >
-            <div className="relative z-30 w-full max-w-[80vw] sm:max-w-[360px] md:max-w-[440px] lg:max-w-[500px] xl:max-w-[520px] mx-auto px-2 sm:px-4">
+            <div className="relative z-30 w-[240px] sm:w-[360px] md:w-[440px] lg:w-[480px] mx-auto px-2 sm:px-4">
               <PrismicNextImage
                 field={logoImage}
                 sizes="(min-width: 1280px) 520px, (min-width: 1024px) 460px, (min-width: 768px) 380px, 80vw"
@@ -180,7 +179,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
               field={slice.primary.main_title}
               components={{
                 heading1: ({ children }) => (
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-bold text-[#FFFBD0] tracking-wider uppercase break-normal whitespace-normal lg:whitespace-nowrap">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#FFFBD0] tracking-wider uppercase break-normal whitespace-normal lg:whitespace-nowrap">
                     {children}
                   </h1>
                 ),
