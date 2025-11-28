@@ -27,9 +27,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const bgParallaxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+      setIsInitialized(true);
+    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -40,6 +44,8 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   }, [isMobile]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     const preset = (slice.primary.animation_preset as string) || "fade-up";
 
     const ctx = gsap.context(() => {
@@ -94,12 +100,13 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
       const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
       if (textEls?.length && preset !== "none") {
+        console.log("In text and image "+isMobile);
         const isStrong = preset === "stagger-strong";
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current!,
-            start: isMobile ? "top 95%" : "top 90%",
-            end: "center center",
+            start: isMobile ? "top bottom" : "top 90%",
+            end: isMobile ? "top center" : "center center",
             scrub: isMobile ? 0.45 : 0.6,
           },
         });
