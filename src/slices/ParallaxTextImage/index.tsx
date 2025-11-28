@@ -31,7 +31,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < 768);
       setIsInitialized(true);
     };
     checkMobile();
@@ -157,7 +157,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
     slice.primary.enable_parallax,
     slice.primary.enable_zoom_effect,
     slice.primary.animation_preset,
-    isMobile,
+    isMobile, isInitialized
   ]);
 
   const bgImage = withImageAlt(slice.primary.background_image, "");
