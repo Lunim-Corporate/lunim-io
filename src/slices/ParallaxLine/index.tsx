@@ -190,7 +190,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-screen bg-[#00121f] overflow-x-hidden overflow-y-visible"
+      className="relative bg-[#00121f] overflow-x-hidden overflow-y-visible"
     >
       {/* Background Image */}
       {backgroundImage && (
