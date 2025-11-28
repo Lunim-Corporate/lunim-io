@@ -31,7 +31,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth || ScrollTrigger.isTouch === 1);
+      setIsMobile(window.innerWidth < 768 || ScrollTrigger.isTouch === 1);
       setIsInitialized(true);
     };
     checkMobile();
