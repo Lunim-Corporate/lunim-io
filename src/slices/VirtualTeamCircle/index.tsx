@@ -126,7 +126,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: circleContainerRef.current,
-            start: isMobile ? "top bottom" : "top bottom",
+            start: isMobile ? "top bottom" : "bottom bottom",
             end: isMobile ? "top 70%" : "top 25%",
             scrub: 0.5,
           },
@@ -274,7 +274,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       )}
       <div className="absolute inset-0 bg-cyan-300/10 mix-blend-multiply" />
       <div className="absolute inset-0 flex items-center justify-center z-10 p-2">
-        <span className="text-gray-300 text-center font-bold text-xs sm:text-sm md:text-base lg:text-lg leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+        <span className="text-gray-300 text-center font-bold text-sm md:text-base lg:text-lg leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
           {slice.primary.center_label || "Virtual Producer Team Lead"}
         </span>
       </div>
@@ -346,16 +346,16 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
               <div
                 className="px-3 py-2 rounded-lg bg-[#071327]/95 backdrop-blur-sm border border-[#8df6ff]/30 
-                        text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[100px] max-w-[120px] -mt-3 
+                        text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[100px] max-w-[220px] -mt-3 
                         relative z-20 max-[480px]:scale-90"
               >
                 {member.primary_role && (
-                  <p className="text-white font-semibold text-xs leading-tight">
+                  <p className="text-white font-semibold text-sm leading-tight mb-0">
                     {member.primary_role}
                   </p>
                 )}
                 {member.secondary_role && (
-                  <p className="text-[#8df6ff] text-[10px] leading-tight mt-1">
+                  <p className="text-[#8df6ff] text-xs leading-tight mt-1">
                     {member.secondary_role}
                   </p>
                 )}
