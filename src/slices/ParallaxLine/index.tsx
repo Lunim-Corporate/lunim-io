@@ -29,7 +29,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
 
   // Used to give the mobile vertical timeline enough height so side content
   // never collides/overlaps even with many items.
-  const mobileTimelineHeight = Math.max(650, ((itemCount || 1) * 150));
+  const mobileTimelineHeight = Math.max(650, ((itemCount || 1) * 100));
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -385,13 +385,13 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
               } else {
                 // Keep all nodes safely within 10%–90% band vertically so
                 // connectors/content never crash into the very top or bottom.
-                const innerRange = 80; // percent
+                const innerRange = 100; // percent
                 const step = innerRange / (count - 1);
-                topPct = 10 + step * idx;
+                topPct = 2 + step * idx;
               }
               const hasTopContent = item.top_title || hasRichText(item.top_description);
               const hasBottomContent = item.bottom_title || hasRichText(item.bottom_description);
-
+              console.log(topPct);
                   return (
                 <div
                   key={idx}
@@ -418,25 +418,29 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
                         className={`mobile-connector-${idx} absolute top-1/2 -translate-y-1/2 h-0.5 bg-[#8df6ff]`}
                         style={{
                           left: "calc(50% + 10px)",
-                          width: "35px",
+                          width: "28px",
                         }}
-                      />
-                      <div
+                      />                      <div
                         className={`mobile-content-${idx} absolute top-1/2 -translate-y-1/2`}
                         style={{
-                          left: "calc(50% + 35px)",
+                          left: "calc(50% + 42px)",
                           width: "110px",
                           textAlign: "left",
                         }}
                       >
                         {item.top_title && (
-                          <h3 className="text-white font-bold text-xs sm:text-sm mb-1">
+                          <h3 className="text-white font-bold text-sm mb-1">
                             {item.top_title}
                           </h3>
                         )}
                         {hasRichText(item.top_description) && (
-                          <div className="text-white/80 text-[10px] sm:text-xs leading-snug">
-                            <PrismicRichText field={item.top_description} />
+                          <div className="">
+                            <PrismicRichText
+                              field={item.top_description}
+                              components={{
+                                paragraph: ({ children }) => <p className="text-white/80 text-sm leading-snug">{children}</p>,
+                              }}
+                            />
                           </div>
                         )}
                       </div>
@@ -450,25 +454,29 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
                         className={`mobile-connector-${idx} absolute top-1/2 -translate-y-1/2 h-0.5 bg-[#8df6ff]`}
                         style={{
                           right: "calc(50% + 10px)",
-                          width: "35px",
+                          width: "28px",
                         }}
-                      />
-                      <div
+                      />                      <div
                         className={`mobile-content-${idx} absolute top-1/2 -translate-y-1/2`}
                         style={{
-                          right: "calc(50% + 35px)",
+                          right: "calc(50% + 42px)",
                           width: "110px",
                           textAlign: "right",
                         }}
                       >
                         {item.bottom_title && (
-                          <h3 className="text-white font-bold text-xs sm:text-sm mb-1">
+                          <h3 className="text-white font-bold text-sm sm:text-sm mb-1">
                             {item.bottom_title}
                           </h3>
                         )}
                         {hasRichText(item.bottom_description) && (
-                          <div className="text-white/80 text-[10px] sm:text-xs leading-snug">
-                            <PrismicRichText field={item.bottom_description} />
+                          <div>
+                            <PrismicRichText
+                              field={item.bottom_description}
+                              components={{
+                                paragraph: ({ children }) => <p className="text-white/80 text-sm leading-snug">{children}</p>,
+                              }}
+                            />
                           </div>
                         )}
                       </div>
