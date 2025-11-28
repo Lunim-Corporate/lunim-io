@@ -13,17 +13,12 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/**
- * Props for `TransmediaHero`.
- */
 export type TransmediaHeroProps = SliceComponentProps<any>;
 
-/**
- * Component for "TransmediaHero" Slices.
- */
 const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const moonRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
@@ -49,7 +44,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Soft fade-in for the whole hero on initial load (does not block scroll)
+      // Soft fade-in for the whole hero on initial load
       if (sectionRef.current) {
         gsap.from(sectionRef.current, {
           autoAlpha: 0,
@@ -59,7 +54,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         });
       }
 
-      // Scroll-linked sequence: fade content in without pinning the page
+      // Scroll-linked sequence
       const heroTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -106,6 +101,48 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         0.24
       );
 
+      // Moon "setting" animation on scroll - drops to horizon
+      if (moonRef.current) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "center top",
+          scrub: 0.3,
+          onUpdate: (self) => {
+            if (moonRef.current) {
+              const progress = self.progress;
+              gsap.set(moonRef.current, {
+                y: progress * 800, // Much bigger drop to reach horizon
+                opacity: 1 - progress,
+                scale: 1 - progress * 0.5,
+              });
+            }
+          },
+        });
+      }
+
+      // Fade out all text content on scroll
+      const textElements = [
+        titleRef.current,
+        subtitleRef.current,
+        taglineRef.current,
+      ];
+      textElements.forEach((el) => {
+        if (el) {
+          gsap.to(el, {
+            opacity: 0,
+            y: -50,
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.3,
+            },
+          });
+        }
+      });
+
       // Background subtle parallax while scrolling
       if (slice.primary.enable_parallax && bgRef.current) {
         gsap.to(bgRef.current, {
@@ -131,7 +168,12 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       data-slice-variation={slice.variation}
       data-device={isMobile ? "mobile" : "desktop"}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
-      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
+      style={{
+        WebkitMaskImage:
+          "linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)",
+        maskImage:
+          "linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)",
+      }}
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
@@ -151,9 +193,9 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         </div>
       )}
 
-      {/* Content - Hidden initially, revealed by GSAP */}
+      {/* Content */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Logo  */}
+        {/* Logo with Moon Overlay */}
         {logoImage && (
           <div
             ref={logoRef}
@@ -166,16 +208,37 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
                 className="w-full h-auto object-contain"
                 priority
               />
+
+              {/* Animated Moon Dot - Adjust position to match your logo's "i" */}
+              <div
+                ref={moonRef}
+                className="absolute"
+                style={{
+                  // Adjust these percentages to position over the "i" in "Lunim"
+                  // These are starting estimates - tune them for your specific logo
+                  top: "-10%",
+                  left: "57.5%",
+                  width: "9%",
+                  aspectRatio: "1/1",
+                }}
+              >
+                {/* Moon circle with glow */}
+                <div className="relative w-full h-full">
+                  {/* Outer glow */}
+                  <div className="absolute inset-0 rounded-full bg-[#8df6ff]/40 blur-md"></div>
+                  {/* Moon itself */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFFBD0] to-[#8df6ff] shadow-lg"></div>
+                  {/* Highlight for 3D effect */}
+                  <div className="absolute top-[15%] left-[20%] w-[35%] h-[35%] rounded-full bg-white/50 blur-sm"></div>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {/* Main Title */}
         {slice.primary.main_title && (
-          <div
-            ref={titleRef}
-            className="mb-6 md:mb-8 w-full opacity-0 px-2"
-          >
+          <div ref={titleRef} className="mb-6 md:mb-8 w-full opacity-0 px-2">
             <PrismicRichText
               field={slice.primary.main_title}
               components={{
@@ -210,7 +273,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         )}
       </div>
 
-      {/* Scroll-down chevron (match primary Hero styling/behavior) */}
+      {/* Scroll-down chevron */}
       {showDownScroll ? (
         <button
           onClick={() => {
@@ -235,7 +298,11 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
             className="w-7 h-7"
             aria-hidden
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
       ) : null}
