@@ -100,7 +100,6 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
       const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
       if (textEls?.length && preset !== "none") {
-        console.log("In text and image "+isMobile);
         const isStrong = preset === "stagger-strong";
         const tl = gsap.timeline({
           scrollTrigger: {

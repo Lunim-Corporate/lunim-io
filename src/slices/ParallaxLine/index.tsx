@@ -391,8 +391,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
               }
               const hasTopContent = item.top_title || hasRichText(item.top_description);
               const hasBottomContent = item.bottom_title || hasRichText(item.bottom_description);
-              console.log(topPct);
-                  return (
+              return (
                 <div
                   key={idx}
                   className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
