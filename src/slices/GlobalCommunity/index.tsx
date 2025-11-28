@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -28,10 +28,39 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   const bodyRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const [sphereSize, setSphereSize] = useState({ container: 520, radius: 180 });
+  const [isMobile, setIsMobile] = useState(false);
+  
   const tabbLogoImage = withImageAlt(
     slice.primary.tabb_logo,
     slice.primary.eyebrow_text || "Community logo"
   );
+
+  useEffect(() => {
+    const updateSphereSize = () => {
+      const width = window.innerWidth;
+      const s = (slice.primary as any).sphere_size || "medium";
+      
+      setIsMobile(width < 768);
+
+      if (width < 640) {
+        setSphereSize({ container: 320, radius: 120 });
+      } else if (width < 1024) {
+        setSphereSize({ container: 380, radius: 140 });
+      } else {
+        const sizes = s === "small" ? { container: 420, radius: 150 } : s === "large" ? { container: 600, radius: 220 } : { container: 520, radius: 180 };
+        setSphereSize(sizes);
+      }
+    };
+    
+    updateSphereSize();
+    window.addEventListener('resize', updateSphereSize);
+    return () => window.removeEventListener('resize', updateSphereSize);
+  }, [slice.primary]);
+
+  useEffect(() => {
+    console.log("GlobalCommunity isMobile:", isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -78,25 +107,24 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     return () => ctx.revert();
   }, []);
 
-  const backgroundImage = withImageAlt(slice.primary.background_image, "");
+  // Be tolerant of partially populated image fields so background always shows when a URL is present
+  const rawBackground = (slice.primary as any).background_image;
+  const backgroundImage = withImageAlt(rawBackground as any, "") ?? (rawBackground?.url ? (rawBackground as any) : null);
 
   return (
     <section
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
+      data-device={isMobile ? "mobile" : "desktop"}
       className={`relative py-20 md:py-32 overflow-hidden`}
+      style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {backgroundImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage field={backgroundImage} fill className="object-cover" quality={85} alt="" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-transparent" />
         </div>
       )}
-      {/* Particle effect overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(141,246,255,0.1),transparent_50%)]" />
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -148,7 +176,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
 
           {/* Right Column: Face Grid */}
           {((slice.primary as any).sphere_images?.length || slice.items?.length) && (
-            <div ref={gridRef} className="relative flex items-center justify-center">
+            <div ref={gridRef} className="relative flex items-center justify-center min-h-[350px] sm:min-h-[400px] lg:min-h-0 bg-transparent">
               <SphereImageGrid
                 images={((slice.primary as any).sphere_images?.length
                   ? (slice.primary as any).sphere_images
@@ -157,10 +185,10 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
                   : slice.items
                       .filter((it: any) => it.face_image?.url)
                       .map((it: any, i: number) => ({ id: String(i + 1), src: it.face_image.url as string, alt: it.person_name || "Community member" })))}
-                containerSize={(() => { const s = (slice.primary as any).sphere_size || "medium"; return s==="small"?420:s==="large"?600:520 })()}
-                sphereRadius={(() => { const s = (slice.primary as any).sphere_size || "medium"; return s==="small"?150:s==="large"?220:180 })()}
+                containerSize={sphereSize.container}
+                sphereRadius={sphereSize.radius}
                 autoRotate={(slice.primary as any).sphere_auto_rotate !== false}
-                className="w-full max-w-[560px]"
+                className="w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[560px] mx-auto"
               />
             </div>
           )}

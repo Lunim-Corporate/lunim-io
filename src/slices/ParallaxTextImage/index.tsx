@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
@@ -14,8 +14,6 @@ if (typeof window !== "undefined") {
 
 export type ParallaxTextImageProps = SliceComponentProps<any>;
 
-type ImageLike = { url?: string | null; alt?: string | null };
-
 const hasRT = (field: any): boolean => {
   if (!field) return false;
   if (Array.isArray(field)) return field.length > 0;
@@ -26,39 +24,71 @@ const hasRT = (field: any): boolean => {
 export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const bgParallaxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    console.log("ParallaxTextImage isMobile:", isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     const preset = (slice.primary.animation_preset as string) || "fade-up";
 
     const ctx = gsap.context(() => {
       if (bgRef.current) {
-        if (slice.primary.enable_zoom_effect) {
+        const enableParallax = slice.primary.enable_parallax !== false;
+        const enableZoom = slice.primary.enable_zoom_effect !== false;
+
+        if (enableParallax || enableZoom) {
+          // Show only the top half of the background on load, then reveal the bottom half as you scroll.
           gsap.fromTo(
             bgRef.current,
-            { scale: 1.12 },
             {
-              scale: 1,
+              scale: enableZoom ? 1.02 : 1,
+            },
+            {
+              scale: enableZoom ? 1.06 : 1,
               ease: "none",
               scrollTrigger: {
                 trigger: sectionRef.current,
                 start: "top bottom",
                 end: "center center",
-                scrub: 1,
+                scrub: 0.9,
               },
             }
           );
-        } else if (slice.primary.enable_parallax) {
-          gsap.to(bgRef.current, {
-            yPercent: 12,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1,
-            },
-          });
+
+          if (enableParallax && bgParallaxRef.current) {
+            const getParallaxRange = () => {
+              if (typeof window === "undefined") return 20;
+              return window.innerWidth < 640 ? 10 : 20;
+            };
+
+            gsap.fromTo(
+              bgParallaxRef.current,
+              { yPercent: () => -getParallaxRange() },
+              {
+                yPercent: () => getParallaxRange(),
+                ease: "none",
+                force3D: true,
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                  invalidateOnRefresh: true,
+                },
+              }
+            );
+          }
         }
       }
 
@@ -68,9 +98,9 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current!,
-            start: "top 80%",
-            end: "top 20%",
-            scrub: 0.6,
+            start: isMobile ? "top 95%" : "top 90%",
+            end: "center center",
+            scrub: isMobile ? 0.45 : 0.6,
           },
         });
         if (preset === "slide-left") {
@@ -96,7 +126,12 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
         const cards = gridRef.current.querySelectorAll("[data-pt-card]");
         if (cards.length) {
           gsap.timeline({
-            scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 40%", scrub: 0.5 },
+            scrollTrigger: { 
+              trigger: gridRef.current,
+              start: "top 95%",
+              end: "center center",
+              scrub: 0.5
+            },
           }).from(cards, {
             opacity: 0,
             y: preset === "slide-left" ? 0 : 30,
@@ -111,7 +146,12 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [slice.primary.enable_parallax, slice.primary.enable_zoom_effect, slice.primary.animation_preset]);
+  }, [
+    slice.primary.enable_parallax,
+    slice.primary.enable_zoom_effect,
+    slice.primary.animation_preset,
+    isMobile,
+  ]);
 
   const bgImage = withImageAlt(slice.primary.background_image, "");
 
@@ -129,7 +169,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const spacingTop = slice.primary.spacing_top as string;
   const spacingBottom = slice.primary.spacing_bottom as string;
   const ptClass = spacingTop === "tight" ? "pt-16 md:pt-20" : spacingTop === "relaxed" ? "pt-28 md:pt-36" : "pt-20 md:pt-28";
-  const pbClass = spacingBottom === "tight" ? "pb-16 md:pb-20" : spacingBottom === "relaxed" ? "pb-28 md:pb-36" : "pb-20 md:pb-28";
+  const pbClass = spacingBottom === "tight" ? "pb-16 md:pb-20" : spacingBottom === "relaxed" ? "pb-36 md:pb-48" : "pb-20 md:pb-28";
 
   const stylePreset = (slice.primary.style_preset as string) || "default";
   const overlayStrength = (slice.primary.overlay_strength as string) || "medium";
@@ -141,12 +181,20 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={variation}
-      className={`relative min-h-screen ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
+      className={`relative ${ptClass} ${pbClass} overflow-hidden ${stylePreset === "noir" ? "bg-black" : "bg-black"}`}
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {bgImage && (
-        <div ref={bgRef} className="absolute inset-0 z-0 will-change-transform">
-          <PrismicNextImage field={bgImage as any} fill priority className="object-cover" quality={90} alt="" />
+        <div
+          ref={bgRef}
+          className="absolute inset-0 z-0 will-change-transform overflow-hidden"
+        >
+          <div
+            ref={bgParallaxRef}
+            className="absolute inset-0 sm:-top-[4%] sm:-bottom-[4%] sm:-left-[2%] sm:-right-[2%] md:-top-[12%] md:-bottom-[12%] md:-left-[6%] md:-right-[6%]"
+          >
+            <PrismicNextImage field={bgImage as any} fill priority className="object-cover" quality={90} alt="" />
+          </div>
           {slice.primary.overlay_style === "gradient_dark" && (
             <div className={`absolute inset-0 bg-gradient-to-r ${overlayStrength === "subtle" ? "from-black/60 via-black/35" : overlayStrength === "strong" ? "from-black/90 via-black/70" : "from-black/80 via-black/50"} to-transparent`} />
           )}
@@ -162,7 +210,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
           {/* Left/Text column (or centered) */}
           <div className={textAlignClass}>
             {hasRT(slice.primary.eyebrow_text) && (
-              <p data-pt-text className="text-2xl md:text-3xl font-bold uppercase tracking-wide" style={{ color: accent }}>
+              <p data-pt-text className="text-xl sm:text-2xl lg:text-3xl font-bold uppercase tracking-wide" style={{ color: accent }}>
                 {slice.primary.eyebrow_text}
               </p>
             )}
@@ -172,21 +220,21 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
                 <PrismicRichText
                   field={slice.primary.heading}
                   components={{
-                    heading1: ({ children }) => <h1 className="text-[#8df6ff] text-4xl md:text-5xl lg:text-6xl font-bold">{children}</h1>,
-                    heading2: ({ children }) => <h2 className="text-[#8df6ff] text-4xl md:text-5xl lg:text-6xl font-bold">{children}</h2>,
+                    heading1: ({ children }) => <h1 className="text-[#8df6ff] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-words">{children}</h1>,
+                    heading2: ({ children }) => <h2 className="text-[#8df6ff] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-words">{children}</h2>,
                   }}
                 />
               </div>
             )}
 
             {hasRT(slice.primary.subtitle) && (
-              <p data-pt-text className="text-white text-xl md:text-2xl lg:text-3xl font-semibold mb-8 leading-tight mt-4">
+              <p data-pt-text className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-6 md:mb-8 leading-tight mt-4 break-words">
                 {slice.primary.subtitle}
               </p>
             )}
 
             {hasRT(slice.primary.body_text) && (
-              <div data-pt-text className="text-white text-lg md:text-xl leading-snug mt-4">
+              <div data-pt-text className="text-white text-base sm:text-lg md:text-xl leading-relaxed mt-4">
                 <PrismicRichText field={slice.primary.body_text} />
               </div>
             )}
@@ -194,8 +242,8 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
           {/* Right column for faceGrid */}
           {variation === "faceGrid" && slice.items?.length ? (
-            <div ref={gridRef} className="relative">
-              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 md:gap-2">
+            <div ref={gridRef} className="relative mt-8 lg:mt-0">
+              <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-9 gap-1 sm:gap-1.5 md:gap-2">
                 {slice.items.map((item: any, index: number) => (
                   <div key={index} data-pt-card className="aspect-square overflow-hidden rounded-sm bg-[#8df6ff]/5">
                     {item.face_image?.url && (
@@ -212,11 +260,11 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
           {/* Bullets variation */}
           {variation === "bullets" && slice.items?.length ? (
-            <div className="mt-8 space-y-4 max-w-2xl">
+            <div className="mt-6 md:mt-8 space-y-3 md:space-y-4 max-w-2xl">
               {slice.items.map((item: any, i: number) => (
-                <div key={i} data-pt-text className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-2 h-2 mt-2 md:mt-2 rounded-full shadow-[0_0_10px_rgba(141,246,255,0.6)]" style={{ backgroundColor: accent }} />
-                  <span className="text-white text-lg md:text-xl leading-snug">{item.bullet_point}</span>
+                <div key={i} data-pt-text className="flex items-start gap-3 md:gap-4">
+                  <span className="flex-shrink-0 w-2 h-2 mt-1.5 sm:mt-2 rounded-full shadow-[0_0_8px_rgba(141,246,255,0.5)] sm:shadow-[0_0_10px_rgba(141,246,255,0.6)]" style={{ backgroundColor: accent }} />
+                  <span className="text-white text-base sm:text-lg md:text-xl leading-relaxed">{item.bullet_point}</span>
                 </div>
               ))}
             </div>
