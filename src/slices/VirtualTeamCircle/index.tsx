@@ -50,10 +50,12 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const descRef = useRef<HTMLDivElement>(null);
   const bulletsRef = useRef<HTMLUListElement>(null);
   const circleContainerRef = useRef<HTMLDivElement>(null);
+  const orbitRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [radius, setRadius] = useState(260);
   const [containerMaxWidth, setContainerMaxWidth] = useState("600px");
   const [isMobile, setIsMobile] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Combined radius and container max-width calculation
   useEffect(() => {
@@ -62,21 +64,23 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       setIsMobile(width < 768);
 
       if (width < 480) {
-        setRadius(45);
-        setContainerMaxWidth("200px");
+        setRadius(175);
+        setContainerMaxWidth("180px");
       } else if (width < 768) {
-        setRadius(90);
-        setContainerMaxWidth("300px");
-      } else if (width < 1024) {
         setRadius(200);
-        setContainerMaxWidth("500px");
+        setContainerMaxWidth("260px");
+      } else if (width < 1024) {
+        setRadius(160);
+        setContainerMaxWidth("420px");
       } else if (width < 1440) {
-        setRadius(280);
-        setContainerMaxWidth("600px");
+        setRadius(230);
+        setContainerMaxWidth("540px");
       } else {
-        setRadius(340);
-        setContainerMaxWidth("700px");
+        setRadius(280);
+        setContainerMaxWidth("640px");
       }
+      
+      setIsInitialized(true);
     };
 
     updateResponsiveValues();
@@ -85,10 +89,8 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   }, []);
 
   useEffect(() => {
-    console.log("VirtualTeamCircle isMobile:", isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
+    if (!isInitialized) return;
+    
     const ctx = gsap.context(() => {
       // Scrubbed reveal for header text, including bullets
       gsap
@@ -119,11 +121,6 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
       // Scroll sequence: center -> lines -> members (clockwise)
       if (circleContainerRef.current) {
-        // Freedom or Asish: radius and containerMaxWidth appear to be
-        // default values here - not set from updateResponsiveValues
-        // console.log(radius);
-        // console.log(containerMaxWidth);
-
         const centerCircle =
           circleContainerRef.current.querySelector(".center-circle");
         const tl = gsap.timeline({
@@ -192,7 +189,40 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [radius, containerMaxWidth]);
+  }, [radius, containerMaxWidth, isMobile, isInitialized]);
+
+  useEffect(() => {
+    const orbitEl = orbitRef.current;
+    if (!orbitEl) return;
+
+    if (!isMobile) {
+      gsap.killTweensOf(orbitEl);
+      gsap.set(orbitEl, { rotation: 0 });
+      orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
+      return;
+    }
+
+    orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
+    const tween = gsap.to(orbitEl, {
+      rotation: 360,
+      duration: 36,
+      repeat: -1,
+      ease: "none",
+      transformOrigin: "50% 50%",
+      onUpdate: () => {
+        const currentRotate =
+          (gsap.getProperty(orbitEl, "rotation") as number) || 0;
+        orbitEl.style.setProperty(
+          "--orbit-counter-rotation",
+          `${-currentRotate}deg`
+        );
+      },
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [isMobile]);
 
   // Calculate positions for circular layout
   const calculatePosition = (position: string, radius: number) => {
@@ -224,6 +254,150 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   };
 
   const teamMembers = getTeamMembers();
+  const centerImageField = withImageAlt(
+    slice.primary.center_image,
+    ""
+  ) as any;
+  const mobileHelperText =
+    slice.primary?.mobile_helper_text ||
+    "Your virtual squad now orbits on autopilot—watch each role glide into view.";
+
+  const renderCenterCircle = () => (
+    <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full ring-2 sm:ring-3 md:ring-4 ring-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] sm:shadow-[0_0_30px_rgba(141,246,255,0.5)] md:shadow-[0_0_40px_rgba(141,246,255,0.6)] z-20 overflow-hidden bg-[#071327]">
+      {slice.primary.center_image?.url && (
+        <PrismicNextImage
+          field={centerImageField}
+          fill
+          className="object-cover"
+          alt=""
+        />
+      )}
+      <div className="absolute inset-0 bg-cyan-300/10 mix-blend-multiply" />
+      <div className="absolute inset-0 flex items-center justify-center z-10 p-2">
+        <span className="text-gray-300 text-center font-bold text-xs sm:text-sm md:text-base lg:text-lg leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+          {slice.primary.center_label || "Virtual Producer Team Lead"}
+        </span>
+      </div>
+    </div>
+  );
+
+  const renderOrbit = () => (
+    <div
+      ref={orbitRef}
+      className="absolute inset-0 z-10"
+      style={{ transformOrigin: "50% 50%" }}
+    >
+      <svg
+        ref={svgRef}
+        className="absolute inset-0 w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+        viewBox="-400 -400 800 800"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {teamMembers.map((member: any, index: number) => {
+          const pos = member.calculatedPosition;
+          const profileR = 44;
+          const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
+          const x2 = pos.x - Math.cos(angle) * profileR;
+          const y2 = pos.y - Math.sin(angle) * profileR;
+          return (
+            <line
+              key={index}
+              x1={centerX}
+              y1={centerY}
+              x2={x2}
+              y2={y2}
+              stroke="rgba(141, 246, 255, 0.4)"
+              strokeWidth="2"
+            />
+          );
+        })}
+      </svg>
+
+      {teamMembers.map((member: any, index: number) => {
+        const pos = member.calculatedPosition;
+        const teamPhotoField = withImageAlt(member.team_photo, "");
+
+        return (
+          <div
+            key={index}
+            className="team-member absolute max-[480px]:scale-90 will-change-transform"
+            data-angle={`${POSITION_ANGLES[member.position] || 0}`}
+            style={{
+              left: "50%",
+              top: "50%",
+              transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))`,
+            }}
+          >
+            <div
+              className="flex flex-col items-center"
+              style={{
+                transform: "rotate(var(--orbit-counter-rotation, 0deg))",
+              }}
+            >
+              {teamPhotoField && (
+                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10">
+                  <PrismicNextImage
+                    field={teamPhotoField}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <div
+                className="px-3 py-2 rounded-lg bg-[#071327]/95 backdrop-blur-sm border border-[#8df6ff]/30 
+                        text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[100px] max-w-[120px] -mt-3 
+                        relative z-20 max-[480px]:scale-90"
+              >
+                {member.primary_role && (
+                  <p className="text-white font-semibold text-xs leading-tight">
+                    {member.primary_role}
+                  </p>
+                )}
+                {member.secondary_role && (
+                  <p className="text-[#8df6ff] text-[10px] leading-tight mt-1">
+                    {member.secondary_role}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderDesktopCircle = () => (
+    <div className="relative w-full flex items-center justify-center mt-40 mb-64 md:mt-8 md:mb-0 lg:mt-0">
+      <div
+        ref={circleContainerRef}
+        className="relative w-full aspect-square overflow-visible mx-auto"
+        style={{
+          maxWidth: containerMaxWidth,
+        }}
+      >
+        {renderOrbit()}
+        {renderCenterCircle()}
+      </div>
+    </div>
+  );
+
+  const renderMobileCircle = () => (
+    <div className="w-full flex flex-col items-center gap-8 mt-16 mb-16 md:mt-0 md:mb-0">
+      <div
+        ref={circleContainerRef}
+        className="relative w-full aspect-square overflow-visible mx-auto"
+        style={{
+          maxWidth: containerMaxWidth,
+        }}
+      >
+        {renderOrbit()}
+        {renderCenterCircle()}
+        <div className="absolute inset-6 rounded-full border border-[#8df6ff]/20 pointer-events-none animate-pulse z-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(141,246,255,0.08),transparent_70%)] pointer-events-none z-0" />
+      </div>
+    </div>
+  );
 
   return (
     <section
@@ -330,118 +504,9 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               )}
           </div>
 
-          {/* Right Column: Circular Diagram */}
-          <div className="relative w-full flex items-center justify-center mt-40 mb-64 md:mt-8 md:mb-0 lg:mt-0">
-            <div
-              ref={circleContainerRef}
-              className="
-                relative w-full aspect-square overflow-visible mx-auto
-              "
-              style={{
-                maxWidth: containerMaxWidth,
-              }}
-            >
-              {/* SVG for connecting lines */}
-              <svg
-                ref={svgRef}
-                className="absolute inset-0 w-full h-full"
-                preserveAspectRatio="xMidYMid meet"
-                viewBox="-400 -400 800 800"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {teamMembers.map((member: any, index: number) => {
-                  const pos = member.calculatedPosition;
-                  console.log(pos)
-                  const profileR = 44;
-                  const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
-                  const x2 = pos.x - Math.cos(angle) * profileR;
-                  const y2 = pos.y - Math.sin(angle) * profileR;
-                  return (
-                    <line
-                      key={index}
-                      x1={centerX}
-                      y1={centerY}
-                      x2={x2}
-                      y2={y2}
-                      stroke="rgba(141, 246, 255, 0.4)"
-                      strokeWidth="2"
-                    />
-                  );
-                })}
-              </svg>
-
-              {/* Center Circle */}
-              <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full ring-2 sm:ring-3 md:ring-4 ring-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] sm:shadow-[0_0_30px_rgba(141,246,255,0.5)] md:shadow-[0_0_40px_rgba(141,246,255,0.6)] z-10 overflow-hidden bg-[#071327]">
-                {slice.primary.center_image?.url && (
-                  <PrismicNextImage
-                    field={
-                      withImageAlt(slice.primary.center_image, "") as any
-                    }
-                    fill
-                    className="object-cover"
-                    alt=""
-                  />
-                )}
-                <div className="absolute inset-0 bg-cyan-300/10 mix-blend-multiply" />
-                <div className="absolute inset-0 flex items-center justify-center z-10 p-2">
-                  <span className="text-gray-300 text-center font-bold text-xs sm:text-sm md:text-base lg:text-lg leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
-                    {slice.primary.center_label || "Virtual Producer Team Lead"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Team Members */}
-              {teamMembers.map((member: any, index: number) => {
-                const pos = member.calculatedPosition;
-                const teamPhotoField = withImageAlt(member.team_photo, "");
-
-                return (
-                  <div
-                    key={index}
-                    className="team-member absolute max-[480px]:scale-90"
-                    data-angle={`${POSITION_ANGLES[member.position] || 0}`}
-                    style={{
-                      left: "50%",
-                      top: "50%",
-                      transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))`,
-                    }}
-                  >
-                    <div className="flex flex-col items-center">
-                      {/* Photo Circle */}
-                      {teamPhotoField && (
-                        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10">
-                          <PrismicNextImage
-                            field={teamPhotoField}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-
-                      {/* Role Label */}
-                      <div
-                        className="
-                          px-3 py-2 rounded-lg bg-[#071327]/95 backdrop-blur-sm border border-[#8df6ff]/30 
-                          text-center shadow-[0_0_12px_rgba(141,246,255,0.35)] min-w-[100px] max-w-[120px] -mt-3 
-                          relative z-20
-                          max-[480px]:scale-90
-                        "
-                      >
-                        {member.primary_role && (
-                          <p className="text-white font-semibold text-xs leading-tight">
-                            {member.primary_role}
-                          </p>
-                        )}
-                        {member.secondary_role && (
-                          <p className="text-[#8df6ff] text-[10px] leading-tight mt-1">
-                            {member.secondary_role}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          {/* Right Column: Diagram / Mobile Orbit */}
+          <div className="relative w-full flex items-center justify-center">
+            {isMobile ? renderMobileCircle() : renderDesktopCircle()}
           </div>
         </div>
       </div>
