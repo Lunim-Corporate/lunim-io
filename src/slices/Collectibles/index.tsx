@@ -18,29 +18,33 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
   const [isMobile, setIsMobile] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
-    updateIsMobile();
-    window.addEventListener("resize", updateIsMobile);
-    return () => window.removeEventListener("resize", updateIsMobile);
+    const updateResponsiveValues = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsInitialized(true);
+    };
+
+    updateResponsiveValues();
+    window.addEventListener("resize", updateResponsiveValues);
+    return () => window.removeEventListener("resize", updateResponsiveValues);
   }, []);
 
   useEffect(() => {
+    if (!isInitialized) return;
     console.log("Collectibles isMobile:", isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: "top 90%", end: "top 10%", scrub: 0.5 } })
+        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: isMobile ? "top bottom" : "top 90%", end: isMobile ? "bottom bottom" : "top 10%", scrub: 0.5 } })
           .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
       }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile, isInitialized]);
 
   return (
     <section
