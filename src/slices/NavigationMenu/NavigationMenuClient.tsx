@@ -262,7 +262,7 @@ export function NavigationMenuClient({
           {data.ctaLabel && finalCtaHref && (
             <Link
               href={finalCtaHref}
-              className="hidden md:block px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 no-underline"
+              className="hidden md:block px-6 py-3 rounded-full bg-cyan-500 font-bold text-black shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 no-underline"
             >
               {data.ctaLabel}
             </Link>

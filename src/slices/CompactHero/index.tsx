@@ -122,7 +122,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
               {canShowMainCta && resolvedCtaLink ? (
                 <PrismicLink
                   field={resolvedCtaLink}
-                  className="max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
+                  className="max-w-xs bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
                 >
                   {resolvedCtaLabel}
                 </PrismicLink>

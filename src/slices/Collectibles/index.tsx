@@ -23,7 +23,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   useEffect(() => {
     const updateResponsiveValues = () => {
       const width = window.innerWidth;
-      setIsMobile(width < 768 || ScrollTrigger.isTouch === 1);
+      setIsMobile(width < 768);
       if (isMobile) {
         ScrollTrigger.normalizeScroll(true);
       }

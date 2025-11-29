@@ -37,7 +37,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   );
 
   useEffect(() => {
-    const updateIsMobile = () => setIsMobile(window.innerWidth < 768 || ScrollTrigger.isTouch === 1);
+    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
     updateIsMobile();
     if (isMobile) {
       ScrollTrigger.normalizeScroll(true);

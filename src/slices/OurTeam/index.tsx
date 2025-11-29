@@ -27,7 +27,7 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
   // Check if device is mobile
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768 || ScrollTrigger.isTouch === 1);
+      setIsMobile(window.innerWidth < 768);
       if (isMobile) {
         ScrollTrigger.normalizeScroll(true);
       }

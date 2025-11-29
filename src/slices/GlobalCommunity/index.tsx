@@ -41,7 +41,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       const width = window.innerWidth;
       const s = (slice.primary as any).sphere_size || "medium";
       
-      setIsMobile(width < 768 || ScrollTrigger.isTouch === 1);
+      setIsMobile(width < 768);
 
       if (isMobile) {
         ScrollTrigger.normalizeScroll(true);
