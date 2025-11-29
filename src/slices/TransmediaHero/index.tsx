@@ -133,7 +133,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       data-device={isMobile ? "mobile" : "desktop"}
-      className="relative max-h-[844px] sm:max-h-[1024px] md:max-h-[1125px] h-screen flex pt-55 sm:pt-62 md:pt-76 lg:pt-78 xl:pt-93 justify-center overflow-visible bg-[#040a18] isolate"
+      className="relative max-h-[844px] sm:max-h-[1024px] md:max-h-[1125px] h-screen flex pt-55 sm:pt-62 md:pt-76 lg:pt-78 xl:pt-93 justify-center overflow-hidden bg-[#040a18] isolate"
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {/* Background Image with Parallax */}
