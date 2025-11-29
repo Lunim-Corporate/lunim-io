@@ -388,7 +388,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   );
 
   const renderMobileCircle = () => (
-    <div className="w-full flex flex-col items-center gap-8 mt-8 md:mt-0 md:mb-0">
+    <div className="w-full flex flex-col items-center gap-8 mt-38 mb-16 md:mt-0 md:mb-0">
       <div
         ref={circleContainerRef}
         className="relative w-full aspect-square overflow-visible mx-auto"
