@@ -106,6 +106,55 @@
     display: inline-block;
   }
 
+  /* VirtualTeamCircle - Responsive Circular Layout CSS Variables */
+  .circle-container {
+    /* Mobile < 480px - Less tight to prevent overlap */
+    --circle-radius: 140px;
+    --profile-size: 56px;
+    --center-size: 70px;
+    --container-max-width: 340px;
+  }
+
+  @media (min-width: 480px) {
+    .circle-container {
+      /* Small tablets 480-768px - Slightly more open */
+      --circle-radius: 160px;
+      --profile-size: 64px;
+      --center-size: 84px;
+      --container-max-width: 380px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .circle-container {
+      /* Tablets 768-1024px - Good spacing */
+      --circle-radius: 200px;
+      --profile-size: 72px;
+      --center-size: 100px;
+      --container-max-width: 480px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .circle-container {
+      /* Desktop 1024-1440px - More spread out */
+      --circle-radius: 260px;
+      --profile-size: 80px;
+      --center-size: 120px;
+      --container-max-width: 600px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .circle-container {
+      /* Large desktop > 1440px - Maximum spread */
+      --circle-radius: 320px;
+      --profile-size: 88px;
+      --center-size: 140px;
+      --container-max-width: 720px;
+    }
+  }
+
   .archer-container path {
     animation: draw 1.5s ease-in-out forwards;
     stroke-dasharray: 1000;
