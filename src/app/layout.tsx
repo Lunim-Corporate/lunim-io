@@ -34,9 +34,6 @@ export const metadata: Metadata = {
     locale: "en_GB",
     siteName: "Lunim",
   },
-  verification: {
-    google: "Bnv7eQuLASx9pOyyBodOY9TE4UhYoBiguUgcd0loLUc",
-  },
 };
 
 export default async function RootLayout({
