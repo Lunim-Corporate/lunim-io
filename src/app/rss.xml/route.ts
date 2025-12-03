@@ -7,12 +7,9 @@ const SITE_URL = getBaseUrl();
 
 export const revalidate = 3600; // Revalidate every hour
 
-export async function GET(request: Request) {
+export async function GET() {
   const client = createClient();
-  const feedUrlObject = new URL(request.url);
-  feedUrlObject.hash = "";
-  feedUrlObject.search = "";
-  const feedSelfUrl = feedUrlObject.toString();
+  const feedSelfUrl = `${DEFAULT_HOST}/rss.xml`;
 
   // Fetch all blog posts sorted by publication date
   const blogPosts = (await (client as any)
