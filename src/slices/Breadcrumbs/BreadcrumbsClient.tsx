@@ -175,7 +175,7 @@ export default function BreadcrumbsClient({
 
   return (
     <>
-      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} id="breadcrumb-schema" />
       <nav
         aria-label="Breadcrumb"
         className="w-full border-b border-white/10 bg-black/30/80 backdrop-blur-sm"

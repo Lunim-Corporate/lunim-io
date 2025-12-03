@@ -75,7 +75,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
 
   return (
     <>
-      {howToJsonLd ? <JsonLd data={howToJsonLd} /> : null}
+      {howToJsonLd ? <JsonLd data={howToJsonLd} id="process-howto-schema" /> : null}
       <section className="bg-[#0f172a] py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Title */}
