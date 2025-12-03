@@ -34,7 +34,7 @@ const Faq: React.FC<FaqProps> = ({ slice }) => {
 
   return (
     <>
-      <JsonLd data={jsonLd} />
+      <JsonLd data={jsonLd} id="faq-schema" />
       <section className="bg-[#0f172a] py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-3xl font-bold text-white mb-12 text-center">

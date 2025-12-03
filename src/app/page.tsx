@@ -5,12 +5,13 @@ import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
 // Next
 import type { Metadata, ResolvingMetadata } from "next";
-import { JsonLdServer } from "@/components/JsonLdServer";
-import type { WithContext, Organization, WebSite } from "schema-dts";
+import Script from "next/script";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { notFound } from "next/navigation";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
+// Schema
+import type { WithContext, Organization } from "schema-dts";
 
 export const revalidate = 60;
 
@@ -27,13 +28,24 @@ export default async function Page() {
     name: "Lunim",
     alternateName: "Lunim.io",
     url: "https://lunim.io/",
-    logo: "https://lunim.io/_next/image?url=https%3A%2F%2Fimages.prismic.io%2Flunim-v3%2FaO4uRJ5xUNkB17lv_lunim-logo.png%3Fauto%3Dformat%2Ccompress&w=384&q=75",
+    logo: "https://images.prismic.io/lunim-v3/aO4uRJ5xUNkB17lv_lunim-logo.png",
+    description: "Lunim - Technology and innovation solutions",
+    sameAs: [
+      // Add your social media profile URLs here when available
+      // "https://twitter.com/lunim",
+      // "https://linkedin.com/company/lunim",
+      // "https://facebook.com/lunim"
+    ],
   };
 
   // console.log("✅ Slices:", doc.data.slices.map((slice) => slice.slice_type)// );
   return (
     <>
-      <JsonLdServer data={orgJsonLd} />
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       <main className="bg-black">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>
