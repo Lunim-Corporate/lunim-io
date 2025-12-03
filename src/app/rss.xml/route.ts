@@ -3,13 +3,16 @@ import { asText, asHTML } from "@prismicio/helpers";
 import type { BlogPostDocument } from "../../../prismicio-types";
 
 const DEFAULT_HOST = "https://lunim.io";
-const FEED_PATH = "/rss.xml";
 const SITE_URL = getBaseUrl();
 
 export const revalidate = 3600; // Revalidate every hour
 
-export async function GET() {
+export async function GET(request: Request) {
   const client = createClient();
+  const feedUrlObject = new URL(request.url);
+  feedUrlObject.hash = "";
+  feedUrlObject.search = "";
+  const feedSelfUrl = feedUrlObject.toString();
 
   // Fetch all blog posts sorted by publication date
   const blogPosts = (await (client as any)
@@ -106,7 +109,7 @@ export async function GET() {
     <description>Latest articles from Lunim - Insights on technology, digital transformation, and innovation</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${SITE_URL}${FEED_PATH}" rel="self" type="application/rss+xml" />
+    <atom:link href="${feedSelfUrl}" rel="self" type="application/rss+xml" />
     ${rssItems.filter(Boolean).join("")}
   </channel>
 </rss>`;
