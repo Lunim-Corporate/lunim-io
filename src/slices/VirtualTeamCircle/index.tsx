@@ -5,6 +5,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -52,48 +53,47 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const circleContainerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const [radius, setRadius] = useState(260);
-  const [containerMaxWidth, setContainerMaxWidth] = useState("600px");
-  const [isMobile, setIsMobile] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isMobile = useIsMobile();
 
-  // Combined radius and container max-width calculation
+  // Get CSS variable values for calculations (used for SVG lines)
+  const [cssVars, setCssVars] = useState({
+    radius: 280,
+    profileSize: 88,
+  });
+
+  // Read CSS variables on mount and resize with debounce
   useEffect(() => {
-    const updateResponsiveValues = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      if (isMobile) {
-        ScrollTrigger.normalizeScroll(true);
-      }
+    let timeoutId: NodeJS.Timeout;
 
-      if (width < 480) {
-        setRadius(175);
-        setContainerMaxWidth("180px");
-      } else if (width < 768) {
-        setRadius(200);
-        setContainerMaxWidth("260px");
-      } else if (width < 1024) {
-        setRadius(160);
-        setContainerMaxWidth("420px");
-      } else if (width < 1440) {
-        setRadius(230);
-        setContainerMaxWidth("540px");
-      } else {
-        setRadius(280);
-        setContainerMaxWidth("640px");
-      }
+    const updateCssVars = () => {
+      // Clear any pending update
+      if (timeoutId) clearTimeout(timeoutId);
       
-      setIsInitialized(true);
+      // Debounce to ensure CSS has updated after resize
+      timeoutId = setTimeout(() => {
+        if (!circleContainerRef.current) return;
+        const style = getComputedStyle(circleContainerRef.current);
+        const radius = parseFloat(style.getPropertyValue('--circle-radius')) || 280;
+        const profileSize = parseFloat(style.getPropertyValue('--profile-size')) || 88;
+        
+        // Always update to force re-render with new CSS values
+        setCssVars({ radius, profileSize });
+      }, 100); // Slightly longer delay for smooth transitions
     };
 
-    updateResponsiveValues();
-    window.addEventListener("resize", updateResponsiveValues);
-    return () => window.removeEventListener("resize", updateResponsiveValues);
-  }, []);
+    // Initial update
+    updateCssVars();
+    
+    // Update on resize - this catches ALL breakpoint changes (sm, md, lg, xl)
+    window.addEventListener('resize', updateCssVars);
+    
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener('resize', updateCssVars);
+    };
+  }, [isMobile]); // Re-run when isMobile changes!
 
   useEffect(() => {
-    if (!isInitialized) return;
-
     const ctx = gsap.context(() => {
       // Scrubbed reveal for header text, including bullets
       gsap
@@ -192,11 +192,10 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [radius, containerMaxWidth, isMobile, isInitialized]);
+  }, [cssVars, isMobile]);
 
+  // Mobile auto-rotation with counter-rotation for profiles
   useEffect(() => {
-    if (!isInitialized) return;
-
     const orbitEl = orbitRef.current;
     if (!orbitEl) return;
 
@@ -227,16 +226,16 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     return () => {
       tween.kill();
     };
-  }, [isMobile, isInitialized]);
+  }, [isMobile]);
 
-  // Calculate positions for circular layout
-  const calculatePosition = (position: string, radius: number) => {
-    const angle = POSITION_ANGLES[position] || 0;
-    const radian = (angle * Math.PI) / 180;
-    return {
-      x: radius * Math.cos(radian),
-      y: radius * Math.sin(radian),
-    };
+  // Calculate angle for team member position
+  const calculatePosition = (position: string) => {
+    return POSITION_ANGLES[position] || 0;
+  };
+
+  // Get profile element radius for SVG line calculations (half of profile size)
+  const getProfileElementRadius = () => {
+    return cssVars.profileSize / 2;
   };
 
   const centerX = 0;
@@ -244,31 +243,28 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
 
   const bgImage = withImageAlt(slice.primary.background_image, "");
 
-  // Get team members with proper position assignment
-  const getTeamMembers = () => {
-    if (!slice.items || !Array.isArray(slice.items)) return [];
+  // Get team members with angle assignment
+  const teamMembers = slice.items && Array.isArray(slice.items)
+    ? slice.items.map((item: any, index: number) => {
+        const position = item.position || DEFAULT_POSITIONS[index] || "top-center";
+        return {
+          ...item,
+          position,
+          angle: calculatePosition(position),
+        };
+      })
+    : [];
 
-    return slice.items.map((item: any, index: number) => {
-      const position = item.position || DEFAULT_POSITIONS[index] || "top-center";
-      return {
-        ...item,
-        position,
-        calculatedPosition: calculatePosition(position, radius),
-      };
-    });
-  };
-
-  const teamMembers = getTeamMembers();
-  const centerImageField = withImageAlt(
-    slice.primary.center_image,
-    ""
-  ) as any;
-  const mobileHelperText =
-    slice.primary?.mobile_helper_text ||
-    "Your virtual squad now orbits on autopilot—watch each role glide into view.";
+  const centerImageField = withImageAlt(slice.primary.center_image, "") as any;
 
   const renderCenterCircle = () => (
-    <div className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full ring-2 sm:ring-3 md:ring-4 ring-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] sm:shadow-[0_0_30px_rgba(141,246,255,0.5)] md:shadow-[0_0_40px_rgba(141,246,255,0.6)] z-20 overflow-hidden bg-[#071327]">
+    <div 
+      className="center-circle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 sm:ring-3 md:ring-4 ring-[#8df6ff] shadow-[0_0_20px_rgba(141,246,255,0.4)] sm:shadow-[0_0_30px_rgba(141,246,255,0.5)] md:shadow-[0_0_40px_rgba(141,246,255,0.6)] z-20 overflow-hidden bg-[#071327]"
+      style={{
+        width: 'var(--center-size)',
+        height: 'var(--center-size)',
+      }}
+    >
       {slice.primary.center_image?.url && (
         <PrismicNextImage
           field={centerImageField}
@@ -300,11 +296,17 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         xmlns="http://www.w3.org/2000/svg"
       >
         {teamMembers.map((member: any, index: number) => {
-          const pos = member.calculatedPosition;
-          const profileR = 44;
-          const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
-          const x2 = pos.x - Math.cos(angle) * profileR;
-          const y2 = pos.y - Math.sin(angle) * profileR;
+          // Calculate position using CSS variable radius
+          const angleInRadians = (member.angle * Math.PI) / 180;
+          const x = cssVars.radius * Math.cos(angleInRadians);
+          const y = cssVars.radius * Math.sin(angleInRadians);
+          
+          // Get profile radius for line endpoint
+          const profileR = getProfileElementRadius();
+          const angle = Math.atan2(y - centerY, x - centerX);
+          const x2 = x - Math.cos(angle) * profileR;
+          const y2 = y - Math.sin(angle) * profileR;
+          
           return (
             <line
               key={index}
@@ -320,18 +322,22 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       </svg>
 
       {teamMembers.map((member: any, index: number) => {
-        const pos = member.calculatedPosition;
         const teamPhotoField = withImageAlt(member.team_photo, "");
 
         return (
           <div
             key={index}
-            className="team-member absolute max-[480px]:scale-90 will-change-transform"
-            data-angle={`${POSITION_ANGLES[member.position] || 0}`}
+            className="team-member absolute will-change-transform"
+            data-angle={`${member.angle}`}
             style={{
               left: "50%",
               top: "50%",
-              transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))`,
+              transform: `
+                translate(-50%, -50%)
+                rotate(${member.angle}deg)
+                translateY(calc(-1 * var(--circle-radius)))
+                rotate(-${member.angle}deg)
+              `,
             }}
           >
             <div
@@ -341,7 +347,13 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
               }}
             >
               {teamPhotoField && (
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10">
+                <div 
+                  className="rounded-full overflow-hidden border-2 border-[#8df6ff] shadow-[0_0_12px_rgba(141,246,255,0.3)] mb-0 relative z-10"
+                  style={{
+                    width: 'var(--profile-size)',
+                    height: 'var(--profile-size)',
+                  }}
+                >
                   <PrismicNextImage
                     field={teamPhotoField}
                     className="w-full h-full object-cover"
@@ -373,12 +385,27 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   );
 
   const renderDesktopCircle = () => (
-    <div className="relative w-full flex items-center justify-center mt-40 mb-64 md:mt-8 md:mb-0 lg:mt-0">
+    <div className="relative w-full flex items-center justify-center mt-12 mb-12 md:mt-8 md:mb-0 lg:mt-0" key="desktop-circle">
       <div
         ref={circleContainerRef}
-        className="relative w-full aspect-square overflow-visible mx-auto"
+        className="circle-container relative w-full aspect-square overflow-visible mx-auto"
         style={{
-          maxWidth: containerMaxWidth,
+          maxWidth: 'var(--container-max-width)',
+        }}
+      >
+        {renderOrbit()}
+        {renderCenterCircle()}
+      </div>
+    </div>
+  );
+
+  const renderTabletCircle = () => (
+    <div className="relative w-full flex items-center justify-center mt-12 mb-12 md:mt-8 md:mb-0 lg:mt-0" key="tablet-circle">
+      <div
+        ref={circleContainerRef}
+        className="circle-container relative w-full aspect-square overflow-visible mx-auto"
+        style={{
+          maxWidth: 'var(--container-max-width)',
         }}
       >
         {renderOrbit()}
@@ -388,12 +415,12 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   );
 
   const renderMobileCircle = () => (
-    <div className="w-full flex flex-col items-center gap-8 mt-38 mb-16 md:mt-0 md:mb-0">
+    <div className="w-full flex flex-col items-center gap-8 mt-12 mb-12 md:mt-0 md:mb-0" key="mobile-circle">
       <div
         ref={circleContainerRef}
-        className="relative w-full aspect-square overflow-visible mx-auto"
+        className="circle-container relative w-full aspect-square overflow-visible mx-auto"
         style={{
-          maxWidth: containerMaxWidth,
+          maxWidth: 'var(--container-max-width)',
         }}
       >
         {renderOrbit()}
@@ -418,7 +445,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
       }}
       data-device={isMobile ? "mobile" : "desktop"}
     >
-      {/* Optional background image */}
+      {/* Background image */}
       {bgImage && (
         <div className="absolute inset-0 -z-10">
           <PrismicNextImage
@@ -432,28 +459,11 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
         </div>
       )}
 
-      {/* Particle/Stars Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(141,246,255,0.03),transparent_70%)]" />
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `radial-gradient(1px 1px at 20px 30px, #8df6ff, transparent),
-              radial-gradient(1px 1px at 60px 70px, #BBFEFF, transparent),
-              radial-gradient(1px 1px at 50px 20px, #8df6ff, transparent),
-              radial-gradient(1px 1px at 130px 80px, #BBFEFF, transparent),
-              radial-gradient(1px 1px at 90px 30px, #8df6ff, transparent)`,
-            backgroundSize: "200px 100px",
-            backgroundRepeat: "repeat",
-          }}
-        />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Equal grid columns applied to both sides */}
         <div className="grid grid-cols-1 lg:grid-cols-2 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Text Content */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:mr-16">
             {/* Title */}
             {slice.primary.section_title && (
               <div ref={titleRef}>
@@ -510,8 +520,12 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
           </div>
 
           {/* Right Column: Diagram / Mobile Orbit */}
-          <div className="relative w-full flex items-center justify-center">
-            {isMobile ? renderMobileCircle() : renderDesktopCircle()}
+          <div className="relative w-full flex items-center justify-center lg:ml-16">
+            {isMobile 
+              ? renderMobileCircle()
+              : window.innerWidth >= 768 && window.innerWidth < 1024 
+                ? renderTabletCircle()
+                : renderDesktopCircle()}
           </div>
         </div>
       </div>
