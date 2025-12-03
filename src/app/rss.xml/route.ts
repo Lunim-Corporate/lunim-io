@@ -1,15 +1,18 @@
 import { createClient } from "@/prismicio";
-import { asText } from "@prismicio/helpers";
+import { asText, asHTML } from "@prismicio/helpers";
 import type { BlogPostDocument } from "../../../prismicio-types";
 
 const DEFAULT_HOST = "https://lunim.io";
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_HOST;
+const SITE_URL = getBaseUrl();
 
 export const revalidate = 3600; // Revalidate every hour
 
-export async function GET() {
+export async function GET(request: Request) {
   const client = createClient();
+  const feedUrlObject = new URL(request.url);
+  feedUrlObject.hash = "";
+  feedUrlObject.search = "";
+  const feedSelfUrl = feedUrlObject.toString();
 
   // Fetch all blog posts sorted by publication date
   const blogPosts = (await (client as any)
@@ -27,10 +30,14 @@ export async function GET() {
       if (!uid) return null;
 
       const title = asText(post.data.blog_article_heading || []) || uid;
+      const rawArticleText = asText(post.data.main_article_content || []) || "";
       const description =
         post.data.meta_description ||
-        asText(post.data.main_article_content).slice(0, 320) ||
+        rawArticleText.slice(0, 320) ||
         "";
+      const contentHtmlRaw =
+        asHTML(post.data.main_article_content || []) || "";
+      const contentHtml = absolutizeUrls(contentHtmlRaw);
       const link = `${SITE_URL}/blog/${encodeURIComponent(uid)}`;
 
       // Use first_publication_date if publication_date is in the future or missing
@@ -53,7 +60,8 @@ export async function GET() {
           : "") || "Lunim";
 
       // Get image URL and fetch content length for enclosure
-      const imageUrl = post.data.article_main_image?.url || "";
+      const imageField = post.data.article_main_image;
+      const imageUrl = imageField?.url || "";
       let imageLength = 0;
       let imageType = "image/jpeg";
 
@@ -71,6 +79,9 @@ export async function GET() {
       }
 
       const categoryText = asText(post.data.category || []);
+      const imageAlt = imageField?.alt || title;
+      const imageWidth = imageField?.dimensions?.width;
+      const imageHeight = imageField?.dimensions?.height;
 
       return `
     <item>
@@ -81,20 +92,24 @@ export async function GET() {
       <pubDate>${pubDate}</pubDate>
       <dc:creator><![CDATA[${escapeXml(authorName)}]]></dc:creator>${imageUrl && imageLength > 0 ? `
       <enclosure url="${escapeXml(imageUrl)}" length="${imageLength}" type="${imageType}" />` : ""}${categoryText ? `
-      <category><![CDATA[${escapeXml(categoryText)}]]></category>` : ""}
+      <category><![CDATA[${escapeXml(categoryText)}]]></category>` : ""}${contentHtml ? `
+      <content:encoded>${wrapCdata(contentHtml)}</content:encoded>` : ""}${imageUrl ? `
+      <media:content url="${escapeXml(imageUrl)}" type="${imageType}" medium="image"${imageWidth ? ` width="${imageWidth}"` : ""}${imageHeight ? ` height="${imageHeight}"` : ""}>
+        ${imageAlt ? `<media:description>${wrapCdata(imageAlt)}</media:description>` : ""}
+      </media:content>` : ""}
     </item>`;
     })
   );
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Lunim Blog</title>
     <link>${SITE_URL}/blog</link>
     <description>Latest articles from Lunim - Insights on technology, digital transformation, and innovation</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="${feedSelfUrl}" rel="self" type="application/rss+xml" />
     ${rssItems.filter(Boolean).join("")}
   </channel>
 </rss>`;
@@ -114,4 +129,33 @@ function escapeXml(unsafe: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+function wrapCdata(value: string): string {
+  const safeValue = value.replace(/]]>/g, "]]]]><![CDATA[>");
+  return `<![CDATA[${safeValue}]]>`;
+}
+
+function getBaseUrl() {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_WEBSITE_URL ||
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    DEFAULT_HOST;
+  const normalized =
+    raw.startsWith("http://") || raw.startsWith("https://")
+      ? raw
+      : `https://${raw}`;
+  return normalized.replace(/\/+$/, "") || DEFAULT_HOST;
+}
+
+function absolutizeUrls(html: string) {
+  if (!html) return html;
+  return html.replace(
+    /(href|src)="\/(?!\/)([^"]*)"/g,
+    (_match, attr, path) => {
+      const normalizedPath = path ? `/${path}` : "/";
+      return `${attr}="${SITE_URL}${normalizedPath}"`;
+    }
+  );
 }
