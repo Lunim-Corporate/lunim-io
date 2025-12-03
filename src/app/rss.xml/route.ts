@@ -21,8 +21,8 @@ export async function GET() {
     })
     .catch(() => [])) as BlogPostDocument[];
 
-  const rssItems = blogPosts
-    .map((post) => {
+  const rssItems = await Promise.all(
+    blogPosts.map(async (post) => {
       const uid = post.uid;
       if (!uid) return null;
 
@@ -32,9 +32,16 @@ export async function GET() {
         asText(post.data.main_article_content).slice(0, 320) ||
         "";
       const link = `${SITE_URL}/blog/${encodeURIComponent(uid)}`;
-      const pubDate = post.data.publication_date
-        ? new Date(post.data.publication_date).toUTCString()
-        : new Date(post.first_publication_date).toUTCString();
+
+      // Use first_publication_date if publication_date is in the future or missing
+      const publicationDate = post.data.publication_date
+        ? new Date(post.data.publication_date)
+        : new Date(post.first_publication_date);
+
+      const now = new Date();
+      const pubDate = publicationDate > now
+        ? new Date(post.first_publication_date).toUTCString()
+        : publicationDate.toUTCString();
 
       // Get author name
       const authorInfo = post.data.author_info;
@@ -45,8 +52,25 @@ export async function GET() {
           ? authorData.author_name.trim()
           : "") || "Lunim";
 
-      // Get image URL
+      // Get image URL and fetch content length for enclosure
       const imageUrl = post.data.article_main_image?.url || "";
+      let imageLength = 0;
+      let imageType = "image/jpeg";
+
+      if (imageUrl) {
+        try {
+          const response = await fetch(imageUrl, { method: "HEAD" });
+          const contentLength = response.headers.get("content-length");
+          const contentType = response.headers.get("content-type");
+          if (contentLength) imageLength = parseInt(contentLength, 10);
+          if (contentType) imageType = contentType;
+        } catch {
+          // Fallback to estimate if HEAD request fails
+          imageLength = 0;
+        }
+      }
+
+      const categoryText = asText(post.data.category || []);
 
       return `
     <item>
@@ -55,16 +79,15 @@ export async function GET() {
       <link>${escapeXml(link)}</link>
       <guid isPermaLink="true">${escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
-      <author><![CDATA[${escapeXml(authorName)}]]></author>
-      ${imageUrl ? `<enclosure url="${escapeXml(imageUrl)}" type="image/jpeg" />` : ""}
-      <category><![CDATA[${escapeXml(asText(post.data.category || []))}]]></category>
+      <dc:creator><![CDATA[${escapeXml(authorName)}]]></dc:creator>${imageUrl && imageLength > 0 ? `
+      <enclosure url="${escapeXml(imageUrl)}" length="${imageLength}" type="${imageType}" />` : ""}${categoryText ? `
+      <category><![CDATA[${escapeXml(categoryText)}]]></category>` : ""}
     </item>`;
     })
-    .filter(Boolean)
-    .join("");
+  );
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Lunim Blog</title>
     <link>${SITE_URL}/blog</link>
@@ -72,7 +95,7 @@ export async function GET() {
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
-    ${rssItems}
+    ${rssItems.filter(Boolean).join("")}
   </channel>
 </rss>`;
 
