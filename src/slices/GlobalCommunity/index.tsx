@@ -5,6 +5,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SphereImageGrid from "@/components/ui/img-sphere";
@@ -28,8 +29,8 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   const bodyRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   const [sphereSize, setSphereSize] = useState({ container: 520, radius: 180 });
-  const [isMobile, setIsMobile] = useState(false);
   
   const tabbLogoImage = withImageAlt(
     slice.primary.tabb_logo,
@@ -40,11 +41,8 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     const updateSphereSize = () => {
       const width = window.innerWidth;
       const s = (slice.primary as any).sphere_size || "medium";
-      
-      setIsMobile(width < 768);
 
-      if (isMobile) {
-        ScrollTrigger.normalizeScroll(true);
+      if (width < 768) {
         setSphereSize({ container: 320, radius: 120 });
       } else if (width < 1024) {
         setSphereSize({ container: 380, radius: 140 });
@@ -58,10 +56,6 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
     window.addEventListener('resize', updateSphereSize);
     return () => window.removeEventListener('resize', updateSphereSize);
   }, [slice.primary]);
-
-  useEffect(() => {
-    console.log("GlobalCommunity isMobile:", isMobile);
-  }, [isMobile]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
