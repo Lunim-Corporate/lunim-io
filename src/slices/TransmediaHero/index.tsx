@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
@@ -28,76 +28,97 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const sweepRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
+  const showDownScroll = slice.primary.show_down_scroll ?? true;
   const logoImage = withImageAlt(
     slice.primary.logo,
     slice.primary.subtitle || "Transmedia hero logo"
   );
 
   useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
+    updateIsMobile();
+    if (isMobile) {
+      ScrollTrigger.normalizeScroll(true);
+    }
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
+
+  useEffect(() => {
+    console.log("TransmediaHero isMobile:", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
-      // WOW pinned sequence: pin section, animate bg, sweep, logo, and text
+      // Soft fade-in for the whole hero on initial load (does not block scroll)
+      if (sectionRef.current) {
+        gsap.from(sectionRef.current, {
+          autoAlpha: 0,
+          y: 30,
+          duration: 0.9,
+          ease: "power2.out",
+        });
+      }
+
+      // Scroll-linked sequence: fade content in without pinning the page
       const heroTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
-          end: "+=140%",
-          scrub: 0.8,
-          pin: true,
-          anticipatePin: 1,
+          start: "top 85%",
+          end: "top 25%",
+          scrub: 0.5,
         },
       });
 
       if (bgRef.current) {
         heroTl.fromTo(
           bgRef.current,
-          { scale: 1.12, yPercent: -6 },
+          { scale: 1.04, yPercent: -6 },
           { scale: 1, yPercent: 0, ease: "none" },
           0
         );
       }
 
-      if (sweepRef.current) {
-        heroTl.fromTo(
-          sweepRef.current,
-          { xPercent: -120, opacity: 0 },
-          { xPercent: 120, opacity: 1, ease: "none" },
-          0.1
-        );
-      }
+      heroTl.fromTo(
+        logoRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, ease: "power2.out" },
+        0.05
+      );
 
-      heroTl.fromTo(logoRef.current, 
-              { opacity: 0, y: 80, scale: 0.92, filter: "blur(10px)" },
-              { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "none" },
-              0.15)
-            .to(logoRef.current, { filter: "drop-shadow(0 0 24px rgba(141,246,255,0.75))", duration: 0.2 }, ">-0.05");
+      heroTl.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, ease: "power2.out" },
+        0.12
+      );
 
-      heroTl.fromTo(titleRef.current,
-              { opacity: 0, y: 90, filter: "blur(12px)", letterSpacing: "0.15em" },
-              { opacity: 1, y: 0, filter: "blur(0px)", letterSpacing: "0.15em", ease: "none" },
-              0.25)
-            .to(titleRef.current, { letterSpacing: "0em", ease: "none" }, ">");
+      heroTl.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, ease: "power2.out" },
+        0.18
+      );
 
-      heroTl.fromTo(subtitleRef.current,
-              { opacity: 0, y: 60, filter: "blur(6px)" },
-              { opacity: 1, y: 0, filter: "blur(0px)", ease: "none" },
-              ">-0.05")
-            .fromTo(taglineRef.current,
-              { opacity: 0, y: 40, filter: "blur(4px)" },
-              { opacity: 1, y: 0, filter: "blur(0px)", ease: "none" },
-              ">-0.03");
+      heroTl.fromTo(
+        taglineRef.current,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, ease: "power2.out" },
+        0.24
+      );
 
-      // Background subtle parallax while pinned
+      // Background subtle parallax while scrolling
       if (slice.primary.enable_parallax && bgRef.current) {
         gsap.to(bgRef.current, {
-          yPercent: 12,
+          yPercent: 18,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top top",
-            end: "+=140%",
-            scrub: 1,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
           },
         });
       }
@@ -111,20 +132,20 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
       ref={sectionRef}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040a18] isolate"
+      data-device={isMobile ? "mobile" : "desktop"}
+      className="relative max-h-[844px] sm:max-h-[1024px] md:max-h-[1125px] h-screen flex pt-55 sm:pt-62 md:pt-76 lg:pt-78 xl:pt-93 justify-center overflow-hidden bg-[#040a18] isolate"
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {/* Background Image with Parallax */}
       {backgroundImage && (
         <div
           ref={bgRef}
-          className="absolute inset-0 z-0 will-change-transform"
+          className="absolute flex items-top justify-center top-[0px] right-[67px] sm:top-[0px] sm:right-[66px] md:top-[0px] md:right-[62px] lg:top-[-24px] lg:right-[52px] xl:top-[4px] xl:right-[52px] -ml-[80px] -mr-[80px] inset-0 z-0 will-change-transform"
           style={{ transform: "translate3d(0, 0, 0)" }}
         >
           <PrismicNextImage
             field={backgroundImage}
-            fill
-            className="object-cover"
+            className="w-[1500px] h-[844px] sm:w-[1820px] sm:h-[1024px] md:w-[2000px] md:h-[1125px] max-w-none"
             priority
             quality={90}
             alt=""
@@ -138,14 +159,13 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {logoImage && (
           <div
             ref={logoRef}
-            className="mb-12 flex justify-center w-full opacity-0"
+            className="mb-6 md:mb-8 flex justify-center w-full opacity-0 -mt-14 md:-mt-24 lg:-mt-32 xl:-mt-40"
           >
-            <div className="relative z-30 w-full max-w-[834px] aspect-[834/254] mx-auto px-4" style={{ transform: "translate(-5px, -10px)" }}>
+            <div className="relative z-30 w-[240px] sm:w-[360px] md:w-[440px] lg:w-[480px] mx-auto px-2 sm:px-4">
               <PrismicNextImage
                 field={logoImage}
-                fill
-                sizes="(min-width: 1280px) 834px, (min-width: 1024px) 800px, (min-width: 768px) 700px, 90vw"
-                className="object-contain drop-shadow-[0_0_24px_rgba(141,246,255,0.55)]"
+                sizes="(min-width: 1280px) 520px, (min-width: 1024px) 460px, (min-width: 768px) 380px, 80vw"
+                className="w-full h-auto object-contain"
                 priority
               />
             </div>
@@ -156,13 +176,13 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.main_title && (
           <div
             ref={titleRef}
-            className="mb-8 w-full opacity-0"
+            className="mb-6 md:mb-8 w-full opacity-0 px-2"
           >
             <PrismicRichText
               field={slice.primary.main_title}
               components={{
                 heading1: ({ children }) => (
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#FFFBD0] tracking-wider uppercase whitespace-normal lg:whitespace-nowrap">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#FFFBD0] tracking-wider uppercase break-normal whitespace-normal lg:whitespace-nowrap">
                     {children}
                   </h1>
                 ),
@@ -175,7 +195,7 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.subtitle && (
           <p
             ref={subtitleRef}
-            className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-6 max-w-4xl mx-auto font-light opacity-0"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-white/90 mb-4 md:mb-6 max-w-4xl mx-auto font-light opacity-0 px-2"
           >
             {slice.primary.subtitle}
           </p>
@@ -185,22 +205,42 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
         {slice.primary.tagline && (
           <p
             ref={taglineRef}
-            className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#8df6ff] font-medium tracking-wide opacity-0"
+            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#8df6ff] font-medium tracking-wide opacity-0 px-2"
           >
             {slice.primary.tagline}
           </p>
         )}
       </div>
 
-      {/* Sweep light effect */}
-      <div ref={sweepRef} className="pointer-events-none absolute inset-y-0 left-[-20%] w-[40%] bg-[linear-gradient(90deg,transparent,rgba(141,246,255,0.35),transparent)] mix-blend-screen blur-md" />
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
-          <div className="w-1.5 h-3 bg-[#8df6ff] rounded-full" />
-        </div>
-      </div>
+      {/* Scroll-down chevron (match primary Hero styling/behavior) */}
+      {showDownScroll ? (
+        <button
+          onClick={() => {
+            const current = sectionRef.current;
+            if (!current) return;
+            const next = current.nextElementSibling as HTMLElement | null;
+            if (next) {
+              next.scrollIntoView({ behavior: "smooth", block: "start" });
+              return;
+            }
+            window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+          }}
+          aria-label="Scroll down"
+          className="cursor-pointer absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-full p-3 text-cyan-400 hover:text-cyan-300 ring-1 ring-white/15 bg-black/30 backdrop-blur-md shadow-lg animate-bounce"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-7 h-7"
+            aria-hidden
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      ) : null}
     </section>
   );
 };

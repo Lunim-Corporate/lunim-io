@@ -6,26 +6,32 @@ import type { Content } from '@prismicio/client';
 import { asText } from '@prismicio/helpers';
 
 // Import the icons 
-import { 
-  UserStar, 
-  Cpu, 
-  Kanban, 
+import {
+  UserStar,
+  PersonStanding,
+  Cpu,
+  Kanban,
   Images,
-  LucideProps,
   Network,
   FileText,
   Coins,
   LockKeyhole,
   Route,
+  Mouse,
   BookOpen,
   Stamp,
   CircleUserRound,
-  HelpCircle 
+  HelpCircle,
+  Blocks,
+  Glasses,
+  Frame,
+  Sun,
 } from 'lucide-react';
 
 // Map the text from Prismic to the actual icon components
 const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   UserStar: UserStar,
+  PersonStanding: PersonStanding,
   Cpu: Cpu,
   Kanban: Kanban,
   Network: Network,
@@ -37,6 +43,11 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   Stamp: Stamp,
   CircleUserRound: CircleUserRound,
   Images: Images,
+  Frame: Frame,
+  Mouse: Mouse,
+  Blocks: Blocks,
+  Glasses: Glasses,
+  Sun: Sun,
 };
 
 type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
@@ -55,6 +66,7 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
         </div>
         <div className={gridClass}>
           {items.map((item: any, index: number) => {
+            console.log(item.icon_name);
             const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
             
             return (

@@ -24,7 +24,6 @@ export interface SphereImageGridProps {
 }
 
 interface RotationState { x: number; y: number; z: number }
-interface VelocityState { x: number; y: number }
 interface MousePosition { x: number; y: number }
 
 const deg = (d: number) => d * (Math.PI / 180);
@@ -34,22 +33,18 @@ export default function SphereImageGrid({
   containerSize = 520,
   sphereRadius = 180,
   dragSensitivity = 0.6,
-  momentumDecay = 0.96,
   maxRotationSpeed = 6,
   baseImageScale = 0.14,
   perspective = 1000,
-  autoRotate = true,
-  autoRotateSpeed = 0.25,
   className = "",
 }: SphereImageGridProps) {
   const [rotation, setRotation] = useState<RotationState>({ x: 15, y: 15, z: 0 });
-  const [velocity, setVelocity] = useState<VelocityState>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [positions, setPositions] = useState<{ theta: number; phi: number }[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const lastMousePos = useRef<MousePosition>({ x: 0, y: 0 });
-  const raf = useRef<number | null>(null);
+  const lastScrollY = useRef<number>(0);
 
   // Fibonacci distribution
   useEffect(() => {
@@ -74,7 +69,6 @@ export default function SphereImageGrid({
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
-    setVelocity({ x: 0, y: 0 });
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   }, []);
 
@@ -84,29 +78,49 @@ export default function SphereImageGrid({
     const dy = e.clientY - lastMousePos.current.y;
     const rotDelta = { x: -dy * dragSensitivity, y: dx * dragSensitivity };
     setRotation((p) => ({ x: p.x + clamp(rotDelta.x), y: p.y + clamp(rotDelta.y), z: p.z }));
-    setVelocity({ x: clamp(rotDelta.x), y: clamp(rotDelta.y) });
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   }, [isDragging, dragSensitivity, clamp]);
 
   const onMouseUp = useCallback(() => setIsDragging(false), []);
 
   useEffect(() => {
-    // Keep auto-rotate enabled when requested (ignoring reduced-motion here per requirements)
-    const finalAutoRotate = autoRotate;
-    const step = () => {
-      setVelocity((prev) => ({ x: prev.x * momentumDecay, y: prev.y * momentumDecay }));
-      setRotation((p) => ({ x: p.x + velocity.x + (finalAutoRotate ? 0 : 0), y: p.y + velocity.y + (finalAutoRotate ? autoRotateSpeed : 0), z: p.z }));
-      raf.current = requestAnimationFrame(step);
-    };
-    raf.current = requestAnimationFrame(step);
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
     return () => {
-      if (raf.current) cancelAnimationFrame(raf.current);
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
     };
-  }, [momentumDecay, velocity.x, velocity.y, autoRotate, autoRotateSpeed, onMouseMove, onMouseUp]);
+  }, [onMouseMove, onMouseUp]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    lastScrollY.current = window.scrollY;
+    let ticking = false;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const deltaY = currentY - lastScrollY.current;
+      lastScrollY.current = currentY;
+      if (!deltaY) return;
+
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          setRotation((prev) => ({
+            x: prev.x,
+            y: prev.y + clamp(deltaY * 0.25),
+            z: prev.z,
+          }));
+          ticking = false;
+        });
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [clamp]);
 
   const nodes = images.map((img, i) => {
     const { theta, phi } = positions[i] || { theta: 0, phi: 0 };
@@ -128,7 +142,7 @@ export default function SphereImageGrid({
 
     const depthScale = (z + sphereRadius) / (2 * sphereRadius);
     const scale = 0.8 + depthScale * 0.4;
-    const size = containerSize * baseImageScale * scale;
+    const size = 80;
     const visible = z > -30;
     if (!visible) return null;
 

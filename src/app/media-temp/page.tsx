@@ -14,7 +14,7 @@ export const revalidate = 60;
 export default async function Page() {
   const client = createClient();
   const doc = (await (client as any)
-    .getSingle("film")
+    .getSingle("media_temp")
     .catch(() => null)) as Content.FilmDocument | null;
 
   if (!doc || !Array.isArray(doc.data.slices)) {
@@ -34,7 +34,6 @@ export default async function Page() {
   );
 }
 
-
 export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
@@ -43,16 +42,18 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const doc = (await (client as any)
-  .getSingle("film")
-  .catch(() => null)) as any;
+    .getSingle("film")
+    .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim",
-      description: "Welcome to Lunim's official media page."
+      description: "Welcome to Lunim's official media page.",
     };
   }
 
-  return generateMetaDataInfo(doc.data, parentMetaData, false, false, ['media']);
+  return generateMetaDataInfo(doc.data, parentMetaData, false, false, [
+    "media",
+  ]);
 }
 
 // export async function generateMetadata(_context: unknown, parent: ResolvingMetadata) {
