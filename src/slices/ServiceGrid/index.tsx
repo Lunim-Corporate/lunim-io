@@ -26,6 +26,7 @@ import {
   Glasses,
   Frame,
   Sun,
+  type LucideProps,
 } from 'lucide-react';
 
 // Map the text from Prismic to the actual icon components
