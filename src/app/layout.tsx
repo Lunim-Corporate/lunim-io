@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Lunim",
-  }
-  }
+  },
+};
 
 export default async function RootLayout({
   children,

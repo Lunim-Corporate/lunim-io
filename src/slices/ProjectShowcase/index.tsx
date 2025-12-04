@@ -60,7 +60,7 @@ const ProjectShowcase: FC<ProjectShowcaseProps> = ({ slice }) => {
 
   return (
     <>
-      {showcaseJsonLd ? <JsonLd data={showcaseJsonLd} /> : null}
+      {showcaseJsonLd ? <JsonLd data={showcaseJsonLd} id="project-showcase-schema" /> : null}
       <section
         id="case-studies"
         className="bg-[#0f172a] py-16"

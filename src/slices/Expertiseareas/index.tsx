@@ -36,6 +36,10 @@ import {
   Map as MapIcon,
   Eye as EyeIcon,
   Sunset as SunsetIcon,
+  Route as RouteIcon,
+  Mouse as MouseIcon,
+  Blocks as BlocksIcon,
+  Glasses as GlassesIcon,
   HelpCircle,
 } from "lucide-react";
 import { PrismicNextLink } from "@prismicio/next";
@@ -81,6 +85,10 @@ const ICONS: Record<string, React.ComponentType<LucideProps>> = {
   Eye: EyeIcon,
   Sunset: SunsetIcon,
   Mail: MailIcon,
+  Route: RouteIcon,
+  Mouse: MouseIcon,
+  Blocks: BlocksIcon,
+  Glasses: GlassesIcon,
 };
 
 const Expertiseareas: FC<ExpertiseareasProps> = ({ slice }) => {
