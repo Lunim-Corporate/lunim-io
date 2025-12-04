@@ -5,7 +5,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
-import { useIsMobile } from "@/hooks/useMediaQuery";
+import { useIsMobile, useIsTablet } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -54,6 +54,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   const orbitRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
 
   // Get CSS variable values for calculations (used for SVG lines)
   const [cssVars, setCssVars] = useState({
@@ -523,7 +524,7 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
           <div className="relative w-full flex items-center justify-center lg:ml-16">
             {isMobile 
               ? renderMobileCircle()
-              : window.innerWidth >= 768 && window.innerWidth < 1024 
+              : isTablet
                 ? renderTabletCircle()
                 : renderDesktopCircle()}
           </div>
