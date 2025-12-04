@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { withImageAlt } from "@/lib/prismicImage";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -26,29 +27,9 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
   const bgRef = useRef<HTMLDivElement>(null);
   const bgParallaxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsInitialized(true);
-    };
-    checkMobile();
-    if (isMobile) {
-      ScrollTrigger.normalizeScroll(true);
-    }
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    console.log("ParallaxTextImage isMobile:", isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-
     const preset = (slice.primary.animation_preset as string) || "fade-up";
 
     const ctx = gsap.context(() => {
@@ -159,7 +140,7 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
     slice.primary.enable_parallax,
     slice.primary.enable_zoom_effect,
     slice.primary.animation_preset,
-    isMobile, isInitialized
+    isMobile
   ]);
 
   const bgImage = withImageAlt(slice.primary.background_image, "");

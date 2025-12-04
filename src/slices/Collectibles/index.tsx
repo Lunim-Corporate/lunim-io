@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,27 +18,9 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const backgroundImage = slice.primary.background_image?.url ? slice.primary.background_image : null;
-  const [isMobile, setIsMobile] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    const updateResponsiveValues = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      if (isMobile) {
-        ScrollTrigger.normalizeScroll(true);
-      }
-      setIsInitialized(true);
-    };
-
-    updateResponsiveValues();
-    window.addEventListener("resize", updateResponsiveValues);
-    return () => window.removeEventListener("resize", updateResponsiveValues);
-  }, []);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-    console.log("Collectibles isMobile:", isMobile);
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         const cards = gridRef.current.querySelectorAll(".collectible-card");
@@ -47,7 +30,7 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isMobile, isInitialized]);
+  }, [isMobile]);
 
   return (
     <section
