@@ -14,6 +14,7 @@
  */
 // Prismic
 import { SliceZone } from "@prismicio/react";
+import Head from "next/head";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { DigitalPageDocument } from "../../../../prismicio-types";
@@ -25,6 +26,16 @@ import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
+import type { CaseStudyTextPanelProps } from "@/slices/CaseStudyTextPanel";
+
+type Slice = {
+  id: string;
+  slice_type: string;
+  variation: string;
+  items: any[];
+  primary: CaseStudyTextPanelProps['slice']['primary'];
+};
+
 
 type Params = { uid: string[] };
 export const dynamic = "force-dynamic";
@@ -83,15 +94,46 @@ export default async function Page({ params }: { params: Promise<Params> }) {
         // Without this check a case study with UID `pizza-hut-checkout` in category
         // `ux` would still render at `/digital/web3/case-studies/pizza-hut-checkout`.
         const caseStudyCategory = doc.data?.digital_category;
-        if (caseStudyCategory !== uid[0]) {
+        if (caseStudyCategory !== uid[0]) 
             notFound();
-        }
-        const slices = doc.data.slices;
-        return (
-            <main className="bg-black text-white min-h-screen">
-                <SliceZone slices={slices} components={components} />
-            </main>
+    
+        const slices = doc.data.slices as Slice[];
+
+
+            // --- JSON-LD for SEO ---
+        const challengeSlice = slices.find(
+          s => s.slice_type === 'case_study_text_panel' && s.variation === 'default'
         );
+        const solutionSlice = slices.find(
+          s => s.slice_type === 'case_study_text_panel' && s.variation === 'solutionTextPanel'
+        );
+        const impactSlice = slices.find(
+          s => s.slice_type === 'case_study_text_panel' && s.variation === 'impactTextPanel'
+        );
+        
+        const jsonLD = {
+          "@context": "https://schema.org",
+          "@type": "CreativeWork",
+          "headline": challengeSlice?.primary.challenge_title[0]?.text || "",
+          "description": challengeSlice?.primary.challenge_content[0]?.text || "",
+          "about": solutionSlice?.primary.solution_content[0]?.text || "",
+          "impact": impactSlice?.primary.impact_content[0]?.text || "",
+          "author": { "@type": "Organization", "name": "Your Company Name" },
+          "datePublished": doc.first_publication_date || new Date().toISOString()
+        };
+        
+        return (
+          <main className="bg-black text-white min-h-screen">
+            <Head>
+              <script type="application/ld+json">
+                {JSON.stringify(jsonLD)}
+              </script>
+            </Head>
+        
+            <SliceZone slices={slices} components={components} />
+          </main>
+        );
+        
     }
 }
 
