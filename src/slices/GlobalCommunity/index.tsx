@@ -112,7 +112,7 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       data-device={isMobile ? "mobile" : "desktop"}
-      className={`relative py-20 md:py-32 overflow-hidden`}
+      className={`relative py-20 overflow-hidden`}
       style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)', maskImage: 'linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)' }}
     >
       {backgroundImage && (

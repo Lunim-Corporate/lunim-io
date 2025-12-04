@@ -138,7 +138,7 @@
   @media (min-width: 1024px) {
     .circle-container {
       /* Desktop 1024-1440px - More spread out */
-      --circle-radius: 260px;
+      --circle-radius: 200px;
       --profile-size: 80px;
       --center-size: 120px;
       --container-max-width: 600px;
@@ -148,7 +148,7 @@
   @media (min-width: 1440px) {
     .circle-container {
       /* Large desktop > 1440px - Maximum spread */
-      --circle-radius: 320px;
+      --circle-radius: 220px;
       --profile-size: 88px;
       --center-size: 140px;
       --container-max-width: 720px;
