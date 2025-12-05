@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { withImageAlt } from "@/lib/prismicImage";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -21,7 +22,7 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
   const brandLogo = withImageAlt(slice.primary.brand_logo, "");
@@ -30,20 +31,6 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   // Used to give the mobile vertical timeline enough height so side content
   // never collides/overlaps even with many items.
   const mobileTimelineHeight = Math.max(650, ((itemCount || 1) * 100));
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    if (isMobile) {
-      ScrollTrigger.normalizeScroll(true);
-    }
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
-    console.log("ParallaxLine isMobile:", isMobile);
-  }, [isMobile]);
 
   useEffect(() => {
     if (!sectionRef.current) return;

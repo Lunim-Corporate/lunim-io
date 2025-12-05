@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -28,27 +29,13 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const backgroundImage = withImageAlt(slice.primary.background_image, "");
   const showDownScroll = slice.primary.show_down_scroll ?? true;
   const logoImage = withImageAlt(
     slice.primary.logo,
     slice.primary.subtitle || "Transmedia hero logo"
   );
-
-  useEffect(() => {
-    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
-    updateIsMobile();
-    if (isMobile) {
-      ScrollTrigger.normalizeScroll(true);
-    }
-    window.addEventListener("resize", updateIsMobile);
-    return () => window.removeEventListener("resize", updateIsMobile);
-  }, []);
-
-  useEffect(() => {
-    console.log("TransmediaHero isMobile:", isMobile);
-  }, [isMobile]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

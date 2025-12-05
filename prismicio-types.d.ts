@@ -1002,7 +1002,7 @@ export type BreadcrumbSettingsDocument<Lang extends string = string> =
     Lang
   >;
 
-type CaseStudiesDocumentDataSlicesSlice = never;
+type CaseStudiesDocumentDataSlicesSlice = CaseStudyTextPanelSlice;
 
 /**
  * Item in *Case Studies → Meta Keywords*
