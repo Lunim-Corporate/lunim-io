@@ -22,7 +22,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
 const Process: React.FC<ProcessProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const items = (slice.items as any[]) ?? [];
+  const items = useMemo(() => (slice.items as any[]) ?? [], [slice.items]);
 
   // Check if the screen size is mobile
   useEffect(() => {

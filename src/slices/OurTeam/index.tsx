@@ -22,7 +22,7 @@ export type OurTeamProps = SliceComponentProps<Content.OurTeamSlice>;
 const OurTeam: FC<OurTeamProps> = ({ slice }) => {
   const [active, setActive] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const members = (slice.primary.team_member as any[]) ?? [];
+  const members = useMemo(() => (slice.primary.team_member as any[]) ?? [], [slice.primary.team_member]);
 
   // Check if device is mobile
   useEffect(() => {
@@ -37,7 +37,7 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
     window.addEventListener("resize", checkIsMobile);
 
     return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
+  }, [isMobile]);
 
   const teamJsonLd = useMemo<WithContext<ItemList> | null>(() => {
     if (!members.length) return null;
