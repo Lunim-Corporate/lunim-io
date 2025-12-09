@@ -1,0 +1,11 @@
+/* Sub-domain brand colors */
+:root.brand-subdomain {
+  --text-title: #ffffff;        /* headings */
+  --text-body: #cccccc;         /* body text */
+  --primary: #BBFEFF;           /* main CTA buttons */
+  --secondary: #00bcd4;         /* secondary elements */
+  --tertiary: #008080;          /* tertiary accents */
+  --bg-dark: #0a0a0a;           /* main background */
+  --bg-mid: #1a1a1a;            /* mid sections */
+  --bg-shade: #001f3f;          /* shaded sections */
+}
