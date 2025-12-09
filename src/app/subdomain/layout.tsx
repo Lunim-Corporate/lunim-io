@@ -14,7 +14,7 @@ import Footer from "@/slices/Footer";
 import { Content } from "@prismicio/client";
 // Styles
 import "./globals.css";
-import "./brand.css"; 
+import "./brand.css";
 // Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
@@ -60,7 +60,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang="en" className="brand-subdomain" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         {!isDraft && GA_ID ? (
           <>
