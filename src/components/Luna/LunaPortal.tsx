@@ -19,7 +19,6 @@ import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { LunaPortrait } from './components/LunaPortrait';
 import { VoiceControls } from './components/VoiceControls';
-import { LunaCaption } from './components/LunaCaption';
 import { SpeechErrorBoundary } from './components/SpeechErrorBoundary';
 import { PrivacyMode, InteractionMode, LunaConversationDecision } from './types';
 import { lunaAnalytics } from './utils/analytics';
