@@ -34,6 +34,16 @@ export const metadata: Metadata = {
     locale: "en_GB",
     siteName: "Lunim",
   },
+  
+  twitter: {
+    card: "summary_large_image",
+    title: "Lunim.io – Innovative Digital Solutions",
+    description: "Lunim.io creates seamless digital experiences with cutting-edge technology and design.",
+    images: [
+      "https://www.lunim.io/assets/images/og-image.jpg" 
+      // Replace with your actual image path
+    ],
+  },
 };
 
 export default async function RootLayout({
