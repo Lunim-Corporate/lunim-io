@@ -14,6 +14,7 @@ import Footer from "@/slices/Footer";
 import { Content } from "@prismicio/client";
 // Styles
 import "./globals.css";
+import "./brand.css";
 // Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
@@ -33,16 +34,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Lunim",
-  },
-  
-  twitter: {
-    card: "summary_large_image",
-    title: "Lunim.io – Innovative Digital Solutions",
-    description: "Lunim.io creates seamless digital experiences with cutting-edge technology and design.",
-    images: [
-      "https://www.lunim.io/assets/images/og-image.jpg" 
-      // Replace with your actual image path
-    ],
   },
 };
 
