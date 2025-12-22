@@ -71,6 +71,30 @@ function formatAuthorNames(authors: { name: string }[]): string {
   return `${authors[0].name}, ${authors[1].name} +${remaining} more`;
 }
 
+// Helper to get initials from name
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper to generate consistent color from name
+function getColorFromName(name: string): string {
+  const colors = [
+    "bg-blue-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-red-500",
+    "bg-teal-500",
+  ];
+  const hash = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+}
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const data = doc.data;
   const title = asText(data.blog_article_heading) || doc.uid || "Untitled";
@@ -128,25 +152,40 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
 
         {authors.length > 0 ? (
           <div className="flex items-center gap-3 mb-4">
-            {authors.length === 1 && authors[0].image?.url ? (
-              <PrismicNextImage
-                field={withImageAlt(authors[0].image, authors[0].name)}
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full object-cover"
-              />
+            {authors.length === 1 ? (
+              authors[0].image?.url ? (
+                <PrismicNextImage
+                  field={withImageAlt(authors[0].image, authors[0].name)}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div
+                  className={`w-8 h-8 rounded-full ${getColorFromName(authors[0].name)} flex items-center justify-center text-white font-semibold text-xs`}
+                >
+                  {getInitials(authors[0].name)}
+                </div>
+              )
             ) : authors.length > 1 ? (
               <div className="flex -space-x-2">
                 {authors.slice(0, 2).map((author: any, index: number) => (
-                  author.image?.url ? (
-                    <PrismicNextImage
-                      key={index}
-                      field={withImageAlt(author.image, author.name)}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-[#0a0a0a]"
-                    />
-                  ) : null
+                  <div key={index} className="border-2 border-[#0a0a0a] rounded-full">
+                    {author.image?.url ? (
+                      <PrismicNextImage
+                        field={withImageAlt(author.image, author.name)}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className={`w-8 h-8 rounded-full ${getColorFromName(author.name)} flex items-center justify-center text-white font-semibold text-xs`}
+                      >
+                        {getInitials(author.name)}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             ) : null}
@@ -279,7 +318,14 @@ export default async function Page({ params, searchParams }: PageProps) {
               field={authorImage}
               className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border border-white/20"
             />
-          ) : null}
+          ) : (
+            <div
+              className={`w-32 h-32 md:w-40 md:h-40 rounded-full ${getColorFromName(authorName)} flex items-center justify-center text-white font-bold border border-white/20`}
+              style={{ fontSize: '3rem' }}
+            >
+              {getInitials(authorName)}
+            </div>
+          )}
           <div>
             <h1 className="text-4xl font-semibold mb-3">{authorName}</h1>
             {authorBio ? (
