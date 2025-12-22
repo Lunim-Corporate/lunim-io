@@ -54,26 +54,27 @@
           "multi": "paragraph,preformatted,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
-      "author_info": {
-        "type": "Link",
+      "authors": {
+        "type": "Group",
         "config": {
-          "label": "Author info",
-          "select": "document",
-          "repeat": false,
-          "customtypes": [
-            {
-              "id": "author",
-              "fields": [
-                "author_name",
-                "author_image",
-                "author_bio",
-                {
-                  "id": "social_media",
-                  "fields": ["social_link"]
-                }
-              ]
+          "label": "authors",
+          "repeat": true,
+          "fields": {
+            "author_info": {
+              "type": "Link",
+              "config": {
+                "label": "Author Info",
+                "select": "document",
+                "repeat": false,
+                "customtypes": [
+                  {
+                    "id": "author",
+                    "fields": ["author_name", "author_image", "author_bio"]
+                  }
+                ]
+              }
             }
-          ]
+          }
         }
       },
       "slices": {

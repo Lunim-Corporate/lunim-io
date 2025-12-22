@@ -8,7 +8,6 @@ import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
 import type { Content } from "@prismicio/client";
 import type { LinkField } from "@prismicio/types";
-import * as prismic from "@prismicio/client";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
@@ -63,6 +62,39 @@ function resolveSocialLabel(link: LinkField | null | undefined): string {
   return "View profile";
 }
 
+function formatAuthorNames(authors: { name: string }[]): string {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0].name;
+  if (authors.length === 2) return `${authors[0].name} & ${authors[1].name}`;
+  // 3+ authors: "Name1, Name2 +X more"
+  const remaining = authors.length - 2;
+  return `${authors[0].name}, ${authors[1].name} +${remaining} more`;
+}
+
+// Helper to get initials from name
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper to generate consistent color from name
+function getColorFromName(name: string): string {
+  const colors = [
+    "bg-blue-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-red-500",
+    "bg-teal-500",
+  ];
+  const hash = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+}
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const data = doc.data;
   const title = asText(data.blog_article_heading) || doc.uid || "Untitled";
@@ -70,21 +102,24 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
     data.article_main_image,
     `${title} cover`
   );
-  const authorInfo = data.author_info;
-  const authorData =
-    authorInfo && typeof authorInfo === "object" && "data" in authorInfo
-      ? (authorInfo.data as Content.AuthorDocumentData | null)
-      : null;
-  const authorName =
-    authorData?.author_name?.trim() ||
-    (authorInfo &&
-    typeof authorInfo === "object" &&
-    "uid" in authorInfo &&
-    authorInfo.uid
-      ? authorInfo.uid
-      : "");
-  const authorImage =
-    withImageAlt(authorData?.author_image ?? null, authorName || title) ?? null;
+
+  // Parse multiple authors from the authors group field
+  const authorsGroup = data.authors || [];
+  const authors = authorsGroup.map((authorItem: any) => {
+    const authorInfo = authorItem.author_info;
+    const authorData =
+      authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+        ? (authorInfo.data as Content.AuthorDocumentData | null)
+        : null;
+    const authorName = authorData?.author_name?.trim() || "";
+    const authorImage = authorData?.author_image ?? null;
+    return {
+      name: authorName,
+      image: authorImage,
+    };
+  }).filter((author: any) => author.name);
+
+  const authorDisplayNames = formatAuthorNames(authors);
   const readingTime = calculateReadingTime(data.main_article_content);
 
   return (
@@ -115,19 +150,46 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
           ) : null}
         </div>
 
-        {authorName || authorImage?.url ? (
+        {authors.length > 0 ? (
           <div className="flex items-center gap-3 mb-4">
-            {authorImage?.url ? (
-              <PrismicNextImage
-                field={authorImage}
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full object-cover"
-              />
+            {authors.length === 1 ? (
+              authors[0].image?.url ? (
+                <PrismicNextImage
+                  field={withImageAlt(authors[0].image, authors[0].name)}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div
+                  className={`w-8 h-8 rounded-full ${getColorFromName(authors[0].name)} flex items-center justify-center text-white font-semibold text-xs`}
+                >
+                  {getInitials(authors[0].name)}
+                </div>
+              )
+            ) : authors.length > 1 ? (
+              <div className="flex -space-x-2">
+                {authors.slice(0, 2).map((author: any, index: number) => (
+                  <div key={index} className="border-2 border-[#0a0a0a] rounded-full">
+                    {author.image?.url ? (
+                      <PrismicNextImage
+                        field={withImageAlt(author.image, author.name)}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className={`w-8 h-8 rounded-full ${getColorFromName(author.name)} flex items-center justify-center text-white font-semibold text-xs`}
+                      >
+                        {getInitials(author.name)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             ) : null}
-            {authorName ? (
-              <span className="text-white/90 text-sm">{authorName}</span>
-            ) : null}
+            <span className="text-white/90 text-sm">{authorDisplayNames}</span>
           </div>
         ) : null}
       </div>
@@ -156,21 +218,25 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const socialLinks = authorDoc.data.social_media || [];
 
-  const authorPosts = (await (client as any).getAllByType(
+  // Fetch all blog posts and filter client-side for posts where this author appears in the authors group
+  const allPosts = (await (client as any).getAllByType(
     "blog_post",
     {
-      // Use runtime filter to avoid TS import issues across CLI versions
-      filters: [
-        (
-          (prismic as any).filter?.at ?? ((_field: string, _value: unknown) => ({}))
-        )("my.blog_post.author_info", authorDoc.id),
-      ],
       orderings: [
         { field: "my.blog_post.publication_date", direction: "desc" },
       ],
       fetchLinks: ["author.author_name", "author.author_image"],
     }
   )) as Content.BlogPostDocument[];
+
+  // Filter posts where this author appears in the authors group
+  const authorPosts = allPosts.filter((post: Content.BlogPostDocument) => {
+    const authorsGroup = post.data.authors || [];
+    return authorsGroup.some((authorItem: any) => {
+      const authorInfo = authorItem.author_info;
+      return authorInfo && "id" in authorInfo && authorInfo.id === authorDoc.id;
+    });
+  });
 
   const pageSize = 12;
   const rawPage = getFirstParam(resolvedSearchParams?.page);
@@ -252,7 +318,14 @@ export default async function Page({ params, searchParams }: PageProps) {
               field={authorImage}
               className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border border-white/20"
             />
-          ) : null}
+          ) : (
+            <div
+              className={`w-32 h-32 md:w-40 md:h-40 rounded-full ${getColorFromName(authorName)} flex items-center justify-center text-white font-bold border border-white/20`}
+              style={{ fontSize: '3rem' }}
+            >
+              {getInitials(authorName)}
+            </div>
+          )}
           <div>
             <h1 className="text-4xl font-semibold mb-3">{authorName}</h1>
             {authorBio ? (

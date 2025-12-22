@@ -54,22 +54,67 @@ const resolveDocumentUrl = (
   return `${SITE_URL}/blog/${uid}`;
 };
 
+function formatAuthorNames(authors: { name: string }[]): string {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0].name;
+  if (authors.length === 2) return `${authors[0].name} & ${authors[1].name}`;
+  // 3+ authors: "Name1, Name2 +X more"
+  const remaining = authors.length - 2;
+  return `${authors[0].name}, ${authors[1].name} +${remaining} more`;
+}
+
+// Helper to get initials from name
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper to generate consistent color from name
+function getColorFromName(name: string): string {
+  const colors = [
+    "bg-blue-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-red-500",
+    "bg-teal-500",
+  ];
+  const hash = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+}
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const d = doc.data;
   const title = asText(d.blog_article_heading) || doc.uid || "Untitled";
   const img = d.article_main_image;
   const articleImageField =
     img && !img.alt ? { ...img, alt: title } : img ?? null;
-  // Resolve linked author document details.
-  const authorInfo = d.author_info;
-  const authorData = authorInfo && "data" in authorInfo ? authorInfo.data : null;
-  const rawAuthorName = authorData?.author_name?.trim() ?? "";
-  const authorName = rawAuthorName || (authorInfo && "uid" in authorInfo ? authorInfo.uid ?? "" : "");
-  const authorImage = authorData?.author_image ?? null;
-  const authorImageField =
-    authorImage && !authorImage.alt
-      ? { ...authorImage, alt: authorName || "Author" }
-      : authorImage;
+
+  // Parse multiple authors from the authors group field (maintains Prismic order)
+  const authorsGroup = d.authors || [];
+  const authors = authorsGroup.map((authorItem: any) => {
+    const authorInfo = authorItem.author_info;
+    const authorData =
+      authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+        ? authorInfo.data
+        : null;
+    const authorName = authorData?.author_name?.trim() || "";
+    const authorImage = authorData?.author_image ?? null;
+    const authorImageField =
+      authorImage && !authorImage.alt
+        ? { ...authorImage, alt: authorName || "Author" }
+        : authorImage;
+    return {
+      name: authorName,
+      image: authorImageField,
+    };
+  }).filter((author: any) => author.name);
+
+  const authorDisplayNames = formatAuthorNames(authors);
   const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
@@ -94,19 +139,46 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
           {readingTime ? <span>• {readingTime >= 10 ? `${readingTime}+` : readingTime} min read</span> : null}
         </div>
 
-        {(authorName || authorImageField?.url) ? (
+        {authors.length > 0 ? (
           <div className="flex items-center gap-3 mb-4">
-            {authorImageField?.url ? (
-              <PrismicNextImage
-                field={authorImageField}
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full object-cover"
-              />
+            {authors.length === 1 ? (
+              authors[0].image?.url ? (
+                <PrismicNextImage
+                  field={authors[0].image}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div
+                  className={`w-8 h-8 rounded-full ${getColorFromName(authors[0].name)} flex items-center justify-center text-white font-semibold text-xs`}
+                >
+                  {getInitials(authors[0].name)}
+                </div>
+              )
+            ) : authors.length > 1 ? (
+              <div className="flex -space-x-2">
+                {authors.slice(0, 2).map((author: any, index: number) => (
+                  <div key={index} className="border-2 border-black rounded-full">
+                    {author.image?.url ? (
+                      <PrismicNextImage
+                        field={author.image}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className={`w-8 h-8 rounded-full ${getColorFromName(author.name)} flex items-center justify-center text-white font-semibold text-xs`}
+                      >
+                        {getInitials(author.name)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             ) : null}
-            {authorName ? (
-              <span className="text-white/90 text-sm">{authorName}</span>
-            ) : null}
+            <span className="text-white/90 text-sm">{authorDisplayNames}</span>
           </div>
         ) : null}
       </div>
@@ -219,15 +291,25 @@ export default async function BlogList({ slice, context }: Props) {
             data.meta_description || asText(data.main_article_content);
           const image = data.article_main_image?.url || undefined;
           const datePublished = data.publication_date || undefined;
-          const authorInfo = data.author_info;
-          const authorData =
-            authorInfo && "data" in authorInfo ? authorInfo.data : null;
-          const rawAuthorName =
-            authorData?.author_name?.trim() ||
-            (authorInfo && "uid" in authorInfo ? authorInfo.uid ?? "" : "");
-          const author: Person | undefined = rawAuthorName
-            ? { "@type": "Person", name: rawAuthorName }
-            : undefined;
+
+          // Parse multiple authors for JSON-LD
+          const authorsGroup = data.authors || [];
+          const authorsList = authorsGroup.map((authorItem: any) => {
+            const authorInfo = authorItem.author_info;
+            const authorData =
+              authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+                ? authorInfo.data
+                : null;
+            const authorName = authorData?.author_name?.trim() || "";
+            return authorName;
+          }).filter(Boolean);
+
+          const author: Person | Person[] | undefined =
+            authorsList.length === 1
+              ? { "@type": "Person", name: authorsList[0] }
+              : authorsList.length > 1
+              ? authorsList.map((name: string) => ({ "@type": "Person" as const, name }))
+              : undefined;
 
           return {
             "@type": "ListItem",
