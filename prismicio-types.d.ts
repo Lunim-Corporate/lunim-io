@@ -323,6 +323,47 @@ export type AcademyCourseDocument<Lang extends string = string> =
     Lang
   >;
 
+type AiAutomationDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ImageandtextSlice
+  | BreadcrumbsSlice
+  | ServiceGridSlice
+  | FaqSlice
+  | ExpertiseareasSlice
+  | HeroSlice;
+
+/**
+ * Content for AI Automation documents
+ */
+interface AiAutomationDocumentData {
+  /**
+   * Slice Zone field in *AI Automation*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ai_automation.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AiAutomationDocumentDataSlicesSlice>;
+}
+
+/**
+ * AI Automation document from Prismic
+ *
+ * - **API ID**: `ai_automation`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AiAutomationDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<AiAutomationDocumentData>,
+    "ai_automation",
+    Lang
+  >;
+
 /**
  * Item in *Author → Social media*
  */
@@ -2712,6 +2753,7 @@ export type TechDocument<Lang extends string = string> =
 export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
+  | AiAutomationDocument
   | AuthorDocument
   | AuthorsDocument
   | BlogHomePageDocument
@@ -6669,6 +6711,9 @@ declare module "@prismicio/client" {
       AcademyCourseDocumentData,
       AcademyCourseDocumentDataSlicesSlice,
       AcademyCourseDocumentDataMetaKeywordsItem,
+      AiAutomationDocument,
+      AiAutomationDocumentData,
+      AiAutomationDocumentDataSlicesSlice,
       AuthorDocument,
       AuthorDocumentData,
       AuthorDocumentDataSocialMediaItem,
