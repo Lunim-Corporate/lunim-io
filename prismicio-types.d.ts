@@ -732,6 +732,23 @@ export type BlogHomePageDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Blog Post → authors*
+ */
+export interface BlogPostDocumentDataAuthorsItem {
+  /**
+   * Author Info field in *Blog Post → authors*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_post.authors[].author_info
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  author_info: ContentRelationshipFieldWithData<
+    [{ id: "author"; fields: ["author_name", "author_image", "author_bio"] }]
+  >;
+}
+
 type BlogPostDocumentDataSlicesSlice = BreadcrumbsSlice | FaqSlice;
 
 /**
@@ -824,27 +841,15 @@ interface BlogPostDocumentData {
   main_article_content: prismic.RichTextField;
 
   /**
-   * Author info field in *Blog Post*
+   * authors field in *Blog Post*
    *
-   * - **Field Type**: Content Relationship
+   * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: blog_post.author_info
+   * - **API ID Path**: blog_post.authors[]
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  author_info: ContentRelationshipFieldWithData<
-    [
-      {
-        id: "author";
-        fields: [
-          "author_name",
-          "author_image",
-          "author_bio",
-          { id: "social_media"; fields: ["social_link"] },
-        ];
-      },
-    ]
-  >;
+  authors: prismic.GroupField<Simplify<BlogPostDocumentDataAuthorsItem>>;
 
   /**
    * Slice Zone field in *Blog Post*
@@ -6679,6 +6684,7 @@ declare module "@prismicio/client" {
       BlogHomePageDocumentDataMetaKeywordsItem,
       BlogPostDocument,
       BlogPostDocumentData,
+      BlogPostDocumentDataAuthorsItem,
       BlogPostDocumentDataSlicesSlice,
       BlogPostDocumentDataMetaKeywordsItem,
       BlogPostDocumentDataMetaAuthorsItem,
