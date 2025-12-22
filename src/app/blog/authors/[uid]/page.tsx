@@ -8,7 +8,6 @@ import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
 import type { Content } from "@prismicio/client";
 import type { LinkField } from "@prismicio/types";
-import * as prismic from "@prismicio/client";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
@@ -63,6 +62,15 @@ function resolveSocialLabel(link: LinkField | null | undefined): string {
   return "View profile";
 }
 
+function formatAuthorNames(authors: { name: string }[]): string {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0].name;
+  if (authors.length === 2) return `${authors[0].name} & ${authors[1].name}`;
+  // 3+ authors: "Name1, Name2 +X more"
+  const remaining = authors.length - 2;
+  return `${authors[0].name}, ${authors[1].name} +${remaining} more`;
+}
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const data = doc.data;
   const title = asText(data.blog_article_heading) || doc.uid || "Untitled";
@@ -70,21 +78,24 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
     data.article_main_image,
     `${title} cover`
   );
-  const authorInfo = data.author_info;
-  const authorData =
-    authorInfo && typeof authorInfo === "object" && "data" in authorInfo
-      ? (authorInfo.data as Content.AuthorDocumentData | null)
-      : null;
-  const authorName =
-    authorData?.author_name?.trim() ||
-    (authorInfo &&
-    typeof authorInfo === "object" &&
-    "uid" in authorInfo &&
-    authorInfo.uid
-      ? authorInfo.uid
-      : "");
-  const authorImage =
-    withImageAlt(authorData?.author_image ?? null, authorName || title) ?? null;
+
+  // Parse multiple authors from the authors group field
+  const authorsGroup = data.authors || [];
+  const authors = authorsGroup.map((authorItem: any) => {
+    const authorInfo = authorItem.author_info;
+    const authorData =
+      authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+        ? (authorInfo.data as Content.AuthorDocumentData | null)
+        : null;
+    const authorName = authorData?.author_name?.trim() || "";
+    const authorImage = authorData?.author_image ?? null;
+    return {
+      name: authorName,
+      image: authorImage,
+    };
+  }).filter((author: any) => author.name);
+
+  const authorDisplayNames = formatAuthorNames(authors);
   const readingTime = calculateReadingTime(data.main_article_content);
 
   return (
@@ -115,19 +126,31 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
           ) : null}
         </div>
 
-        {authorName || authorImage?.url ? (
+        {authors.length > 0 ? (
           <div className="flex items-center gap-3 mb-4">
-            {authorImage?.url ? (
+            {authors.length === 1 && authors[0].image?.url ? (
               <PrismicNextImage
-                field={authorImage}
+                field={withImageAlt(authors[0].image, authors[0].name)}
                 width={32}
                 height={32}
                 className="w-8 h-8 rounded-full object-cover"
               />
+            ) : authors.length > 1 ? (
+              <div className="flex -space-x-2">
+                {authors.slice(0, 2).map((author: any, index: number) => (
+                  author.image?.url ? (
+                    <PrismicNextImage
+                      key={index}
+                      field={withImageAlt(author.image, author.name)}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full object-cover border-2 border-[#0a0a0a]"
+                    />
+                  ) : null
+                ))}
+              </div>
             ) : null}
-            {authorName ? (
-              <span className="text-white/90 text-sm">{authorName}</span>
-            ) : null}
+            <span className="text-white/90 text-sm">{authorDisplayNames}</span>
           </div>
         ) : null}
       </div>
@@ -156,21 +179,25 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const socialLinks = authorDoc.data.social_media || [];
 
-  const authorPosts = (await (client as any).getAllByType(
+  // Fetch all blog posts and filter client-side for posts where this author appears in the authors group
+  const allPosts = (await (client as any).getAllByType(
     "blog_post",
     {
-      // Use runtime filter to avoid TS import issues across CLI versions
-      filters: [
-        (
-          (prismic as any).filter?.at ?? ((_field: string, _value: unknown) => ({}))
-        )("my.blog_post.author_info", authorDoc.id),
-      ],
       orderings: [
         { field: "my.blog_post.publication_date", direction: "desc" },
       ],
       fetchLinks: ["author.author_name", "author.author_image"],
     }
   )) as Content.BlogPostDocument[];
+
+  // Filter posts where this author appears in the authors group
+  const authorPosts = allPosts.filter((post: Content.BlogPostDocument) => {
+    const authorsGroup = post.data.authors || [];
+    return authorsGroup.some((authorItem: any) => {
+      const authorInfo = authorItem.author_info;
+      return authorInfo && "id" in authorInfo && authorInfo.id === authorDoc.id;
+    });
+  });
 
   const pageSize = 12;
   const rawPage = getFirstParam(resolvedSearchParams?.page);
