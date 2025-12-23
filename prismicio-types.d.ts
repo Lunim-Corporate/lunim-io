@@ -364,6 +364,81 @@ export type AiAutomationDocument<Lang extends string = string> =
     Lang
   >;
 
+type AiAutomationPageDocumentDataSlicesSlice =
+  | EventbriteSlice
+  | ProcessSlice
+  | FaqSlice
+  | ContactSlice
+  | ProjectShowcaseSlice
+  | BreadcrumbsSlice
+  | ImageandtextSlice
+  | ServiceGridSlice
+  | ExpertiseareasSlice
+  | CompactHeroSlice;
+
+/**
+ * Content for AI Automation Page documents
+ */
+interface AiAutomationPageDocumentData {
+  /**
+   * Slice Zone field in *AI Automation Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ai_automation_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AiAutomationPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *AI Automation Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: ai_automation_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *AI Automation Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: ai_automation_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *AI Automation Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ai_automation_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * AI Automation Page document from Prismic
+ *
+ * - **API ID**: `ai_automation_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AiAutomationPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<AiAutomationPageDocumentData>,
+    "ai_automation_page",
+    Lang
+  >;
+
 /**
  * Item in *Author → Social media*
  */
@@ -2844,6 +2919,7 @@ export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
   | AiAutomationDocument
+  | AiAutomationPageDocument
   | AuthorDocument
   | AuthorsDocument
   | BlogHomePageDocument
@@ -6806,6 +6882,9 @@ declare module "@prismicio/client" {
       AiAutomationDocument,
       AiAutomationDocumentData,
       AiAutomationDocumentDataSlicesSlice,
+      AiAutomationPageDocument,
+      AiAutomationPageDocumentData,
+      AiAutomationPageDocumentDataSlicesSlice,
       AuthorDocument,
       AuthorDocumentData,
       AuthorDocumentDataSocialMediaItem,
