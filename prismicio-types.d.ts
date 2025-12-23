@@ -2915,6 +2915,119 @@ interface TechDocumentData {
 export type TechDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<TechDocumentData>, "tech", Lang>;
 
+type VideoDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ServiceGridSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for Video documents
+ */
+interface VideoDocumentData {
+  /**
+   * Slice Zone field in *Video*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<VideoDocumentDataSlicesSlice>;
+}
+
+/**
+ * Video document from Prismic
+ *
+ * - **API ID**: `video`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type VideoDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<VideoDocumentData>, "video", Lang>;
+
+type VideoPageDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ServiceGridSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for Video Page documents
+ */
+interface VideoPageDocumentData {
+  /**
+   * Slice Zone field in *Video Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<VideoPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *Video Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: video_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Video Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: video_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Video Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Video Page document from Prismic
+ *
+ * - **API ID**: `video_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type VideoPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<VideoPageDocumentData>,
+    "video_page",
+    Lang
+  >;
+
 export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
@@ -2942,7 +3055,9 @@ export type AllDocumentTypes =
   | PrivacyPolicySmDocument
   | TabbDocument
   | TeamPageDocument
-  | TechDocument;
+  | TechDocument
+  | VideoDocument
+  | VideoPageDocument;
 
 /**
  * Item in *Expertiseareas → Pure Cards → Primary → Cards*
@@ -6972,6 +7087,12 @@ declare module "@prismicio/client" {
       TechDocumentData,
       TechDocumentDataSlicesSlice,
       TechDocumentDataMetaKeywordsItem,
+      VideoDocument,
+      VideoDocumentData,
+      VideoDocumentDataSlicesSlice,
+      VideoPageDocument,
+      VideoPageDocumentData,
+      VideoPageDocumentDataSlicesSlice,
       AllDocumentTypes,
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
