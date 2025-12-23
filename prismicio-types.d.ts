@@ -1713,6 +1713,51 @@ export type FooterDocument<Lang extends string = string> =
     Lang
   >;
 
+type FooterGenericDocumentDataSlicesSlice = FooterSlice;
+
+/**
+ * Content for Footer Generic documents
+ */
+interface FooterGenericDocumentData {
+  /**
+   * domain field in *Footer Generic*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer_generic.domain
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  domain: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Footer Generic*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer_generic.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FooterGenericDocumentDataSlicesSlice>;
+}
+
+/**
+ * Footer Generic document from Prismic
+ *
+ * - **API ID**: `footer_generic`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FooterGenericDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<FooterGenericDocumentData>,
+    "footer_generic",
+    Lang
+  >;
+
 type HomepageDocumentDataSlicesSlice =
   | CompactHeroSlice
   | ImageandtextSlice
@@ -2144,6 +2189,51 @@ export type PrimaryNavigationDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<
     Simplify<PrimaryNavigationDocumentData>,
     "primary_navigation",
+    Lang
+  >;
+
+type PrimaryNavigationGenericDocumentDataSlicesSlice = NavigationMenuSlice;
+
+/**
+ * Content for Primary Navigation Generic documents
+ */
+interface PrimaryNavigationGenericDocumentData {
+  /**
+   * domain field in *Primary Navigation Generic*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: primary_navigation_generic.domain
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  domain: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Primary Navigation Generic*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: primary_navigation_generic.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PrimaryNavigationGenericDocumentDataSlicesSlice>;
+}
+
+/**
+ * Primary Navigation Generic document from Prismic
+ *
+ * - **API ID**: `primary_navigation_generic`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PrimaryNavigationGenericDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<PrimaryNavigationGenericDocumentData>,
+    "primary_navigation_generic",
     Lang
   >;
 
@@ -2765,11 +2855,13 @@ export type AllDocumentTypes =
   | DigitalPageDocument
   | FilmDocument
   | FooterDocument
+  | FooterGenericDocument
   | HomepageDocument
   | MediaTempDocument
   | NavSectionDocument
   | OurTeamPageDocument
   | PrimaryNavigationDocument
+  | PrimaryNavigationGenericDocument
   | PrivacyPolicyDocument
   | PrivacyPolicySmDocument
   | TabbDocument
@@ -6757,6 +6849,9 @@ declare module "@prismicio/client" {
       FooterDocument,
       FooterDocumentData,
       FooterDocumentDataSlicesSlice,
+      FooterGenericDocument,
+      FooterGenericDocumentData,
+      FooterGenericDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
@@ -6774,6 +6869,9 @@ declare module "@prismicio/client" {
       PrimaryNavigationDocument,
       PrimaryNavigationDocumentData,
       PrimaryNavigationDocumentDataSlicesSlice,
+      PrimaryNavigationGenericDocument,
+      PrimaryNavigationGenericDocumentData,
+      PrimaryNavigationGenericDocumentDataSlicesSlice,
       PrivacyPolicyDocument,
       PrivacyPolicyDocumentData,
       PrivacyPolicySmDocument,
