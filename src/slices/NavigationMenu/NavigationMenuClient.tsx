@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { PrismicNextLink } from "@prismicio/next";
+import { SubdomainAwarePrismicLink as PrismicNextLink } from "@/components/SubdomainAwarePrismicLink";
 import { Menu, X, ChevronDown } from "lucide-react";
 import type { LinkField } from "@prismicio/types";
 import { asLink } from "@prismicio/helpers";
