@@ -9,6 +9,7 @@ import { useMemo, useEffect, useState } from "react";
  * when displaying URLs on the subdomain itself.
  *
  * Example: On ai.lunim.io, /ai-automation/page becomes /page
+ * Example: On video.lunim.io, /video/page becomes /page
  */
 export function SubdomainAwarePrismicLink(props: PrismicNextLinkProps) {
   const [isClient, setIsClient] = useState(false);
@@ -27,18 +28,26 @@ export function SubdomainAwarePrismicLink(props: PrismicNextLinkProps) {
     const hostname = window.location.hostname;
     const subdomain = hostname.split(".")[0];
 
-    // Only transform for ai subdomain
-    if (subdomain !== "ai" || hostname.startsWith("www")) {
+    // Define prefix mapping
+    const subdomainPrefixMap: Record<string, string> = {
+      "ai": "/ai-automation",
+      "video-next": "/video",
+    };
+
+    // Only transform for known subdomains
+    if (!(subdomain in subdomainPrefixMap) || hostname.startsWith("www")) {
       return props;
     }
+
+    const prefix = subdomainPrefixMap[subdomain];
 
     // Get the resolved URL
     const url = asLink(props.field);
     if (!url || typeof url !== "string") return props;
 
-    // Strip /ai-automation prefix if present
-    if (url.startsWith("/ai-automation")) {
-      const newUrl = url.replace(/^\/ai-automation/, "") || "/";
+    // Strip prefix if present
+    if (url.startsWith(prefix)) {
+      const newUrl = url.replace(new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`), "") || "/";
 
       // Return modified props with transformed field
       return {
