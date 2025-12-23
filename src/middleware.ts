@@ -13,28 +13,6 @@ export function middleware(request: NextRequest) {
     "ai": "/ai-automation",
   };
 
-  // Check if user is on main domain trying to access subdomain-exclusive content
-  const isMainDomain = !Object.keys(subdomainRoutes).includes(subdomain) || hostname.startsWith("www");
-
-  if (isMainDomain && pathname.startsWith("/ai-automation")) {
-    // Redirect to the subdomain
-    const protocol = request.nextUrl.protocol;
-    const baseDomain = hostname.includes("localhost")
-      ? "localhost:3000"
-      : hostname.replace(/^(www\.)?/, ""); // Remove www if present
-
-    // Construct subdomain URL
-    const subdomainHost = hostname.includes("localhost")
-      ? "ai.localhost:3000"
-      : `ai.${baseDomain.split(".").slice(-2).join(".")}`;  // Get base domain (e.g., lunim.io from www.lunim.io)
-
-    // Remove /ai-automation prefix from pathname for subdomain
-    const newPathname = pathname.replace(/^\/ai-automation/, "") || "/";
-    const redirectUrl = `${protocol}//${subdomainHost}${newPathname}${request.nextUrl.search}`;
-
-    return NextResponse.redirect(redirectUrl, 301); // Permanent redirect
-  }
-
   // Check if this is a subdomain we handle
   if (subdomain in subdomainRoutes && !hostname.startsWith("www")) {
     const targetPath = subdomainRoutes[subdomain];
@@ -44,15 +22,22 @@ export function middleware(request: NextRequest) {
     // This can happen when Prismic links include the full path
     if (pathname.startsWith(targetPath)) {
       // Already has the prefix, just pass through
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set("x-pathname", pathname);
+      return response;
     }
 
     // Add the prefix for subdomain routing
     url.pathname = `${targetPath}${url.pathname}`;
-    return NextResponse.rewrite(url);
+    const response = NextResponse.rewrite(url);
+    response.headers.set("x-pathname", `${targetPath}${pathname}`);
+    return response;
   }
 
-  return NextResponse.next();
+  // For non-subdomain requests, pass pathname through
+  const response = NextResponse.next();
+  response.headers.set("x-pathname", pathname);
+  return response;
 }
 
 export const config = {

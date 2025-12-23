@@ -22,7 +22,8 @@ import ScrollManager from "@/components/ScrollManager";
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers();
   const hostname = headersList.get("host") || "lunim.io";
-  const siteKey = getSiteKey(hostname);
+  const pathname = headersList.get("x-pathname") || "/";
+  const siteKey = getSiteKey(hostname, pathname);
 
   // Determine base URL based on hostname
   let baseUrl: string;
@@ -66,12 +67,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Helper function to determine site key from hostname
-function getSiteKey(hostname: string): "main" | "ai" {
+// Helper function to determine site key from hostname and pathname
+function getSiteKey(hostname: string, pathname: string = "/"): "main" | "ai" {
   const subdomain = hostname.split(".")[0];
 
   // Check if it's a subdomain we handle
   if (subdomain === "ai" && !hostname.startsWith("www")) {
+    return "ai";
+  }
+
+  // Check if pathname starts with a subdomain route prefix
+  if (pathname.startsWith("/ai-automation")) {
     return "ai";
   }
 
@@ -87,7 +93,8 @@ export default async function RootLayout({
   const { isEnabled: isDraft } = await draftMode();
   const headersList = await headers();
   const hostname = headersList.get("host") || "lunim.io";
-  const siteKey = getSiteKey(hostname);
+  const pathname = headersList.get("x-pathname") || "/";
+  const siteKey = getSiteKey(hostname, pathname);
 
   const client = createClient();
 
