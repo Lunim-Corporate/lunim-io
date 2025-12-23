@@ -2,6 +2,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import type { LinkField } from "@prismicio/types";
 import { createClient } from "@/prismicio";
+import { headers } from "next/headers";
 import BreadcrumbsClient from "./BreadcrumbsClient";
 
 export type BreadcrumbsProps = SliceComponentProps<any>;
@@ -22,6 +23,15 @@ function isUsableLink(link: LinkField | null | undefined): link is LinkField {
   return !!link && link.link_type !== "Any";
 }
 
+// Helper function to determine site key from hostname
+function getSiteKey(hostname: string): "main" | "ai" {
+  const subdomain = hostname.split(".")[0];
+  if (subdomain === "ai" && !hostname.startsWith("www")) {
+    return "ai";
+  }
+  return "main";
+}
+
 /**
  * Server component for the Breadcrumbs slice.
  *
@@ -31,11 +41,32 @@ function isUsableLink(link: LinkField | null | undefined): link is LinkField {
  */
 export default async function Breadcrumbs({}: BreadcrumbsProps) {
   const client = createClient();
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "lunim.io";
+  const siteKey = getSiteKey(hostname);
 
-  // Fetch the primary navigation singleton (same as in RootLayout)
-  const primaryNav = (await (client as any)
-    .getSingle("primary_navigation")
-    .catch(() => null)) as any;
+  let primaryNav: any = null;
+
+  if (siteKey === "main") {
+    // Fetch the primary navigation singleton (same as in RootLayout)
+    primaryNav = (await (client as any)
+      .getSingle("primary_navigation")
+      .catch(() => null)) as any;
+  } else {
+    // Fetch subdomain-specific navigation
+    const domainMap: Record<string, string> = {
+      "ai": "ai-automation",
+    };
+    const domainValue = domainMap[siteKey];
+
+    const navDocs = await (client as any)
+      .getAllByType("primary_navigation_generic")
+      .catch(() => []);
+
+    primaryNav = navDocs.find(
+      (doc: any) => doc.data?.domain === domainValue
+    );
+  }
 
   if (!primaryNav) {
     return null;
@@ -125,11 +156,23 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
       )
       .filter((slug: any): slug is string => slug.length > 0) ?? [];
 
+  // For subdomain pages, always hide the routing prefix (e.g., "ai-automation")
+  if (siteKey !== "main") {
+    const domainMap: Record<string, string> = {
+      "ai": "ai-automation",
+    };
+    const routingPrefix = domainMap[siteKey];
+    if (routingPrefix && !hiddenSegments.includes(routingPrefix)) {
+      hiddenSegments.push(routingPrefix);
+    }
+  }
+
   // Delegate actual breadcrumb rendering + URL handling to the client component
   return (
     <BreadcrumbsClient
       sections={sections}
       hiddenSegments={hiddenSegments}
+      siteKey={siteKey}
     />
   );
 }
