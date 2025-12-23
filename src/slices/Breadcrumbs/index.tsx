@@ -24,10 +24,13 @@ function isUsableLink(link: LinkField | null | undefined): link is LinkField {
 }
 
 // Helper function to determine site key from hostname
-function getSiteKey(hostname: string): "main" | "ai" {
+function getSiteKey(hostname: string): "main" | "ai" | "video" {
   const subdomain = hostname.split(".")[0];
   if (subdomain === "ai" && !hostname.startsWith("www")) {
     return "ai";
+  }
+  if (subdomain === "video-next" && !hostname.startsWith("www")) {
+    return "video";
   }
   return "main";
 }
@@ -56,6 +59,7 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
     // Fetch subdomain-specific navigation
     const domainMap: Record<string, string> = {
       "ai": "ai-automation",
+      "video": "video",
     };
     const domainValue = domainMap[siteKey];
 
@@ -156,10 +160,11 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
       )
       .filter((slug: any): slug is string => slug.length > 0) ?? [];
 
-  // For subdomain pages, always hide the routing prefix (e.g., "ai-automation")
+  // For subdomain pages, always hide the routing prefix (e.g., "ai-automation", "video")
   if (siteKey !== "main") {
     const domainMap: Record<string, string> = {
       "ai": "ai-automation",
+      "video": "video",
     };
     const routingPrefix = domainMap[siteKey];
     if (routingPrefix && !hiddenSegments.includes(routingPrefix)) {

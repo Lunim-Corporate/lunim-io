@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
   // Map subdomains to their respective routes
   const subdomainRoutes: Record<string, string> = {
     "ai": "/ai-automation",
+    "video-next": "/video",
   };
 
   // Check if this is a subdomain we handle
@@ -20,7 +21,9 @@ export function middleware(request: NextRequest) {
 
     // Check if pathname already contains the target path
     // This can happen when Prismic links include the full path
-    if (pathname.startsWith(targetPath)) {
+    // Must check for exact match or path with trailing slash to avoid false positives
+    // e.g., "/video-first-page" should not match "/video"
+    if (pathname === targetPath || pathname.startsWith(targetPath + "/")) {
       // Already has the prefix, just pass through
       const response = NextResponse.next();
       response.headers.set("x-pathname", pathname);
@@ -28,7 +31,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Add the prefix for subdomain routing
-    url.pathname = `${targetPath}${url.pathname}`;
+    url.pathname = `${targetPath}${pathname}`;
     const response = NextResponse.rewrite(url);
     response.headers.set("x-pathname", `${targetPath}${pathname}`);
     return response;
