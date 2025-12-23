@@ -24,6 +24,7 @@ type Section = {
 type BreadcrumbsClientProps = {
   sections: Section[];
   hiddenSegments?: string[];
+  siteKey?: "main" | "ai";
 };
 
 const DEFAULT_SITE_URL = "https://lunim.io";
@@ -54,6 +55,7 @@ const normalizePath = (value: string | null): string | null => {
 const SEGMENT_LABEL_OVERRIDES: Record<string, string> = {
   digital: "Digital",
   ai: "AI",
+  "ai-automation": "AI Automation",
   "case-studies": "Case Studies",
   marketing: "Marketing",
   "marketing-academy": "Marketing",
@@ -77,6 +79,7 @@ const labelFromSegment = (segment: string): string => {
 export default function BreadcrumbsClient({
   sections,
   hiddenSegments,
+  siteKey = "main",
 }: BreadcrumbsClientProps) {
   const pathname = usePathname();
   const currentPath = normalizePath(pathname) ?? "/";
@@ -94,6 +97,14 @@ export default function BreadcrumbsClient({
   );
 
   const showBreadcrumbs = segments.length >= 1;
+
+  // Determine home path and label based on site context
+  const homeConfig = useMemo(() => {
+    if (siteKey === "ai") {
+      return { href: "/ai-automation", label: "Home" };
+    }
+    return { href: "/", label: "Home" };
+  }, [siteKey]);
 
   // Build a path -> label map from navigation
   const pathLabelMap = useMemo(() => {
@@ -119,8 +130,8 @@ export default function BreadcrumbsClient({
   const crumbs = useMemo(() => {
     const items: { href: string; label: string }[] = [];
 
-    // Home
-    items.push({ href: "/", label: "Home" });
+    // Home (contextual based on subdomain)
+    items.push(homeConfig);
 
     let acc = "";
     segments.forEach((seg) => {
@@ -143,7 +154,7 @@ export default function BreadcrumbsClient({
     });
 
     return items;
-  }, [segments, pathLabelMap, hiddenSet]);
+  }, [segments, pathLabelMap, hiddenSet, homeConfig]);
 
   const breadcrumbJsonLd = useMemo<WithContext<BreadcrumbList>>(() => {
     const toAbsoluteUrl = (path: string): string => {
