@@ -18,6 +18,7 @@ export function middleware(request: NextRequest) {
   if (subdomain in subdomainRoutes && !hostname.startsWith("www")) {
     const targetPath = subdomainRoutes[subdomain];
     const url = request.nextUrl.clone();
+    const requestHeaders = new Headers(request.headers);
 
     // Check if pathname already contains the target path
     // This can happen when Prismic links include the full path
@@ -25,22 +26,26 @@ export function middleware(request: NextRequest) {
     // e.g., "/video-first-page" should not match "/video"
     if (pathname === targetPath || pathname.startsWith(targetPath + "/")) {
       // Already has the prefix, just pass through
-      const response = NextResponse.next();
-      response.headers.set("x-pathname", pathname);
-      return response;
+      requestHeaders.set("x-pathname", pathname);
+      return NextResponse.next({
+        request: { headers: requestHeaders },
+      });
     }
 
     // Add the prefix for subdomain routing
     url.pathname = `${targetPath}${pathname}`;
-    const response = NextResponse.rewrite(url);
-    response.headers.set("x-pathname", `${targetPath}${pathname}`);
-    return response;
+    requestHeaders.set("x-pathname", `${targetPath}${pathname}`);
+    return NextResponse.rewrite(url, {
+      request: { headers: requestHeaders },
+    });
   }
 
   // For non-subdomain requests, pass pathname through
-  const response = NextResponse.next();
-  response.headers.set("x-pathname", pathname);
-  return response;
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {
