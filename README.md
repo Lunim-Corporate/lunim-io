@@ -2,24 +2,44 @@
 
 # Lunim.io
 
-A full-stack Next.js 15 application for Lunim, a digital innovation and technology consulting company. Features include:
+**Lunim.io** is a modern digital innovation and technology consulting company website that showcases services across multiple domains including AI automation, digital transformation, film & media production, and technology consulting.
 
-- 🎨 **Prismic CMS Integration** - Headless content management with 28+ reusable slices
-- 🌐 **Multi-Domain Subdomain Routing** - Support for brand-specific subdomains (e.g., `ai.lunim.io`)
-- 🤖 **Luna AI Assistant** - Voice-first conversational AI with OpenAI integration
-- 📱 **Responsive Design** - Tailwind CSS with smooth animations (Framer Motion, GSAP)
-- 💳 **Payment Integration** - Stripe for academy courses
-- 📊 **Analytics** - Google Analytics with custom event tracking
+## 🌟 What is Lunim.io?
 
-## Tech Stack
+Lunim combines a sophisticated marketing website with an AI-powered assistant to help businesses discover and implement digital transformation solutions. The platform features:
 
-- **Framework**: Next.js 15.5.7 (App Router) with React 19.1.0
+### Core Features
+
+- 🎨 **Prismic CMS Integration** - Fully headless content management with 28+ reusable slices for flexible page building
+- 🌐 **Multi-Brand Subdomain System** - Dedicated experiences for different service lines (e.g., `ai.lunim.io` for AI services, `video.lunim.io` for media production)
+- 🤖 **Luna AI Assistant** - Voice-first conversational AI that helps users discover solutions, with privacy modes, action plan generation, and PDF export
+- 📱 **Responsive Design** - Mobile-first design with Tailwind CSS and smooth animations (Framer Motion, GSAP)
+- 📊 **Content Analytics** - Blog view tracking and usage analytics
+- 📧 **Contact Management** - Integrated contact forms with email notifications
+- 🎓 **Academy Integration** - Course catalog with EventBrite integration
+- 🎬 **Portfolio Showcases** - Digital projects and film/media work galleries
+
+### Website Sections
+
+- **Homepage** - Company overview and service highlights
+- **Digital Portfolio** (`/digital`) - Showcase of digital transformation and software development projects
+- **Media Portfolio** (`/media`) - Film production, video, and creative work
+- **Blog** (`/blog`) - Articles on technology, AI, and digital innovation with view counters
+- **Team** (`/our-team`) - Company team and leadership
+- **Academy** (`/academy`) - Educational courses and training programs
+- **Luna AI** - Interactive AI assistant accessible throughout the site
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 15.5.7 (App Router) with React 19.1.0 and Turbopack
 - **Language**: TypeScript 5 (strict mode)
 - **Styling**: Tailwind CSS 4.1.14
-- **CMS**: Prismic
+- **CMS**: Prismic (headless content management)
 - **Database**: Supabase (PostgreSQL)
-- **Payments**: Stripe
-- **Deployment**: Netlify
+- **AI Integration**: OpenAI (GPT-4, Whisper, TTS)
+- **Email**: Resend API
+- **Deployment**: Netlify with Next.js plugin
+- **Animation**: Framer Motion 12.23.22, GSAP 3.13.0
 
 ## Getting Started
 
@@ -53,28 +73,207 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Create a `.env.local` file with the following variables:
 
 ```bash
-# Prismic
+# Prismic CMS
 NEXT_PUBLIC_PRISMIC_ENVIRONMENT=your-repo-name
 
-# Supabase (for Luna features)
+# Supabase Database (for Luna conversations and blog analytics)
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 
-# Stripe
-STRIPE_SECRET_KEY=your-stripe-secret
-STRIPE_WEBHOOK_SECRET=your-webhook-secret
-
-# Email
-RESEND_API_KEY=your-resend-key
-
-# OpenAI (for Luna)
+# OpenAI (for Luna AI features)
 OPENAI_API_KEY=your-openai-key
 
-# Site URL
+# Email Service (for contact forms)
+RESEND_API_KEY=your-resend-key
+
+# EventBrite (for Academy courses)
+EVENTBRITE_API_KEY=your-eventbrite-key
+EVENTBRITE_ORGANIZATION_ID=your-org-id
+
+# Site Configuration
 NEXT_PUBLIC_WEBSITE_URL=https://lunim.io
 ```
 
-## Subdomain Routing Architecture
+## 🎯 Key Features Explained
+
+### Luna AI Assistant
+
+Luna is the standout feature of Lunim.io - a sophisticated voice-first conversational AI assistant that helps users discover digital transformation solutions.
+
+**Location**: [src/components/Luna/](src/components/Luna/)
+
+**Capabilities**:
+- **Voice Interaction**: Speech-to-text (OpenAI Whisper) and text-to-speech (OpenAI TTS)
+- **Conversational AI**: Powered by OpenAI GPT-4 with custom system prompts
+- **Privacy Modes**:
+  - **On-the-Record**: Conversations saved to Supabase for future reference
+  - **Confidential**: Ephemeral sessions with no data persistence
+- **Action Plans**: Generates structured plans with key insights and next steps
+- **Clarification**: Asks follow-up questions to better understand user needs
+- **Export**: Download conversation history as PDF
+- **Analytics**: Usage tracking for insights and improvements
+
+**User Flow**:
+1. User opens Luna portal (floating button on all pages)
+2. Selects privacy mode (on-the-record or confidential)
+3. Engages via voice or text input
+4. Luna provides relevant information and suggestions
+5. Generates actionable plan based on conversation
+6. User can export or save conversation
+
+**Technical Implementation**:
+- State management via `useReducer` with [lunaReducer.ts](src/components/Luna/lunaReducer.ts)
+- API endpoints in [src/app/api/luna/](src/app/api/luna/)
+- Database schema in Supabase (`luna_conversations` table)
+
+### Prismic CMS Architecture
+
+The entire website is content-managed through Prismic, using a component-based "Slices" architecture.
+
+**Slices** (28+ components):
+- Hero sections, testimonials, FAQ, CTAs
+- Blog lists, project showcases, service grids
+- Navigation menus, footers, breadcrumbs
+- Video players, image galleries, stats displays
+
+**Content Types**:
+- Pages: `page`, `blog_post`, `digital_page`, `media_page`, etc.
+- Navigation: `primary_navigation`, `primary_navigation_generic`
+- Components: `author`, `footer`, `footer_generic`
+
+**Workflow**:
+1. Edit content in Prismic dashboard
+2. Content delivered via Prismic API
+3. Pages composed dynamically using SliceZone
+4. ISR (Incremental Static Regeneration) for optimal performance
+
+**Key Files**:
+- [src/prismicio.ts](src/prismicio.ts) - Client setup and routing
+- [src/slices/](src/slices/) - Slice components
+- [customtypes/](customtypes/) - Type definitions
+
+### Blog System
+
+Dynamic blog with advanced features:
+
+- **View Tracking**: Each post tracks unique views via Supabase
+- **Reading Time**: Automatically calculated based on word count
+- **Author Profiles**: Linked to Prismic author documents
+- **Categories & Tags**: Content organization
+- **SEO Optimized**: Dynamic metadata and Open Graph images
+- **Responsive Images**: Next.js Image optimization
+
+**Endpoints**:
+- [src/app/blog/[uid]/page.tsx](src/app/blog/[uid]/page.tsx) - Individual posts
+- [src/app/api/views/route.ts](src/app/api/views/route.ts) - View counter API
+
+### Academy & Course Management
+
+Integrated learning platform with EventBrite:
+
+- **Course Catalog**: Fetched from EventBrite API
+- **Event Details**: Dates, pricing, registration links
+- **Dynamic Pages**: Course pages generated from EventBrite data
+- **Registration**: Direct links to EventBrite checkout
+
+**Endpoints**:
+- [src/app/api/eventbrite/course/route.ts](src/app/api/eventbrite/course/route.ts) - Course data API
+
+### Portfolio Showcases
+
+Two dedicated portfolio sections:
+
+**Digital Portfolio** (`/digital`):
+- Software development projects
+- Web applications and platforms
+- AI/ML implementations
+- Client success stories
+
+**Media Portfolio** (`/media`):
+- Film and video production work
+- Creative campaigns
+- Documentary projects
+- Commercial content
+
+Both use Prismic custom types with rich media support (images, videos, case studies).
+
+### Contact System
+
+Integrated contact forms throughout the site:
+
+- **Forms**: Contact page, service inquiries, consultation requests
+- **Email Service**: Resend API for reliable delivery
+- **Validation**: Client and server-side validation
+- **Confirmation**: Auto-response emails to users
+
+**Endpoint**: [src/app/api/contact/route.ts](src/app/api/contact/route.ts)
+
+### SEO & Performance
+
+**SEO Features**:
+- Dynamic metadata generation per page
+- Open Graph images via [src/app/api/og/route.ts](src/app/api/og/route.ts)
+- Sitemap auto-generation [src/app/sitemap.ts](src/app/sitemap.ts)
+- Robots.txt configuration
+- JSON-LD structured data
+
+**Performance Optimizations**:
+- ISR (Incremental Static Regeneration) with tag-based revalidation
+- Next.js Image optimization
+- Turbopack for faster builds
+- Code splitting and lazy loading
+- Netlify CDN and edge functions
+
+## 📁 Project Structure
+
+```
+lunim-io/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API routes (15 endpoints)
+│   │   │   ├── luna/         # Luna AI endpoints
+│   │   │   ├── contact/      # Contact form
+│   │   │   ├── views/        # Blog view counter
+│   │   │   ├── eventbrite/   # Academy integration
+│   │   │   ├── og/           # Open Graph images
+│   │   │   └── ...
+│   │   ├── (subdomains)/     # Subdomain routes
+│   │   │   ├── ai-automation/
+│   │   │   └── video/
+│   │   ├── academy/          # Course pages
+│   │   ├── blog/             # Blog pages
+│   │   ├── digital/          # Digital portfolio
+│   │   ├── media/            # Media portfolio
+│   │   ├── our-team/         # Team page
+│   │   ├── layout.tsx        # Root layout
+│   │   ├── page.tsx          # Homepage
+│   │   └── globals.css       # Global styles
+│   ├── components/           # React components
+│   │   ├── Luna/            # Luna AI assistant
+│   │   └── ...
+│   ├── slices/              # Prismic slices (28+)
+│   │   ├── Hero/
+│   │   ├── NavigationMenu/
+│   │   ├── Footer/
+│   │   ├── BlogList/
+│   │   └── ...
+│   ├── lib/                 # Utilities and clients
+│   │   ├── supabaseServer.ts
+│   │   └── prismicImage.ts
+│   ├── utils/               # Helper functions
+│   ├── hooks/               # Custom React hooks
+│   ├── assets/              # Static assets
+│   ├── middleware.ts        # Subdomain routing
+│   └── prismicio.ts         # Prismic config
+├── customtypes/             # Prismic type definitions
+├── public/                  # Public static files
+├── netlify.toml            # Netlify config
+├── tailwind.config.ts      # Tailwind config
+├── tsconfig.json           # TypeScript config
+└── package.json            # Dependencies
+```
+
+## 🌐 Subdomain Routing Architecture
 
 This application supports multi-tenant subdomain routing, allowing brand-specific experiences on different subdomains (e.g., `ai.lunim.io` for AI Automation).
 
@@ -517,17 +716,120 @@ Then visit: `http://web3.localhost:3000`
 
 **Solution**: Middleware only redirects when pathname starts with subdomain prefix AND user is on main domain
 
-## Learn More
+## 🔌 API Endpoints Reference
 
-To learn more about Next.js, take a look at the following resources:
+### Luna AI Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/luna/conversation` | POST | Persist conversation history to Supabase |
+| `/api/luna/plan` | POST | Generate action plans from conversation |
+| `/api/luna/clarify` | POST | Get clarification questions |
+| `/api/luna/whisper` | POST | Speech-to-text transcription |
+| `/api/luna/tts` | POST | Text-to-speech generation |
+| `/api/luna/analytics` | POST | Track Luna usage analytics |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Content & Communication
 
-## Deploy on Vercel
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/contact` | POST | Handle contact form submissions via Resend |
+| `/api/views` | GET/POST | Blog post view counter (Supabase) |
+| `/api/eventbrite/course` | POST | Fetch EventBrite course data |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Site Management
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/og` | GET | Generate dynamic Open Graph images |
+| `/api/preview` | GET | Enable Prismic draft preview mode |
+| `/api/exit-preview` | GET | Disable Prismic preview mode |
+| `/api/revalidate` | POST | Trigger ISR revalidation |
+
+## 🛠️ Development Workflow
+
+### Working with Prismic
+
+1. **Making Content Changes**:
+   ```bash
+   # No code changes needed - just edit in Prismic dashboard
+   # Changes appear immediately in development (5s revalidation)
+   # Production uses ISR with tag-based revalidation
+   ```
+
+2. **Creating New Slices**:
+   ```bash
+   npm run slicemachine  # Open Slice Machine editor
+   # Create slice in UI
+   # Implement component in /src/slices/[SliceName]/index.tsx
+   ```
+
+### Adding New Features
+
+**Adding a New Page**:
+1. Create custom type in Prismic (if needed)
+2. Update route resolver in [src/prismicio.ts](src/prismicio.ts)
+3. Create page component in `/src/app/`
+4. Implement `generateMetadata()` for SEO
+5. Use `SliceZone` to render Prismic content
+
+**Adding a New API Endpoint**:
+1. Create `/src/app/api/[route]/route.ts`
+2. Export `GET`, `POST`, etc. as needed
+3. Handle errors appropriately
+4. Add CORS headers if needed for external access
+
+**Adding Client-Side Interactivity**:
+1. Create component with `"use client"` directive
+2. Use hooks (useState, useEffect, etc.)
+3. Consider server-side data fetching with client hydration
+4. Optimize with React.lazy() for code splitting
+
+### Database Operations
+
+**Supabase Tables**:
+- `luna_conversations` - Luna chat history
+- `blog_views` - Blog view counts
+
+**Making Schema Changes**:
+1. Update schema in Supabase dashboard
+2. Update TypeScript types if needed
+3. Test locally before deploying
+
+### Deployment
+
+The site auto-deploys via Netlify on push to `production` branch:
+
+1. **Development**: Work on feature branches (`dev_*`)
+2. **Testing**: Test locally with `npm run build && npm start`
+3. **Pull Request**: Create PR to `main` branch
+4. **Deploy Preview**: Netlify generates preview URL
+5. **Merge**: Auto-deploys to production
+
+**Manual Revalidation**:
+```bash
+# Trigger ISR revalidation via webhook
+curl -X POST https://lunim.io/api/revalidate?secret=YOUR_SECRET
+```
+
+### Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Type check
+npx tsc --noEmit
+
+# Format code (if Prettier is configured)
+npm run format
+```
+
+## 📚 Additional Resources
+
+- [Next.js Documentation](https://nextjs.org/docs) - Next.js features and API
+- [Prismic Documentation](https://prismic.io/docs/nextjs) - Prismic with Next.js
+- [Supabase Documentation](https://supabase.com/docs) - Database and auth
+- [Tailwind CSS](https://tailwindcss.com/docs) - Styling utilities
+- [OpenAI API](https://platform.openai.com/docs) - AI integration
+- [Netlify Docs](https://docs.netlify.com/) - Deployment and hosting
