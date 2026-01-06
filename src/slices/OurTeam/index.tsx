@@ -205,7 +205,12 @@ const BioCard: FC<{
 
       <div className="text-slate-200 text-sm py-2">
         {/* Keeps the formatting the same as it is in Prismic */}
-        <p className="whitespace-pre-wrap">{member?.description}</p>
+        {member?.description
+          ?.split(/\n/)
+          .filter((line: string) => line.trim())
+          .map((line: string, index: number) => (
+            <p key={index}>{line.trim()}</p>
+          ))}
       </div>
     </div>
   );
