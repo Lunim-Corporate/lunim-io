@@ -200,7 +200,7 @@ const BioCard: FC<{
       className={`bg-slate-900/90 p-5 text-start h-full`}
     >
       <div className="mb-4">
-        <span className="text-sm text-slate-400">{member?.role}</span>
+        <span className="text-md text-slate-400">{member?.role}</span>
       </div>
 
       <div className="text-slate-200 text-sm py-2">
