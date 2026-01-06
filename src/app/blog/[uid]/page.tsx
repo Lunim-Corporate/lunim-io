@@ -53,6 +53,58 @@ function withFallbackAlt<T extends ImageLikeField>(
   return { ...field, alt: fallbackAlt } as T;
 }
 
+// Helper to get initials from name
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper to generate consistent color from name
+function getColorFromName(name: string): string {
+  const colors = [
+    "bg-blue-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-red-500",
+    "bg-teal-500",
+  ];
+  const hash = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+}
+
+// Avatar component with fallback to initials
+function AuthorAvatar({ name, image, size = 40 }: { name: string; image: ImageLikeField | null | undefined; size?: number }) {
+  const imageWithAlt = withFallbackAlt(image, name);
+
+  if (imageWithAlt?.url) {
+    return (
+      <PrismicNextImage
+        field={imageWithAlt}
+        className={`rounded-full inline-block object-cover`}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
+  // Fallback to initials
+  const initials = getInitials(name);
+  const bgColor = getColorFromName(name);
+
+  return (
+    <div
+      className={`rounded-full ${bgColor} flex items-center justify-center text-white font-semibold`}
+      style={{ width: size, height: size, fontSize: size * 0.4 }}
+    >
+      {initials}
+    </div>
+  );
+}
+
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { uid } = await params;
 
@@ -65,35 +117,56 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     .catch(() => null)) as BlogPostDocument | null;
   if (!doc) notFound();
   const docData: Simplify<BlogPostDocumentData> = doc.data;
-  
+
   const faqSlice: SliceZone<BlogPostDocumentDataSlicesSlice> = docData.slices
   const faqs = (faqSlice[0] as any)?.items as any[] | undefined
   const faqHeading: RichTextField | undefined = (faqSlice[0] as any)?.primary?.title
   const readingTime: number = calculateReadingTime(docData.main_article_content);
-  // Author info from linked document
-  const authorInfo = docData.author_info;
-  const authorData =
-    authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
-  const authorUid =
-    authorInfo && "uid" in authorInfo && typeof authorInfo.uid === "string"
-      ? authorInfo.uid
-      : null;
-  const authorName =
-    (typeof authorData?.author_name === "string"
-      ? authorData.author_name.trim()
-      : "") || "";
-  const authorDisplayName = authorName || "Lunim";
-  const authorBio = authorData?.author_bio;
-  const authorImage = authorData?.author_image ?? null;
+
+  // Parse multiple authors from the authors group field
+  const authorsGroup = docData.authors || [];
+  const authors = authorsGroup.map((authorItem: any) => {
+    const authorInfo = authorItem.author_info;
+    const authorData =
+      authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
+    const authorUid =
+      authorInfo && "uid" in authorInfo && typeof authorInfo.uid === "string"
+        ? authorInfo.uid
+        : null;
+    const authorName =
+      (typeof authorData?.author_name === "string"
+        ? authorData.author_name.trim()
+        : "") || "";
+    const authorBio = authorData?.author_bio;
+    const authorImage = authorData?.author_image ?? null;
+
+    return {
+      uid: authorUid,
+      name: authorName || "Lunim",
+      bio: authorBio,
+      image: authorImage,
+    };
+  }).filter((author: any) => author.name);
+
+  // For backwards compatibility and single-author display
+  const primaryAuthor = authors[0] || { uid: null, name: "Lunim", bio: undefined, image: null };
+
+  // Smart formatting for author names
+  const formatAuthorNames = (authorsList: typeof authors): string => {
+    if (authorsList.length === 0) return "Lunim";
+    if (authorsList.length === 1) return authorsList[0].name;
+    if (authorsList.length === 2) return `${authorsList[0].name} & ${authorsList[1].name}`;
+    // 3+ authors: "Name1, Name2 +X more"
+    const remaining = authorsList.length - 2;
+    return `${authorsList[0].name}, ${authorsList[1].name} +${remaining} more`;
+  };
+
+  const authorDisplayNames = formatAuthorNames(authors);
 
   const headingText = (asText(docData.blog_article_heading || []) || "").trim();
   const articleImageWithAlt = withFallbackAlt(
     docData.article_main_image,
     headingText || "Blog article image"
-  );
-  const authorImageWithAlt = withFallbackAlt(
-    authorImage,
-    authorName || "Blog author portrait"
   );
 
   const canonicalUrl =
@@ -102,6 +175,23 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     `${SITE_URL}/blog/${uid}`;
   const mainContentText = asText(docData.main_article_content);
   const articleBody = mainContentText || undefined;
+
+  // Build author JSON-LD - support multiple authors
+  const authorJsonLd = authors.length > 1
+    ? authors.map((author: any) => {
+        const authorImageWithAlt = withFallbackAlt(author.image, author.name || "Author");
+        return {
+          "@type": "Person" as const,
+          name: author.name,
+          ...(authorImageWithAlt?.url ? { image: authorImageWithAlt.url } : {}),
+        };
+      })
+    : {
+        "@type": "Person" as const,
+        name: primaryAuthor.name,
+        ...(primaryAuthor.image?.url ? { image: withFallbackAlt(primaryAuthor.image, primaryAuthor.name)?.url } : {}),
+      };
+
   const blogPostingJsonLd: WithContext<BlogPosting> = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -114,11 +204,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     datePublished: docData.publication_date || undefined,
     dateModified: docData.publication_date || undefined,
     image: articleImageWithAlt?.url || undefined,
-    author: {
-      "@type": "Person",
-      name: authorDisplayName,
-      ...(authorImageWithAlt?.url ? { image: authorImageWithAlt.url } : {}),
-    },
+    author: authorJsonLd,
     publisher: {
       "@type": "Organization",
       name: "Lunim",
@@ -180,14 +266,26 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                   components={{heading1: ({children}) => <h1 className="text-6xl">{children}</h1>}}/>
               </div>
               <div className="flex gap-10">
-                <div className="flex items-center">
-                  {authorImageWithAlt?.url ? (
-                    <PrismicNextImage
-                      field={authorImageWithAlt}
-                      className="rounded-full w-[40] aspect-[1] inline-block mr-2"
-                    />
-                  ) : null}
-                  <span>By {authorDisplayName} </span>
+                <div className="flex items-center gap-2">
+                  {authors.length === 1 ? (
+                    <>
+                      <AuthorAvatar name={authors[0].name} image={authors[0].image} size={40} />
+                      <span>By {authors[0].name}</span>
+                    </>
+                  ) : authors.length > 1 ? (
+                    <>
+                      <div className="flex -space-x-2">
+                        {authors.slice(0, 3).map((author: any, index: number) => (
+                          <div key={index} className="border-2 border-black rounded-full">
+                            <AuthorAvatar name={author.name} image={author.image} size={40} />
+                          </div>
+                        ))}
+                      </div>
+                      <span>By {authorDisplayNames}</span>
+                    </>
+                  ) : (
+                    <span>By Lunim</span>
+                  )}
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1" />
@@ -260,30 +358,36 @@ export default async function Page({ params }: { params: Promise<Params> }) {
               </div>
               {/* End FAQs section */}
               {/* Article written by section */}
-              <div className="grid grid-cols-1 sm:grid-cols-[3fr_1fr] sm:gap-x-2 p-6 bg-[#1f2937] rounded-lg">
-                <div className="order-2 sm:order-1">
-                  <h4 className="mb-0!">Article Written by</h4>
-              <h3 className="mt-0! font-bold">{authorDisplayName}</h3>
-              <p>{authorBio}</p>
-              {authorUid ? (
-                <Link
-                  href={`/blog/authors/${authorUid}`}
-                  className="inline-flex items-center justify-center px-5 py-2 mt-4 text-sm font-semibold text-black bg-cyan-300 rounded-full hover:bg-cyan-200 transition-colors no-underline"
-                >
-                  More from {authorDisplayName}
-                </Link>
+              {authors.length > 0 ? (
+                <div className="space-y-6">
+                  <h4 className="text-2xl font-bold">
+                    {authors.length === 1 ? "Article Written by" : "Co-Authors"}
+                  </h4>
+                  {authors.map((author: any, index: number) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 sm:grid-cols-[3fr_1fr] sm:gap-x-2 p-6 bg-[#1f2937] rounded-lg"
+                    >
+                      <div className="order-2 sm:order-1">
+                        <h3 className="mt-0! font-bold">{author.name}</h3>
+                        {author.bio ? <p>{author.bio}</p> : null}
+                        {author.uid ? (
+                          <Link
+                            href={`/blog/authors/${author.uid}`}
+                            className="inline-flex items-center justify-center px-5 py-2 mt-4 text-sm font-semibold text-black bg-cyan-300 rounded-full hover:bg-cyan-200 transition-colors no-underline"
+                          >
+                            More from {author.name}
+                          </Link>
+                        ) : null}
+                      </div>
+                      <div className="order-1 sm:order-2 flex justify-center sm:justify-end">
+                        <AuthorAvatar name={author.name} image={author.image} size={150} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : null}
-                </div>
-              <div className="order-1 sm:order-2">
-                  {authorImageWithAlt?.url ? (
-                    <PrismicNextImage
-                      field={authorImageWithAlt}
-                      className="rounded-full w-[150] aspect-[1] sm:ms-auto"
-                    />
-                  ) : null}
-                </div>
-              </div>
-               {/* End Article written by section */}
+              {/* End Article written by section */}
             </div>
           </div>
         </article>

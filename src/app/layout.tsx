@@ -4,7 +4,7 @@ import { GA_ID } from "@/lib/gtag";
 import { Suspense } from "react";
 // Next
 import Script from "next/script";
-import { draftMode } from "next/headers";
+import { draftMode, headers } from "next/headers";
 import { Metadata } from "next";
 // Prismic
 import { createClient, repositoryName } from "@/prismicio";
@@ -19,22 +19,82 @@ import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Lunim",
-    default: "Lunim", // Fall back when no title is provided
-  },
-  // Default description
-  description: "Lunim website page",
-  keywords: "technology, innovation, software, development, lunim",
-  // Base URL prefix for metadata fields that require a fully qualified URL
-  metadataBase: new URL(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/"),
-  openGraph: {
-    type: "website",
-    locale: "en_GB",
-    siteName: "Lunim",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "lunim.io";
+  const pathname = headersList.get("x-pathname") || "/";
+  const siteKey = getSiteKey(hostname, pathname);
+
+  // Determine base URL based on hostname
+  let baseUrl: string;
+  let siteName: string;
+  let siteTitle: string;
+  let siteDescription: string;
+
+  if (siteKey === "ai") {
+    baseUrl = `https://${hostname}`;
+    siteName = "Lunim AI Automation";
+    siteTitle = "Lunim AI Automation – AI-Powered Solutions";
+    siteDescription = "Transform your business with AI automation solutions from Lunim.";
+  } else if (siteKey === "video") {
+    baseUrl = `https://${hostname}`;
+    siteName = "Lunim Video Production";
+    siteTitle = "Lunim Video Production – Professional Video Services";
+    siteDescription = "Create compelling visual stories with professional video production from Lunim.";
+  } else {
+    baseUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/";
+    siteName = "Lunim";
+    siteTitle = "Lunim.io – Innovative Digital Solutions";
+    siteDescription = "Lunim.io creates seamless digital experiences with cutting-edge technology and design.";
+  }
+
+  return {
+    title: {
+      template: `%s | ${siteName}`,
+      default: siteName,
+    },
+    description: siteDescription,
+    keywords: "technology, innovation, software, development, lunim, AI, automation",
+    metadataBase: new URL(baseUrl),
+    openGraph: {
+      type: "website",
+      locale: "en_GB",
+      siteName: siteName,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteTitle,
+      description: siteDescription,
+      images: [
+        `${baseUrl}/assets/images/og-image.jpg`
+      ],
+    },
+  };
+}
+
+// Helper function to determine site key from hostname and pathname
+function getSiteKey(hostname: string, pathname: string = "/"): "main" | "ai" | "video" {
+  const subdomain = hostname.split(".")[0];
+
+  // Check if it's a subdomain we handle
+  if (subdomain === "ai" && !hostname.startsWith("www")) {
+    return "ai";
+  }
+  if (subdomain === "video-next" && !hostname.startsWith("www")) {
+    return "video";
+  }
+
+  // Check if pathname starts with a subdomain route prefix
+  if (pathname.startsWith("/ai-automation")) {
+    return "ai";
+  }
+  if (pathname.startsWith("/video")) {
+    return "video";
+  }
+
+  // Default to main for lunim.io, www.lunim.io, and Netlify preview URLs
+  return "main";
+}
 
 export default async function RootLayout({
   children,
@@ -42,21 +102,78 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraft } = await draftMode();
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "lunim.io";
+  const pathname = headersList.get("x-pathname") || "/";
+  const siteKey = getSiteKey(hostname, pathname);
+
   const client = createClient();
-  const primaryNav = (await (client as any)
-    .getSingle("primary_navigation")
-    .catch(() => null)) as Content.PrimaryNavigationDocument | null;
-  // Extract the navigation_menu slice from the slices array
-  const navigationMenu = primaryNav?.data?.slices.find(
-    (slice: any) => slice.slice_type === "navigation_menu"
-  );
-  // Fetch the footer slice
-  const footer = (await (client as any)
-    .getSingle("footer")
-    .catch(() => null)) as Content.FooterDocument | null;
-  const footerSlice = footer?.data?.slices.find(
-    (slice: any) => slice.slice_type === "footer"
-  );
+
+  let navigationMenu: any = null;
+  let navigationSlices: any[] = [];
+  let footerSlice: any = null;
+  let footerSlices: any[] = [];
+
+  if (siteKey === "main") {
+    // Main domain: use existing singleton navigation and footer
+    const primaryNav = (await (client as any)
+      .getSingle("primary_navigation")
+      .catch(() => null)) as Content.PrimaryNavigationDocument | null;
+
+    navigationSlices = primaryNav?.data?.slices || [];
+    navigationMenu = navigationSlices.find(
+      (slice: any) => slice.slice_type === "navigation_menu"
+    );
+
+    const footer = (await (client as any)
+      .getSingle("footer")
+      .catch(() => null)) as Content.FooterDocument | null;
+
+    footerSlices = footer?.data?.slices || [];
+    footerSlice = footerSlices.find(
+      (slice: any) => slice.slice_type === "footer"
+    );
+  } else {
+    // Subdomain: fetch generic navigation and footer by domain
+    const domainMap: Record<string, string> = {
+      "ai": "ai-automation",
+      "video": "video",
+    };
+
+    const domainValue = domainMap[siteKey];
+
+    // Fetch navigation for subdomain
+    const navDocs = await (client as any)
+      .getAllByType("primary_navigation_generic")
+      .catch(() => []);
+
+    const navDoc = navDocs.find(
+      (doc: any) => doc.data?.domain === domainValue
+    );
+
+    if (navDoc) {
+      navigationSlices = navDoc.data?.slices || [];
+      navigationMenu = navigationSlices.find(
+        (slice: any) => slice.slice_type === "navigation_menu"
+      );
+    }
+
+    // Fetch footer for subdomain
+    const footerDocs = await (client as any)
+      .getAllByType("footer_generic")
+      .catch(() => []);
+
+    const footerDoc = footerDocs.find(
+      (doc: any) => doc.data?.domain === domainValue
+    );
+
+    if (footerDoc) {
+      footerSlices = footerDoc.data?.slices || [];
+      footerSlice = footerSlices.find(
+        (slice: any) => slice.slice_type === "footer"
+      );
+    }
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -97,9 +214,9 @@ export default async function RootLayout({
           {navigationMenu && (
             <NavigationMenu
               slice={navigationMenu}
-              index={0} // Default index
-              slices={primaryNav?.data?.slices || []} // Pass the full slices array
-              context={{}} // Provide an empty context object
+              index={0}
+              slices={navigationSlices}
+              context={{}}
             />
           )}
           <Suspense fallback={null}>
@@ -111,7 +228,7 @@ export default async function RootLayout({
             <Footer
               slice={footerSlice}
               index={0}
-              slices={footer?.data?.slices || []}
+              slices={footerSlices}
               context={{}}
             />
           )}

@@ -64,6 +64,20 @@ export const linkResolver: LinkResolverFunction = (link) => {
       return `/digital/${safe}`;
     }
   }
+  // Handle AI Automation pages
+  if (link.type === "ai_automation_page") {
+    if (link.uid) return `/ai-automation/${encodeURIComponent(link.uid)}`;
+  }
+  if (link.type === "ai_automation") {
+    return "/ai-automation";
+  }
+  // Handle Video pages
+  if (link.type === "video_page") {
+    if (link.uid) return `/video/${encodeURIComponent(link.uid)}`;
+  }
+  if (link.type === "video") {
+    return "/video";
+  }
   // return undefined to let the client's route resolvers handle the rest
   return undefined;
 };
@@ -87,6 +101,10 @@ const routes: Route[] = [
   { type: "blog_home_page", path: "/blog" },
   { type: "blog_post", path: "/blog/:uid" },
   { type: "author", path: "/blog/authors/:uid" },
+  { type: "ai_automation", path: "/ai-automation" },
+  { type: "ai_automation_page", path: "/ai-automation/:uid" },
+  { type: "video", path: "/video" },
+  { type: "video_page", path: "/video/:uid" },
 ];
 
 /**
