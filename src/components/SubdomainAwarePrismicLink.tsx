@@ -31,6 +31,7 @@ export function SubdomainAwarePrismicLink(props: PrismicNextLinkProps) {
     // Define prefix mapping
     const subdomainPrefixMap: Record<string, string> = {
       "ai": "/ai-automation",
+      "ux": "/ux",
       "video-next": "/video",
     };
 
