@@ -4,7 +4,10 @@
 
 **Lunim.io** is a modern digital innovation and technology consulting company website that showcases services across multiple domains including AI automation, digital transformation, film & media production, and technology consulting.
 
+## Table of Contents
+
 - [Lunim.io](#lunimio)
+  - [Table of Contents](#table-of-contents)
   - [🌟 What is Lunim.io?](#-what-is-lunimio)
     - [Core Features](#core-features)
     - [Website Sections](#website-sections)
