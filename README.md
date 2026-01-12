@@ -4,6 +4,52 @@
 
 **Lunim.io** is a modern digital innovation and technology consulting company website that showcases services across multiple domains including AI automation, digital transformation, film & media production, and technology consulting.
 
+- [Lunim.io](#lunimio)
+  - [🌟 What is Lunim.io?](#-what-is-lunimio)
+    - [Core Features](#core-features)
+    - [Website Sections](#website-sections)
+  - [🚀 Tech Stack](#-tech-stack)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Environment Variables](#environment-variables)
+  - [🎯 Key Features Explained](#-key-features-explained)
+    - [Luna AI Assistant](#luna-ai-assistant)
+    - [Prismic CMS Architecture](#prismic-cms-architecture)
+    - [Blog System](#blog-system)
+    - [Academy \& Course Management](#academy--course-management)
+    - [Portfolio Showcases](#portfolio-showcases)
+    - [Contact System](#contact-system)
+    - [SEO \& Performance](#seo--performance)
+  - [📁 Project Structure](#-project-structure)
+  - [🌐 Subdomain Routing Architecture](#-subdomain-routing-architecture)
+    - [How It Works](#how-it-works)
+    - [Adding a New Subdomain](#adding-a-new-subdomain)
+      - [1. Update Middleware](#1-update-middleware)
+      - [2. Create Nested Layout](#2-create-nested-layout)
+      - [3. Create Page Routes](#3-create-page-routes)
+      - [4. Update Prismic Link Resolver](#4-update-prismic-link-resolver)
+      - [5. Update RootLayout](#5-update-rootlayout)
+      - [6. Update Breadcrumbs](#6-update-breadcrumbs)
+      - [7. Update SubdomainAwarePrismicLink](#7-update-subdomainawareprismiclink)
+      - [8. Setup Prismic CMS](#8-setup-prismic-cms)
+      - [9. Configure DNS](#9-configure-dns)
+      - [10. Local Testing](#10-local-testing)
+    - [Architecture Diagram](#architecture-diagram)
+    - [Key Files Reference](#key-files-reference)
+    - [Troubleshooting](#troubleshooting)
+  - [🔌 API Endpoints Reference](#-api-endpoints-reference)
+    - [Luna AI Endpoints](#luna-ai-endpoints)
+    - [Content \& Communication](#content--communication)
+    - [Site Management](#site-management)
+  - [🛠️ Development Workflow](#️-development-workflow)
+    - [Working with Prismic](#working-with-prismic)
+    - [Adding New Features](#adding-new-features)
+    - [Database Operations](#database-operations)
+    - [Deployment](#deployment)
+    - [Code Quality](#code-quality)
+  - [📚 Additional Resources](#-additional-resources)
+
 ## 🌟 What is Lunim.io?
 
 Lunim combines a sophisticated marketing website with an AI-powered assistant to help businesses discover and implement digital transformation solutions. The platform features:
@@ -103,6 +149,7 @@ Luna is the standout feature of Lunim.io - a sophisticated voice-first conversat
 **Location**: [src/components/Luna/](src/components/Luna/)
 
 **Capabilities**:
+
 - **Voice Interaction**: Speech-to-text (OpenAI Whisper) and text-to-speech (OpenAI TTS)
 - **Conversational AI**: Powered by OpenAI GPT-4 with custom system prompts
 - **Privacy Modes**:
@@ -114,6 +161,7 @@ Luna is the standout feature of Lunim.io - a sophisticated voice-first conversat
 - **Analytics**: Usage tracking for insights and improvements
 
 **User Flow**:
+
 1. User opens Luna portal (floating button on all pages)
 2. Selects privacy mode (on-the-record or confidential)
 3. Engages via voice or text input
@@ -122,6 +170,7 @@ Luna is the standout feature of Lunim.io - a sophisticated voice-first conversat
 6. User can export or save conversation
 
 **Technical Implementation**:
+
 - State management via `useReducer` with [lunaReducer.ts](src/components/Luna/lunaReducer.ts)
 - API endpoints in [src/app/api/luna/](src/app/api/luna/)
 - Database schema in Supabase (`luna_conversations` table)
@@ -131,23 +180,27 @@ Luna is the standout feature of Lunim.io - a sophisticated voice-first conversat
 The entire website is content-managed through Prismic, using a component-based "Slices" architecture.
 
 **Slices** (28+ components):
+
 - Hero sections, testimonials, FAQ, CTAs
 - Blog lists, project showcases, service grids
 - Navigation menus, footers, breadcrumbs
 - Video players, image galleries, stats displays
 
 **Content Types**:
+
 - Pages: `page`, `blog_post`, `digital_page`, `media_page`, etc.
 - Navigation: `primary_navigation`, `primary_navigation_generic`
 - Components: `author`, `footer`, `footer_generic`
 
 **Workflow**:
+
 1. Edit content in Prismic dashboard
 2. Content delivered via Prismic API
 3. Pages composed dynamically using SliceZone
 4. ISR (Incremental Static Regeneration) for optimal performance
 
 **Key Files**:
+
 - [src/prismicio.ts](src/prismicio.ts) - Client setup and routing
 - [src/slices/](src/slices/) - Slice components
 - [customtypes/](customtypes/) - Type definitions
@@ -164,6 +217,7 @@ Dynamic blog with advanced features:
 - **Responsive Images**: Next.js Image optimization
 
 **Endpoints**:
+
 - [src/app/blog/[uid]/page.tsx](src/app/blog/[uid]/page.tsx) - Individual posts
 - [src/app/api/views/route.ts](src/app/api/views/route.ts) - View counter API
 
@@ -177,6 +231,7 @@ Integrated learning platform with EventBrite:
 - **Registration**: Direct links to EventBrite checkout
 
 **Endpoints**:
+
 - [src/app/api/eventbrite/course/route.ts](src/app/api/eventbrite/course/route.ts) - Course data API
 
 ### Portfolio Showcases
@@ -184,12 +239,14 @@ Integrated learning platform with EventBrite:
 Two dedicated portfolio sections:
 
 **Digital Portfolio** (`/digital`):
+
 - Software development projects
 - Web applications and platforms
 - AI/ML implementations
 - Client success stories
 
 **Media Portfolio** (`/media`):
+
 - Film and video production work
 - Creative campaigns
 - Documentary projects
@@ -211,6 +268,7 @@ Integrated contact forms throughout the site:
 ### SEO & Performance
 
 **SEO Features**:
+
 - Dynamic metadata generation per page
 - Open Graph images via [src/app/api/og/route.ts](src/app/api/og/route.ts)
 - Sitemap auto-generation [src/app/sitemap.ts](src/app/sitemap.ts)
@@ -218,6 +276,7 @@ Integrated contact forms throughout the site:
 - JSON-LD structured data
 
 **Performance Optimizations**:
+
 - ISR (Incremental Static Regeneration) with tag-based revalidation
 - Next.js Image optimization
 - Turbopack for faster builds
@@ -751,6 +810,7 @@ Then visit: `http://web3.localhost:3000`
 ### Working with Prismic
 
 1. **Making Content Changes**:
+
    ```bash
    # No code changes needed - just edit in Prismic dashboard
    # Changes appear immediately in development (5s revalidation)
@@ -758,6 +818,7 @@ Then visit: `http://web3.localhost:3000`
    ```
 
 2. **Creating New Slices**:
+
    ```bash
    npm run slicemachine  # Open Slice Machine editor
    # Create slice in UI
@@ -767,6 +828,7 @@ Then visit: `http://web3.localhost:3000`
 ### Adding New Features
 
 **Adding a New Page**:
+
 1. Create custom type in Prismic (if needed)
 2. Update route resolver in [src/prismicio.ts](src/prismicio.ts)
 3. Create page component in `/src/app/`
@@ -774,12 +836,14 @@ Then visit: `http://web3.localhost:3000`
 5. Use `SliceZone` to render Prismic content
 
 **Adding a New API Endpoint**:
+
 1. Create `/src/app/api/[route]/route.ts`
 2. Export `GET`, `POST`, etc. as needed
 3. Handle errors appropriately
 4. Add CORS headers if needed for external access
 
 **Adding Client-Side Interactivity**:
+
 1. Create component with `"use client"` directive
 2. Use hooks (useState, useEffect, etc.)
 3. Consider server-side data fetching with client hydration
@@ -788,10 +852,12 @@ Then visit: `http://web3.localhost:3000`
 ### Database Operations
 
 **Supabase Tables**:
+
 - `luna_conversations` - Luna chat history
 - `blog_views` - Blog view counts
 
 **Making Schema Changes**:
+
 1. Update schema in Supabase dashboard
 2. Update TypeScript types if needed
 3. Test locally before deploying
@@ -807,6 +873,7 @@ The site auto-deploys via Netlify on push to `production` branch:
 5. **Merge**: Auto-deploys to production
 
 **Manual Revalidation**:
+
 ```bash
 # Trigger ISR revalidation via webhook
 curl -X POST https://lunim.io/api/revalidate?secret=YOUR_SECRET
