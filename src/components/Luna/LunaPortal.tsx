@@ -24,6 +24,7 @@ import { PrivacyMode, InteractionMode, LunaConversationDecision } from './types'
 import { lunaAnalytics } from './utils/analytics';
 import { generatePlanPDF, downloadPDF } from './utils/pdf';
 import { speechManager } from './utils/speechManager';
+import { lunaProcessingPhrases } from './components/lunaProcessingPhrases';
 
 interface LunaPortalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [state, dispatch] = useReducer(lunaReducer, initialLunaState);
   const [textInput, setTextInput] = useState('');
   const [ttsRate, setTtsRate] = useState(0.95);
+  const [processingPhrase, setProcessingPhrase] = useState<string | null>(null)
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [pendingPrivacyMode, setPendingPrivacyMode] = useState<PrivacyMode>('on-the-record');
@@ -44,6 +46,12 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const [reduceMotionManual, setReduceMotionManual] = useState(false);
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
   const wasOpenRef = useRef(isOpen);
+
+  //Refs to control cycling between processing phrases without triggering re-renders
+  const phraseTimerRef = useRef<number | null>(null);
+  const phraseIndexRef = useRef(0);
+  const shuffledPhrasesRef = useRef<string[]>([]);
+
 
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
@@ -203,6 +211,32 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       },
     });
 
+  //Handle processing phrase cycling and shuffling based on Luna's thinking state
+  const startProcessingPhrases = useCallback(() => {
+    // Shuffle once per thinking phase
+    shuffledPhrasesRef.current = [...lunaProcessingPhrases].sort(
+      () => Math.random() - 0.5
+    );
+    phraseIndexRef.current = 0;
+
+    setProcessingPhrase(shuffledPhrasesRef.current[0]);
+
+    phraseTimerRef.current = window.setInterval(() => {
+      phraseIndexRef.current =
+        (phraseIndexRef.current + 1) % shuffledPhrasesRef.current.length;
+
+      setProcessingPhrase(shuffledPhrasesRef.current[phraseIndexRef.current]);
+    }, 1200);
+  }, []);
+
+  const stopProcessingPhrases = useCallback(() => {
+    if (phraseTimerRef.current) {
+      clearInterval(phraseTimerRef.current);
+      phraseTimerRef.current = null;
+    }
+    setProcessingPhrase(null);
+  }, []);
+
   // Update listening callbacks ref
   useEffect(() => {
     listeningCallbacksRef.current = {
@@ -221,6 +255,18 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   useEffect(() => {
     dispatch({ type: 'SET_SPEAKING', payload: isSpeaking });
   }, [isSpeaking]);
+
+  // Start and stop phrase cycling based on Luna's thinking state
+  useEffect(() => {
+    if (state.state === "thinking") {
+      startProcessingPhrases();
+    } else {
+      stopProcessingPhrases();
+    }
+
+    return stopProcessingPhrases;
+  }, [state.state, startProcessingPhrases, stopProcessingPhrases]);
+
   
   // Cleanup on unmount and route changes
   useEffect(() => {
@@ -603,6 +649,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     }
   }, [state.session]);
 
+
   if (!isOpen) return null;
 
   const lunaBusy = state.state === 'thinking' || state.isSpeaking;
@@ -632,596 +679,651 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
               className="relative w-full max-w-4xl bg-black border border-zinc-800/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col min-h-0 my-6 sm:my-8 max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-4rem)]"
               style={{
                 boxShadow:
-                  '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+                  "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)",
               }}
             >
-            {/* Confetti on PDF ready (disabled in reduced-motion) */}
-            {showConfetti && !reduceMotion && (
-              <div className="pointer-events-none absolute inset-0 flex justify-center items-start">
-                {[0, 1, 2, 3, 4, 5].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="text-yellow-200"
-                    initial={{ y: 0, opacity: 0, x: (i - 2.5) * 24 }}
-                    animate={{ y: 80, opacity: [0, 1, 0] }}
-                    transition={{
-                      duration: 1.2,
-                      delay: i * 0.05,
-                      ease: 'easeOut',
-                    }}
-                  >
-                    ✦
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-            {/* Header - thin, controls + compact selections */}
-            <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
-              {/* Compact summary of mode + privacy once session started (shares layout with intro selector) */}
-              <div className="flex items-center gap-3 max-w-[65%]">
-                {state.session && (
-                  <motion.div
-                    layoutId="interaction-mode-pill"
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: reduceMotion ? 0.1 : 0.25 }}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-xs sm:text-sm text-gray-200/90"
-                  >
-                    <span className="inline-flex items-center gap-1">
-                      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
-                        {state.interactionMode === 'voice' ? (
-                          <Volume2 size={13} />
-                        ) : (
-                          <MessageSquare size={13} />
-                        )}
-                      </span>
-                      <span className="capitalize">
-                        {state.interactionMode === 'voice' ? 'Voice' : 'Text'}
-                      </span>
-                    </span>
-                    <span className="h-4 w-px bg-zinc-700/80" />
-                    <span className="flex items-center gap-1 text-gray-300">
-                      <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                      <span>
-                        {state.session.privacyMode === 'on-the-record'
-                          ? 'On the record'
-                          : 'Confidential'}
-                      </span>
-                    </span>
-                  </motion.div>
-                )}
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                {/* Transcript toggle (voice mode only) */}
-                {state.session && state.interactionMode === 'voice' && (
-                  <button
-                    type="button"
-                    onClick={() => setShowTranscript((prev) => !prev)}
-                    className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-xs sm:text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
-                    aria-label={showTranscript ? 'Hide text transcript' : 'Show text transcript'}
-                  >
-                    <span className="hidden sm:inline">
-                      {showTranscript ? 'Hide text' : 'Show text'}
-                    </span>
-                    <span className="sm:hidden">
-                      {showTranscript ? 'TXT–' : 'TXT+'}
-                    </span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleResetChat}
-                  className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
-                  aria-label="Reset chat"
-                >
-                  <RotateCcw size={14} className="text-gray-400" />
-                  <span className="hidden sm:inline">Reset</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsSettingsOpen((open) => !open)}
-                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
-                  aria-label="Open Luna settings"
-                >
-                  <Settings
-                    size={18}
-                    className="text-gray-400 group-hover:text-white transition-colors"
-                  />
-                </button>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
-                  aria-label="Close"
-                >
-                  <X
-                    size={20}
-                    className="text-gray-400 group-hover:text-white transition-colors"
-                  />
-                </button>
-              </div>
-
-              {/* Settings panel */}
-              {isSettingsOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
-                  className="absolute right-4 top-16 w-72 rounded-2xl border border-zinc-800 bg-black/95 shadow-xl p-4 space-y-4 z-20"
-                >
-                  <h3 className="text-sm font-semibold text-white">
-                    Luna Settings
-                  </h3>
-                  <div className="space-y-3 text-sm text-gray-300">
-                    {/* Speech speed */}
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span>Speech speed</span>
-                        <span className="tabular-nums">
-                          {ttsRate.toFixed(2)}x
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min={0.75}
-                        max={1.25}
-                        step={0.05}
-                        value={ttsRate}
-                        onChange={(e) => setTtsRate(Number(e.target.value))}
-                        className="w-full accent-white"
-                        aria-label="Adjust Luna speech speed"
-                      />
-                    </div>
-
-                    {/* Reduced motion */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setReduceMotionManual((current) => !current)
-                      }
-                      className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-sm text-gray-200 hover:bg-zinc-800/70 transition-colors"
-                      aria-pressed={reduceMotion}
+              {/* Confetti on PDF ready (disabled in reduced-motion) */}
+              {showConfetti && !reduceMotion && (
+                <div className="pointer-events-none absolute inset-0 flex justify-center items-start">
+                  {[0, 1, 2, 3, 4, 5].map((i) => (
+                    <motion.div
+                      key={i}
+                      className="text-yellow-200"
+                      initial={{ y: 0, opacity: 0, x: (i - 2.5) * 24 }}
+                      animate={{ y: 80, opacity: [0, 1, 0] }}
+                      transition={{
+                        duration: 1.2,
+                        delay: i * 0.05,
+                        ease: "easeOut",
+                      }}
                     >
-                      <span className="flex flex-col text-left">
-                        <span className="font-medium">Reduced motion</span>
-                        <span className="text-sm text-gray-400">
-                          {prefersReducedMotion
-                            ? 'Following system preference'
-                            : 'Limit animations in Luna'}
-                        </span>
-                      </span>
-                      <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-sm ${
-                          reduceMotion ? 'bg-emerald-400 text-black' : 'bg-zinc-700 text-gray-300'
-                        }`}
-                      >
-                        {reduceMotion ? 'On' : 'Off'}
-                      </span>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-          {/* Main Content with subtle gradient background */}
-          <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col min-h-0">
-            {/* Conversation area like a chat screen */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-              {/* Luna Portrait pinned at top */}
-              <div className="flex flex-col items-center mb-6 gap-6">
-                <LunaPortrait
-                  state={state.state}
-                  isListening={state.isListening}
-                  isSpeaking={state.isSpeaking}
-                />
-                <p className="text-lg font-semibold text-white text-center px-4">
-                  {lunaBusy ? 'Luna is consulting the oracle…' : 'Luna'}
-                </p>
-              </div>
-
-              {/* Session not started - intro bubble & privacy selection */}
-              {!state.session && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="max-w-xl mx-auto space-y-4"
-                >
-                  <div className="flex justify-center">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-sm text-gray-400 border border-zinc-800/80">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span>Start a conversation with Luna</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-center">
-                    <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/80 px-5 py-4 text-sm text-gray-300 shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
-                      <p className="font-semibold text-white mb-2">
-                        How would you like this chat to be handled?
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        You can choose to keep this session private, or allow us to use anonymised insights
-                        to improve Luna.
-                      </p>
-                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setPendingPrivacyMode('on-the-record')}
-                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
-                            pendingPrivacyMode === 'on-the-record'
-                              ? 'bg-white text-black'
-                              : 'bg-zinc-900/80 text-white border border-zinc-700'
-                          }`}
-                        >
-                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                          </span>
-                          <span>
-                            <span className="block text-sm font-semibold">
-                              On the record
-                            </span>
-                            <span
-                              className={`block text-sm ${
-                                pendingPrivacyMode === 'on-the-record'
-                                  ? 'text-gray-700'
-                                  : 'text-gray-400'
-                              }`}
-                            >
-                              Save anonymised notes so we can learn from patterns.
-                            </span>
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPendingPrivacyMode('confidential')}
-                          className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
-                            pendingPrivacyMode === 'confidential'
-                              ? 'bg-white text-black'
-                              : 'bg-zinc-900/80 text-white border border-zinc-700'
-                          }`}
-                        >
-                          <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                          </span>
-                          <span>
-                            <span className="block text-sm font-semibold">
-                              Confidential
-                            </span>
-                            <span
-                              className={`block text-sm ${
-                                pendingPrivacyMode === 'confidential'
-                                  ? 'text-gray-700'
-                                  : 'text-gray-400'
-                              }`}
-                            >
-                              Keep this conversation just between you and Luna.
-                            </span>
-                          </span>
-                        </button>
-                      </div>
-
-                      {/* Pre-select interaction mode (voice / text) */}
-                      <div className="mt-4 flex justify-center">
-                        <motion.div
-                          layoutId="interaction-mode-pill"
-                          className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
-                        >
-                          <button
-                            type="button"
-                            onClick={() => setPendingInteractionMode('voice')}
-                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                              pendingInteractionMode === 'voice'
-                                ? 'bg-white text-black shadow-md shadow-white/30'
-                                : 'text-gray-300 hover:bg-white/5'
-                            }`}
-                          >
-                              <span className="inline-flex items-center gap-1.5">
-                                <Volume2 size={14} />
-                                <span>Voice</span>
-                              </span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setPendingInteractionMode('text')}
-                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                              pendingInteractionMode === 'text'
-                                ? 'bg-white text-black shadow-md shadow-white/30'
-                                : 'text-gray-300 hover:bg-white/5'
-                            }`}
-                          >
-                              <span className="inline-flex items-center gap-1.5">
-                                <MessageSquare size={14} />
-                                <span>Text</span>
-                              </span>
-                          </button>
-                        </motion.div>
-                      </div>
-
-                      <div className="mt-5 flex justify-center">
-                        <button
-                          type="button"
-                          onClick={() => startSession()}
-                          className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
-                        >
-                          <span>Consult Luna</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Active conversation thread (user + Luna messages, typing, errors) */}
-              {state.session && (state.interactionMode === 'text' || showTranscript) && (
-                <div className="max-w-2xl mx-auto space-y-3">
-                  {state.session.messages.map((message) => {
-                    const isUser = message.role === 'user';
-                    const timeLabel = (() => {
-                      try {
-                        const date =
-                          typeof message.timestamp === 'string'
-                            ? new Date(message.timestamp)
-                            : message.timestamp;
-                        return date.toLocaleTimeString([], {
-                          hour: 'numeric',
-                          minute: '2-digit',
-                        });
-                      } catch {
-                        return '';
-                      }
-                    })();
-
-                    return (
-                      <div
-                        key={message.id}
-                        className={`flex w-full ${
-                          isUser ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        {!isUser && (
-                          <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
-                            <Image
-                              src={lunaImage}
-                              alt="Luna"
-                              width={24}
-                              height={24}
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-                        <div className="flex flex-col items-end gap-1 max-w-[80%]">
-                          <motion.div
-                            initial={{ opacity: 0, y: 4, scale: 0.98 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
-                            className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
-                              isUser
-                                ? 'bg-cyan-500 text-black rounded-br-sm'
-                                : 'bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm'
-                            }`}
-                          >
-                            {message.content}
-                          </motion.div>
-                          <div
-                            className={`flex items-center gap-2 text-sm text-gray-500 ${
-                              isUser ? 'justify-end pr-1' : 'justify-start pl-1'
-                            }`}
-                          >
-                            <span className="uppercase tracking-[0.08em]">
-                              {isUser ? 'You' : 'Luna'}
-                            </span>
-                            {timeLabel && (
-                              <span className="text-gray-600/80">{timeLabel}</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                  {/* Typing indicator when Luna is thinking or speaking */}
-                  {(state.state === 'thinking' || state.isSpeaking) && (
-                    <div className="flex justify-start mt-2">
-                      <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
-                        <Image
-                          src={lunaImage}
-                          alt="Luna"
-                          width={24}
-                          height={24}
-                          className="object-cover"
-                        />
-                      </div>
-                      <motion.div
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
-                        className="inline-flex items-center gap-1 rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2"
-                      >
-                        {[0, 1, 2].map((i) => (
-                          <motion.span
-                            key={i}
-                            className="h-2 w-2 rounded-full bg-gray-400"
-                            animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
-                            transition={{
-                              duration: 0.9,
-                              repeat: Infinity,
-                              delay: i * 0.15,
-                              ease: 'easeInOut',
-                            }}
-                          />
-                        ))}
-                      </motion.div>
-                    </div>
-                  )}
-
-                  {/* Live caption as typing preview (user speech only) */}
-                  {state.caption && state.isListening && (
-                    <div className="flex justify-start mt-1">
-                      <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
-                        <Image
-                          src={lunaImage}
-                          alt="Luna"
-                          width={24}
-                          height={24}
-                          className="object-cover"
-                        />
-                      </div>
-                      <motion.div
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: reduceMotion ? 0.12 : 0.2 }}
-                        className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-sm text-gray-300"
-                      >
-                        {state.caption}
-                      </motion.div>
-                    </div>
-                  )}
-
-                  {/* Error bubble */}
-                  {state.error && (
-                    <div className="flex justify-center mt-2">
-                      <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-sm text-red-200">
-                        {state.error}
-                      </div>
-                    </div>
-                  )}
+                      ✦
+                    </motion.div>
+                  ))}
                 </div>
               )}
 
-              {/* Plan summary as final system bubble with actions */}
-              {state.session?.plan && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
-                  className="max-w-2xl mx-auto mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
-                      <Image
-                        src={lunaImage}
-                        alt="Luna"
-                        width={28}
-                        height={28}
-                        className="object-cover"
-                      />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-300">
-                      Luna&apos;s plan summary
-                    </p>
-                  </div>
-                  <p className="text-sm text-gray-200 mb-3">
-                    {state.session.plan.summary}
-                  </p>
-                  <div className="grid gap-2 mb-3">
-                    {state.session.plan.nextSteps.map((step, index) => (
-                      <div
-                        key={index}
-                        className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
-                      >
-                        <p className="text-sm font-semibold text-gray-100">
-                          {index + 1}. {step.title}
-                        </p>
-                        <p className="text-sm text-gray-400 mt-0.5">
-                          {step.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      onClick={handleReadSummary}
-                      className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+              {/* Header - thin, controls + compact selections */}
+              <div className="relative flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-gradient-to-r from-zinc-900 via-black to-zinc-900">
+                {/* Compact summary of mode + privacy once session started (shares layout with intro selector) */}
+                <div className="flex items-center gap-3 max-w-[65%]">
+                  {state.session && (
+                    <motion.div
+                      layoutId="interaction-mode-pill"
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: reduceMotion ? 0.1 : 0.25 }}
+                      className="inline-flex items-center gap-2 rounded-full border border-zinc-700/70 bg-zinc-900/80 px-3 py-1.5 text-xs sm:text-sm text-gray-200/90"
                     >
-                      <Play size={14} />
-                      <span>Read summary</span>
-                    </button>
-                    <button
-                      onClick={handleDownloadPDF}
-                      className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-sm font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
-                    >
-                      <Download size={14} />
-                      <span>Download PDF</span>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </div>
+                      <span className="inline-flex items-center gap-1">
+                        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
+                          {state.interactionMode === "voice" ? (
+                            <Volume2 size={13} />
+                          ) : (
+                            <MessageSquare size={13} />
+                          )}
+                        </span>
+                        <span className="capitalize">
+                          {state.interactionMode === "voice" ? "Voice" : "Text"}
+                        </span>
+                      </span>
+                      <span className="h-4 w-px bg-zinc-700/80" />
+                      <span className="flex items-center gap-1 text-gray-300">
+                        <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                        <span>
+                          {state.session.privacyMode === "on-the-record"
+                            ? "On the record"
+                            : "Confidential"}
+                        </span>
+                      </span>
+                    </motion.div>
+                  )}
+                </div>
 
-            {/* Controls + input docked at bottom */}
-            <div className="border-t border-zinc-900/80 bg-black/70 px-6 py-4 space-y-4">
-              {state.session?.plan ? (
-                <div className="flex justify-center">
+                <div className="flex items-center gap-1.5">
+                  {/* Transcript toggle (voice mode only) */}
+                  {state.session && state.interactionMode === "voice" && (
+                    <button
+                      type="button"
+                      onClick={() => setShowTranscript((prev) => !prev)}
+                      className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-xs sm:text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                      aria-label={
+                        showTranscript
+                          ? "Hide text transcript"
+                          : "Show text transcript"
+                      }
+                    >
+                      <span className="hidden sm:inline">
+                        {showTranscript ? "Hide text" : "Show text"}
+                      </span>
+                      <span className="sm:hidden">
+                        {showTranscript ? "TXT–" : "TXT+"}
+                      </span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={handleResetChat}
-                    className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
+                    className="inline-flex items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-zinc-700/80 text-sm font-medium text-gray-300 hover:bg-zinc-900/80 transition-colors"
+                    aria-label="Reset chat"
                   >
-                    Start again
+                    <RotateCcw size={14} className="text-gray-400" />
+                    <span className="hidden sm:inline">Reset</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsSettingsOpen((open) => !open)}
+                    className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                    aria-label="Open Luna settings"
+                  >
+                    <Settings
+                      size={18}
+                      className="text-gray-400 group-hover:text-white transition-colors"
+                    />
+                  </button>
+                  <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
+                    aria-label="Close"
+                  >
+                    <X
+                      size={20}
+                      className="text-gray-400 group-hover:text-white transition-colors"
+                    />
                   </button>
                 </div>
-              ) : (
-                <>
-                  {state.session && state.interactionMode === 'voice' && (
-                    <VoiceControls
-                      interactionMode={state.interactionMode}
-                      privacyMode={state.session.privacyMode}
-                      isListening={state.isListening}
-                      isSpeaking={state.isSpeaking}
-                      privacyLocked={true}
-                      onModeChange={handleModeChange}
-                      onPrivacyChange={handlePrivacyChange}
-                      onMicClick={handleMicClick}
-                      disabled={state.state === 'thinking'}
-                    />
-                  )}
 
-                  {state.interactionMode === 'text' && (
-                    <form onSubmit={handleTextSubmit} className="flex gap-2 items-center">
-                      <input
-                        type="text"
-                        value={textInput}
-                        onChange={(e) => setTextInput(e.target.value)}
-                        placeholder={
-                          state.session
-                            ? 'Type your message...'
-                            : 'Choose a privacy mode above to start'
-                        }
-                        className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
-                        disabled={state.state === 'thinking' || !state.session}
-                      />
-                      {/* Mic icon inline with input to switch back to voice mode */}
+                {/* Settings panel */}
+                {isSettingsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
+                    className="absolute right-4 top-16 w-72 rounded-2xl border border-zinc-800 bg-black/95 shadow-xl p-4 space-y-4 z-20"
+                  >
+                    <h3 className="text-sm font-semibold text-white">
+                      Luna Settings
+                    </h3>
+                    <div className="space-y-3 text-sm text-gray-300">
+                      {/* Speech speed */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span>Speech speed</span>
+                          <span className="tabular-nums">
+                            {ttsRate.toFixed(2)}x
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={0.75}
+                          max={1.25}
+                          step={0.05}
+                          value={ttsRate}
+                          onChange={(e) => setTtsRate(Number(e.target.value))}
+                          className="w-full accent-white"
+                          aria-label="Adjust Luna speech speed"
+                        />
+                      </div>
+
+                      {/* Reduced motion */}
                       <button
                         type="button"
-                        onClick={() => {
-                          handleModeChange('voice');
-                          handleMicClick();
-                        }}
-                        disabled={state.state === 'thinking' || !state.session}
-                        className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Switch to voice mode"
-                      >
-                        <Mic size={16} />
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={
-                          !textInput.trim() || state.state === 'thinking' || !state.session
+                        onClick={() =>
+                          setReduceMotionManual((current) => !current)
                         }
-                        className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+                        className="mt-1 inline-flex items-center justify-between w-full px-3 py-2 rounded-xl border border-zinc-700 text-sm text-gray-200 hover:bg-zinc-800/70 transition-colors"
+                        aria-pressed={reduceMotion}
                       >
-                        Send
+                        <span className="flex flex-col text-left">
+                          <span className="font-medium">Reduced motion</span>
+                          <span className="text-sm text-gray-400">
+                            {prefersReducedMotion
+                              ? "Following system preference"
+                              : "Limit animations in Luna"}
+                          </span>
+                        </span>
+                        <span
+                          className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-sm ${
+                            reduceMotion
+                              ? "bg-emerald-400 text-black"
+                              : "bg-zinc-700 text-gray-300"
+                          }`}
+                        >
+                          {reduceMotion ? "On" : "Off"}
+                        </span>
                       </button>
-                    </form>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Main Content with subtle gradient background */}
+              <div className="flex-1 bg-gradient-to-b from-zinc-950 to-black flex flex-col min-h-0">
+                {/* Conversation area like a chat screen */}
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                  {/* Luna Portrait pinned at top */}
+                  <div className="flex flex-col items-center mb-6 gap-6">
+                    <LunaPortrait
+                      state={state.state}
+                      isListening={state.isListening}
+                      isSpeaking={state.isSpeaking}
+                    />
+                    <p className="text-lg font-semibold text-white text-center px-4">
+                      {lunaBusy ? "Luna is consulting the oracle…" : "Luna"}
+                    </p>
+                  </div>
+
+                  {/* Session not started - intro bubble & privacy selection */}
+                  {!state.session && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="max-w-xl mx-auto space-y-4"
+                    >
+                      <div className="flex justify-center">
+                        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-4 py-1 text-sm text-gray-400 border border-zinc-800/80">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <span>Start a conversation with Luna</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-center">
+                        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/80 px-5 py-4 text-sm text-gray-300 shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
+                          <p className="font-semibold text-white mb-2">
+                            How would you like this chat to be handled?
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            You can choose to keep this session private, or
+                            allow us to use anonymised insights to improve Luna.
+                          </p>
+                          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setPendingPrivacyMode("on-the-record")
+                              }
+                              className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
+                                pendingPrivacyMode === "on-the-record"
+                                  ? "bg-white text-black"
+                                  : "bg-zinc-900/80 text-white border border-zinc-700"
+                              }`}
+                            >
+                              <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                              </span>
+                              <span>
+                                <span className="block text-sm font-semibold">
+                                  On the record
+                                </span>
+                                <span
+                                  className={`block text-sm ${
+                                    pendingPrivacyMode === "on-the-record"
+                                      ? "text-gray-700"
+                                      : "text-gray-400"
+                                  }`}
+                                >
+                                  Save anonymised notes so we can learn from
+                                  patterns.
+                                </span>
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setPendingPrivacyMode("confidential")
+                              }
+                              className={`group flex items-start gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] ${
+                                pendingPrivacyMode === "confidential"
+                                  ? "bg-white text-black"
+                                  : "bg-zinc-900/80 text-white border border-zinc-700"
+                              }`}
+                            >
+                              <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
+                                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                              </span>
+                              <span>
+                                <span className="block text-sm font-semibold">
+                                  Confidential
+                                </span>
+                                <span
+                                  className={`block text-sm ${
+                                    pendingPrivacyMode === "confidential"
+                                      ? "text-gray-700"
+                                      : "text-gray-400"
+                                  }`}
+                                >
+                                  Keep this conversation just between you and
+                                  Luna.
+                                </span>
+                              </span>
+                            </button>
+                          </div>
+
+                          {/* Pre-select interaction mode (voice / text) */}
+                          <div className="mt-4 flex justify-center">
+                            <motion.div
+                              layoutId="interaction-mode-pill"
+                              className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900/80 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
+                            >
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setPendingInteractionMode("voice")
+                                }
+                                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                                  pendingInteractionMode === "voice"
+                                    ? "bg-white text-black shadow-md shadow-white/30"
+                                    : "text-gray-300 hover:bg-white/5"
+                                }`}
+                              >
+                                <span className="inline-flex items-center gap-1.5">
+                                  <Volume2 size={14} />
+                                  <span>Voice</span>
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setPendingInteractionMode("text")
+                                }
+                                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                                  pendingInteractionMode === "text"
+                                    ? "bg-white text-black shadow-md shadow-white/30"
+                                    : "text-gray-300 hover:bg-white/5"
+                                }`}
+                              >
+                                <span className="inline-flex items-center gap-1.5">
+                                  <MessageSquare size={14} />
+                                  <span>Text</span>
+                                </span>
+                              </button>
+                            </motion.div>
+                          </div>
+
+                          <div className="mt-5 flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => startSession()}
+                              className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
+                            >
+                              <span>Consult Luna</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
                   )}
-                </>
-              )}
-            </div>
-          </div>
+
+                  {/* Active conversation thread (user + Luna messages, typing, errors) */}
+                  {state.session &&
+                    (state.interactionMode === "text" || showTranscript) && (
+                      <div className="max-w-2xl mx-auto space-y-3">
+                        {state.session.messages.map((message) => {
+                          const isUser = message.role === "user";
+                          const timeLabel = (() => {
+                            try {
+                              const date =
+                                typeof message.timestamp === "string"
+                                  ? new Date(message.timestamp)
+                                  : message.timestamp;
+                              return date.toLocaleTimeString([], {
+                                hour: "numeric",
+                                minute: "2-digit",
+                              });
+                            } catch {
+                              return "";
+                            }
+                          })();
+
+                          return (
+                            <div
+                              key={message.id}
+                              className={`flex w-full ${
+                                isUser ? "justify-end" : "justify-start"
+                              }`}
+                            >
+                              {!isUser && (
+                                <div className="mr-2 mt-5 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                                  <Image
+                                    src={lunaImage}
+                                    alt="Luna"
+                                    width={24}
+                                    height={24}
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex flex-col items-end gap-1 max-w-[80%]">
+                                <motion.div
+                                  initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  transition={{
+                                    duration: reduceMotion ? 0.12 : 0.22,
+                                  }}
+                                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md ${
+                                    isUser
+                                      ? "bg-cyan-500 text-black rounded-br-sm"
+                                      : "bg-zinc-900/95 text-gray-100 border border-zinc-800 rounded-bl-sm"
+                                  }`}
+                                >
+                                  {message.content}
+                                </motion.div>
+                                <div
+                                  className={`flex items-center gap-2 text-sm text-gray-500 ${
+                                    isUser
+                                      ? "justify-end pr-1"
+                                      : "justify-start pl-1"
+                                  }`}
+                                >
+                                  <span className="uppercase tracking-[0.08em]">
+                                    {isUser ? "You" : "Luna"}
+                                  </span>
+                                  {timeLabel && (
+                                    <span className="text-gray-600/80">
+                                      {timeLabel}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {/* Thinking / speaking indicator */}
+                        {(state.state === "thinking" || state.isSpeaking) && (
+                          <div className="flex justify-start mt-2">
+                            <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                              <Image
+                                src={lunaImage}
+                                alt="Luna"
+                                width={24}
+                                height={24}
+                                className="object-cover"
+                              />
+                            </div>
+
+                            {/* Thinking → playful phrases | Speaking → typing dots */}
+                            {state.state === "thinking" ? (
+                              <motion.div
+                                key={processingPhrase}
+                                initial={{ opacity: 0, y: 4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  duration: reduceMotion ? 0 : 0.25,
+                                }}
+                                className="max-w-[75%] rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2 text-sm text-gray-200"
+                              >
+                                {processingPhrase}
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                initial={{ opacity: 0, y: 4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  duration: reduceMotion ? 0.1 : 0.2,
+                                }}
+                                className="inline-flex items-center gap-1 rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2"
+                              >
+                                {[0, 1, 2].map((i) => (
+                                  <motion.span
+                                    key={i}
+                                    className="h-2 w-2 rounded-full bg-gray-400"
+                                    animate={{
+                                      opacity: [0.3, 1, 0.3],
+                                      y: [0, -2, 0],
+                                    }}
+                                    transition={{
+                                      duration: 0.9,
+                                      repeat: Infinity,
+                                      delay: i * 0.15,
+                                      ease: "easeInOut",
+                                    }}
+                                  />
+                                ))}
+                              </motion.div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Live caption as typing preview (user speech only) */}
+                        {state.caption && state.isListening && (
+                          <div className="flex justify-start mt-1">
+                            <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
+                              <Image
+                                src={lunaImage}
+                                alt="Luna"
+                                width={24}
+                                height={24}
+                                className="object-cover"
+                              />
+                            </div>
+                            <motion.div
+                              initial={{ opacity: 0, y: 4 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: reduceMotion ? 0.12 : 0.2,
+                              }}
+                              className="max-w-[70%] rounded-2xl bg-zinc-900/80 border border-zinc-800 px-4 py-2 text-sm text-gray-300"
+                            >
+                              {state.caption}
+                            </motion.div>
+                          </div>
+                        )}
+
+                        {/* Error bubble */}
+                        {state.error && (
+                          <div className="flex justify-center mt-2">
+                            <div className="max-w-sm rounded-xl bg-red-950/90 border border-red-800 px-4 py-2 text-sm text-red-200">
+                              {state.error}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                  {/* Plan summary as final system bubble with actions */}
+                  {state.session?.plan && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: reduceMotion ? 0.14 : 0.24 }}
+                      className="max-w-2xl mx-auto mt-4 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-zinc-800/70 px-5 py-4 shadow-lg"
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-7 w-7 rounded-full overflow-hidden border border-white/10">
+                          <Image
+                            src={lunaImage}
+                            alt="Luna"
+                            width={28}
+                            height={28}
+                            className="object-cover"
+                          />
+                        </div>
+                        <p className="text-sm font-semibold text-gray-300">
+                          Luna&apos;s plan summary
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-200 mb-3">
+                        {state.session.plan.summary}
+                      </p>
+                      <div className="grid gap-2 mb-3">
+                        {state.session.plan.nextSteps.map((step, index) => (
+                          <div
+                            key={index}
+                            className="rounded-xl bg-zinc-950/80 border border-zinc-800 px-3 py-2.5"
+                          >
+                            <p className="text-sm font-semibold text-gray-100">
+                              {index + 1}. {step.title}
+                            </p>
+                            <p className="text-sm text-gray-400 mt-0.5">
+                              {step.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          onClick={handleReadSummary}
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black shadow-md hover:shadow-lg hover:bg-gray-100 transition-all"
+                        >
+                          <Play size={14} />
+                          <span>Read summary</span>
+                        </button>
+                        <button
+                          onClick={handleDownloadPDF}
+                          className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-sm font-medium text-gray-100 hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                        >
+                          <Download size={14} />
+                          <span>Download PDF</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Controls + input docked at bottom */}
+                <div className="border-t border-zinc-900/80 bg-black/70 px-6 py-4 space-y-4">
+                  {state.session?.plan ? (
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={handleResetChat}
+                        className="inline-flex items-center justify-center gap-2 max-w-xs bg-gradient-to-r from-[#BBFEFF] to-cyan-500 text-black px-8 py-4 rounded-[0.3rem] text-sm font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg no-underline"
+                      >
+                        Start again
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      {state.session && state.interactionMode === "voice" && (
+                        <VoiceControls
+                          interactionMode={state.interactionMode}
+                          privacyMode={state.session.privacyMode}
+                          isListening={state.isListening}
+                          isSpeaking={state.isSpeaking}
+                          privacyLocked={true}
+                          onModeChange={handleModeChange}
+                          onPrivacyChange={handlePrivacyChange}
+                          onMicClick={handleMicClick}
+                          disabled={state.state === "thinking"}
+                        />
+                      )}
+
+                      {state.interactionMode === "text" && (
+                        <form
+                          onSubmit={handleTextSubmit}
+                          className="flex gap-2 items-center"
+                        >
+                          <input
+                            type="text"
+                            value={textInput}
+                            onChange={(e) => setTextInput(e.target.value)}
+                            placeholder={
+                              state.session
+                                ? "Type your message..."
+                                : "Choose a privacy mode above to start"
+                            }
+                            className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
+                            disabled={
+                              state.state === "thinking" || !state.session
+                            }
+                          />
+                          {/* Mic icon inline with input to switch back to voice mode */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleModeChange("voice");
+                              handleMicClick();
+                            }}
+                            disabled={
+                              state.state === "thinking" || !state.session
+                            }
+                            className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label="Switch to voice mode"
+                          >
+                            <Mic size={16} />
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={
+                              !textInput.trim() ||
+                              state.state === "thinking" ||
+                              !state.session
+                            }
+                            className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+                          >
+                            Send
+                          </button>
+                        </form>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </LayoutGroup>
         </motion.div>
-      </LayoutGroup>
-      </motion.div>
       </AnimatePresence>
     </SpeechErrorBoundary>
   );
