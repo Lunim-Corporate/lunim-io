@@ -44,12 +44,17 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
 
         // Choose a stable, high-quality default voice once
         if (!preferredVoiceRef.current && availableVoices.length > 0) {
+          // Prioritize natural-sounding voices
           const preferenceOrder: RegExp[] = [
+            /Microsoft.*Natural/i, // Windows natural voices (very high quality)
             /Google UK English Female/i,
             /Google US English/i,
             /Google.*English/i,
-            /Samantha/i,
-            /Karen/i,
+            /Samantha/i, // macOS
+            /Karen/i, // macOS
+            /Zira/i, // Windows
+            /.*Female.*English/i, // Any female English voice
+            /.*Natural/i, // Any "natural" voice
           ];
 
           const byName =
@@ -209,9 +214,9 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
             const utterance = new SpeechSynthesisUtterance(text);
             utteranceRef.current = utterance;
 
-            // Configure utterance
-            utterance.rate = options.rate ?? 0.95;
-            utterance.pitch = options.pitch ?? 1.0;
+            // Configure utterance for more natural sound
+            utterance.rate = options.rate ?? 0.9; // Slightly slower for better clarity
+            utterance.pitch = options.pitch ?? 1.05; // Slight pitch increase for warmth
             utterance.volume = options.volume ?? 1.0;
 
             // Select voice: prefer caller-provided voice, otherwise our preferred cached voice
@@ -248,21 +253,22 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
                 console.log('[Speech] Ignoring error during cleanup:', event.error);
                 return;
               }
-              
+
+              // "interrupted" errors are expected when canceling speech to start new speech
+              // They're not real errors, so we should ignore them silently
+              if (event.error === 'interrupted') {
+                console.log('[Speech] Speech interrupted (expected during cancellation)');
+                setIsSpeaking(false);
+                utteranceRef.current = null;
+                return;
+              }
+
               setIsSpeaking(false);
               utteranceRef.current = null;
-              
+
               // Handle specific error types
               let errorMessage = 'Speech synthesis error';
               switch (event.error) {
-                case 'interrupted':
-                  // Don't report interrupted as error if we're cleaning up
-                  if (isCleaningUpRef.current) {
-                    console.log('[Speech] Speech interrupted during cleanup (expected)');
-                    return;
-                  }
-                  errorMessage = 'Speech was interrupted';
-                  break;
                 case 'audio-busy':
                   errorMessage = 'Audio device is busy';
                   break;
@@ -290,7 +296,7 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
                 default:
                   errorMessage = `Speech synthesis error: ${event.error}`;
               }
-              
+
               const error = new Error(errorMessage);
               console.error('[Speech]', errorMessage);
               options.onError?.(error);

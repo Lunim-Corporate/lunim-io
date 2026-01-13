@@ -47,15 +47,19 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
   const wasOpenRef = useRef(isOpen);
 
-  //Refs to control cycling between processing phrases without triggering re-renders
-  const phraseTimerRef = useRef<number | null>(null);
-  const phraseIndexRef = useRef(0);
-  const shuffledPhrasesRef = useRef<string[]>([]);
-
+  //Refs for managing processing phrases in voice mode
+  const processingPhraseTimerRef = useRef<number | null>(null);
+  const isProcessingPhraseSpeakingRef = useRef(false);
+  const processingPhrasesUsedRef = useRef<Set<string>>(new Set());
+  const processingPhraseCountRef = useRef(0);
+  const thinkingStartTimeRef = useRef<number | null>(null);
 
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
   const speechQueueRef = useRef<string | null>(null);
+
+  // Ref to access speak function without triggering effects
+  const speakRef = useRef<((text: string) => void) | null>(null);
   
   // Refs to access latest state in callbacks without triggering re-renders
   const stateRef = useRef(state);
@@ -143,6 +147,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     [speakRaw, isSpeaking]
   );
 
+  // Update speak ref whenever speak function changes
+  useEffect(() => {
+    speakRef.current = speak;
+  }, [speak]);
+
   // Helper: speak and wait until speech completes before continuing
   const speakAndWait = useCallback(
     async (text: string) => {
@@ -211,32 +220,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       },
     });
 
-  //Handle processing phrase cycling and shuffling based on Luna's thinking state
-  const startProcessingPhrases = useCallback(() => {
-    // Shuffle once per thinking phase
-    shuffledPhrasesRef.current = [...lunaProcessingPhrases].sort(
-      () => Math.random() - 0.5
-    );
-    phraseIndexRef.current = 0;
-
-    setProcessingPhrase(shuffledPhrasesRef.current[0]);
-
-    phraseTimerRef.current = window.setInterval(() => {
-      phraseIndexRef.current =
-        (phraseIndexRef.current + 1) % shuffledPhrasesRef.current.length;
-
-      setProcessingPhrase(shuffledPhrasesRef.current[phraseIndexRef.current]);
-    }, 1200);
-  }, []);
-
-  const stopProcessingPhrases = useCallback(() => {
-    if (phraseTimerRef.current) {
-      clearInterval(phraseTimerRef.current);
-      phraseTimerRef.current = null;
-    }
-    setProcessingPhrase(null);
-  }, []);
-
   // Update listening callbacks ref
   useEffect(() => {
     listeningCallbacksRef.current = {
@@ -245,7 +228,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       isListening,
     };
   }, [startListening, stopListening, isListening]);
-  
+
   // Sync listening state
   useEffect(() => {
     dispatch({ type: 'SET_LISTENING', payload: isListening });
@@ -256,16 +239,126 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     dispatch({ type: 'SET_SPEAKING', payload: isSpeaking });
   }, [isSpeaking]);
 
-  // Start and stop phrase cycling based on Luna's thinking state
+  // Handle processing phrase based on Luna's thinking state
   useEffect(() => {
+    const currentMode = stateRef.current.interactionMode;
+
     if (state.state === "thinking") {
-      startProcessingPhrases();
+      // Record when thinking started
+      thinkingStartTimeRef.current = Date.now();
+      processingPhraseCountRef.current = 0;
+
+      // For text mode, just show one random phrase with dots
+      if (currentMode === 'text') {
+        const randomPhrase = lunaProcessingPhrases[
+          Math.floor(Math.random() * lunaProcessingPhrases.length)
+        ];
+        setProcessingPhrase(randomPhrase);
+      }
+      // For voice mode, speak phrases only after delay and limit to 1-2 max
+      else if (currentMode === 'voice') {
+        const speakProcessingPhrase = () => {
+          // Don't speak if already at max (2 phrases)
+          if (processingPhraseCountRef.current >= 2) {
+            console.log('[Luna] Already spoke 2 processing phrases, skipping further phrases');
+            return;
+          }
+
+          // Don't speak if Luna is already speaking
+          if (stateRef.current.isSpeaking) {
+            console.log('[Luna] Already speaking, skipping processing phrase');
+            return;
+          }
+
+          // Get an unused phrase, or reset if all used
+          let availablePhrases = lunaProcessingPhrases.filter(
+            phrase => !processingPhrasesUsedRef.current.has(phrase)
+          );
+
+          if (availablePhrases.length === 0) {
+            processingPhrasesUsedRef.current.clear();
+            availablePhrases = [...lunaProcessingPhrases];
+          }
+
+          const randomPhrase = availablePhrases[
+            Math.floor(Math.random() * availablePhrases.length)
+          ];
+
+          processingPhrasesUsedRef.current.add(randomPhrase);
+          setProcessingPhrase(randomPhrase);
+
+          console.log('[Luna] Speaking processing phrase:', randomPhrase);
+
+          if (speakRef.current) {
+            isProcessingPhraseSpeakingRef.current = true;
+            processingPhraseCountRef.current += 1;
+            speakRef.current(randomPhrase);
+            // Reset flag after a reasonable time
+            setTimeout(() => {
+              isProcessingPhraseSpeakingRef.current = false;
+            }, 4000);
+          } else {
+            console.log('[Luna] speakRef not available');
+          }
+        };
+
+        // Wait 4-5 seconds before speaking first phrase
+        const initialTimeout = setTimeout(() => {
+          if (stateRef.current.state === 'thinking' && !stateRef.current.isSpeaking) {
+            speakProcessingPhrase();
+          }
+        }, 3000);
+
+        // Set up interval to check for second phrase only
+        // Check every 4 seconds, but only speak if we've been thinking for 8+ seconds total
+        processingPhraseTimerRef.current = window.setInterval(() => {
+          if (stateRef.current.state === 'thinking' && thinkingStartTimeRef.current) {
+            const thinkingDuration = Date.now() - thinkingStartTimeRef.current;
+            // Only speak second phrase if we've been thinking for 8+ seconds
+            if (thinkingDuration >= 8000 && processingPhraseCountRef.current < 2) {
+              speakProcessingPhrase();
+            }
+          }
+        }, 4000);
+
+        // Cleanup initial timeout
+        return () => {
+          clearTimeout(initialTimeout);
+          if (processingPhraseTimerRef.current) {
+            clearInterval(processingPhraseTimerRef.current);
+            processingPhraseTimerRef.current = null;
+          }
+        };
+      }
     } else {
-      stopProcessingPhrases();
+      // When leaving thinking state, stop any ongoing processing phrase speech
+      if (isProcessingPhraseSpeakingRef.current) {
+        console.log('[Luna] Stopping processing phrase - response ready');
+        // Don't cancel speech here as it might interrupt the response
+        // Just mark that we're no longer in processing phrase mode
+        isProcessingPhraseSpeakingRef.current = false;
+      }
+
+      // Clear timer and reset
+      if (processingPhraseTimerRef.current) {
+        clearInterval(processingPhraseTimerRef.current);
+        processingPhraseTimerRef.current = null;
+      }
+
+      setProcessingPhrase(null);
+      processingPhrasesUsedRef.current.clear();
+      processingPhraseCountRef.current = 0;
+      thinkingStartTimeRef.current = null;
     }
 
-    return stopProcessingPhrases;
-  }, [state.state, startProcessingPhrases, stopProcessingPhrases]);
+    // Cleanup on unmount or state change
+    return () => {
+      if (processingPhraseTimerRef.current) {
+        clearInterval(processingPhraseTimerRef.current);
+        processingPhraseTimerRef.current = null;
+      }
+    };
+  }, [state.state]);
 
   
   // Cleanup on unmount and route changes
@@ -1103,7 +1196,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                               />
                             </div>
 
-                            {/* Thinking → playful phrases | Speaking → typing dots */}
+                            {/* Thinking → playful phrases with dots | Speaking → typing dots */}
                             {state.state === "thinking" ? (
                               <motion.div
                                 key={processingPhrase}
@@ -1112,9 +1205,27 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                                 transition={{
                                   duration: reduceMotion ? 0 : 0.25,
                                 }}
-                                className="max-w-[75%] rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2 text-sm text-gray-200"
+                                className="max-w-[75%] rounded-2xl bg-zinc-900/90 border border-zinc-800 px-3 py-2 text-sm text-gray-200 flex items-center gap-2"
                               >
-                                {processingPhrase}
+                                <span>{processingPhrase}</span>
+                                <span className="inline-flex items-center gap-1">
+                                  {[0, 1, 2].map((i) => (
+                                    <motion.span
+                                      key={i}
+                                      className="h-1.5 w-1.5 rounded-full bg-gray-400"
+                                      animate={{
+                                        opacity: [0.3, 1, 0.3],
+                                        y: [0, -2, 0],
+                                      }}
+                                      transition={{
+                                        duration: 0.9,
+                                        repeat: Infinity,
+                                        delay: i * 0.15,
+                                        ease: "easeInOut",
+                                      }}
+                                    />
+                                  ))}
+                                </span>
                               </motion.div>
                             ) : (
                               <motion.div
