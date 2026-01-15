@@ -5,9 +5,8 @@ export async function POST(request: NextRequest) {
     const apiKey =
       process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
     const useOpenAiTts =
-      process.env.USE_OPENAI_TTS === 'true' ||
-      process.env.USE_OPENAI_TTS === '1' ||
-      process.env.NEXT_PUBLIC_USE_OPENAI_TTS === 'true';
+      process.env.USE_OPENAI_TTS !== 'false' &&
+      process.env.NEXT_PUBLIC_USE_OPENAI_TTS !== 'false';
 
     if (!useOpenAiTts) {
       return NextResponse.json(

@@ -11,11 +11,11 @@ interface UseSpeechSynthesisOptions {
 }
 
 // Decide once (at build time) whether to use OpenAI TTS instead of browser TTS
+// Set to true by default, can be disabled by setting env var to 'false'
 const USE_OPENAI_TTS =
   typeof process !== 'undefined' &&
-  (process.env.NEXT_PUBLIC_USE_OPENAI_TTS === 'true' ||
-    process.env.USE_OPENAI_TTS === 'true' ||
-    process.env.USE_OPENAI_TTS === '1');
+  process.env.NEXT_PUBLIC_USE_OPENAI_TTS !== 'false' &&
+  process.env.USE_OPENAI_TTS !== 'false';
 
 export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
   const [isSpeaking, setIsSpeaking] = useState(false);
