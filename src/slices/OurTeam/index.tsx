@@ -89,28 +89,56 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
 
         {/* Team Section */}
         <section className="max-w-6xl mx-auto px-4">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {members.map((member: any, i: number) => {
-              const memberName = asText(member?.name);
-              return (
-                <div
-                  key={i}
-                  className={`transition duration-300 ${
-                    active && active !== memberName && !isMobile
-                      ? "blur-sm opacity-70"
-                      : ""
-                  }`}
+          {/* First two members: 2 columns on large screens */}
+          {members.length > 0 && (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 mb-8">
+              {members.slice(0, 2).map((member: any, i: number) => {
+                const memberName = asText(member?.name);
+                return (
+                  <div
+                    key={i}
+                    className={`transition duration-300 ${
+                      active && active !== memberName && !isMobile
+                        ? "blur-sm opacity-70"
+                        : ""
+                    }`}
                   >
-                  <TeamMember
-                    member={member}
-                    isActive={active === memberName}
-                    setActive={setActive}
-                    isMobile={isMobile}
-                  />
-                </div>
-              )
-          })}
-          </div>
+                    <TeamMember
+                      member={member}
+                      isActive={active === memberName}
+                      setActive={setActive}
+                      isMobile={isMobile}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {/* Remaining members: 3 columns on large screens */}
+          {members.length > 2 && (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {members.slice(2).map((member: any, i: number) => {
+                const memberName = asText(member?.name);
+                return (
+                  <div
+                    key={i + 2}
+                    className={`transition duration-300 ${
+                      active && active !== memberName && !isMobile
+                        ? "blur-sm opacity-70"
+                        : ""
+                    }`}
+                  >
+                    <TeamMember
+                      member={member}
+                      isActive={active === memberName}
+                      setActive={setActive}
+                      isMobile={isMobile}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </section>
         {/* End Team Section */}
         </div>
@@ -200,7 +228,7 @@ const BioCard: FC<{
       className={`bg-slate-900/90 p-5 text-start h-full`}
     >
       <div className="mb-4">
-        <span className="text-md text-slate-400">{member?.role}</span>
+        <span className="text-sm text-slate-400">{member?.role}</span>
       </div>
 
       <div className="text-slate-200 text-sm py-2">
