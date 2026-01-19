@@ -2915,6 +2915,119 @@ interface TechDocumentData {
 export type TechDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<TechDocumentData>, "tech", Lang>;
 
+type UxDocumentDataSlicesSlice =
+  | HeroSlice
+  | EventbriteSlice
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | ServiceGridSlice
+  | FaqSlice;
+
+/**
+ * Content for UX documents
+ */
+interface UxDocumentData {
+  /**
+   * Slice Zone field in *UX*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<UxDocumentDataSlicesSlice>;
+}
+
+/**
+ * UX document from Prismic
+ *
+ * - **API ID**: `ux`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type UxDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<UxDocumentData>, "ux", Lang>;
+
+type UxPageDocumentDataSlicesSlice =
+  | HeroSlice
+  | BlogListSlice
+  | CompactHeroSlice
+  | ContactSlice
+  | ProjectShowcaseSlice
+  | BreadcrumbsSlice
+  | ImageandtextSlice
+  | ServiceGridSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for UX Page documents
+ */
+interface UxPageDocumentData {
+  /**
+   * Slice Zone field in *UX Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<UxPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *UX Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: ux_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *UX Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: ux_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *UX Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * UX Page document from Prismic
+ *
+ * - **API ID**: `ux_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type UxPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<UxPageDocumentData>, "ux_page", Lang>;
+
 type VideoDocumentDataSlicesSlice =
   | CompactHeroSlice
   | ContactSlice
@@ -3056,6 +3169,8 @@ export type AllDocumentTypes =
   | TabbDocument
   | TeamPageDocument
   | TechDocument
+  | UxDocument
+  | UxPageDocument
   | VideoDocument
   | VideoPageDocument;
 
@@ -7087,6 +7202,12 @@ declare module "@prismicio/client" {
       TechDocumentData,
       TechDocumentDataSlicesSlice,
       TechDocumentDataMetaKeywordsItem,
+      UxDocument,
+      UxDocumentData,
+      UxDocumentDataSlicesSlice,
+      UxPageDocument,
+      UxPageDocumentData,
+      UxPageDocumentDataSlicesSlice,
       VideoDocument,
       VideoDocumentData,
       VideoDocumentDataSlicesSlice,

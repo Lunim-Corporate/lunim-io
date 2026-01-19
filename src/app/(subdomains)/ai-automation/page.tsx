@@ -17,8 +17,8 @@ export const revalidate = 60;
 export default async function AiAutomationPage() {
   const client = createClient();
   const doc = (await (client as any)
-    .getSingle("ai_automation")
-    .catch(() => null)) as Content.AiAutomationDocument | null;
+    .getByUID("digital_page", "ai")
+    .catch(() => null)) as Content.DigitalPageDocument | null;
 
   if (!doc) {
     // If no Prismic document exists yet, show a placeholder
@@ -66,7 +66,7 @@ export default async function AiAutomationPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
       />
-      <main className="bg-black">
+      <main className="bg-black text-white">
         <SliceZone slices={doc.data.slices} components={components} />
       </main>
     </>
@@ -80,8 +80,8 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const doc = (await (client as any)
-    .getSingle("ai_automation")
-    .catch(() => null)) as Content.AiAutomationDocument | null;
+    .getByUID("digital_page", "ai")
+    .catch(() => null)) as Content.DigitalPageDocument | null;
 
   if (!doc) {
     return {

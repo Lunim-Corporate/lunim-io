@@ -47,6 +47,7 @@ export const repositoryName = envRepositoryName || sm.repositoryName;
 export const linkResolver: LinkResolverFunction = (link) => {
   // Will handle all routes under /digital
   if (link.type === "digital_page") {
+    if (link.uid === "ux") return "/ux";
     if (link.uid) return `/digital/${encodeURIComponent(link.uid)}`;
   }
   if (link.type === "case-studies") {
@@ -70,6 +71,13 @@ export const linkResolver: LinkResolverFunction = (link) => {
   }
   if (link.type === "ai_automation") {
     return "/ai-automation";
+  }
+  // TODO: Handle UX pages
+  if (link.type === "ux_page") {
+    if (link.uid) return `/ux/${encodeURIComponent(link.uid)}`;
+  }
+  if (link.type === "ux") {
+    return "/ux";
   }
   // Handle Video pages
   if (link.type === "video_page") {

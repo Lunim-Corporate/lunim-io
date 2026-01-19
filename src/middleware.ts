@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
   // Map subdomains to their respective routes
   const subdomainRoutes: Record<string, string> = {
     "ai": "/ai-automation",
+    "ux": "/ux",
     "video-next": "/video",
   };
 

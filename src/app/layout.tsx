@@ -36,6 +36,11 @@ export async function generateMetadata(): Promise<Metadata> {
     siteName = "Lunim AI Automation";
     siteTitle = "Lunim AI Automation – AI-Powered Solutions";
     siteDescription = "Transform your business with AI automation solutions from Lunim.";
+  } else if (siteKey === "ux") {
+    baseUrl = `https://${hostname}`;
+    siteName = "Lunim UX";
+    siteTitle = "Lunim UX – Human-Centered Design";
+    siteDescription = "Design better product experiences with Lunim UX.";
   } else if (siteKey === "video") {
     baseUrl = `https://${hostname}`;
     siteName = "Lunim Video Production";
@@ -73,12 +78,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Helper function to determine site key from hostname and pathname
-function getSiteKey(hostname: string, pathname: string = "/"): "main" | "ai" | "video" {
+function getSiteKey(
+  hostname: string,
+  pathname: string = "/"
+): "main" | "ai" | "ux" | "video" {
   const subdomain = hostname.split(".")[0];
 
   // Check if it's a subdomain we handle
   if (subdomain === "ai" && !hostname.startsWith("www")) {
     return "ai";
+  }
+  if (subdomain === "ux" && !hostname.startsWith("www")) {
+    return "ux";
   }
   if (subdomain === "video-next" && !hostname.startsWith("www")) {
     return "video";
@@ -87,6 +98,9 @@ function getSiteKey(hostname: string, pathname: string = "/"): "main" | "ai" | "
   // Check if pathname starts with a subdomain route prefix
   if (pathname.startsWith("/ai-automation")) {
     return "ai";
+  }
+  if (pathname.startsWith("/ux")) {
+    return "ux";
   }
   if (pathname.startsWith("/video")) {
     return "video";
@@ -137,6 +151,7 @@ export default async function RootLayout({
     // Subdomain: fetch generic navigation and footer by domain
     const domainMap: Record<string, string> = {
       "ai": "ai-automation",
+      "ux": "ux",
       "video": "video",
     };
 

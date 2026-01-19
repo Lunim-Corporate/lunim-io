@@ -24,7 +24,7 @@ type Section = {
 type BreadcrumbsClientProps = {
   sections: Section[];
   hiddenSegments?: string[];
-  siteKey?: "main" | "ai" | "video";
+  siteKey?: "main" | "ai" | "ux" | "video";
 };
 
 const DEFAULT_SITE_URL = "https://lunim.io";
@@ -56,6 +56,7 @@ const SEGMENT_LABEL_OVERRIDES: Record<string, string> = {
   digital: "Digital",
   ai: "AI",
   "ai-automation": "AI Automation",
+  ux: "UX",
   video: "Video",
   "case-studies": "Case Studies",
   marketing: "Marketing",
@@ -103,6 +104,9 @@ export default function BreadcrumbsClient({
   const homeConfig = useMemo(() => {
     if (siteKey === "ai") {
       return { href: "/ai-automation", label: "Home" };
+    }
+    if (siteKey === "ux") {
+      return { href: "/ux", label: "Home" };
     }
     if (siteKey === "video") {
       return { href: "/video", label: "Home" };
