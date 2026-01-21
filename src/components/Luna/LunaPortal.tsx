@@ -17,6 +17,7 @@ import lunaImage from '@/assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
 import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
+import { useSpeechCoordinator } from './hooks/useSpeechCoordinator';
 import { LunaPortrait } from './components/LunaPortrait';
 import { VoiceControls } from './components/VoiceControls';
 import { SpeechErrorBoundary } from './components/SpeechErrorBoundary';
@@ -47,11 +48,6 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
   const wasOpenRef = useRef(isOpen);
 
-  //Refs for managing processing phrases in voice mode
-  const isProcessingPhraseSpeakingRef = useRef(false);
-  const processingPhraseCountRef = useRef(0);
-  const thinkingStartTimeRef = useRef<number | null>(null);
-
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
   const speechQueueRef = useRef<string | null>(null);
@@ -66,6 +62,9 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     stop: (() => void) | null;
     isListening: boolean;
   }>({ start: null, stop: null, isListening: false });
+
+  // Flag to suppress mic auto-restart during processing phrase + response sequence
+  const suppressMicRestartRef = useRef(false);
   
   // Update refs when state changes
   useEffect(() => {
@@ -105,13 +104,18 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       console.log('[Luna] Speech ended');
       dispatch({ type: 'SET_SPEAKING', payload: false });
       speechQueueRef.current = null;
-      
+
       // Auto-enable microphone after Luna finishes speaking (only in voice mode)
+      // Skip if we're in a processing phrase → response sequence
       setTimeout(() => {
+        if (suppressMicRestartRef.current) {
+          console.log('[Luna] Mic restart suppressed (in speech sequence)');
+          return;
+        }
         const currentState = stateRef.current;
-        if (currentState.interactionMode === 'voice' && 
-            currentState.session && 
-            !listeningCallbacksRef.current.isListening && 
+        if (currentState.interactionMode === 'voice' &&
+            currentState.session &&
+            !listeningCallbacksRef.current.isListening &&
             currentState.state !== 'plan-ready' &&
             listeningCallbacksRef.current.start) {
           console.log('[Luna] Auto-starting listening after speech ended');
@@ -149,6 +153,24 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   useEffect(() => {
     speakRef.current = speak;
   }, [speak]);
+
+  // Speech coordinator for managing processing phrases and response timing (voice mode)
+  const {
+    onRequestStart: coordinatorRequestStart,
+    waitForProcessingComplete,
+    reset: coordinatorReset,
+  } = useSpeechCoordinator({
+    speak,
+    isSpeaking,
+    onProcessingPhraseStart: (phrase) => {
+      console.log('[Luna] Processing phrase started:', phrase);
+      setProcessingPhrase(phrase);
+    },
+    onProcessingPhraseEnd: () => {
+      console.log('[Luna] Processing phrase ended');
+      setProcessingPhrase(null);
+    },
+  });
 
   // Helper: speak and wait until speech completes before continuing
   const speakAndWait = useCallback(
@@ -237,57 +259,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     dispatch({ type: 'SET_SPEAKING', payload: isSpeaking });
   }, [isSpeaking]);
 
-  // Handle processing phrase based on Luna's thinking state
+  // Handle processing phrase for text mode only (voice mode uses coordinator)
+  // This effect is kept for text mode where we add the phrase as a message
   useEffect(() => {
-    const currentMode = stateRef.current.interactionMode;
-
-    if (state.state === "thinking") {
-      // Record when thinking started
-      thinkingStartTimeRef.current = Date.now();
-      processingPhraseCountRef.current = 0;
-
-      // Pick a random phrase for both modes
-      const randomPhrase = lunaProcessingPhrases[
-        Math.floor(Math.random() * lunaProcessingPhrases.length)
-      ];
-
-      // For text mode, add the phrase as a message immediately so it appears before the response
-      if (currentMode === 'text') {
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: randomPhrase } });
-        setProcessingPhrase(randomPhrase);
+    if (state.state !== "thinking") {
+      // Clear processing phrase when leaving thinking state (text mode only)
+      if (stateRef.current.interactionMode === 'text') {
+        setProcessingPhrase(null);
       }
-      // For voice mode, speak the phrase immediately (no delay)
-      else if (currentMode === 'voice') {
-        setProcessingPhrase(randomPhrase);
-
-        if (!stateRef.current.isSpeaking) {
-          console.log('[Luna] Speaking processing phrase:', randomPhrase);
-
-          if (speakRef.current) {
-            isProcessingPhraseSpeakingRef.current = true;
-            processingPhraseCountRef.current = 1;
-            speakRef.current(randomPhrase);
-            // Reset flag after a reasonable time
-            setTimeout(() => {
-              isProcessingPhraseSpeakingRef.current = false;
-            }, 4000);
-          } else {
-            console.log('[Luna] speakRef not available');
-          }
-        }
-      }
-    } else {
-      // When leaving thinking state, stop any ongoing processing phrase speech
-      if (isProcessingPhraseSpeakingRef.current) {
-        console.log('[Luna] Stopping processing phrase - response ready');
-        // Don't cancel speech here as it might interrupt the response
-        // Just mark that we're no longer in processing phrase mode
-        isProcessingPhraseSpeakingRef.current = false;
-      }
-
-      setProcessingPhrase(null);
-      processingPhraseCountRef.current = 0;
-      thinkingStartTimeRef.current = null;
     }
   }, [state.state]);
 
@@ -408,9 +387,29 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     dispatch({ type: 'SET_STATE', payload: 'thinking' });
     dispatch({ type: 'SET_CAPTION', payload: '' });
     resetTranscript();
-    
+
     // Track user message
     lunaAnalytics.trackMessage('user', input);
+
+    // Handle processing phrase based on interaction mode
+    const currentMode = stateRef.current.interactionMode;
+    if (currentMode === 'voice') {
+      // Voice mode: coordinator manages processing phrase timing
+      // Immediately stop mic and suppress auto-restart until response completes
+      suppressMicRestartRef.current = true;
+      if (listeningCallbacksRef.current.isListening && listeningCallbacksRef.current.stop) {
+        console.log('[Luna] Stopping mic before processing phrase');
+        listeningCallbacksRef.current.stop();
+      }
+      coordinatorRequestStart();
+    } else {
+      // Text mode: add processing phrase as a message immediately
+      const randomPhrase = lunaProcessingPhrases[
+        Math.floor(Math.random() * lunaProcessingPhrases.length)
+      ];
+      dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: randomPhrase } });
+      setProcessingPhrase(randomPhrase);
+    }
 
     try {
       const reachedTurnLimit = currentUserTurn >= MAX_USER_TURNS;
@@ -474,11 +473,20 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         const currentMode = stateRef.current.interactionMode;
         console.log('[Luna] Clarify question, mode:', currentMode);
         if (currentMode === 'voice') {
+          // Wait for processing phrase to finish (if playing), then speak response
+          await waitForProcessingComplete();
           await speakAndWait(questionMessage);
+          // Response complete - allow mic restart and re-enable listening
+          suppressMicRestartRef.current = false;
+          if (listeningCallbacksRef.current.start) {
+            console.log('[Luna] Re-enabling mic after response');
+            listeningCallbacksRef.current.start();
+          }
         }
 
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: questionMessage } });
         dispatch({ type: 'SET_STATE', payload: 'clarify' });
+        setProcessingPhrase(null); // Clear processing phrase display
         lunaAnalytics.trackMessage('luna', questionMessage);
         lunaAnalytics.trackClarifyPhase(currentUserTurn);
         return;
@@ -521,9 +529,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       const currentMode = stateRef.current.interactionMode;
       console.log('[Luna] Plan message, mode:', currentMode);
       if (currentMode === 'voice') {
+        // Wait for processing phrase to finish (if playing), then speak response
+        await waitForProcessingComplete();
         await speakAndWait(planMessage);
+        // Response complete - clear suppress flag (no mic restart for plan-ready state)
+        suppressMicRestartRef.current = false;
       }
 
+      setProcessingPhrase(null); // Clear processing phrase display
       dispatch({ type: 'ADD_MESSAGE', payload: { role: 'luna', content: planMessage } });
       lunaAnalytics.trackMessage('luna', planMessage);
       lunaAnalytics.trackPlanGenerated({
@@ -575,8 +588,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     } catch (error) {
       console.error('Error processing input:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Something went wrong. Please try again.' });
+      // Clear suppress flag on error so mic can be used again
+      suppressMicRestartRef.current = false;
     }
-  }, [state, speakAndWait, resetTranscript]);
+  }, [state, speakAndWait, resetTranscript, coordinatorRequestStart, waitForProcessingComplete]);
 
   // Handle microphone click
   const handleMicClick = useCallback(() => {
@@ -633,9 +648,13 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const handleResetChat = useCallback(() => {
     // End current analytics session if any
     lunaAnalytics.endSession();
+    // Reset speech coordinator
+    coordinatorReset();
+    // Clear mic suppress flag
+    suppressMicRestartRef.current = false;
     // Clear Luna state back to idle (no session/messages)
     dispatch({ type: 'END_SESSION' });
-  }, []);
+  }, [coordinatorReset]);
 
   // Read summary aloud
   const handleReadSummary = useCallback(() => {
