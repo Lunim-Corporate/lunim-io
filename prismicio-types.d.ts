@@ -364,6 +364,81 @@ export type AiAutomationDocument<Lang extends string = string> =
     Lang
   >;
 
+type AiAutomationPageDocumentDataSlicesSlice =
+  | EventbriteSlice
+  | ProcessSlice
+  | FaqSlice
+  | ContactSlice
+  | ProjectShowcaseSlice
+  | BreadcrumbsSlice
+  | ImageandtextSlice
+  | ServiceGridSlice
+  | ExpertiseareasSlice
+  | CompactHeroSlice;
+
+/**
+ * Content for AI Automation Page documents
+ */
+interface AiAutomationPageDocumentData {
+  /**
+   * Slice Zone field in *AI Automation Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ai_automation_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AiAutomationPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *AI Automation Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: ai_automation_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *AI Automation Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: ai_automation_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *AI Automation Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ai_automation_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * AI Automation Page document from Prismic
+ *
+ * - **API ID**: `ai_automation_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AiAutomationPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<AiAutomationPageDocumentData>,
+    "ai_automation_page",
+    Lang
+  >;
+
 /**
  * Item in *Author → Social media*
  */
@@ -1713,6 +1788,51 @@ export type FooterDocument<Lang extends string = string> =
     Lang
   >;
 
+type FooterGenericDocumentDataSlicesSlice = FooterSlice;
+
+/**
+ * Content for Footer Generic documents
+ */
+interface FooterGenericDocumentData {
+  /**
+   * domain field in *Footer Generic*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer_generic.domain
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  domain: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Footer Generic*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer_generic.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FooterGenericDocumentDataSlicesSlice>;
+}
+
+/**
+ * Footer Generic document from Prismic
+ *
+ * - **API ID**: `footer_generic`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FooterGenericDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<FooterGenericDocumentData>,
+    "footer_generic",
+    Lang
+  >;
+
 type HomepageDocumentDataSlicesSlice =
   | CompactHeroSlice
   | ImageandtextSlice
@@ -2144,6 +2264,51 @@ export type PrimaryNavigationDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<
     Simplify<PrimaryNavigationDocumentData>,
     "primary_navigation",
+    Lang
+  >;
+
+type PrimaryNavigationGenericDocumentDataSlicesSlice = NavigationMenuSlice;
+
+/**
+ * Content for Primary Navigation Generic documents
+ */
+interface PrimaryNavigationGenericDocumentData {
+  /**
+   * domain field in *Primary Navigation Generic*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: primary_navigation_generic.domain
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  domain: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Primary Navigation Generic*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: primary_navigation_generic.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PrimaryNavigationGenericDocumentDataSlicesSlice>;
+}
+
+/**
+ * Primary Navigation Generic document from Prismic
+ *
+ * - **API ID**: `primary_navigation_generic`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PrimaryNavigationGenericDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<PrimaryNavigationGenericDocumentData>,
+    "primary_navigation_generic",
     Lang
   >;
 
@@ -2750,10 +2915,237 @@ interface TechDocumentData {
 export type TechDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<TechDocumentData>, "tech", Lang>;
 
+type UxDocumentDataSlicesSlice =
+  | HeroSlice
+  | EventbriteSlice
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | ServiceGridSlice
+  | FaqSlice;
+
+/**
+ * Content for UX documents
+ */
+interface UxDocumentData {
+  /**
+   * Slice Zone field in *UX*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<UxDocumentDataSlicesSlice>;
+}
+
+/**
+ * UX document from Prismic
+ *
+ * - **API ID**: `ux`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type UxDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<UxDocumentData>, "ux", Lang>;
+
+type UxPageDocumentDataSlicesSlice =
+  | HeroSlice
+  | BlogListSlice
+  | CompactHeroSlice
+  | ContactSlice
+  | ProjectShowcaseSlice
+  | BreadcrumbsSlice
+  | ImageandtextSlice
+  | ServiceGridSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for UX Page documents
+ */
+interface UxPageDocumentData {
+  /**
+   * Slice Zone field in *UX Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<UxPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *UX Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: ux_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *UX Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: ux_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *UX Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: ux_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * UX Page document from Prismic
+ *
+ * - **API ID**: `ux_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type UxPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<UxPageDocumentData>, "ux_page", Lang>;
+
+type VideoDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ServiceGridSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for Video documents
+ */
+interface VideoDocumentData {
+  /**
+   * Slice Zone field in *Video*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<VideoDocumentDataSlicesSlice>;
+}
+
+/**
+ * Video document from Prismic
+ *
+ * - **API ID**: `video`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type VideoDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<VideoDocumentData>, "video", Lang>;
+
+type VideoPageDocumentDataSlicesSlice =
+  | CompactHeroSlice
+  | ContactSlice
+  | BreadcrumbsSlice
+  | ServiceGridSlice
+  | ProjectShowcaseSlice
+  | ImageandtextSlice
+  | ProcessSlice
+  | ExpertiseareasSlice
+  | FaqSlice;
+
+/**
+ * Content for Video Page documents
+ */
+interface VideoPageDocumentData {
+  /**
+   * Slice Zone field in *Video Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video_page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<VideoPageDocumentDataSlicesSlice> /**
+   * Meta Title field in *Video Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: video_page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Video Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: video_page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Video Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video_page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Video Page document from Prismic
+ *
+ * - **API ID**: `video_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type VideoPageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<VideoPageDocumentData>,
+    "video_page",
+    Lang
+  >;
+
 export type AllDocumentTypes =
   | AcademyDocument
   | AcademyCourseDocument
   | AiAutomationDocument
+  | AiAutomationPageDocument
   | AuthorDocument
   | AuthorsDocument
   | BlogHomePageDocument
@@ -2765,16 +3157,22 @@ export type AllDocumentTypes =
   | DigitalPageDocument
   | FilmDocument
   | FooterDocument
+  | FooterGenericDocument
   | HomepageDocument
   | MediaTempDocument
   | NavSectionDocument
   | OurTeamPageDocument
   | PrimaryNavigationDocument
+  | PrimaryNavigationGenericDocument
   | PrivacyPolicyDocument
   | PrivacyPolicySmDocument
   | TabbDocument
   | TeamPageDocument
-  | TechDocument;
+  | TechDocument
+  | UxDocument
+  | UxPageDocument
+  | VideoDocument
+  | VideoPageDocument;
 
 /**
  * Item in *Expertiseareas → Pure Cards → Primary → Cards*
@@ -6714,6 +7112,9 @@ declare module "@prismicio/client" {
       AiAutomationDocument,
       AiAutomationDocumentData,
       AiAutomationDocumentDataSlicesSlice,
+      AiAutomationPageDocument,
+      AiAutomationPageDocumentData,
+      AiAutomationPageDocumentDataSlicesSlice,
       AuthorDocument,
       AuthorDocumentData,
       AuthorDocumentDataSocialMediaItem,
@@ -6757,6 +7158,9 @@ declare module "@prismicio/client" {
       FooterDocument,
       FooterDocumentData,
       FooterDocumentDataSlicesSlice,
+      FooterGenericDocument,
+      FooterGenericDocumentData,
+      FooterGenericDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
@@ -6774,6 +7178,9 @@ declare module "@prismicio/client" {
       PrimaryNavigationDocument,
       PrimaryNavigationDocumentData,
       PrimaryNavigationDocumentDataSlicesSlice,
+      PrimaryNavigationGenericDocument,
+      PrimaryNavigationGenericDocumentData,
+      PrimaryNavigationGenericDocumentDataSlicesSlice,
       PrivacyPolicyDocument,
       PrivacyPolicyDocumentData,
       PrivacyPolicySmDocument,
@@ -6795,6 +7202,18 @@ declare module "@prismicio/client" {
       TechDocumentData,
       TechDocumentDataSlicesSlice,
       TechDocumentDataMetaKeywordsItem,
+      UxDocument,
+      UxDocumentData,
+      UxDocumentDataSlicesSlice,
+      UxPageDocument,
+      UxPageDocumentData,
+      UxPageDocumentDataSlicesSlice,
+      VideoDocument,
+      VideoDocumentData,
+      VideoDocumentDataSlicesSlice,
+      VideoPageDocument,
+      VideoPageDocumentData,
+      VideoPageDocumentDataSlicesSlice,
       AllDocumentTypes,
       ExpertiseareasSlice,
       ExpertiseareasSliceDefaultPrimary,
