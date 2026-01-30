@@ -40,9 +40,9 @@
         "show_ask_luna": {
           "type": "Boolean",
           "config": {
-            "label": "Show Ask Luna",
-            "placeholder_false": "Hide Ask Luna",
-            "placeholder_true": "Show Ask Luna",
+            "label": "Show Consult Luna",
+            "placeholder_false": "Hide Consult Luna",
+            "placeholder_true": "Show Consult Luna",
             "default_value": true
           }
         },
