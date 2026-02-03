@@ -43,7 +43,6 @@ const envRepositoryName =
  */
 export const repositoryName = envRepositoryName || sm.repositoryName;
 
-
 export const linkResolver: LinkResolverFunction = (link) => {
   // Will handle all routes under /digital
   if (link.type === "digital_page") {
@@ -51,13 +50,14 @@ export const linkResolver: LinkResolverFunction = (link) => {
     if (link.uid) return `/digital/${encodeURIComponent(link.uid)}`;
   }
   if (link.type === "case-studies") {
-    if (link.uid) return `/digital/${encodeURIComponent(link.uid)}/case-studies`;
+    if (link.uid)
+      return `/digital/${encodeURIComponent(link.uid)}/case-studies`;
   }
   if (link.type === "case_study_sm") {
     const full = (link.data as { url_full_path?: string })?.url_full_path;
-  // Defensive check for non-empty string
+    // Defensive check for non-empty string
     if (typeof full === "string" && full.trim()) {
-        const safe = full
+      const safe = full
         .split("/")
         .map((s) => encodeURIComponent(s.trim()))
         .filter(Boolean)
@@ -113,6 +113,8 @@ const routes: Route[] = [
   { type: "ai_automation_page", path: "/ai-automation/:uid" },
   { type: "video", path: "/video" },
   { type: "video_page", path: "/video/:uid" },
+  { type: "ux", path: "/ux" },
+  { type: "ux", path: "/ux/:uid" },
 ];
 
 /**
@@ -127,8 +129,8 @@ export const createClient = (config: ClientConfig = {}) => {
     fetchOptions:
       process.env.NODE_ENV === "production"
         ? { next: { tags: ["prismic"] }, cache: "force-cache" }
-        // ? { next: { tags: ["prismic"], revalidate: 60 } }
-        : { next: { revalidate: 5 } },
+        : // ? { next: { tags: ["prismic"], revalidate: 60 } }
+          { next: { revalidate: 5 } },
     ...config,
   });
 
