@@ -1,18 +1,20 @@
 // Next
 import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
+
 // Prismic
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import type { AiAutomationPageDocument } from "../../../../../prismicio-types";
+import type { UxDocument } from "../../../../../prismicio-types";
+
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
 type Params = { uid: string };
 
-export default async function AiAutomationDynamicPage({
+export default async function UxDynamicPage({
   params,
 }: {
   params: Promise<Params>;
@@ -21,8 +23,8 @@ export default async function AiAutomationDynamicPage({
 
   const client = createClient();
   const doc = (await (client as any)
-    .getByUID("ai_automation_page", uid)
-    .catch(() => null)) as AiAutomationPageDocument | null;
+    .getByUID("ux_page", uid)
+    .catch(() => null)) as UxDocument | null;
 
   if (!doc) notFound();
 
@@ -35,14 +37,19 @@ export default async function AiAutomationDynamicPage({
   );
 }
 
+/* ---------- Static Params ---------- */
 export async function generateStaticParams() {
   const client = createClient();
   const docs = (await client.getAllByType(
-    "ai_automation_page",
-  )) as unknown as AiAutomationPageDocument[];
-  return docs.map((d: AiAutomationPageDocument) => ({ uid: d.uid! }));
+    "ux_page",
+  )) as unknown as UxDocument[];
+
+  return docs.map((d) => ({
+    uid: d.uid!,
+  }));
 }
 
+/* ---------- Metadata ---------- */
 export async function generateMetadata(
   { params }: { params: Promise<Params> },
   parent: ResolvingMetadata,
@@ -50,19 +57,20 @@ export async function generateMetadata(
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
   const { uid } = await params;
+
   const doc = (await (client as any)
-    .getByUID("ai_automation_page", uid)
-    .catch(() => null)) as AiAutomationPageDocument | null;
+    .getByUID("ux_page", uid)
+    .catch(() => null)) as UxDocument | null;
 
   if (!doc) {
     return {
-      title: "AI Automation",
-      description: "Discover AI automation solutions from Lunim.",
+      title: "UX",
+      description: "Discover UX solutions from Lunim.",
     };
   }
 
   return generateMetaDataInfo(doc.data, parentMetaData, false, false, [
-    "ai-automation",
+    "ux",
     uid,
   ]);
 }
