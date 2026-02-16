@@ -261,9 +261,9 @@ export const QuizResultEmail = ({
                   <br />
                   — Luna
                   <img 
-                    src="/assets/luna-icon.png" 
+                    src="/assets/luna.png" 
                     alt="Luna Icon" 
-                    style={{ width: '56px', borderRadius: '12px'}} 
+                    style={{ width: '56px'}} 
                     />
                   <br />
                   <span style={{ color: "#0066ff" }}>Your AI Assistant at Lunim</span>

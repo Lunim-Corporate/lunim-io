@@ -199,14 +199,14 @@
 }
 
 .option-card:hover {
-  border-color: rgba(0, 102, 255, 0.3);
-  background-color: rgba(0, 102, 255, 0.04);
+  border-color: rgba(0, 204, 255, 0.5);     
+  background-color: rgba(0, 204, 255, 0.08);
   transform: translateX(2px);
 }
 
 .option-card.selected {
-  border-color: var(--ai-brand-primary);
-  background-color: rgba(0, 102, 255, 0.08);
+  border-color: #00ccff;                    
+  background-color: rgba(0, 204, 255, 0.12);
 }
 
 .option-card input[type="radio"] {
@@ -237,9 +237,9 @@
 }
 
 .option-card.selected .option-letter {
-  background-color: var(--ai-brand-primary);
-  color: #ffffff;
-  border-color: var(--ai-brand-primary);
+  background-color: #00ccff;                
+  color: #000000;                           
+  border-color: #00ccff;
 }
 
 .option-label {
@@ -271,6 +271,52 @@
   border-radius: 16px;
   margin: 40px auto;
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.quiz-loading {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  padding: 60px 48px;
+  background-color: var(--ai-brand-gray);
+  border-radius: 16px;
+  margin: 40px auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.loading-animation {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(0, 204, 255, 0.1);
+  border-top: 3px solid #bbfeff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--ai-brand-text);
+  letter-spacing: -0.01em;
+}
+
+.loading-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
 }
 
 .luna-avatar {
@@ -373,15 +419,15 @@
 }
 
 .btn-primary {
-  background-color: var(--ai-brand-primary);
-  color: #ffffff;
-  border: 1px solid var(--ai-brand-primary);
+  background-color: #bbfeff;
+  color: #000000;
+  border: 1px solid #bbfeff;
 }
 
 .btn-primary:hover {
-  background-color: #0052cc;
+  background-color: #67e8f9;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 204, 255, 0.4);
 }
 
 .btn-primary:disabled {

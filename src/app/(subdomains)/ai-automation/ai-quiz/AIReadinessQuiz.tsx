@@ -19,7 +19,7 @@ const QUIZ_QUESTIONS = [
     options: [
       { value: 'A', label: 'Lots of manual typing. I do the thinking, AI is just on the side.' },
       { value: 'B', label: 'The "Copy-Paste" Shuffle. I generate text in AI, copy it, and paste it into my docs or emails.' },
-      { value: 'C', label: 'I’m starting to connect things. I use tools where AI just appears in my docs or workflows automatically.' }
+      { value: 'C', label: 'I\'m starting to connect things. I use tools where AI just appears in my docs or workflows automatically.' }
     ]
   },
   {
@@ -53,7 +53,7 @@ const QUIZ_QUESTIONS = [
     id: 6,
     question: "If you run the same task through your AI 10 times, how often is the result perfect?",
     options: [
-      { value: 'A', label: 'It’s a gamble. Every result is different and requires manual fixing.' },
+      { value: 'A', label: 'It\'s a gamble. Every result is different and requires manual fixing.' },
       { value: 'B', label: 'Mostly consistent, but I still have to double-check everything.' },
       { value: 'C', label: '100% reliable. My system has the guardrails to deliver the same high-quality output every time.' }
     ]
@@ -103,21 +103,10 @@ export default function AIReadinessQuiz() {
   };
 
   const handleNext = () => {
-    if (currentStep === 0) {
-      if (!userInfo.name || !userInfo.email) {
-        alert('Please enter your name and email to continue');
-        return;
-      }
-      if (!isValidEmail(userInfo.email)) {
-        alert('Please enter a valid email address');
-        return;
-      }
-    } else {
-      const currentQuestion = QUIZ_QUESTIONS[currentStep - 1];
-      if (!answers[currentQuestion.id]) {
-        alert('Please select an answer to continue');
-        return;
-      }
+    const currentQuestion = QUIZ_QUESTIONS[currentStep - 1];
+    if (!answers[currentQuestion.id]) {
+      alert('Please select an answer to continue');
+      return;
     }
     setCurrentStep(currentStep + 1);
   };
@@ -127,9 +116,12 @@ export default function AIReadinessQuiz() {
   };
 
   const handleSubmit = async () => {
-    const currentQuestion = QUIZ_QUESTIONS[currentStep - 1];
-    if (!answers[currentQuestion.id]) {
-      alert('Please select an answer to continue');
+    if (!userInfo.name || !userInfo.email) {
+      alert('Please enter your name and email to see results');
+      return;
+    }
+    if (!isValidEmail(userInfo.email)) {
+      alert('Please enter a valid email address');
       return;
     }
 
@@ -170,7 +162,7 @@ export default function AIReadinessQuiz() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const progressPercentage = ((currentStep) / (QUIZ_QUESTIONS.length + 1)) * 100;
+  const progressPercentage = ((currentStep) / (QUIZ_QUESTIONS.length + 2)) * 100; 
 
   if (quizComplete && result) {
     return (
@@ -178,9 +170,9 @@ export default function AIReadinessQuiz() {
         <div className="quiz-completion">
           <div className="luna-avatar">
             <img 
-            src="/assets/luna.png" 
-            alt="Luna" 
-            style={{ maxWidth: '120px' }} 
+              src="/assets/luna.png" 
+              alt="Luna" 
+              style={{ maxWidth: '120px' }} 
             />
           </div>
           
@@ -214,20 +206,34 @@ export default function AIReadinessQuiz() {
     );
   }
 
+  if (isSubmitting) {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-loading">
+          <div className="loading-animation">
+            <div className="loading-spinner"></div>
+          </div>
+          <h2 className="loading-title">Luna is analyzing your workflow...</h2>
+          <p className="loading-subtitle">Syncing with the Lunim database</p>
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 0) {
     return (
       <div className="quiz-container">
         <div className="quiz-intro">
           <div className="quiz-header">
             <img 
-                src="/assets/banner-quiz.jpg" 
-                alt="AI Readiness Quiz" 
-                style={{ 
+              src="/assets/banner-quiz.jpg" 
+              alt="AI Readiness Quiz" 
+              style={{ 
                 maxWidth: '100%', 
                 height: 'auto', 
                 marginBottom: '24px',
                 borderRadius: '12px'
-                }} 
+              }} 
             />
             <h1 className="quiz-title">AI Automation Readiness Quiz</h1>
             <p className="quiz-subtitle">
@@ -237,11 +243,11 @@ export default function AIReadinessQuiz() {
           
           <div className="intro-content">
             <div className="luna-message">
-               <img 
-                src="/assets/luna-icon.png" 
+              <img 
+                src="/assets/luna.png" 
                 alt="Luna" 
                 style={{ width: '56px', borderRadius: '12px' }} 
-            />
+              />
               <div className="message-bubble">
                 <p>
                   Hey there! I'm Luna, your AI guide at Lunim. I've put together 8 quick questions 
@@ -252,37 +258,71 @@ export default function AIReadinessQuiz() {
               </div>
             </div>
             
-            <div className="user-info-form">
-              <div className="form-group">
-                <label htmlFor="name">Your Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={userInfo.name}
-                  onChange={handleUserInfoChange}
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={userInfo.email}
-                  onChange={handleUserInfoChange}
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              
-              <button onClick={handleNext} className="btn btn-primary btn-large">
-                Start Quiz →
-              </button>
+            <button onClick={() => setCurrentStep(1)} className="btn btn-primary btn-large">
+              Start Quiz →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === QUIZ_QUESTIONS.length + 1) {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-progress-bar">
+          <div 
+            className="quiz-progress-fill" 
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+
+        <div className="quiz-content">
+          <div className="question-number">Almost there!</div>
+          
+          <h2 className="question-text">Enter your details to see your results</h2>
+          
+          <div className="user-info-form">
+            <div className="form-group">
+              <label htmlFor="name">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={userInfo.name}
+                onChange={handleUserInfoChange}
+                placeholder="Enter your name"
+                required
+              />
             </div>
+            
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={userInfo.email}
+                onChange={handleUserInfoChange}
+                placeholder="your@email.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="quiz-navigation">
+            <button onClick={handleBack} className="btn btn-secondary">
+              ← Back
+            </button>
+            
+            <div className="nav-spacer"></div>
+            
+            <button 
+              onClick={handleSubmit} 
+              className="btn btn-primary"
+            >
+              See My Results →
+            </button>
           </div>
         </div>
       </div>
@@ -338,19 +378,9 @@ export default function AIReadinessQuiz() {
           
           <div className="nav-spacer"></div>
           
-          {isLastQuestion ? (
-            <button 
-              onClick={handleSubmit} 
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'See My Results →'}
-            </button>
-          ) : (
-            <button onClick={handleNext} className="btn btn-primary">
-              Next →
-            </button>
-          )}
+          <button onClick={handleNext} className="btn btn-primary">
+            {isLastQuestion ? 'Continue →' : 'Next →'}
+          </button>
         </div>
       </div>
     </div>
