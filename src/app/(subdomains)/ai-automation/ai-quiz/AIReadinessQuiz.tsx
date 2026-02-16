@@ -250,9 +250,9 @@ export default function AIReadinessQuiz() {
               />
               <div className="message-bubble">
                 <p>
-                  Hey there! I'm Luna, your AI guide at Lunim. I've put together 8 quick questions 
+                  Hey there! I&apos;m Luna, your AI guide at Lunim. I&apos;ve put together 8 quick questions 
                   to understand where you are on your automation journey. Based on your answers, 
-                  I'll send you a personalized report and our exclusive <strong>AI Marketing Toolkit</strong>!
+                  I&apos;ll send you a personalized report and our exclusive <strong>AI Marketing Toolkit</strong>!
                 </p>
                 <p className="message-time">Takes about 2 minutes ⏱️</p>
               </div>

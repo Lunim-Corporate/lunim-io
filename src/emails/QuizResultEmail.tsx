@@ -192,7 +192,7 @@ export const QuizResultEmail = ({
                       fontWeight: "700",
                     }}
                   >
-                    You're {category}
+                    You&apos;re {category}
                   </h3>
                   <p
                     style={{
@@ -215,7 +215,7 @@ export const QuizResultEmail = ({
                       fontSize: "15px",
                     }}
                   >
-                    Based on your results, I've put together some insights on how you can
+                    Based on your results, I&apos;ve put together some insights on how you can
                     level up your automation game:
                   </p>
 
@@ -256,7 +256,7 @@ export const QuizResultEmail = ({
                     lineHeight: "1.6",
                   }}
                 >
-                  Questions? Just reply to this email - I'm always here to help!
+                  Questions? Just reply to this email - I&apos;m always here to help!
                   <br />
                   <br />
                   — Luna
