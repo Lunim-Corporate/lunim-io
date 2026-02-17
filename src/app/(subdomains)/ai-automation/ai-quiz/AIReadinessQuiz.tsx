@@ -19,7 +19,7 @@ const QUIZ_QUESTIONS = [
     options: [
       { value: 'A', label: 'Lots of manual typing. I do the thinking, AI is just on the side.' },
       { value: 'B', label: 'The "Copy-Paste" Shuffle. I generate text in AI, copy it, and paste it into my docs or emails.' },
-      { value: 'C', label: 'I\'m starting to connect things. I use tools where AI just appears in my docs or workflows automatically.' }
+      { value: 'C', label: "I'm starting to connect things. I use tools where AI just appears in my docs or workflows automatically." }
     ]
   },
   {
@@ -45,7 +45,7 @@ const QUIZ_QUESTIONS = [
     question: "What is your primary goal with AI-automation?",
     options: [
       { value: 'A', label: 'Reducing the hours spent on repetitive manual tasks.' },
-      { value: 'B', label: 'Leveraging new tools to handle tasks I couldn\'t do before.' },
+      { value: 'B', label: "Leveraging new tools to handle tasks I couldn't do before." },
       { value: 'C', label: 'Building systems that execute projects and solve problems autonomously.' }
     ]
   },
@@ -53,7 +53,7 @@ const QUIZ_QUESTIONS = [
     id: 6,
     question: "If you run the same task through your AI 10 times, how often is the result perfect?",
     options: [
-      { value: 'A', label: 'It\'s a gamble. Every result is different and requires manual fixing.' },
+      { value: 'A', label: "It's a gamble. Every result is different and requires manual fixing." },
       { value: 'B', label: 'Mostly consistent, but I still have to double-check everything.' },
       { value: 'C', label: '100% reliable. My system has the guardrails to deliver the same high-quality output every time.' }
     ]
@@ -69,7 +69,7 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: 8,
-    question: "Where is the biggest \"wait time\" in your current process?",
+    question: 'Where is the biggest "wait time" in your current process?',
     options: [
       { value: 'A', label: 'Input. It takes me too long to gather info and tell the AI what to do.' },
       { value: 'B', label: 'Refinement. The AI gives me 80%, but the last 20% takes all my energy.' },
@@ -132,9 +132,7 @@ export default function AIReadinessQuiz() {
 
       const response = await fetch('/api/ai-quiz/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: userInfo.name,
           email: userInfo.email,
@@ -162,33 +160,34 @@ export default function AIReadinessQuiz() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const progressPercentage = ((currentStep) / (QUIZ_QUESTIONS.length + 2)) * 100; 
+  const progressPercentage = (currentStep / (QUIZ_QUESTIONS.length + 2)) * 100;
 
   if (quizComplete && result) {
     return (
       <div className="quiz-container">
         <div className="quiz-completion">
           <div className="luna-avatar">
-            <img 
-              src="/assets/luna.png" 
-              alt="Luna" 
-              style={{ maxWidth: '120px' }} 
+            <img
+              src="/assets/luna.png"
+              alt="Luna"
+              style={{ maxWidth: '120px' }}
             />
           </div>
-          
+
           <h1 className="completion-title">Great job, {userInfo.name}!</h1>
-          
+
           <div className="result-card">
             <div className="result-score">Your Score: {result.score}/24</div>
             <h2 className="result-category">{result.category}</h2>
           </div>
-          
+
           <p className="completion-message">
-            Luna is preparing your personalized AI Readiness Report right now. 
-            <strong> Check your inbox in the next 60 seconds</strong> for your detailed results and your 
-            <span className="highlight"> AI Marketing Toolkit</span>!
+            Luna is preparing your personalized AI Readiness Report right now.{' '}
+            <strong>Check your inbox in the next 60 seconds</strong> for your
+            detailed results and your{' '}
+            <span className="highlight">AI Marketing Toolkit</span>!
           </p>
-          
+
           <div className="completion-actions">
             <a href="https://lunim.io" className="btn btn-primary">
               Return to Lunim
@@ -197,9 +196,18 @@ export default function AIReadinessQuiz() {
               Download Toolkit
             </a>
           </div>
-          
+
           <p className="email-check">
-            📧 Email not showing up? Check your spam folder or <a href="#footer" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }}>scroll down for our contact info</a>
+            📧 Email not showing up? Check your spam folder or{' '}
+            <a
+              href="#footer"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+              }}
+            >
+              scroll down for our contact info
+            </a>
           </p>
         </div>
       </div>
@@ -222,43 +230,51 @@ export default function AIReadinessQuiz() {
 
   if (currentStep === 0) {
     return (
-      <div className="quiz-container">
+      <div className="quiz-container quiz-container--intro">
+
+        <img
+          src="/assets/banner-quiz.png"
+          alt="AI Readiness Quiz"
+          style={{
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            borderRadius: 0,
+          }}
+        />
+
         <div className="quiz-intro">
           <div className="quiz-header">
-            <img 
-              src="/assets/banner-quiz.jpg" 
-              alt="AI Readiness Quiz" 
-              style={{ 
-                maxWidth: '100%', 
-                height: 'auto', 
-                marginBottom: '24px',
-                borderRadius: '12px'
-              }} 
-            />
             <h1 className="quiz-title">AI Automation Readiness Quiz</h1>
             <p className="quiz-subtitle">
-              Meet Luna 👋 Your AI assistant is here to assess your marketing automation maturity
+              Meet Luna 👋 Your AI assistant is here to assess your automation maturity
             </p>
           </div>
-          
+
           <div className="intro-content">
             <div className="luna-message">
-              <img 
-                src="/assets/luna.png" 
-                alt="Luna" 
-                style={{ width: '56px', borderRadius: '12px' }} 
+              <img
+                src="/assets/luna.png"
+                alt="Luna"
+                style={{ width: '56px', borderRadius: '12px', flexShrink: 0 }}
               />
               <div className="message-bubble">
                 <p>
-                  Hey there! I&apos;m Luna, your AI guide at Lunim. I&apos;ve put together 8 quick questions 
-                  to understand where you are on your automation journey. Based on your answers, 
-                  I&apos;ll send you a personalized report and our exclusive <strong>AI Marketing Toolkit</strong>!
+                  Hey there! I&apos;m Luna, your Lunim assistant. I&apos;ve built
+                  this quick &apos;vibe check&apos; to see if you&apos;re still doing
+                  the grunt work or if you&apos;re ready to let systems do the heavy
+                  lifting. Don&apos;t be nervous—I&apos;m just an AI, and I&apos;m
+                  here to help you unlock the level of automation you didn&apos;t
+                  know you needed.
                 </p>
                 <p className="message-time">Takes about 2 minutes ⏱️</p>
               </div>
             </div>
-            
-            <button onClick={() => setCurrentStep(1)} className="btn btn-primary btn-large">
+
+            <button
+              onClick={() => setCurrentStep(1)}
+              className="btn btn-primary btn-large"
+            >
               Start Quiz →
             </button>
           </div>
@@ -271,17 +287,13 @@ export default function AIReadinessQuiz() {
     return (
       <div className="quiz-container">
         <div className="quiz-progress-bar">
-          <div 
-            className="quiz-progress-fill" 
-            style={{ width: `${progressPercentage}%` }}
-          />
+          <div className="quiz-progress-fill" style={{ width: `${progressPercentage}%` }} />
         </div>
 
         <div className="quiz-content">
           <div className="question-number">Almost there!</div>
-          
           <h2 className="question-text">Enter your details to see your results</h2>
-          
+
           <div className="user-info-form">
             <div className="form-group">
               <label htmlFor="name">Your Name</label>
@@ -295,7 +307,6 @@ export default function AIReadinessQuiz() {
                 required
               />
             </div>
-            
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <input
@@ -314,13 +325,8 @@ export default function AIReadinessQuiz() {
             <button onClick={handleBack} className="btn btn-secondary">
               ← Back
             </button>
-            
-            <div className="nav-spacer"></div>
-            
-            <button 
-              onClick={handleSubmit} 
-              className="btn btn-primary"
-            >
+            <div className="nav-spacer" />
+            <button onClick={handleSubmit} className="btn btn-primary">
               See My Results →
             </button>
           </div>
@@ -335,24 +341,23 @@ export default function AIReadinessQuiz() {
   return (
     <div className="quiz-container">
       <div className="quiz-progress-bar">
-        <div 
-          className="quiz-progress-fill" 
-          style={{ width: `${progressPercentage}%` }}
-        />
+        <div className="quiz-progress-fill" style={{ width: `${progressPercentage}%` }} />
       </div>
-      
+
       <div className="quiz-content">
         <div className="question-number">
           Question {currentStep} of {QUIZ_QUESTIONS.length}
         </div>
-        
+
         <h2 className="question-text">{currentQuestion.question}</h2>
-        
+
         <div className="options-container">
           {currentQuestion.options.map((option) => (
-            <label 
-              key={option.value} 
-              className={`option-card ${answers[currentQuestion.id] === option.value ? 'selected' : ''}`}
+            <label
+              key={option.value}
+              className={`option-card ${
+                answers[currentQuestion.id] === option.value ? 'selected' : ''
+              }`}
             >
               <input
                 type="radio"
@@ -368,16 +373,14 @@ export default function AIReadinessQuiz() {
             </label>
           ))}
         </div>
-        
+
         <div className="quiz-navigation">
           {currentStep > 1 && (
             <button onClick={handleBack} className="btn btn-secondary">
               ← Back
             </button>
           )}
-          
-          <div className="nav-spacer"></div>
-          
+          <div className="nav-spacer" />
           <button onClick={handleNext} className="btn btn-primary">
             {isLastQuestion ? 'Continue →' : 'Next →'}
           </button>

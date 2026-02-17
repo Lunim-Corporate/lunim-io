@@ -116,10 +116,16 @@ export async function POST(request: Request) {
     const resend = new Resend(resendApiKey);
 
     try {
+      const subjectLines = {
+        "The Manualist": `Your AI Readiness Score is in! (Plus, a gift from Luna 🎁)`,
+        "The Hybrid Optimizer": `You're so close, ${body.name}! Here is your AI Readiness Report`,
+        "The Automation Architect": `Impressive. You're an Automation Architect, ${body.name}`
+      };
+
       const { data: emailData, error: emailError } = await resend.emails.send({
         from: `Luna from Lunim AI <${fromEmail}>`,
         to: [body.email],
-        subject: `Your AI Readiness Results Are In, ${body.name}! `,
+        subject: subjectLines[result.category], 
         react: QuizResultEmail({
           name: body.name,
           score: result.score,
