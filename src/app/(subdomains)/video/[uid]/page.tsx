@@ -7,6 +7,8 @@ import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 import type { VideoPageDocument } from "../../../../../prismicio-types";
 
+export const dynamic = "force-dynamic";
+
 type Params = { uid: string };
 
 export default async function VideoDynamicPage({
