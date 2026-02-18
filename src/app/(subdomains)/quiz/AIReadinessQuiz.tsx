@@ -263,7 +263,7 @@ export default function AIReadinessQuiz() {
                   Hey there! I&apos;m Luna, your Lunim assistant. I&apos;ve built
                   this quick &apos;vibe check&apos; to see if you&apos;re still doing
                   the grunt work or if you&apos;re ready to let systems do the heavy
-                  lifting. Don&apos;t be nervous—I&apos;m just an AI, and I&apos;m
+                  lifting. Don&apos;t be nervous, I&apos;m just an AI, and I&apos;m
                   here to help you unlock the level of automation you didn&apos;t
                   know you needed.
                 </p>
