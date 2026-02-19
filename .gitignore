@@ -44,3 +44,6 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 .cursor/debug.log
+
+# Sentry Config File
+.env.sentry-build-plugin
