@@ -53,7 +53,7 @@ export default function Page() {
           <a
             target="_blank"
             rel="noopener"
-            href="https://personal-mru.sentry.io/issues/?project=4510912613908560"
+            href="https://lunim.sentry.io/issues/?project=4510918791856208"
           >
             Issues Page
           </a>
