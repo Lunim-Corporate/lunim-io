@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      Sentry.captureException(new Error(`OpenAI TTS API error ${response.status}: ${errorText}`));
       console.error('OpenAI TTS API error:', response.status, errorText);
       return NextResponse.json(
         { error: 'Failed to generate speech audio' },
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error('Error in /api/luna/tts:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
