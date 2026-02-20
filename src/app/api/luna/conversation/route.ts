@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabaseServer';
+import * as Sentry from '@sentry/nextjs';
 
 interface ConversationMessage {
   role: 'user' | 'luna';
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
     try {
       supabase = supabaseServer();
     } catch (error) {
+      Sentry.captureException(error);
       console.error('[Luna Conversation] Failed to init Supabase client:', error);
       return NextResponse.json({
         success: true,
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      Sentry.captureException(new Error(error.message));
       console.error('[Luna Conversation] Failed to persist conversation:', error);
       return NextResponse.json(
         {
@@ -109,6 +112,7 @@ export async function POST(request: NextRequest) {
       sessionId,
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error('[Luna Conversation] Unexpected error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
