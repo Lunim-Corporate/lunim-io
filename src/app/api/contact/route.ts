@@ -2,6 +2,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { ContactLeadEmail } from "@/emails/ContactLeadEmail";
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 interface ContactPayload {
   full_name: string;
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
     supabaseStatus.success = true;
     supabaseStatus.recordId = data?.id ?? null;
   } catch (error) {
+    Sentry.captureException(error);
     supabaseStatus.error =
       error instanceof Error ? error.message : "Unable to store contact submission.";
   }
