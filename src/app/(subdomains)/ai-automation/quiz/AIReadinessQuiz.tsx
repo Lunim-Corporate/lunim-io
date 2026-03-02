@@ -93,68 +93,74 @@ export default function AIReadinessQuiz() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quizComplete, setQuizComplete] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
+  const [error, setError] = useState<string>('');
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    setError('');
   };
 
   const handleAnswer = (questionId: number, value: string) => {
     setAnswers({ ...answers, [questionId]: value });
+    setError('');
   };
 
   const handleNext = () => {
-    const currentQuestion = QUIZ_QUESTIONS[currentStep - 1];
-    if (!answers[currentQuestion.id]) {
-      alert('Please select an answer to continue');
-      return;
-    }
-    setCurrentStep(currentStep + 1);
-  };
+  const currentQuestion = QUIZ_QUESTIONS[currentStep - 1];
+  if (!answers[currentQuestion.id]) {
+    setError('Please select an answer to continue'); 
+    return;
+  }
+  setCurrentStep(currentStep + 1);
+  setError(''); 
+};
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
+     setError('');
   };
 
-  const handleSubmit = async () => {
-    if (!userInfo.name || !userInfo.email) {
-      alert('Please enter your name and email to see results');
-      return;
+const handleSubmit = async () => {
+  if (!userInfo.name || !userInfo.email) {
+    setError('Please enter your name and email to see results'); 
+    return;
+  }
+  if (!isValidEmail(userInfo.email)) {
+    setError('Please enter a valid email address'); 
+    return;
+  }
+
+  setIsSubmitting(true);
+  setError(''); 
+
+  try {
+    const answersArray = QUIZ_QUESTIONS.map(q => answers[q.id]);
+
+    const response = await fetch('/api/ai-quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: userInfo.name,
+        email: userInfo.email,
+        answers: answersArray
+      })
+    });
+
+    const data: QuizResult = await response.json();
+
+    if (data.success) {
+      setResult(data);
+      setQuizComplete(true);
+    } else {
+      setError(data.message || 'Something went wrong. Please try again.'); 
     }
-    if (!isValidEmail(userInfo.email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const answersArray = QUIZ_QUESTIONS.map(q => answers[q.id]);
-
-      const response = await fetch('/api/ai-quiz/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: userInfo.name,
-          email: userInfo.email,
-          answers: answersArray
-        })
-      });
-
-      const data: QuizResult = await response.json();
-
-      if (data.success) {
-        setResult(data);
-        setQuizComplete(true);
-      } else {
-        alert(data.message || 'Something went wrong. Please try again.');
-      }
-    } catch (error) {
-      console.error('Quiz submission error:', error);
-      alert('Failed to submit quiz. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  } catch (error) {
+    console.error('Quiz submission error:', error);
+    setError('Failed to submit quiz. Please check your connection and try again.'); 
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -258,24 +264,27 @@ export default function AIReadinessQuiz() {
                 alt="Luna"
                 style={{ width: '56px', borderRadius: '12px', flexShrink: 0 }}
               />
-              <div className="message-bubble">
-                <p>
-                  Hey there! I&apos;m Luna, your Lunim assistant. I&apos;ve built
-                  this quick &apos;vibe check&apos; to see if you&apos;re still doing
-                  the grunt work or if you&apos;re ready to let systems do the heavy
-                  lifting. Don&apos;t be nervous, I&apos;m just an AI, and I&apos;m
-                  here to help you unlock the level of automation you didn&apos;t
-                  know you needed.
-                </p>
-                <p className="message-time">Takes about 2 minutes ⏱️</p>
-              </div>
+             <div className="message-bubble">
+              <p>
+                Hey there! I&apos;m Luna, your Lunim assistant. I&apos;ve built
+                this quick &apos;vibe check&apos; to see if you&apos;re still doing
+                the grunt work or if you&apos;re ready to let systems do the heavy
+                lifting.
+              </p>
+              <p>
+                <strong>Complete the quiz and get our exclusive AI Marketing Toolkit for free!</strong>{' '}
+                It&apos;s packed with templates, guides, and strategies to help you 
+                level up your automation game.
+              </p>
+              <p className="message-time">Takes about 2 minutes ⏱️</p>
+            </div>
             </div>
 
             <button
               onClick={() => setCurrentStep(1)}
               className="btn btn-primary btn-large"
             >
-              Start Quiz →
+              Start Quiz & Get Your Free Toolkit →
             </button>
           </div>
         </div>
@@ -294,7 +303,14 @@ export default function AIReadinessQuiz() {
           <div className="question-number">Almost there!</div>
           <h2 className="question-text">Enter your details to see your results</h2>
 
-          <div className="user-info-form">
+            {error && (
+              <div className="error-message">
+                <span className="error-icon">⚠️</span>
+                {error}
+              </div>
+            )}
+
+            <div className="user-info-form">
             <div className="form-group">
               <label htmlFor="name">Your Name</label>
               <input
@@ -349,7 +365,14 @@ export default function AIReadinessQuiz() {
           Question {currentStep} of {QUIZ_QUESTIONS.length}
         </div>
 
-        <h2 className="question-text">{currentQuestion.question}</h2>
+      <h2 className="question-text">{currentQuestion.question}</h2>
+
+        {error && (
+          <div className="error-message">
+            <span className="error-icon">⚠️</span>
+            {error}
+          </div>
+        )}
 
         <div className="options-container">
           {currentQuestion.options.map((option) => (
