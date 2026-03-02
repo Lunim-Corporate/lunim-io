@@ -74,6 +74,22 @@ export async function POST(request: Request) {
     let recordId: number | null = null;
 
     try {
+      const { data: existingSubmission } = await supabase
+        .from("quiz_submissions")
+        .select("email")
+        .eq("email", body.email)
+        .maybeSingle();
+
+      if (existingSubmission) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "This email has already been used to complete the quiz. Each email can only submit once.",
+          },
+          { status: 400 }
+        );
+      }
+
       const { data, error } = await supabase
         .from("quiz_submissions")
         .insert([
@@ -89,7 +105,20 @@ export async function POST(request: Request) {
         .select("id")
         .single();
 
-      if (!error && data) {
+      if (error) {
+        console.error("Supabase insert error:", error);
+        if (error.code === '23505') {
+          return NextResponse.json(
+            {
+              success: false,
+              message: "This email has already been used to complete the quiz.",
+            },
+            { status: 400 }
+          );
+        }
+      }
+
+      if (data) {
         recordId = data.id;
       }
     } catch (dbError) {

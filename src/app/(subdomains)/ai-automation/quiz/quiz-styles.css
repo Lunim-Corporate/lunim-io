@@ -187,6 +187,37 @@
   letter-spacing: -0.01em;
 }
 
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease;
+  color: #fca5a5;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.error-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .options-container {
   display: flex;
   flex-direction: column;
@@ -245,8 +276,8 @@
 
 .option-card.selected .option-letter {
   background-color: var(--ai-brand-secondary);
-  color: #ffffff;
-  border-color: var(--ai-brand-primary);
+  color: #000000;
+  border-color: var(--ai-brand-secondary);
 }
 
 .option-label {
