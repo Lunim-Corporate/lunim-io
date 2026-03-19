@@ -225,16 +225,12 @@ const handleSubmit = async () => {
           <p className="completion-message">
             Luna is preparing your personalized AI Readiness Report right now.{' '}
             <strong>Check your inbox in the next 60 seconds</strong> for your
-            detailed results and your{' '}
-            <span className="highlight">AI Marketing Toolkit</span>!
+            detailed results and your <strong>AI Marketing Toolkit</strong>.
           </p>
 
           <div className="completion-actions">
-            <a href="https://lunim.io" className="btn btn-primary">
-              Return to Lunim
-            </a>
-            <a href="/ai-marketing-toolkit" className="btn btn-secondary">
-              Download Toolkit
+            <a href="/" className="btn btn-primary">
+              Return to Home
             </a>
           </div>
 
@@ -248,7 +244,7 @@ const handleSubmit = async () => {
               }}
             >
               scroll down for our contact info
-            </a>
+            </a>.
           </p>
         </div>
       </div>
@@ -410,13 +406,6 @@ const handleSubmit = async () => {
 
       <h2 className="question-text">{currentQuestion.question}</h2>
 
-        {error && (
-          <div ref={selectAnswerErrorRef} className="error-message">
-            <span className="error-icon">⚠️</span>
-            {error}
-          </div>
-        )}
-
         <div className="options-container">
           {currentQuestion.options.map((option) => (
             <label
@@ -439,6 +428,13 @@ const handleSubmit = async () => {
             </label>
           ))}
         </div>
+
+        {error && (
+          <div ref={selectAnswerErrorRef} className="error-message">
+            <span className="error-icon">⚠️</span>
+            {error}
+          </div>
+        )}
 
         <div className="quiz-navigation">
           {currentStep > 1 && (

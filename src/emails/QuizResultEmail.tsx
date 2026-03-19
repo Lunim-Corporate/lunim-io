@@ -16,7 +16,7 @@ const getEmailContent = (
     "The Manualist": {
       subject: `Your AI Readiness Score is in! (Plus, a gift from Luna 🎁)`,
       greeting: `I've finished analyzing your quiz results! It looks like you are currently in The Manualist phase.`,
-      situation: `Right now, you're doing the heavy lifting yourself, and AI is mostly sitting on the sidelines. You might feel a bit overwhelmed by how fast things are moving, or find yourself caught in the "Copy-Paste Shuffle."`,
+      situation: `Right now, you're doing the heavy lifting yourself, and AI is mostly sitting on the sidelines. You might feel a bit overwhelmed by how fast things are moving, or find yourself caught in the "Copy-Paste Shuffle".`,
       lunaTake: `Don't worry, this is actually the most exciting place to be. Why? Because you have the most to gain. By automating just 20% of your repetitive tasks, you're going to feel like you've suddenly gained an extra day in your work week.`,
       nextStep: `Start small. Focus on "Low-Value, High-Volume" tasks like scheduling and inbox sorting.`,
       closing: `To your growth,`
@@ -33,7 +33,7 @@ const getEmailContent = (
       subject: `Impressive. You're an Automation Architect, ${name}`,
       greeting: `I've analysed your results, and I have to say, I'm impressed. You've reached the Automation Architect level.`,
       situation: `You aren't just using AI; you're building systems. You're proactive, you seek out new architectures, and you're focused on autonomous pipelines. You've moved past the "manual" struggle and are looking for 100% reliability.`,
-      lunaTake: `At this level, your biggest challenge isn't "how" to use AI, it's how to scale it without friction. Your focus should be on "Audit vs. Execution." You should be spending your time auditing the logs of your autonomous projects while you focus on high-level strategy and growth.`,
+      lunaTake: `At this level, your biggest challenge isn't how to use AI, it's how to scale it without friction. Your focus should be on "Audit vs. Execution". You should be spending your time auditing the logs of your autonomous projects while you focus on high-level strategy and growth.`,
       nextStep: `Keep pushing the boundaries of autonomous project execution. You're leading the pack.`,
       closing: `See you in the future,`
     }

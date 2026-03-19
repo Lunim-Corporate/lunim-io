@@ -427,15 +427,15 @@
 }
 
 .email-check {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: .875rem;
+  color: rgba(255, 255, 255, 0.8);
   margin-top: 32px;
   padding-top: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .email-check a {
-  color: var(--ai-brand-primary);
+  color: var(--ai-brand-secondary);
   text-decoration: none;
   font-weight: 500;
 }
