@@ -8,9 +8,9 @@ const QUIZ_QUESTIONS = [
     id: 1,
     question: "When working with AI, how confident are you in getting the results you want?",
     options: [
-      { value: 'A', label: 'You are unsure and have to experiment a lot' },
-      { value: 'B', label: 'You get what you need with some trial and adjustment' },
-      { value: 'C', label: 'You are confident guiding AI to produce exactly what you want' }
+      { value: 'A', label: 'I am unsure and have to experiment a lot' },
+      { value: 'B', label: 'I get what I need with some trial and adjustment' },
+      { value: 'C', label: 'I am confident guiding AI to produce exactly what I want' }
     ]
   },
   {
@@ -286,8 +286,8 @@ const handleSubmit = async () => {
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
                 AI Marketing Readiness Quiz
               </h1>
-              <p className="text-lg md:text-xl text-gray-200/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Meet Luna 👋 Your AI assistant is here to assess your automation maturity
+              <p className="bold text-lg md:text-xl text-gray-200/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Assess your AI maturity and receive a free AI Marketing Toolkit
               </p>
             </div>
           </div>
@@ -306,16 +306,16 @@ const handleSubmit = async () => {
              <div className="message-bubble">
               <p>
                 Hey there! I&apos;m Luna, your Lunim assistant. I&apos;ve built
-                this quick &apos;vibe check&apos; to see if you&apos;re still doing
-                the grunt work or if you&apos;re ready to let systems do the heavy
+                this quick quiz to see if you&apos;re still doing
+                unnecessary grunt work and if you&apos;re ready to let AI do the heavy
                 lifting.
               </p>
               <p>
                 <strong>Complete the quiz and get our exclusive AI Marketing Toolkit for free!</strong>{' '}
-                It&apos;s packed with templates, guides, and strategies to help you 
-                level up your automation game.
+                It&apos;s packed with guides, and strategies to help you 
+                level up your game.
               </p>
-              <p className="message-time">Takes about 2 minutes ⏱️</p>
+              <p className="message-time">The quiz takes about 2 minutes ⏱️</p>
             </div>
             </div>
 
