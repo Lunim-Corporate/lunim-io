@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './quiz-styles.css';
 
 const QUIZ_QUESTIONS = [
@@ -94,6 +94,38 @@ export default function AIReadinessQuiz() {
   const [quizComplete, setQuizComplete] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [error, setError] = useState<string>('');
+  const selectAnswerErrorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (error && selectAnswerErrorRef.current) {
+      selectAnswerErrorRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (history.state?.step === undefined) {
+      history.replaceState({ step: 0 }, '', window.location.href);
+    }
+    const onPopState = (e: PopStateEvent) => {
+      const step = e.state?.step ?? 0;
+      setCurrentStep(step);
+      setError('');
+      scrollToTop();
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const pushStep = (step: number) => {
+    if (typeof window !== 'undefined') {
+      history.pushState({ step }, '', window.location.href);
+    }
+  };
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
@@ -111,13 +143,15 @@ export default function AIReadinessQuiz() {
     setError('Please select an answer to continue'); 
     return;
   }
-  setCurrentStep(currentStep + 1);
-  setError(''); 
+  const nextStep = currentStep + 1;
+  setCurrentStep(nextStep);
+  pushStep(nextStep);
+  setError('');
+  scrollToTop();
 };
 
   const handleBack = () => {
-    setCurrentStep(currentStep - 1);
-     setError('');
+    if (typeof window !== 'undefined') window.history.back();
   };
 
 const handleSubmit = async () => {
@@ -130,6 +164,7 @@ const handleSubmit = async () => {
     return;
   }
 
+  scrollToTop();
   setIsSubmitting(true);
   setError(''); 
 
@@ -292,7 +327,11 @@ const handleSubmit = async () => {
             </div>
 
             <button
-              onClick={() => setCurrentStep(1)}
+              onClick={() => {
+                setCurrentStep(1);
+                pushStep(1);
+                scrollToTop();
+              }}
               className="btn btn-primary btn-large"
             >
               Start Quiz & Get Your Free Toolkit →
@@ -379,7 +418,7 @@ const handleSubmit = async () => {
       <h2 className="question-text">{currentQuestion.question}</h2>
 
         {error && (
-          <div className="error-message">
+          <div ref={selectAnswerErrorRef} className="error-message">
             <span className="error-icon">⚠️</span>
             {error}
           </div>
