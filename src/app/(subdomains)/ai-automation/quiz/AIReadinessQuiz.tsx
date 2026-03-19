@@ -308,7 +308,7 @@ const handleSubmit = async () => {
               </p>
               <p>
                 <strong>Complete the quiz and get our exclusive AI Marketing Toolkit for free!</strong>{' '}
-                It&apos;s packed with guides, and strategies to help you 
+                It&apos;s packed with guides and strategies to help you 
                 level up your game.
               </p>
               <p className="message-time">The quiz takes about 2 minutes ⏱️</p>
