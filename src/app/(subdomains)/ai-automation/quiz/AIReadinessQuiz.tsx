@@ -237,17 +237,28 @@ const handleSubmit = async () => {
   if (currentStep === 0) {
     return (
       <div className="quiz-container quiz-container--intro">
-
-        <img
-          src="/assets/banner-quiz.png"
-          alt="AI Readiness Quiz"
+        <section
+          className="relative min-h-[42vh] flex items-center overflow-hidden bg-black"
           style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            borderRadius: 0,
+            backgroundImage: 'url(/assets/banner-quiz.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
-        />
+        >
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="relative z-10 max-w-4xl px-4 sm:px-6 lg:px-8 mx-auto py-16">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                AI Marketing Readiness Quiz
+              </h1>
+              <p className="text-lg md:text-xl text-gray-200/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Meet Luna 👋 Your AI assistant is here to assess your automation maturity
+              </p>
+            </div>
+          </div>
+          <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-cyan-400/10 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-2xl" />
+        </section>
 
         <div className="quiz-intro">
           {/* <div className="quiz-header">
