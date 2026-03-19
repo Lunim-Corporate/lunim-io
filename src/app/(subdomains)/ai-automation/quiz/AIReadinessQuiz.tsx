@@ -273,7 +273,7 @@ const handleSubmit = async () => {
               <img
                 src="/assets/luna.png"
                 alt="Luna"
-                style={{ width: '56px', borderRadius: '12px', flexShrink: 0 }}
+                style={{ width: '112px', borderRadius: '12px', flexShrink: 0 }}
               />
              <div className="message-bubble">
               <p>
