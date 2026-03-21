@@ -39,7 +39,7 @@ type Slice = {
 
 
 type Params = { uid: string[] };
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const getTech = cache(async () => {
     const client = createClient();
