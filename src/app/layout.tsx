@@ -129,19 +129,15 @@ export default async function RootLayout({
   let footerSlices: any[] = [];
 
   if (siteKey === "main") {
-    // Main domain: use existing singleton navigation and footer
-    const primaryNav = (await (client as any)
-      .getSingle("primary_navigation")
-      .catch(() => null)) as Content.PrimaryNavigationDocument | null;
+    const [primaryNav, footer] = await Promise.all([
+      (client as any).getSingle("primary_navigation").catch(() => null) as Promise<Content.PrimaryNavigationDocument | null>,
+      (client as any).getSingle("footer").catch(() => null) as Promise<Content.FooterDocument | null>,
+    ]);
 
     navigationSlices = primaryNav?.data?.slices || [];
     navigationMenu = navigationSlices.find(
       (slice: any) => slice.slice_type === "navigation_menu"
     );
-
-    const footer = (await (client as any)
-      .getSingle("footer")
-      .catch(() => null)) as Content.FooterDocument | null;
 
     footerSlices = footer?.data?.slices || [];
     footerSlice = footerSlices.find(
@@ -157,10 +153,10 @@ export default async function RootLayout({
 
     const domainValue = domainMap[siteKey];
 
-    // Fetch navigation for subdomain
-    const navDocs = await (client as any)
-      .getAllByType("primary_navigation_generic")
-      .catch(() => []);
+    const [navDocs, footerDocs] = await Promise.all([
+      (client as any).getAllByType("primary_navigation_generic").catch(() => []),
+      (client as any).getAllByType("footer_generic").catch(() => []),
+    ]);
 
     const navDoc = navDocs.find(
       (doc: any) => doc.data?.domain === domainValue
@@ -172,11 +168,6 @@ export default async function RootLayout({
         (slice: any) => slice.slice_type === "navigation_menu"
       );
     }
-
-    // Fetch footer for subdomain
-    const footerDocs = await (client as any)
-      .getAllByType("footer_generic")
-      .catch(() => []);
 
     const footerDoc = footerDocs.find(
       (doc: any) => doc.data?.domain === domainValue
