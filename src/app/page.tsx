@@ -12,19 +12,14 @@ import { notFound } from "next/navigation";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 // Schema
 import type { WithContext, Organization } from "schema-dts";
-import { cache } from "react";
 
 export const revalidate = 60;
 
-const getHomepage = cache(async () => {
+export default async function Page() {
   const client = createClient();
-  return (await (client as any)
+  const doc = (await (client as any)
     .getSingle("homepage")
     .catch(() => null)) as Content.HomepageDocument | null;
-});
-
-export default async function Page() {
-  const doc = await getHomepage();
   if (!doc) notFound();
 
   const orgJsonLd: WithContext<Organization> = {
@@ -62,8 +57,12 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  // fetch data
+  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await getHomepage();
+  const doc = (await (client as any)
+    .getSingle("homepage")
+    .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim Home Page",
