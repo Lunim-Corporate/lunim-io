@@ -250,12 +250,12 @@ const handleSubmit = async () => {
         />
 
         <div className="quiz-intro">
-          <div className="quiz-header">
+          {/* <div className="quiz-header">
             <h1 className="quiz-title">AI Automation Readiness Quiz</h1>
             <p className="quiz-subtitle">
               Meet Luna 👋 Your AI assistant is here to assess your automation maturity
             </p>
-          </div>
+          </div> */}
 
           <div className="intro-content">
             <div className="luna-message">

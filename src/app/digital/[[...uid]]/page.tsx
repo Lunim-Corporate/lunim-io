@@ -27,6 +27,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 import type { CaseStudyTextPanelProps } from "@/slices/CaseStudyTextPanel";
+import { cache } from "react";
 
 type Slice = {
   id: string;
@@ -38,19 +39,40 @@ type Slice = {
 
 
 type Params = { uid: string[] };
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
+const getTech = cache(async () => {
+    const client = createClient();
+    return (client as any).getSingle("tech").catch(() => null);
+});
+
+const getDigitalPage = cache(async (pageUid: string) => {
+    const client = createClient();
+    return (await (client as any).getByUID("digital_page", pageUid).catch(() => null)) as DigitalPageDocument | null;
+});
+
+const getAllCaseStudies = cache(async () => {
+    const client = createClient();
+    return (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+});
+
+const getCaseStudiesPage = cache(async () => {
+    const client = createClient();
+    return (client as any).getSingle("case_studies").catch(() => null);
+});
+
+const getCaseStudy = cache(async (caseStudyUid: string) => {
+    const client = createClient();
+    return client.getByUID("case_study_sm", caseStudyUid).catch(() => null);
+});
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;
-    
-    const client = createClient();
-    
+
     // /digital
     if (!uid) {
         // console.log("Root");
-        const doc = await (client as any)
-            .getSingle("tech")
-            .catch(() => null);
+        const doc = await getTech();
         if (!doc) notFound()
         return (
             <main className="bg-black">
@@ -58,11 +80,11 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </main>
         );
     }
-    
+
     // /digital/[uid]
     else if (uid.length === 1) {
         // console.log("1", uid);
-        const doc = (await (client as any).getByUID("digital_page", uid[0]).catch(() => null)) as DigitalPageDocument | null;
+        const doc = await getDigitalPage(uid[0]);
         if (!doc) notFound();
         const slices = doc.data?.slices;
         return (
@@ -71,23 +93,23 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             </main>
         );
     }
-    
+
     // /digital/[uid]/case-studies
     // E.g., ["ai", "case-studies"], ["web3", "case-studies"]
     else if (uid.length === 2) {
         // console.log("2", uid);
         if (uid[1] !== "case-studies") notFound();
-        const allCaseStudies = (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+        const allCaseStudies = await getAllCaseStudies();
         const filteredCaseStudies = allCaseStudies.filter((cs: any) => cs.data.digital_category === uid[0]);
-        const caseStudyPage = await (client as any).getSingle("case_studies").catch(() => null);
+        const caseStudyPage = await getCaseStudiesPage();
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
     }
-    
+
     // /digital/[uid]/case-studies/[uid]
     // E.g., ["ai", "case-studies", "pizza-hut-checkout"]
     else if (uid.length === 3) {
         // console.log("3", uid);
-        const doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
+        const doc = await getCaseStudy(uid[2]);
         if (!doc) notFound();
 
         // Ensure the fetched case study actually belongs to the requested category.
@@ -142,19 +164,17 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { uid } = await params;
-    const client = createClient();
     const parentMetaData = await pickBaseMetadata(parent);
     let doc;
 
     if (!uid) {
-        doc = await client.getSingle("tech").catch(() => null);
-    }
-    else if (uid.length === 1) {
-        doc = await client.getByUID("digital_page", uid[0]).catch(() => null);
+        doc = await getTech();
+    } else if (uid.length === 1) {
+        doc = await getDigitalPage(uid[0]);
     } else if (uid.length === 2 && uid[1] === "case-studies") {
-        doc = await client.getSingle("case_studies").catch(() => null);
+        doc = await getCaseStudiesPage();
     } else if (uid.length === 3) {
-        doc = await client.getByUID("case_study_sm", uid[2]).catch(() => null);
+        doc = await getCaseStudy(uid[2]);
         // Ensure metadata generation respects the requested category.
         // If the fetched case study's category doesn't match the route's category,
         // treat it as not found to keep behavior consistent with the page renderer.
