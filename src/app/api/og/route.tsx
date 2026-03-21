@@ -48,7 +48,7 @@ export async function GET(req: Request) {
 
     // Generate the image response, then ensure conservative cache headers so
     // Netlify/CDN won't aggressively cache the generated image for long periods.
-    const imageResp = await generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+    const imageResp = generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
     try {
       imageResp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
     } catch {

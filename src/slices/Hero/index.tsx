@@ -4,12 +4,7 @@ import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-import dynamic from "next/dynamic";
-
-const LunaPortal = dynamic(
-  () => import("@/components/Luna").then((mod) => ({ default: mod.LunaPortal })),
-  { ssr: false }
-);
+import { LunaPortal } from "@/components/Luna";
 
 /**
  * Props for `Hero`.

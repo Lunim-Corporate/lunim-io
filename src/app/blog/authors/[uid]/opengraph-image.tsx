@@ -16,5 +16,5 @@ export default async function Image({
   const title = doc?.data?.meta_title || "Lunim Author";
   const backgroundImg = doc?.data?.meta_image?.url;
 
-   return await generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+   return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }
