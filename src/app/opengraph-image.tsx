@@ -12,5 +12,5 @@ const title = doc?.data?.meta_title ? doc.data.meta_title : "Lunim";
 const backgroundImg = doc?.data?.meta_image?.url ?? null;
 
 export default async function Image() {
-  return await generateOgImageResponse(title, backgroundImg, size);
+  return generateOgImageResponse(title, backgroundImg, size);
 }
