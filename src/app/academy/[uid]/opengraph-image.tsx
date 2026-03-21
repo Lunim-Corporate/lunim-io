@@ -16,5 +16,5 @@ export default async function Image({
   const title = doc?.data?.meta_title ?? "Academy Course";
   const backgroundImg = doc?.data?.meta_image?.url;
 
-  return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+  return await generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }
