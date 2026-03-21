@@ -1,7 +1,7 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
 // React
-import { Suspense, cache } from "react";
+import { Suspense } from "react";
 // Next
 import Script from "next/script";
 import { draftMode, headers } from "next/headers";
@@ -18,15 +18,12 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
-const getSiteContext = cache(async () => {
+
+export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers();
   const hostname = headersList.get("host") || "lunim.io";
   const pathname = headersList.get("x-pathname") || "/";
-  return { hostname, pathname, siteKey: getSiteKey(hostname, pathname) };
-});
-
-export async function generateMetadata(): Promise<Metadata> {
-  const { hostname, siteKey } = await getSiteContext();
+  const siteKey = getSiteKey(hostname, pathname);
 
   // Determine base URL based on hostname
   let baseUrl: string;
@@ -119,7 +116,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraft } = await draftMode();
-  const { siteKey } = await getSiteContext();
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "lunim.io";
+  const pathname = headersList.get("x-pathname") || "/";
+  const siteKey = getSiteKey(hostname, pathname);
 
   const client = createClient();
 
