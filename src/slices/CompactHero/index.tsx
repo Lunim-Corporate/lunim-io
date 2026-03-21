@@ -6,12 +6,7 @@ import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismi
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-import dynamic from "next/dynamic";
-
-const LunaPortal = dynamic(
-  () => import("@/components/Luna").then((mod) => ({ default: mod.LunaPortal })),
-  { ssr: false }
-);
+import { LunaPortal } from "@/components/Luna";
 
 /**
  * Props for `CompactHero`.
