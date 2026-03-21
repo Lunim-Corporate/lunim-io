@@ -8,14 +8,19 @@ import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
+import { cache } from "react";
 
 export const revalidate = 60;
 
-export default async function Page() {
+const getFilm = cache(async () => {
   const client = createClient();
-  const doc = (await (client as any)
+  return (await (client as any)
     .getSingle("film")
     .catch(() => null)) as Content.FilmDocument | null;
+});
+
+export default async function Page() {
+  const doc = await getFilm();
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
@@ -39,12 +44,8 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // fetch data
-  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = (await (client as any)
-  .getSingle("film")
-  .catch(() => null)) as any;
+  const doc = await getFilm() as any;
   if (!doc) {
     return {
       title: "Lunim",

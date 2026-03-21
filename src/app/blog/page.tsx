@@ -8,15 +8,19 @@ import { components } from "@/slices";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
+import { cache } from "react";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function Page({ searchParams }: PageProps) {
+const getBlogHomePage = cache(async () => {
   const client = createClient();
+  return client.getSingle("blog_home_page").catch(() => null);
+});
 
-  const doc = await client.getSingle("blog_home_page").catch(() => null);
+export default async function Page({ searchParams }: PageProps) {
+  const doc = await getBlogHomePage();
   if (!doc) return notFound();
 
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
@@ -36,12 +40,8 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // fetch data
-  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = (await (client as any)
-  .getSingle("blog_home_page")
-  .catch(() => null)) as any;
+  const doc = await getBlogHomePage() as any;
   if (!doc) {
     return {
       title: "Lunim",

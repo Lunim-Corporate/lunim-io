@@ -1,7 +1,7 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
 // React
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 // Next
 import Script from "next/script";
 import { draftMode, headers } from "next/headers";
@@ -18,12 +18,15 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
-
-export async function generateMetadata(): Promise<Metadata> {
+const getSiteContext = cache(async () => {
   const headersList = await headers();
   const hostname = headersList.get("host") || "lunim.io";
   const pathname = headersList.get("x-pathname") || "/";
-  const siteKey = getSiteKey(hostname, pathname);
+  return { hostname, pathname, siteKey: getSiteKey(hostname, pathname) };
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { hostname, siteKey } = await getSiteContext();
 
   // Determine base URL based on hostname
   let baseUrl: string;
@@ -116,10 +119,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraft } = await draftMode();
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "lunim.io";
-  const pathname = headersList.get("x-pathname") || "/";
-  const siteKey = getSiteKey(hostname, pathname);
+  const { siteKey } = await getSiteContext();
 
   const client = createClient();
 
@@ -129,19 +129,15 @@ export default async function RootLayout({
   let footerSlices: any[] = [];
 
   if (siteKey === "main") {
-    // Main domain: use existing singleton navigation and footer
-    const primaryNav = (await (client as any)
-      .getSingle("primary_navigation")
-      .catch(() => null)) as Content.PrimaryNavigationDocument | null;
+    const [primaryNav, footer] = await Promise.all([
+      (client as any).getSingle("primary_navigation").catch(() => null) as Promise<Content.PrimaryNavigationDocument | null>,
+      (client as any).getSingle("footer").catch(() => null) as Promise<Content.FooterDocument | null>,
+    ]);
 
     navigationSlices = primaryNav?.data?.slices || [];
     navigationMenu = navigationSlices.find(
       (slice: any) => slice.slice_type === "navigation_menu"
     );
-
-    const footer = (await (client as any)
-      .getSingle("footer")
-      .catch(() => null)) as Content.FooterDocument | null;
 
     footerSlices = footer?.data?.slices || [];
     footerSlice = footerSlices.find(
@@ -157,10 +153,10 @@ export default async function RootLayout({
 
     const domainValue = domainMap[siteKey];
 
-    // Fetch navigation for subdomain
-    const navDocs = await (client as any)
-      .getAllByType("primary_navigation_generic")
-      .catch(() => []);
+    const [navDocs, footerDocs] = await Promise.all([
+      (client as any).getAllByType("primary_navigation_generic").catch(() => []),
+      (client as any).getAllByType("footer_generic").catch(() => []),
+    ]);
 
     const navDoc = navDocs.find(
       (doc: any) => doc.data?.domain === domainValue
@@ -172,11 +168,6 @@ export default async function RootLayout({
         (slice: any) => slice.slice_type === "navigation_menu"
       );
     }
-
-    // Fetch footer for subdomain
-    const footerDocs = await (client as any)
-      .getAllByType("footer_generic")
-      .catch(() => []);
 
     const footerDoc = footerDocs.find(
       (doc: any) => doc.data?.domain === domainValue
