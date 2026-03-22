@@ -340,7 +340,7 @@ const handleSubmit = async () => {
 
         <div className="quiz-content">
           <div className="question-number">Almost there!</div>
-          <h2 className="question-text">Enter your details to see your results</h2>
+          <h2 className="question-text">Enter your details to see the results and receive your free AI Marketing Toolkit</h2>
 
             {error && (
               <div className="error-message">
