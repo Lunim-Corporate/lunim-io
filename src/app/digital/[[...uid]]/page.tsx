@@ -38,7 +38,7 @@ type Slice = {
 
 
 type Params = { uid: string[] };
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function Page({ params }: { params: Promise<Params> }) {
     const { uid } = await params;

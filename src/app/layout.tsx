@@ -18,40 +18,40 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
+const SITE_META: Record<SiteKey, { siteName: string; siteTitle: string; siteDescription: string }> = {
+  ai: {
+    siteName: "Lunim AI Automation",
+    siteTitle: "Lunim AI Automation – AI-Powered Solutions",
+    siteDescription: "Transform your business with AI automation solutions from Lunim.",
+  },
+  ux: {
+    siteName: "Lunim UX",
+    siteTitle: "Lunim UX – Human-Centered Design",
+    siteDescription: "Design better product experiences with Lunim UX.",
+  },
+  video: {
+    siteName: "Lunim Video Production",
+    siteTitle: "Lunim Video Production – Professional Video Services",
+    siteDescription: "Create compelling visual stories with professional video production from Lunim.",
+  },
+  main: {
+    siteName: "Lunim",
+    siteTitle: "Lunim.io – Innovative Digital Solutions",
+    siteDescription: "Lunim.io creates seamless digital experiences with cutting-edge technology and design.",
+  },
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers();
+  const siteKey = (headersList.get("x-site-key") as SiteKey) ?? "main";
   const hostname = headersList.get("host") || "lunim.io";
-  const pathname = headersList.get("x-pathname") || "/";
-  const siteKey = getSiteKey(hostname, pathname);
 
-  // Determine base URL based on hostname
-  let baseUrl: string;
-  let siteName: string;
-  let siteTitle: string;
-  let siteDescription: string;
+  const baseUrl =
+    siteKey !== "main"
+      ? `https://${hostname}`
+      : process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/";
 
-  if (siteKey === "ai") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim AI Automation";
-    siteTitle = "Lunim AI Automation – AI-Powered Solutions";
-    siteDescription = "Transform your business with AI automation solutions from Lunim.";
-  } else if (siteKey === "ux") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim UX";
-    siteTitle = "Lunim UX – Human-Centered Design";
-    siteDescription = "Design better product experiences with Lunim UX.";
-  } else if (siteKey === "video") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim Video Production";
-    siteTitle = "Lunim Video Production – Professional Video Services";
-    siteDescription = "Create compelling visual stories with professional video production from Lunim.";
-  } else {
-    baseUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/";
-    siteName = "Lunim";
-    siteTitle = "Lunim.io – Innovative Digital Solutions";
-    siteDescription = "Lunim.io creates seamless digital experiences with cutting-edge technology and design.";
-  }
+  const { siteName, siteTitle, siteDescription } = SITE_META[siteKey];
 
   return {
     title: {
@@ -70,44 +70,9 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: siteTitle,
       description: siteDescription,
-      images: [
-        `${baseUrl}/assets/images/og-image.jpg`
-      ],
+      images: [`${baseUrl}/assets/images/og-image.jpg`],
     },
   };
-}
-
-// Helper function to determine site key from hostname and pathname
-function getSiteKey(
-  hostname: string,
-  pathname: string = "/"
-): SiteKey {
-  const subdomain = hostname.split(".")[0];
-
-  // Check if it's a subdomain we handle
-  if (subdomain === "ai" && !hostname.startsWith("www")) {
-    return "ai";
-  }
-  if (subdomain === "ux" && !hostname.startsWith("www")) {
-    return "ux";
-  }
-  if (subdomain === "video-next" && !hostname.startsWith("www")) {
-    return "video";
-  }
-
-  // Check if pathname starts with a subdomain route prefix
-  if (pathname.startsWith("/ai-automation")) {
-    return "ai";
-  }
-  if (pathname.startsWith("/ux")) {
-    return "ux";
-  }
-  if (pathname.startsWith("/video")) {
-    return "video";
-  }
-
-  // Default to main for lunim.io, www.lunim.io, and Netlify preview URLs
-  return "main";
 }
 
 export default async function RootLayout({
@@ -117,9 +82,7 @@ export default async function RootLayout({
 }) {
   const { isEnabled: isDraft } = await draftMode();
   const headersList = await headers();
-  const hostname = headersList.get("host") || "lunim.io";
-  const pathname = headersList.get("x-pathname") || "/";
-  const siteKey = getSiteKey(hostname, pathname);
+  const siteKey = (headersList.get("x-site-key") as SiteKey) ?? "main";
   const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
     await getLayoutContent(siteKey);
 
