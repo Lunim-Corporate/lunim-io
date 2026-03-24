@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callLLM, generatePlanPrompt } from '@/components/Luna/utils/llm';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
+    Sentry.captureException(error);
     console.error('Error in plan endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

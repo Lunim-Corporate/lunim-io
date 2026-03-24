@@ -1,12 +1,17 @@
 "use client";
 
 import { FC, useState } from "react";
+import dynamic from "next/dynamic";
 import type { Content } from "@prismicio/client";
 import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-import { LunaPortal } from "@/components/Luna";
+
+const LunaPortal = dynamic(
+  () => import("@/components/Luna").then((mod) => mod.LunaPortal),
+  { ssr: false },
+);
 
 /**
  * Props for `CompactHero`.
@@ -144,7 +149,9 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
       {/* subtle decorative glows */}
       <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-cyan-400/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-2xl" />
-      <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
+      {isLunaOpen ? (
+        <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
+      ) : null}
     </section>
   );
 };

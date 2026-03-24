@@ -6,12 +6,6 @@ import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { withImageAlt } from "@/lib/prismicImage";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export type ParallaxLineProps = SliceComponentProps<any>;
 
@@ -35,138 +29,60 @@ const ParallaxLine = ({ slice }: ParallaxLineProps) => {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    const ctx = gsap.context(() => {
-      // Header fade on scroll-in (before pinning)
-      gsap
-        .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "top 50%", scrub: 0.6 } })
-        .from(titleRef.current, { opacity: 0, y: 40, filter: "blur(6px)" })
-        .from(subtitleRef.current, { opacity: 0, y: 30, filter: "blur(4px)" }, "-=0.1")
-        .from(descriptionRef.current, { opacity: 0, y: 20, filter: "blur(3px)" }, "-=0.1");
+    let ctx: any;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          gsap
+            .timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "top 50%", scrub: 0.6 } })
+            .from(titleRef.current, { opacity: 0, y: 40, filter: "blur(6px)" })
+            .from(subtitleRef.current, { opacity: 0, y: 30, filter: "blur(4px)" }, "-=0.1")
+            .from(descriptionRef.current, { opacity: 0, y: 20, filter: "blur(3px)" }, "-=0.1");
 
-      // Scroll-scrubbed sequence along the line without pinning the page
-      // We use the slice item count so desktop and mobile stay in sync.
-      const nodeCount = itemCount;
-      
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          // Shorter scroll distance so the full effect completes quickly
-          start: "top 40%",
-          end: "center 40%",
-          scrub: 0.7,
-        },
-      });
+          const nodeCount = itemCount;
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: sectionRef.current, start: "top 40%", end: "center 40%", scrub: 0.7 },
+          });
 
-      // Desktop horizontal timeline
-      if (!isMobile && desktopLineRef.current) {
-        const length = desktopLineRef.current.getTotalLength();
-        const desktopNodes = sectionRef.current?.querySelectorAll(".desktop-timeline-node");
-        tl.set(desktopLineRef.current, { strokeDasharray: length, strokeDashoffset: length }, 0);
+          if (!isMobile && desktopLineRef.current) {
+            const length = desktopLineRef.current.getTotalLength();
+            const desktopNodes = sectionRef.current?.querySelectorAll(".desktop-timeline-node");
+            tl.set(desktopLineRef.current, { strokeDasharray: length, strokeDashoffset: length }, 0);
+            tl.to(desktopLineRef.current, { strokeDashoffset: 0, duration: 0.5, ease: "none" }, 0);
 
-        // Draw the full line quickly near the start of the timeline
-        tl.to(desktopLineRef.current, {
-          strokeDashoffset: 0,
-          duration: 0.5,
-          ease: "none",
-        }, 0);
-
-        for (let i = 0; i < nodeCount; i++) {
-          const node = desktopNodes?.[i];
-          const connectors = sectionRef.current?.querySelectorAll(`.connector-${i}`);
-          const content = sectionRef.current?.querySelector(`.content-${i}`);
-
-          // Stagger node/content groups along the rest of the timeline
-          const baseTime = 0.5 + i * 0.18;
-
-          if (node) {
-            tl.from(node, {
-              scale: 0,
-              opacity: 0,
-              duration: 0.28,
-              ease: "back.out(1.7)",
-            }, baseTime);
+            for (let i = 0; i < nodeCount; i++) {
+              const node = desktopNodes?.[i];
+              const connectors = sectionRef.current?.querySelectorAll(`.connector-${i}`);
+              const content = sectionRef.current?.querySelector(`.content-${i}`);
+              const baseTime = 0.5 + i * 0.18;
+              if (node) tl.from(node, { scale: 0, opacity: 0, duration: 0.28, ease: "back.out(1.7)" }, baseTime);
+              if (connectors?.length) connectors.forEach((c) => tl.from(c, { scaleY: 0, transformOrigin: "top", duration: 0.2, ease: "none" }, baseTime + 0.04));
+              if (content) tl.from(content, { opacity: 0, x: -15, duration: 0.26, ease: "power2.out" }, baseTime + 0.06);
+            }
           }
 
-          if (connectors?.length) {
-            connectors.forEach((connector) => {
-              tl.from(connector, {
-                scaleY: 0,
-                transformOrigin: "top",
-                duration: 0.2,
-                ease: "none",
-              }, baseTime + 0.04);
-            });
-          }
+          if (isMobile && mobileLineRef.current) {
+            const length = mobileLineRef.current.getTotalLength();
+            const mobileNodes = sectionRef.current?.querySelectorAll(".mobile-timeline-node");
+            tl.set(mobileLineRef.current, { strokeDasharray: length, strokeDashoffset: length }, 0);
+            tl.to(mobileLineRef.current, { strokeDashoffset: 0, duration: 0.5, ease: "none" }, 0);
 
-          if (content) {
-            tl.from(content, {
-              opacity: 0,
-              x: -15,
-              duration: 0.26,
-              ease: "power2.out",
-            }, baseTime + 0.06);
+            for (let i = 0; i < nodeCount; i++) {
+              const node = mobileNodes?.[i];
+              const connectors = sectionRef.current?.querySelectorAll(`.mobile-connector-${i}`);
+              const contents = sectionRef.current?.querySelectorAll(`.mobile-content-${i}`);
+              const baseTime = 0.5 + i * 0.2;
+              if (node) tl.from(node, { opacity: 0, y: -15, scale: 0.85, duration: 0.3, ease: "power2.out" }, baseTime);
+              if (connectors?.length) connectors.forEach((c) => tl.from(c, { scaleX: 0, transformOrigin: "left", duration: 0.22, ease: "power1.out" }, baseTime + 0.02));
+              if (contents?.length) contents.forEach((c) => tl.from(c, { opacity: 0, y: -15, duration: 0.28, ease: "power2.out" }, baseTime + 0.02));
+            }
           }
-        }
+        }, sectionRef);
       }
+    );
 
-      // Mobile vertical timeline
-      if (isMobile && mobileLineRef.current) {
-        const length = mobileLineRef.current.getTotalLength();
-        const mobileNodes = sectionRef.current?.querySelectorAll(".mobile-timeline-node");
-        tl.set(mobileLineRef.current, { strokeDasharray: length, strokeDashoffset: length }, 0);
-
-        // Draw the full vertical line quickly
-        tl.to(mobileLineRef.current, {
-          strokeDashoffset: 0,
-          duration: 0.5,
-          ease: "none",
-        }, 0);
-
-        for (let i = 0; i < nodeCount; i++) {
-          const node = mobileNodes?.[i];
-          const connectors = sectionRef.current?.querySelectorAll(`.mobile-connector-${i}`);
-          const contents = sectionRef.current?.querySelectorAll(`.mobile-content-${i}`);
-
-          const baseTime = 0.5 + i * 0.2;
-
-          // MOBILE: give nodes the same kind of fade/slide effect as content,
-          // and keep their timing closely aligned so nothing feels "late".
-          if (node) {
-            tl.from(node, {
-              opacity: 0,
-              y: -15,
-              scale: 0.85,
-              duration: 0.3,
-              ease: "power2.out",
-            }, baseTime);
-          }
-
-          if (connectors?.length) {
-            connectors.forEach((connector) => {
-              tl.from(connector, {
-                scaleX: 0,
-                transformOrigin: "left",
-                duration: 0.22,
-                ease: "power1.out",
-              }, baseTime + 0.02);
-            });
-          }
-
-          if (contents?.length) {
-            contents.forEach((content) => {
-              tl.from(content, {
-                opacity: 0,
-                y: -15,
-                duration: 0.28,
-                ease: "power2.out",
-              }, baseTime + 0.02);
-            });
-          }
-        }
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, [isMobile, itemCount]);
 
   const hasRichText = (field: any): boolean => {

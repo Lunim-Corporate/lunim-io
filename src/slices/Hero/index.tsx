@@ -1,10 +1,15 @@
 "use client";
 import { FC, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-import { LunaPortal } from "@/components/Luna";
+
+const LunaPortal = dynamic(
+  () => import("@/components/Luna").then((mod) => mod.LunaPortal),
+  { ssr: false },
+);
 
 /**
  * Props for `Hero`.
@@ -107,7 +112,9 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           </svg>
         </button>
       ) : null}
-      <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
+      {isLunaOpen ? (
+        <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
+      ) : null}
     </section>
   );
 };
