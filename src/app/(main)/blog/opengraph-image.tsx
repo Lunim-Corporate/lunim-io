@@ -1,4 +1,4 @@
-import { createClient } from "../../prismicio";
+import { createClient } from "@/prismicio";
 import { generateOgImageResponse } from "@/lib/ogImage";
 
 // Options for the generated Open Graph image
@@ -7,10 +7,10 @@ export const contentType = "image/png";
 
 // Fetch data for the Open Graph image
 const client = createClient();
-const doc = await client.getSingle("academy").catch(() => null);
-const title = doc?.data?.meta_title ?? "Academy";
+const doc = await client.getSingle("blog").catch(() => null);
+const title = doc?.data?.meta_title ?? "Blog";
 const backgroundImg = doc?.data?.meta_image?.url;
 
 export default async function Image() {
-    return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+ return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }

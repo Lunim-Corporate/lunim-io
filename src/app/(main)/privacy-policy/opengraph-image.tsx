@@ -1,5 +1,5 @@
 import generateOgImageResponse from "@/lib/ogImage";
-import { createClient } from "../../prismicio";
+import { createClient } from "@/prismicio";
 
 // Options for the generated Open Graph image
 export const size = { width: 1200, height: 630 };

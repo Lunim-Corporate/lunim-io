@@ -7,7 +7,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import { AcademyCourseDocument } from "../../../../prismicio-types";
+import { AcademyCourseDocument } from "../../../../../prismicio-types";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";

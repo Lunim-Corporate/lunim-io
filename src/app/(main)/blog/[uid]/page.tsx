@@ -6,14 +6,14 @@ import type { Metadata, ResolvingMetadata } from "next";
 // Prismicio
 import { createClient } from "@/prismicio";
 import { asText } from "@prismicio/helpers";
-import type { BlogPostDocument, BlogPostDocumentData, BlogPostDocumentDataSlicesSlice } from "../../../../prismicio-types";
+import type { BlogPostDocument, BlogPostDocumentData, BlogPostDocumentDataSlicesSlice } from "../../../../../prismicio-types";
 import { PrismicRichText } from "@prismicio/react";
 import { RichTextField, SliceZone } from "@prismicio/types";
 import { PrismicNextImage } from "@prismicio/next";
 // Icons
 import { ChevronDown, Eye } from "lucide-react";
 // Types
-import { Simplify } from "../../../../prismicio-types";
+import { Simplify } from "../../../../../prismicio-types";
 // Utils
 import { createID } from "@/utils/createId";
 import { calculateReadingTime } from "@/utils/calcReadingTime";

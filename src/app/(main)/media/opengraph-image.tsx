@@ -1,4 +1,4 @@
-import { createClient } from "../../prismicio";
+import { createClient } from "@/prismicio";
 import { generateOgImageResponse } from "@/lib/ogImage";
 
 // Options for the generated Open Graph image

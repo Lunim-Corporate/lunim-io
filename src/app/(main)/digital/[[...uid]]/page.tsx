@@ -17,7 +17,7 @@ import { SliceZone } from "@prismicio/react";
 import Head from "next/head";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import { DigitalPageDocument } from "../../../../prismicio-types";
+import { DigitalPageDocument } from "../../../../../prismicio-types";
 import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
