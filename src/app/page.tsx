@@ -1,8 +1,8 @@
 // Prismic
-import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import { components } from "@/slices";
+import { getSingleDocument } from "@/lib/siteContent";
 // Next
 import type { Metadata, ResolvingMetadata } from "next";
 import Script from "next/script";
@@ -16,10 +16,7 @@ import type { WithContext, Organization } from "schema-dts";
 export const revalidate = 60;
 
 export default async function Page() {
-  const client = createClient();
-  const doc = (await (client as any)
-    .getSingle("homepage")
-    .catch(() => null)) as Content.HomepageDocument | null;
+  const doc = await getSingleDocument<Content.HomepageDocument>("homepage");
   if (!doc) notFound();
 
   const orgJsonLd: WithContext<Organization> = {
@@ -57,12 +54,8 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // fetch data
-  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = (await (client as any)
-    .getSingle("homepage")
-    .catch(() => null)) as any;
+  const doc = await getSingleDocument<Content.HomepageDocument>("homepage");
   if (!doc) {
     return {
       title: "Lunim Home Page",

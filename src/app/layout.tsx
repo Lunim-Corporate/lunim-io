@@ -1,5 +1,6 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
+import { getLayoutContent, type SiteKey } from "@/lib/siteContent";
 // React
 import { Suspense } from "react";
 // Next
@@ -7,11 +8,10 @@ import Script from "next/script";
 import { draftMode, headers } from "next/headers";
 import { Metadata } from "next";
 // Prismic
-import { createClient, repositoryName } from "@/prismicio";
+import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import NavigationMenu from "@/slices/NavigationMenu";
 import Footer from "@/slices/Footer";
-import { Content } from "@prismicio/client";
 // Styles
 import "./globals.css";
 // Components
@@ -81,7 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
 function getSiteKey(
   hostname: string,
   pathname: string = "/"
-): "main" | "ai" | "ux" | "video" {
+): SiteKey {
   const subdomain = hostname.split(".")[0];
 
   // Check if it's a subdomain we handle
@@ -120,75 +120,8 @@ export default async function RootLayout({
   const hostname = headersList.get("host") || "lunim.io";
   const pathname = headersList.get("x-pathname") || "/";
   const siteKey = getSiteKey(hostname, pathname);
-
-  const client = createClient();
-
-  let navigationMenu: any = null;
-  let navigationSlices: any[] = [];
-  let footerSlice: any = null;
-  let footerSlices: any[] = [];
-
-  if (siteKey === "main") {
-    // Main domain: use existing singleton navigation and footer
-    const primaryNav = (await (client as any)
-      .getSingle("primary_navigation")
-      .catch(() => null)) as Content.PrimaryNavigationDocument | null;
-
-    navigationSlices = primaryNav?.data?.slices || [];
-    navigationMenu = navigationSlices.find(
-      (slice: any) => slice.slice_type === "navigation_menu"
-    );
-
-    const footer = (await (client as any)
-      .getSingle("footer")
-      .catch(() => null)) as Content.FooterDocument | null;
-
-    footerSlices = footer?.data?.slices || [];
-    footerSlice = footerSlices.find(
-      (slice: any) => slice.slice_type === "footer"
-    );
-  } else {
-    // Subdomain: fetch generic navigation and footer by domain
-    const domainMap: Record<string, string> = {
-      "ai": "ai-automation",
-      "ux": "ux",
-      "video": "video",
-    };
-
-    const domainValue = domainMap[siteKey];
-
-    // Fetch navigation for subdomain
-    const navDocs = await (client as any)
-      .getAllByType("primary_navigation_generic")
-      .catch(() => []);
-
-    const navDoc = navDocs.find(
-      (doc: any) => doc.data?.domain === domainValue
-    );
-
-    if (navDoc) {
-      navigationSlices = navDoc.data?.slices || [];
-      navigationMenu = navigationSlices.find(
-        (slice: any) => slice.slice_type === "navigation_menu"
-      );
-    }
-
-    // Fetch footer for subdomain
-    const footerDocs = await (client as any)
-      .getAllByType("footer_generic")
-      .catch(() => []);
-
-    const footerDoc = footerDocs.find(
-      (doc: any) => doc.data?.domain === domainValue
-    );
-
-    if (footerDoc) {
-      footerSlices = footerDoc.data?.slices || [];
-      footerSlice = footerSlices.find(
-        (slice: any) => slice.slice_type === "footer"
-      );
-    }
-  }
+  const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
+    await getLayoutContent(siteKey);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -214,11 +147,13 @@ export default async function RootLayout({
             </Script>
           </>
         ) : null}
-        <script
-          async
-          defer
-          src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
-        ></script>
+        {isDraft ? (
+          <script
+            async
+            defer
+            src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
+          ></script>
+        ) : null}
       </head>
       <body className="bg-black">
         <ScrollManager />
