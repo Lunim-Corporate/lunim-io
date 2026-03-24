@@ -6,13 +6,6 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 /**
  * Props for `TransmediaHero`.
@@ -38,80 +31,39 @@ const TransmediaHero = ({ slice }: TransmediaHeroProps) => {
   );
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Soft fade-in for the whole hero on initial load (does not block scroll)
-      if (sectionRef.current) {
-        gsap.from(sectionRef.current, {
-          autoAlpha: 0,
-          y: 30,
-          duration: 0.9,
-          ease: "power2.out",
-        });
+    let ctx: any;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          if (sectionRef.current) {
+            gsap.from(sectionRef.current, { autoAlpha: 0, y: 30, duration: 0.9, ease: "power2.out" });
+          }
+
+          const heroTl = gsap.timeline({
+            scrollTrigger: { trigger: sectionRef.current, start: "top 85%", end: "top 25%", scrub: 0.5 },
+          });
+
+          if (bgRef.current) {
+            heroTl.fromTo(bgRef.current, { scale: 1.04, yPercent: -6 }, { scale: 1, yPercent: 0, ease: "none" }, 0);
+          }
+          heroTl.fromTo(logoRef.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: "power2.out" }, 0.05);
+          heroTl.fromTo(titleRef.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, ease: "power2.out" }, 0.12);
+          heroTl.fromTo(subtitleRef.current, { opacity: 0, y: 26 }, { opacity: 1, y: 0, ease: "power2.out" }, 0.18);
+          heroTl.fromTo(taglineRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, ease: "power2.out" }, 0.24);
+
+          if (slice.primary.enable_parallax && bgRef.current) {
+            gsap.to(bgRef.current, {
+              yPercent: 18,
+              ease: "none",
+              scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 0.8 },
+            });
+          }
+        }, sectionRef);
       }
+    );
 
-      // Scroll-linked sequence: fade content in without pinning the page
-      const heroTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          end: "top 25%",
-          scrub: 0.5,
-        },
-      });
-
-      if (bgRef.current) {
-        heroTl.fromTo(
-          bgRef.current,
-          { scale: 1.04, yPercent: -6 },
-          { scale: 1, yPercent: 0, ease: "none" },
-          0
-        );
-      }
-
-      heroTl.fromTo(
-        logoRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, ease: "power2.out" },
-        0.05
-      );
-
-      heroTl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, ease: "power2.out" },
-        0.12
-      );
-
-      heroTl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 26 },
-        { opacity: 1, y: 0, ease: "power2.out" },
-        0.18
-      );
-
-      heroTl.fromTo(
-        taglineRef.current,
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, ease: "power2.out" },
-        0.24
-      );
-
-      // Background subtle parallax while scrolling
-      if (slice.primary.enable_parallax && bgRef.current) {
-        gsap.to(bgRef.current, {
-          yPercent: 18,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8,
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, [slice.primary.enable_parallax]);
 
   return (
