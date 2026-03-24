@@ -1,18 +1,11 @@
-"use client";
-
-import { FC, useState } from "react";
-import dynamic from "next/dynamic";
+import type { FC } from "react";
 import { PrismicNextImage } from "@prismicio/next";
 import type { Content } from "@prismicio/client";
 import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-
-const LunaPortal = dynamic(
-  () => import("@/components/Luna").then((mod) => mod.LunaPortal),
-  { ssr: false },
-);
+import AskLunaButton from "@/components/AskLunaButton";
 
 /**
  * Props for `CompactHero`.
@@ -63,7 +56,6 @@ export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
  *  - background_image, hero_title_part1, hero_title_part2, hero_description, button_1_link, button_1_label
  */
 const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
-  const [isLunaOpen, setIsLunaOpen] = useState(false);
   const primary: CompactHeroPrimary = slice.primary;
 
   // Prefer new schema fields
@@ -134,13 +126,9 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
                 </PrismicLink>
               ) : null}
               {showAskLuna ? (
-                <button
-                  type="button"
-                  onClick={() => setIsLunaOpen(true)}
+                <AskLunaButton
                   className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer no-underline"
-                >
-                  Ask Luna
-                </button>
+                />
               ) : null}
             </div>
           ) : null}
@@ -150,9 +138,6 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
       {/* subtle decorative glows */}
       <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-cyan-400/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-2xl" />
-      {isLunaOpen ? (
-        <LunaPortal isOpen={isLunaOpen} onClose={() => setIsLunaOpen(false)} />
-      ) : null}
     </section>
   );
 };
