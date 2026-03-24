@@ -9,7 +9,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export default async function Page() {
   const client = createClient();
