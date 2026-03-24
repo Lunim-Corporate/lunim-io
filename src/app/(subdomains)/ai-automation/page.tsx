@@ -12,7 +12,7 @@ import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 // Schema
 import type { WithContext, Organization } from "schema-dts";
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export default async function AiAutomationPage() {
   const client = createClient();

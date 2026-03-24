@@ -8,19 +8,14 @@ import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
-import { cache } from "react";
 
-export const revalidate = 60;
-
-const getPrivacyPolicy = cache(async () => {
-  const client = createClient();
-  return (await (client as any)
-    .getSingle("privacy_policy_sm")
-    .catch(() => null)) as Content.PrivacyPolicySmDocument | null;
-});
+export const revalidate = false;
 
 export default async function Page() {
-  const doc = await getPrivacyPolicy();
+  const client = createClient();
+  const doc = (await (client as any)
+    .getSingle("privacy_policy_sm")
+    .catch(() => null)) as Content.PrivacyPolicySmDocument | null;
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
@@ -41,8 +36,12 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  // fetch data
+  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await getPrivacyPolicy() as any;
+  const doc = (await (client as any)
+  .getSingle("privacy_policy_sm")
+  .catch(() => null)) as any;
   if (!doc) {
     return {
       title: "Lunim",

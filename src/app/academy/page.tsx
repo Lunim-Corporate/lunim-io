@@ -8,19 +8,14 @@ import { Metadata, ResolvingMetadata } from "next";
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
-import { cache } from "react";
 
-export const revalidate = 60;
-
-const getAcademy = cache(async () => {
-  const client = createClient();
-  return (await (client as any)
-    .getSingle("academy")
-    .catch(() => null)) as Content.AcademyDocument | null;
-});
+export const revalidate = false;
 
 export default async function Page() {
-  const doc = await getAcademy();
+  const client = createClient();
+  const doc = (await (client as any)
+    .getSingle("academy")
+    .catch(() => null)) as Content.AcademyDocument | null;
 
   if (!doc || !Array.isArray(doc.data.slices)) {
     return (
@@ -43,8 +38,12 @@ export async function generateMetadata(
   _context: unknown,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  // fetch data
+  const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await getAcademy();
+  const doc = (await (client as any)
+  .getSingle("academy")
+  .catch(() => null)) as Content.AcademyDocument | null;
   if (!doc) {
     return {
       title: "Lunim",

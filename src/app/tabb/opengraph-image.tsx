@@ -12,5 +12,5 @@ const title = doc?.data?.meta_title ?? "Tabb";
 const backgroundImg = doc?.data?.meta_image?.url;
 
 export default async function Image() {
-    return await generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
+    return generateOgImageResponse(title, backgroundImg, size as { width: number; height: number });
 }

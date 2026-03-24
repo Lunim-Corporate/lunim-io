@@ -10,7 +10,7 @@ import type { AiAutomationPageDocument } from "../../../../../prismicio-types";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
-export const revalidate = 60;
+export const revalidate = false;
 
 type Params = { uid: string };
 

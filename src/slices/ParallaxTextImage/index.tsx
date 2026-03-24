@@ -6,12 +6,6 @@ import { PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { withImageAlt } from "@/lib/prismicImage";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export type ParallaxTextImageProps = SliceComponentProps<any>;
 
@@ -31,111 +25,93 @@ export default function ParallaxTextImage({ slice }: ParallaxTextImageProps) {
 
   useEffect(() => {
     const preset = (slice.primary.animation_preset as string) || "fade-up";
+    let ctx: any;
 
-    const ctx = gsap.context(() => {
-      if (bgRef.current) {
-        const enableParallax = slice.primary.enable_parallax !== false;
-        const enableZoom = slice.primary.enable_zoom_effect !== false;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          if (bgRef.current) {
+            const enableParallax = slice.primary.enable_parallax !== false;
+            const enableZoom = slice.primary.enable_zoom_effect !== false;
 
-        if (enableParallax || enableZoom) {
-          // Show only the top half of the background on load, then reveal the bottom half as you scroll.
-          gsap.fromTo(
-            bgRef.current,
-            {
-              scale: enableZoom ? 1.02 : 1,
-            },
-            {
-              scale: enableZoom ? 1.06 : 1,
-              ease: "none",
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top bottom",
-                end: "center center",
-                scrub: 0.9,
-              },
-            }
-          );
+            if (enableParallax || enableZoom) {
+              gsap.fromTo(
+                bgRef.current,
+                { scale: enableZoom ? 1.02 : 1 },
+                {
+                  scale: enableZoom ? 1.06 : 1,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top bottom",
+                    end: "center center",
+                    scrub: 0.9,
+                  },
+                }
+              );
 
-          if (enableParallax && bgParallaxRef.current) {
-            const getParallaxRange = () => {
-              if (typeof window === "undefined") return 20;
-              return window.innerWidth < 640 ? 10 : 20;
-            };
-
-            gsap.fromTo(
-              bgParallaxRef.current,
-              { yPercent: () => -getParallaxRange() },
-              {
-                yPercent: () => getParallaxRange(),
-                ease: "none",
-                force3D: true,
-                scrollTrigger: {
-                  trigger: sectionRef.current,
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: true,
-                  invalidateOnRefresh: true,
-                },
+              if (enableParallax && bgParallaxRef.current) {
+                const getParallaxRange = () => (window.innerWidth < 640 ? 10 : 20);
+                gsap.fromTo(
+                  bgParallaxRef.current,
+                  { yPercent: () => -getParallaxRange() },
+                  {
+                    yPercent: () => getParallaxRange(),
+                    ease: "none",
+                    force3D: true,
+                    scrollTrigger: {
+                      trigger: sectionRef.current,
+                      start: "top bottom",
+                      end: "bottom top",
+                      scrub: true,
+                      invalidateOnRefresh: true,
+                    },
+                  }
+                );
               }
-            );
+            }
           }
-        }
-      }
 
-      const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
-      if (textEls?.length && preset !== "none") {
-        const isStrong = preset === "stagger-strong";
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current!,
-            start: isMobile ? "top bottom" : "top 90%",
-            end: isMobile ? "top center" : "center center",
-            scrub: isMobile ? 0.45 : 0.6,
-          },
-        });
-        if (preset === "slide-left") {
-          tl.from(textEls, {
-            opacity: 0,
-            x: -40,
-            filter: "blur(6px)",
-            stagger: isStrong ? 0.2 : 0.12,
-            ease: "none",
-          });
-        } else {
-          tl.from(textEls, {
-            opacity: 0,
-            y: 48,
-            filter: "blur(6px)",
-            stagger: isStrong ? 0.2 : 0.12,
-            ease: "none",
-          });
-        }
-      }
+          const textEls = sectionRef.current?.querySelectorAll("[data-pt-text]");
+          if (textEls?.length && preset !== "none") {
+            const isStrong = preset === "stagger-strong";
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: sectionRef.current!,
+                start: isMobile ? "top bottom" : "top 90%",
+                end: isMobile ? "top center" : "center center",
+                scrub: isMobile ? 0.45 : 0.6,
+              },
+            });
+            if (preset === "slide-left") {
+              tl.from(textEls, { opacity: 0, x: -40, filter: "blur(6px)", stagger: isStrong ? 0.2 : 0.12, ease: "none" });
+            } else {
+              tl.from(textEls, { opacity: 0, y: 48, filter: "blur(6px)", stagger: isStrong ? 0.2 : 0.12, ease: "none" });
+            }
+          }
 
-      if (gridRef.current && preset !== "none") {
-        const cards = gridRef.current.querySelectorAll("[data-pt-card]");
-        if (cards.length) {
-          gsap.timeline({
-            scrollTrigger: { 
-              trigger: gridRef.current,
-              start: "top 95%",
-              end: "center center",
-              scrub: 0.5
-            },
-          }).from(cards, {
-            opacity: 0,
-            y: preset === "slide-left" ? 0 : 30,
-            x: preset === "slide-left" ? -30 : 0,
-            rotate: 0.001,
-            filter: "blur(4px)",
-            stagger: preset === "stagger-strong" ? 0.14 : 0.1,
-            ease: "none",
-          });
-        }
+          if (gridRef.current && preset !== "none") {
+            const cards = gridRef.current.querySelectorAll("[data-pt-card]");
+            if (cards.length) {
+              gsap.timeline({
+                scrollTrigger: { trigger: gridRef.current, start: "top 95%", end: "center center", scrub: 0.5 },
+              }).from(cards, {
+                opacity: 0,
+                y: preset === "slide-left" ? 0 : 30,
+                x: preset === "slide-left" ? -30 : 0,
+                rotate: 0.001,
+                filter: "blur(4px)",
+                stagger: preset === "stagger-strong" ? 0.14 : 0.1,
+                ease: "none",
+              });
+            }
+          }
+        }, sectionRef);
       }
-    }, sectionRef);
+    );
 
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, [
     slice.primary.enable_parallax,
     slice.primary.enable_zoom_effect,

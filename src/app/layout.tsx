@@ -1,60 +1,57 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
+import { getLayoutContent, type SiteKey } from "@/lib/siteContent";
 // React
-import { Suspense, cache } from "react";
+import { Suspense } from "react";
 // Next
 import Script from "next/script";
 import { draftMode, headers } from "next/headers";
 import { Metadata } from "next";
 // Prismic
-import { createClient, repositoryName } from "@/prismicio";
+import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import NavigationMenu from "@/slices/NavigationMenu";
 import Footer from "@/slices/Footer";
-import { Content } from "@prismicio/client";
 // Styles
 import "./globals.css";
 // Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
-const getSiteContext = cache(async () => {
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "lunim.io";
-  const pathname = headersList.get("x-pathname") || "/";
-  return { hostname, pathname, siteKey: getSiteKey(hostname, pathname) };
-});
+const SITE_META: Record<SiteKey, { siteName: string; siteTitle: string; siteDescription: string }> = {
+  ai: {
+    siteName: "Lunim AI Automation",
+    siteTitle: "Lunim AI Automation – AI-Powered Solutions",
+    siteDescription: "Transform your business with AI automation solutions from Lunim.",
+  },
+  ux: {
+    siteName: "Lunim UX",
+    siteTitle: "Lunim UX – Human-Centered Design",
+    siteDescription: "Design better product experiences with Lunim UX.",
+  },
+  video: {
+    siteName: "Lunim Video Production",
+    siteTitle: "Lunim Video Production – Professional Video Services",
+    siteDescription: "Create compelling visual stories with professional video production from Lunim.",
+  },
+  main: {
+    siteName: "Lunim",
+    siteTitle: "Lunim.io – Innovative Digital Solutions",
+    siteDescription: "Lunim.io creates seamless digital experiences with cutting-edge technology and design.",
+  },
+};
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { hostname, siteKey } = await getSiteContext();
+  const headersList = await headers();
+  const siteKey = (headersList.get("x-site-key") as SiteKey) ?? "main";
+  const hostname = headersList.get("host") || "lunim.io";
 
-  // Determine base URL based on hostname
-  let baseUrl: string;
-  let siteName: string;
-  let siteTitle: string;
-  let siteDescription: string;
+  const baseUrl =
+    siteKey !== "main"
+      ? `https://${hostname}`
+      : process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/";
 
-  if (siteKey === "ai") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim AI Automation";
-    siteTitle = "Lunim AI Automation – AI-Powered Solutions";
-    siteDescription = "Transform your business with AI automation solutions from Lunim.";
-  } else if (siteKey === "ux") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim UX";
-    siteTitle = "Lunim UX – Human-Centered Design";
-    siteDescription = "Design better product experiences with Lunim UX.";
-  } else if (siteKey === "video") {
-    baseUrl = `https://${hostname}`;
-    siteName = "Lunim Video Production";
-    siteTitle = "Lunim Video Production – Professional Video Services";
-    siteDescription = "Create compelling visual stories with professional video production from Lunim.";
-  } else {
-    baseUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/";
-    siteName = "Lunim";
-    siteTitle = "Lunim.io – Innovative Digital Solutions";
-    siteDescription = "Lunim.io creates seamless digital experiences with cutting-edge technology and design.";
-  }
+  const { siteName, siteTitle, siteDescription } = SITE_META[siteKey];
 
   return {
     title: {
@@ -73,44 +70,9 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: siteTitle,
       description: siteDescription,
-      images: [
-        `${baseUrl}/assets/images/og-image.jpg`
-      ],
+      images: [`${baseUrl}/assets/images/og-image.jpg`],
     },
   };
-}
-
-// Helper function to determine site key from hostname and pathname
-function getSiteKey(
-  hostname: string,
-  pathname: string = "/"
-): "main" | "ai" | "ux" | "video" {
-  const subdomain = hostname.split(".")[0];
-
-  // Check if it's a subdomain we handle
-  if (subdomain === "ai" && !hostname.startsWith("www")) {
-    return "ai";
-  }
-  if (subdomain === "ux" && !hostname.startsWith("www")) {
-    return "ux";
-  }
-  if (subdomain === "video-next" && !hostname.startsWith("www")) {
-    return "video";
-  }
-
-  // Check if pathname starts with a subdomain route prefix
-  if (pathname.startsWith("/ai-automation")) {
-    return "ai";
-  }
-  if (pathname.startsWith("/ux")) {
-    return "ux";
-  }
-  if (pathname.startsWith("/video")) {
-    return "video";
-  }
-
-  // Default to main for lunim.io, www.lunim.io, and Netlify preview URLs
-  return "main";
 }
 
 export default async function RootLayout({
@@ -119,67 +81,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraft } = await draftMode();
-  const { siteKey } = await getSiteContext();
-
-  const client = createClient();
-
-  let navigationMenu: any = null;
-  let navigationSlices: any[] = [];
-  let footerSlice: any = null;
-  let footerSlices: any[] = [];
-
-  if (siteKey === "main") {
-    const [primaryNav, footer] = await Promise.all([
-      (client as any).getSingle("primary_navigation").catch(() => null) as Promise<Content.PrimaryNavigationDocument | null>,
-      (client as any).getSingle("footer").catch(() => null) as Promise<Content.FooterDocument | null>,
-    ]);
-
-    navigationSlices = primaryNav?.data?.slices || [];
-    navigationMenu = navigationSlices.find(
-      (slice: any) => slice.slice_type === "navigation_menu"
-    );
-
-    footerSlices = footer?.data?.slices || [];
-    footerSlice = footerSlices.find(
-      (slice: any) => slice.slice_type === "footer"
-    );
-  } else {
-    // Subdomain: fetch generic navigation and footer by domain
-    const domainMap: Record<string, string> = {
-      "ai": "ai-automation",
-      "ux": "ux",
-      "video": "video",
-    };
-
-    const domainValue = domainMap[siteKey];
-
-    const [navDocs, footerDocs] = await Promise.all([
-      (client as any).getAllByType("primary_navigation_generic").catch(() => []),
-      (client as any).getAllByType("footer_generic").catch(() => []),
-    ]);
-
-    const navDoc = navDocs.find(
-      (doc: any) => doc.data?.domain === domainValue
-    );
-
-    if (navDoc) {
-      navigationSlices = navDoc.data?.slices || [];
-      navigationMenu = navigationSlices.find(
-        (slice: any) => slice.slice_type === "navigation_menu"
-      );
-    }
-
-    const footerDoc = footerDocs.find(
-      (doc: any) => doc.data?.domain === domainValue
-    );
-
-    if (footerDoc) {
-      footerSlices = footerDoc.data?.slices || [];
-      footerSlice = footerSlices.find(
-        (slice: any) => slice.slice_type === "footer"
-      );
-    }
-  }
+  const headersList = await headers();
+  const siteKey = (headersList.get("x-site-key") as SiteKey) ?? "main";
+  const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
+    await getLayoutContent(siteKey);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -205,11 +110,13 @@ export default async function RootLayout({
             </Script>
           </>
         ) : null}
-        <script
-          async
-          defer
-          src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
-        ></script>
+        {isDraft ? (
+          <script
+            async
+            defer
+            src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
+          ></script>
+        ) : null}
       </head>
       <body className="bg-black">
         <ScrollManager />

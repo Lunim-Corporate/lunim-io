@@ -2,8 +2,6 @@
 import Avatar from "boring-avatars";
 // React
 import { FC, useState, useEffect, useMemo } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 // Prismic
 import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
@@ -13,9 +11,6 @@ import Image from "next/image";
 import { JsonLd } from "@/components/JsonLd";
 import type { ItemList, ListItem, Person, WithContext } from "schema-dts";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 /**
  * Props for `OurTeam`.
@@ -36,7 +31,9 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (mobile) {
-        ScrollTrigger.normalizeScroll(true);
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+          ScrollTrigger.normalizeScroll(true);
+        });
       }
     };
 
