@@ -32,6 +32,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
         field={slice.primary.background_image}
         fill
         priority
+        sizes="100vw"
         className="object-cover object-center"
         alt=""
       />

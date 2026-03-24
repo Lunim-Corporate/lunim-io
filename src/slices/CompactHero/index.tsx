@@ -85,6 +85,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
           field={primary.hero_image?.url ? primary.hero_image : primary.background_image}
           fill
           priority
+          sizes="100vw"
           className="object-cover object-center"
           alt=""
         />

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabaseServer';
-import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,7 +75,7 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (error) {
-        Sentry.captureException(new Error(error.message));
+        console.error(new Error(error.message));
         console.error('[Luna Analytics] Failed to persist session:', error);
         return NextResponse.json(
           {
@@ -95,7 +94,7 @@ export async function POST(request: NextRequest) {
         sessionId: sessionMetrics.sessionId,
       });
     } catch (error) {
-      Sentry.captureException(error);
+      console.error(error);
       console.error('[Luna Analytics] Unexpected persistence error:', error);
       return NextResponse.json(
         {
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error('Error in analytics endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
