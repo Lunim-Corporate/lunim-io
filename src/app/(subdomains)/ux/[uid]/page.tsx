@@ -12,7 +12,7 @@ import type { UxDocument } from "../../../../../prismicio-types";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 type Params = { uid: string };
 

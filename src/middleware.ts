@@ -20,6 +20,7 @@ export function middleware(request: NextRequest) {
     const targetPath = subdomainRoutes[subdomain];
     const url = request.nextUrl.clone();
     const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-site-key", subdomain);
 
     // Check if pathname already contains the target path
     // This can happen when Prismic links include the full path
@@ -41,9 +42,10 @@ export function middleware(request: NextRequest) {
     });
   }
 
-  // For non-subdomain requests, pass pathname through
+  // For non-subdomain requests, pass pathname through and mark as main site
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
+  requestHeaders.set("x-site-key", "main");
   return NextResponse.next({
     request: { headers: requestHeaders },
   });
