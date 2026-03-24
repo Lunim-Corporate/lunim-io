@@ -53,10 +53,9 @@ export default async function RootLayout({
         </Suspense>
         <PrismicPreview repositoryName={repositoryName}>
           <Suspense fallback={null}>
-            <AnalyticsProvider disabled={!GA_ID}>
-              {children}
-            </AnalyticsProvider>
+            <AnalyticsProvider disabled={!GA_ID} />
           </Suspense>
+          {children}
         </PrismicPreview>
       </body>
     </html>

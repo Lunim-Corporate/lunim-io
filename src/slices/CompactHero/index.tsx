@@ -2,6 +2,7 @@
 
 import { FC, useState } from "react";
 import dynamic from "next/dynamic";
+import { PrismicNextImage } from "@prismicio/next";
 import type { Content } from "@prismicio/client";
 import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
@@ -86,16 +87,16 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="relative min-h-[56vh] flex items-center overflow-hidden bg-black"
-      style={
-        bg
-          ? {
-              backgroundImage: `url(${bg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : undefined
-      }
     >
+      {bg ? (
+        <PrismicNextImage
+          field={primary.hero_image?.url ? primary.hero_image : primary.background_image}
+          fill
+          priority
+          className="object-cover object-center"
+          alt=""
+        />
+      ) : null}
       {/* dark overlay to ensure text contrast */}
       <div className="absolute inset-0 bg-black/60" />
 

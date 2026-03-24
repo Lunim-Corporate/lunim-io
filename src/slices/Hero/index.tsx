@@ -5,6 +5,7 @@ import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
+import { PrismicNextImage } from "@prismicio/next";
 
 const LunaPortal = dynamic(
   () => import("@/components/Luna").then((mod) => mod.LunaPortal),
@@ -21,7 +22,6 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
   const [isLunaOpen, setIsLunaOpen] = useState(false);
-  const backgroundImageUrl = slice.primary.background_image.url;
   const sectionRef = useRef<HTMLElement | null>(null);
   const showAskLuna = slice.primary.show_ask_luna ?? true;
   const showMainCta = slice.primary.show_main_cta ?? true;
@@ -35,12 +35,14 @@ const Hero: FC<HeroProps> = ({ slice }) => {
       ref={sectionRef}
       className="min-h-screen flex items-center relative overflow-hidden bg-black"
       id="mainpage"
-      style={{
-        backgroundImage: `url(${backgroundImageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
     >
+      <PrismicNextImage
+        field={slice.primary.background_image}
+        fill
+        priority
+        className="object-cover object-center"
+        alt=""
+      />
       <div className="absolute inset-0 bg-black opacity-60"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="text-center">
