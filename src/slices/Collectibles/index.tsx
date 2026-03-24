@@ -5,12 +5,6 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export type CollectiblesProps = SliceComponentProps<any>;
 
@@ -21,15 +15,20 @@ const Collectibles = ({ slice }: CollectiblesProps) => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (gridRef.current) {
-        const cards = gridRef.current.querySelectorAll(".collectible-card");
-        gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: isMobile ? "top bottom" : "top 90%", end: isMobile ? "bottom bottom" : "top 10%", scrub: 0.5 } })
-          .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
+    let ctx: any;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          if (gridRef.current) {
+            const cards = gridRef.current.querySelectorAll(".collectible-card");
+            gsap.timeline({ scrollTrigger: { trigger: gridRef.current, start: isMobile ? "top bottom" : "top 90%", end: isMobile ? "bottom bottom" : "top 10%", scrub: 0.5 } })
+              .from(cards, { opacity: 0, y: 30, filter: "blur(4px)", stagger: 0.08, ease: "none" });
+          }
+        }, sectionRef);
       }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    );
+    return () => ctx?.revert();
   }, [isMobile]);
 
   return (

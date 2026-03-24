@@ -6,12 +6,6 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
 import { useIsMobile, useIsTablet } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 /**
  * Props for `VirtualTeamCircle`.
@@ -95,104 +89,67 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
   }, [isMobile]); // Re-run when isMobile changes!
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Scrubbed reveal for header text, including bullets
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "top 35%",
-            scrub: 0.6,
-          },
-        })
-        .from(titleRef.current, { opacity: 0, y: 32, filter: "blur(6px)" })
-        .from(
-          subtitleRef.current,
-          { opacity: 0, y: 24, filter: "blur(4px)" },
-          "-=0.1"
-        )
-        .from(
-          descRef.current,
-          { opacity: 0, x: -28, filter: "blur(4px)" },
-          "-=0.05"
-        )
-        .from(
-          bulletsRef.current,
-          { opacity: 0, y: 20, filter: "blur(4px)" },
-          "-=0.05"
-        );
+    let ctx: any;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: "top bottom",
+                end: "top 35%",
+                scrub: 0.6,
+              },
+            })
+            .from(titleRef.current, { opacity: 0, y: 32, filter: "blur(6px)" })
+            .from(subtitleRef.current, { opacity: 0, y: 24, filter: "blur(4px)" }, "-=0.1")
+            .from(descRef.current, { opacity: 0, x: -28, filter: "blur(4px)" }, "-=0.05")
+            .from(bulletsRef.current, { opacity: 0, y: 20, filter: "blur(4px)" }, "-=0.05");
 
-      // Scroll sequence: center -> lines -> members (clockwise)
-      if (circleContainerRef.current) {
-        const centerCircle =
-          circleContainerRef.current.querySelector(".center-circle");
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: circleContainerRef.current,
-            start: isMobile ? "top bottom" : "bottom bottom",
-            end: isMobile ? "top 70%" : "top 25%",
-            scrub: 0.5,
-          },
-        });
+          if (circleContainerRef.current) {
+            const centerCircle = circleContainerRef.current.querySelector(".center-circle");
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: circleContainerRef.current,
+                start: isMobile ? "top bottom" : "bottom bottom",
+                end: isMobile ? "top 70%" : "top 25%",
+                scrub: 0.5,
+              },
+            });
 
-        if (centerCircle) {
-          tl.from(
-            centerCircle,
-            { scale: 0.9, autoAlpha: 0, duration: 0.22, ease: "power2.out" },
-            0
-          );
-        }
+            if (centerCircle) {
+              tl.from(centerCircle, { scale: 0.9, autoAlpha: 0, duration: 0.22, ease: "power2.out" }, 0);
+            }
 
-        if (svgRef.current) {
-          const lines = Array.from(svgRef.current.querySelectorAll("line"));
-          lines.forEach((line) => {
-            const length = Math.hypot(
-              parseFloat(line.getAttribute("x2")!) -
-                parseFloat(line.getAttribute("x1")!),
-              parseFloat(line.getAttribute("y2")!) -
-                parseFloat(line.getAttribute("y1")!)
+            if (svgRef.current) {
+              const lines = Array.from(svgRef.current.querySelectorAll("line"));
+              lines.forEach((line) => {
+                const length = Math.hypot(
+                  parseFloat(line.getAttribute("x2")!) - parseFloat(line.getAttribute("x1")!),
+                  parseFloat(line.getAttribute("y2")!) - parseFloat(line.getAttribute("y1")!)
+                );
+                (line as SVGLineElement).style.strokeDasharray = `${length}`;
+                (line as SVGLineElement).style.strokeDashoffset = `${length}`;
+              });
+              tl.to(lines, { strokeDashoffset: 0, duration: 0.24, stagger: 0.02, ease: "none" }, "+=0.03");
+            }
+
+            const members = Array.from(
+              circleContainerRef.current.querySelectorAll<HTMLElement>(".team-member")
             );
-            (line as SVGLineElement).style.strokeDasharray = `${length}`;
-            (line as SVGLineElement).style.strokeDashoffset = `${length}`;
-          });
-          tl.to(
-            lines,
-            {
-              strokeDashoffset: 0,
-              duration: 0.24,
-              stagger: 0.02,
-              ease: "none",
-            },
-            "+=0.03"
-          );
-        }
-
-        const members = Array.from(
-          circleContainerRef.current.querySelectorAll<HTMLElement>(
-            ".team-member"
-          )
-        );
-        const angleKey = (el: HTMLElement) =>
-          ((parseFloat(el.dataset.angle || "0") - 270 + 360) % 360);
-        const ordered = members.sort((a, b) => angleKey(a) - angleKey(b));
-        if (ordered.length) {
-          tl.from(
-            ordered,
-            {
-              scale: 0.94,
-              autoAlpha: 0,
-              duration: 0.32,
-              stagger: 0.06,
-              ease: "power2.out",
-            },
-            "+=0.04"
-          );
-        }
+            const angleKey = (el: HTMLElement) => ((parseFloat(el.dataset.angle || "0") - 270 + 360) % 360);
+            const ordered = members.sort((a, b) => angleKey(a) - angleKey(b));
+            if (ordered.length) {
+              tl.from(ordered, { scale: 0.94, autoAlpha: 0, duration: 0.32, stagger: 0.06, ease: "power2.out" }, "+=0.04");
+            }
+          }
+        }, sectionRef);
       }
-    }, sectionRef);
+    );
 
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, [cssVars, isMobile]);
 
   // Mobile auto-rotation with counter-rotation for profiles
@@ -200,33 +157,30 @@ const VirtualTeamCircle = ({ slice }: VirtualTeamCircleProps) => {
     const orbitEl = orbitRef.current;
     if (!orbitEl) return;
 
-    if (!isMobile) {
-      gsap.killTweensOf(orbitEl);
-      gsap.set(orbitEl, { rotation: 0 });
-      orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
-      return;
-    }
+    let tween: any;
+    import("gsap").then(({ default: gsap }) => {
+      if (!isMobile) {
+        gsap.killTweensOf(orbitEl);
+        gsap.set(orbitEl, { rotation: 0 });
+        orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
+        return;
+      }
 
-    orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
-    const tween = gsap.to(orbitEl, {
-      rotation: 360,
-      duration: 36,
-      repeat: -1,
-      ease: "none",
-      transformOrigin: "50% 50%",
-      onUpdate: () => {
-        const currentRotate =
-          (gsap.getProperty(orbitEl, "rotation") as number) || 0;
-        orbitEl.style.setProperty(
-          "--orbit-counter-rotation",
-          `${-currentRotate}deg`
-        );
-      },
+      orbitEl.style.setProperty("--orbit-counter-rotation", "0deg");
+      tween = gsap.to(orbitEl, {
+        rotation: 360,
+        duration: 36,
+        repeat: -1,
+        ease: "none",
+        transformOrigin: "50% 50%",
+        onUpdate: () => {
+          const currentRotate = (gsap.getProperty(orbitEl, "rotation") as number) || 0;
+          orbitEl.style.setProperty("--orbit-counter-rotation", `${-currentRotate}deg`);
+        },
+      });
     });
 
-    return () => {
-      tween.kill();
-    };
+    return () => tween?.kill();
   }, [isMobile]);
 
   // Calculate angle for team member position
