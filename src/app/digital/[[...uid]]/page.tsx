@@ -137,6 +137,37 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     }
 }
 
+export async function generateStaticParams() {
+    const client = createClient();
+
+    const [digitalPages, caseStudies] = await Promise.all([
+        client.getAllByType("digital_page").catch(() => []),
+        client.getAllByType("case_study_sm").catch(() => []),
+    ]);
+
+    const paths: { uid: string[] }[] = [
+        // /digital
+        { uid: [] },
+    ];
+
+    for (const doc of digitalPages) {
+        // /digital/[uid]
+        paths.push({ uid: [doc.uid!] });
+        // /digital/[uid]/case-studies
+        paths.push({ uid: [doc.uid!, "case-studies"] });
+    }
+
+    for (const cs of caseStudies) {
+        const category = (cs.data as any)?.digital_category;
+        if (category && cs.uid) {
+            // /digital/[category]/case-studies/[uid]
+            paths.push({ uid: [category, "case-studies", cs.uid] });
+        }
+    }
+
+    return paths;
+}
+
 export async function generateMetadata(
     { params }: { params: Promise<Params> },
     parent: ResolvingMetadata
