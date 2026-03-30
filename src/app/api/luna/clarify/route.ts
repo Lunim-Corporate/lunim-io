@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callLLM, generateClarifyPrompt } from '@/components/Luna/utils/llm';
-import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
       tokensUsed: llmResponse.tokensUsed,
     });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error('Error in clarify endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
