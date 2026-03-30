@@ -3,9 +3,16 @@ import { Content } from "@prismicio/client";
 import { PrismicLink } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
-import { PrismicNextImage } from "@prismicio/next";
+import { PrismicNextImage, type PrismicNextImageProps } from "@prismicio/next";
 import AskLunaButton from "@/components/AskLunaButton";
 import ScrollDownButton from "@/components/ScrollDownButton";
+
+const HERO_IMGIX_PARAMS: PrismicNextImageProps["imgixParams"] = {
+  auto: ["format", "compress"],
+  fit: "crop",
+  q: 60,
+  sat: -5,
+};
 
 /**
  * Props for `Hero`.
@@ -33,6 +40,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
         fill
         priority
         sizes="100vw"
+        imgixParams={HERO_IMGIX_PARAMS}
         className="object-cover object-center"
         alt=""
       />

@@ -1,11 +1,18 @@
 import type { FC } from "react";
-import { PrismicNextImage } from "@prismicio/next";
+import { PrismicNextImage, type PrismicNextImageProps } from "@prismicio/next";
 import type { Content } from "@prismicio/client";
 import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
 import AskLunaButton from "@/components/AskLunaButton";
+
+const HERO_IMGIX_PARAMS: PrismicNextImageProps["imgixParams"] = {
+  auto: ["format", "compress"],
+  fit: "crop",
+  q: 60,
+  sat: -5,
+};
 
 /**
  * Props for `CompactHero`.
@@ -86,6 +93,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
           fill
           priority
           sizes="100vw"
+          imgixParams={HERO_IMGIX_PARAMS}
           className="object-cover object-center"
           alt=""
         />
