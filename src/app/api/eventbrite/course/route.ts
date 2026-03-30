@@ -1,7 +1,6 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 
 const EVENTBRITE_API_BASE = "https://www.eventbriteapi.com/v3";
 const DEFAULT_EVENT_ID =
@@ -150,7 +149,7 @@ export async function GET(request: Request) {
         ticketData = (await ticketResponse.json()) as TicketClassesResponse;
       }
     } catch (ticketError) {
-      Sentry.captureException(ticketError);
+      console.error(ticketError);
       console.error("Unable to fetch Eventbrite ticket classes", ticketError);
     }
 
@@ -171,7 +170,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, data: normalized });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error("Eventbrite API request failed", error);
     return NextResponse.json(
       { success: false, message: "Failed to load Eventbrite data." },
