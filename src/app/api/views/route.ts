@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { isValidUidServer } from "@/utils/validators";
-import * as Sentry from "@sentry/nextjs";
 
 // Rate limiter config
 const RATE_LIMIT_WINDOW = 60_000; // ms
@@ -62,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ view_count: data?.view_count || 0 });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error("Error fetching views:", error);
     return NextResponse.json({ error: "Failed to fetch views" }, { status: 500 });
   }
@@ -104,7 +103,7 @@ export async function POST(request: NextRequest) {
       success: true,
     });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error("Error incrementing views:", error);
     return NextResponse.json({ error: "Failed to increment views" }, { status: 500 });
   }

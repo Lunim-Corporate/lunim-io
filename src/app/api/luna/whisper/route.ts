@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      Sentry.captureException(new Error(`Whisper API error ${response.status}: ${errorText}`));
+      console.error(new Error(`Whisper API error ${response.status}: ${errorText}`));
       console.error('Whisper API error:', response.status, errorText);
       return NextResponse.json(
         { error: 'Failed to transcribe audio' },
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
       text: data.text ?? '',
     });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     console.error('Error in Whisper endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

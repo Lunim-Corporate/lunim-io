@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import * as Sentry from '@sentry/nextjs';
 
 interface SpeechErrorBoundaryProps {
   children: React.ReactNode;
@@ -28,7 +27,6 @@ export class SpeechErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    Sentry.captureException(error, { extra: { componentStack: errorInfo.componentStack } });
     console.error('[SpeechErrorBoundary] Error caught:', error, errorInfo);
   }
 
