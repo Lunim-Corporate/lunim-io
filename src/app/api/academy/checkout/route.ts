@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { getStripeClient } from "@/lib/stripe";
-import * as Sentry from "@sentry/nextjs";
 
 interface CheckoutPayload {
   contactId: string;
@@ -71,7 +70,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, url: session.url });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error(error);
     const message =
       error instanceof Error ? error.message : "Unknown Stripe error.";
     return NextResponse.json(

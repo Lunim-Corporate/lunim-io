@@ -134,7 +134,7 @@ export const createClient = (config: ClientConfig = {}) => {
     ...config,
   });
 
-  enableAutoPreviews({ client });
+  enableAutoPreviews({ client, ...config });
 
   return client;
 };
