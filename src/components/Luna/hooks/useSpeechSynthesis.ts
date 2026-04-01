@@ -290,9 +290,12 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions = {}) {
                 default:
                   errorMessage = `Speech synthesis error: ${event.error}`;
               }
-              
+
               const error = new Error(errorMessage);
-              console.error('[Speech]', errorMessage);
+              // Don't log "interrupted" errors as they're expected when canceling speech
+              if (event.error !== 'interrupted') {
+                console.error('[Speech]', errorMessage);
+              }
               options.onError?.(error);
             };
 

@@ -47,16 +47,15 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   const reduceMotion = prefersReducedMotion || reduceMotionManual;
   const wasOpenRef = useRef(isOpen);
 
-  //Refs to control cycling between processing phrases without triggering re-renders
-  const phraseTimerRef = useRef<number | null>(null);
-  const phraseIndexRef = useRef(0);
-  const shuffledPhrasesRef = useRef<string[]>([]);
+  //Refs to control processing phrases without triggering re-renders
+  const isSpeakingProcessingPhraseRef = useRef(false);
+  const isIntentionallyCancelingRef = useRef(false);
 
 
   // Speech synthesis for Luna's voice
   // Ref to track if speech is in progress to prevent duplicates
   const speechQueueRef = useRef<string | null>(null);
-  
+
   // Refs to access latest state in callbacks without triggering re-renders
   const stateRef = useRef(state);
   const listeningCallbacksRef = useRef<{
@@ -64,6 +63,10 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     stop: (() => void) | null;
     isListening: boolean;
   }>({ start: null, stop: null, isListening: false });
+
+  // Refs for speak and cancel functions to avoid dependency issues
+  const speakRef = useRef<((text: string) => void) | null>(null);
+  const cancelSpeechRef = useRef<(() => void) | null>(null);
   
   // Update refs when state changes
   useEffect(() => {
@@ -103,24 +106,48 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       console.log('[Luna] Speech ended');
       dispatch({ type: 'SET_SPEAKING', payload: false });
       speechQueueRef.current = null;
-      
-      // Auto-enable microphone after Luna finishes speaking (only in voice mode)
-      setTimeout(() => {
-        const currentState = stateRef.current;
-        if (currentState.interactionMode === 'voice' && 
-            currentState.session && 
-            !listeningCallbacksRef.current.isListening && 
-            currentState.state !== 'plan-ready' &&
-            listeningCallbacksRef.current.start) {
-          console.log('[Luna] Auto-starting listening after speech ended');
-          listeningCallbacksRef.current.start();
-        }
-      }, 500);
+
+      const wasProcessingPhrase = isSpeakingProcessingPhraseRef.current;
+      isSpeakingProcessingPhraseRef.current = false;
+
+      // Auto-enable microphone after Luna finishes speaking (only in voice mode, not during processing phrases or thinking)
+      if (!wasProcessingPhrase) {
+        setTimeout(() => {
+          const currentState = stateRef.current;
+          if (currentState.interactionMode === 'voice' &&
+              currentState.session &&
+              !listeningCallbacksRef.current.isListening &&
+              currentState.state !== 'plan-ready' &&
+              currentState.state !== 'thinking' &&
+              listeningCallbacksRef.current.start) {
+            console.log('[Luna] Auto-starting listening after speech ended');
+            listeningCallbacksRef.current.start();
+          }
+        }, 500);
+      }
     },
     onError: (error) => {
+      // Don't show error if we intentionally canceled for processing phrase transition
+      if (isIntentionallyCancelingRef.current) {
+        console.log('[Luna] Intentionally canceled processing phrase speech');
+        isIntentionallyCancelingRef.current = false;
+        speechQueueRef.current = null;
+        isSpeakingProcessingPhraseRef.current = false;
+        return;
+      }
+
+      // Don't show "interrupted" errors to the user - they're normal when canceling speech
+      if (error.message.includes('interrupted')) {
+        console.log('[Luna] Speech was interrupted (expected during transitions)');
+        speechQueueRef.current = null;
+        isSpeakingProcessingPhraseRef.current = false;
+        return;
+      }
+
       console.error('Speech synthesis error:', error);
       dispatch({ type: 'SET_ERROR', payload: error.message });
       speechQueueRef.current = null;
+      isSpeakingProcessingPhraseRef.current = false;
     },
     rate: ttsRate,
   });
@@ -143,9 +170,24 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     [speakRaw, isSpeaking]
   );
 
+  // Update speak and cancel refs
+  useEffect(() => {
+    speakRef.current = speak;
+    cancelSpeechRef.current = cancelSpeech;
+  }, [speak, cancelSpeech]);
+
   // Helper: speak and wait until speech completes before continuing
   const speakAndWait = useCallback(
     async (text: string) => {
+      // Cancel any ongoing processing phrase speech
+      if (isSpeakingProcessingPhraseRef.current && stateRef.current.isSpeaking) {
+        isIntentionallyCancelingRef.current = true;
+        cancelSpeech();
+        // Small delay to ensure cancellation completes
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      isSpeakingProcessingPhraseRef.current = false;
+
       speak(text);
       // Poll isSpeaking flag until speech actually starts and then finishes
       await new Promise<void>((resolve) => {
@@ -164,7 +206,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
         check();
       });
     },
-    [speak]
+    [speak, cancelSpeech]
   );
 
   // Speech recognition for user input
@@ -211,29 +253,27 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
       },
     });
 
-  //Handle processing phrase cycling and shuffling based on Luna's thinking state
+  //Handle processing phrase - show one random phrase per thinking phase
   const startProcessingPhrases = useCallback(() => {
-    // Shuffle once per thinking phase
-    shuffledPhrasesRef.current = [...lunaProcessingPhrases].sort(
-      () => Math.random() - 0.5
-    );
-    phraseIndexRef.current = 0;
+    // Pick one random phrase
+    const randomPhrase = lunaProcessingPhrases[Math.floor(Math.random() * lunaProcessingPhrases.length)];
+    setProcessingPhrase(randomPhrase);
 
-    setProcessingPhrase(shuffledPhrasesRef.current[0]);
-
-    phraseTimerRef.current = window.setInterval(() => {
-      phraseIndexRef.current =
-        (phraseIndexRef.current + 1) % shuffledPhrasesRef.current.length;
-
-      setProcessingPhrase(shuffledPhrasesRef.current[phraseIndexRef.current]);
-    }, 1200);
+    // In voice mode, speak the phrase once
+    if (stateRef.current.interactionMode === 'voice' && !stateRef.current.isSpeaking && speakRef.current) {
+      isSpeakingProcessingPhraseRef.current = true;
+      speakRef.current(randomPhrase);
+    }
   }, []);
 
   const stopProcessingPhrases = useCallback(() => {
-    if (phraseTimerRef.current) {
-      clearInterval(phraseTimerRef.current);
-      phraseTimerRef.current = null;
+    // Cancel speech if we're currently speaking a processing phrase in voice mode
+    if (isSpeakingProcessingPhraseRef.current && stateRef.current.isSpeaking && cancelSpeechRef.current) {
+      isIntentionallyCancelingRef.current = true;
+      cancelSpeechRef.current();
     }
+
+    isSpeakingProcessingPhraseRef.current = false;
     setProcessingPhrase(null);
   }, []);
 
@@ -259,13 +299,17 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
   // Start and stop phrase cycling based on Luna's thinking state
   useEffect(() => {
     if (state.state === "thinking") {
+      // Stop listening when entering thinking state
+      if (listeningCallbacksRef.current.isListening && listeningCallbacksRef.current.stop) {
+        console.log('[Luna] Stopping listening because entering thinking state');
+        listeningCallbacksRef.current.stop();
+      }
       startProcessingPhrases();
     } else {
       stopProcessingPhrases();
     }
-
-    return stopProcessingPhrases;
-  }, [state.state, startProcessingPhrases, stopProcessingPhrases]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.state]);
 
   
   // Cleanup on unmount and route changes
@@ -559,9 +603,14 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
     if (isListening) {
       stopListening();
     } else {
+      // Don't allow starting mic during thinking state
+      if (state.state === 'thinking') {
+        console.log('[Luna] Cannot start mic during thinking state');
+        return;
+      }
       startListening();
     }
-  }, [isListening, startListening, stopListening]);
+  }, [isListening, startListening, stopListening, state.state]);
 
   // Handle text input submit
   const handleTextSubmit = useCallback((e: React.FormEvent) => {
@@ -871,7 +920,11 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                       isSpeaking={state.isSpeaking}
                     />
                     <p className="text-lg font-semibold text-white text-center px-4">
-                      {lunaBusy ? "Luna is consulting the oracle…" : "Luna"}
+                      {state.interactionMode === "voice" && processingPhrase
+                        ? processingPhrase
+                        : state.state === "thinking"
+                          ? "Luna is consulting the oracle…"
+                          : "Luna"}
                     </p>
                   </div>
 
@@ -1090,8 +1143,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                           );
                         })}
 
-                        {/* Thinking / speaking indicator */}
-                        {(state.state === "thinking" || state.isSpeaking) && (
+                        {/* Speaking indicator (not shown during thinking in text mode since phrase is in conversation) */}
+                        {((state.state === "thinking" && state.interactionMode === "voice") || state.isSpeaking) && (
                           <div className="flex justify-start mt-2">
                             <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
                               <Image
@@ -1103,8 +1156,8 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                               />
                             </div>
 
-                            {/* Thinking → playful phrases | Speaking → typing dots */}
-                            {state.state === "thinking" ? (
+                            {/* Thinking → show processing phrase | Speaking → typing dots */}
+                            {state.state === "thinking" && processingPhrase ? (
                               <motion.div
                                 key={processingPhrase}
                                 initial={{ opacity: 0, y: 4 }}
@@ -1266,7 +1319,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                           onModeChange={handleModeChange}
                           onPrivacyChange={handlePrivacyChange}
                           onMicClick={handleMicClick}
-                          disabled={state.state === "thinking"}
+                          disabled={lunaBusy}
                         />
                       )}
 
@@ -1285,9 +1338,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                                 : "Choose a privacy mode above to start"
                             }
                             className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/70 disabled:cursor-not-allowed disabled:opacity-60"
-                            disabled={
-                              state.state === "thinking" || !state.session
-                            }
+                            disabled={lunaBusy || !state.session}
                           />
                           {/* Mic icon inline with input to switch back to voice mode */}
                           <button
@@ -1296,9 +1347,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                               handleModeChange("voice");
                               handleMicClick();
                             }}
-                            disabled={
-                              state.state === "thinking" || !state.session
-                            }
+                            disabled={lunaBusy || !state.session}
                             className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-gray-200 hover:border-zinc-500 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Switch to voice mode"
                           >
@@ -1308,7 +1357,7 @@ function LunaPortalContent({ isOpen, onClose }: LunaPortalProps) {
                             type="submit"
                             disabled={
                               !textInput.trim() ||
-                              state.state === "thinking" ||
+                              lunaBusy ||
                               !state.session
                             }
                             className="rounded-2xl bg-white px-5 py-2 text-sm font-semibold text-black shadow-md hover:bg-gray-200 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
