@@ -60,13 +60,17 @@
 				]
 			},
 			"buttonlink": {
-				"__TYPE__": "LinkContent",
 				"key": "38014a13-5ea2-4f5e-a446-cbb0c308e742",
+				"__TYPE__": "LinkContent",
 				"value": {
 					"__TYPE__": "ExternalLink",
 					"url": "https://prismic.io",
 					"text": "active"
 				}
+			},
+			"show_link": {
+				"__TYPE__": "BooleanContent",
+				"value": false
 			}
 		},
 		"items": [

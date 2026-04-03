@@ -1,11 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/helpers";
 import { LucideProps, HelpCircle } from "lucide-react";
 import Xarrow, { Xwrapper } from "react-xarrows";
+import { JsonLd } from "@/components/JsonLd";
+import type { HowTo, HowToStep, WithContext } from "schema-dts";
 
 /**
  * Props for `Process`.
@@ -20,7 +22,7 @@ const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
 const Process: React.FC<ProcessProps> = ({ slice }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const items = slice.items as Content.ProcessSliceDefaultItem[];
+  const items = useMemo(() => (slice.items as any[]) ?? [], [slice.items]);
 
   // Check if the screen size is mobile
   useEffect(() => {
@@ -35,8 +37,46 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
+  const parseDuration = (value: string | undefined | null): string | undefined => {
+    if (!value) return undefined;
+    const match = value.match(/(\d+(?:\.\d+)?)/);
+    if (!match) return undefined;
+    const weeks = parseFloat(match[1]);
+    if (!Number.isFinite(weeks) || weeks <= 0) return undefined;
+    return `P${weeks}W`;
+  };
+
+  const howToJsonLd = useMemo<WithContext<HowTo> | null>(() => {
+    const title = asText(slice.primary.title) || "Our Process";
+    const stepList: HowToStep[] = items
+      .map((item: any, index: number) => {
+        const stepName = asText(item.item_title);
+        const description = asText(item.item_description);
+        if (!stepName && !description) return null;
+        const timeRequired = parseDuration(item.weeks);
+        return {
+          "@type": "HowToStep",
+          position: index + 1,
+          name: stepName || `Step ${index + 1}`,
+          ...(description ? { text: description } : {}),
+          ...(timeRequired ? { timeRequired } : {}),
+        };
+      })
+      .filter(Boolean) as HowToStep[];
+
+    if (!stepList.length) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: title,
+      step: stepList,
+    };
+  }, [items, slice.primary.title]);
+
   return (
-    <section className="bg-[#0f172a] py-16">
+    <>
+      {howToJsonLd ? <JsonLd data={howToJsonLd} id="process-howto-schema" /> : null}
+      <section className="bg-[#0f172a] py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Title */}
         <div className="text-3xl font-bold text-white mb-12">
@@ -45,7 +85,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
 
         <Xwrapper>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 relative">
-            {items.map((item, index) => {
+            {items.map((item: any, index: number) => {
               const iconContent = item.icon_text || "";
               const isNumber = !isNaN(parseInt(iconContent));
               const IconComponent = iconComponents[iconContent] || HelpCircle;
@@ -88,7 +128,7 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
             {/* Draw arrows between circles (desktop only) */}
             {isMounted &&
               !isMobile &&
-              items.map((_, index) =>
+              items.map((_: any, index: number) =>
                 index < items.length - 1 ? (
                   <Xarrow
                     key={index}
@@ -106,7 +146,8 @@ const Process: React.FC<ProcessProps> = ({ slice }) => {
           </div>
         </Xwrapper>
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 

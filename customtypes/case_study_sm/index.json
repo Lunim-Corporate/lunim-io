@@ -17,8 +17,15 @@
         "config": {
           "label": "Digital Category",
           "placeholder": "",
-          "options": ["Discovery", "UX", "Web3", "AI"],
-          "default_value": "Discovery"
+          "options": ["discovery", "ux", "web3", "ai"],
+          "default_value": "discovery"
+        }
+      },
+      "url_full_path": {
+        "type": "Text",
+        "config": {
+          "label": "URL Full Path",
+          "placeholder": ""
         }
       },
       "slices": {
@@ -26,6 +33,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
             "case_study_text_panel": {
               "type": "SharedSlice"
             },
@@ -53,11 +63,11 @@
       },
       "meta_image": {
         "config": {
-          "constraint": {
-            "height": 1260,
-            "width": 2400
-          },
           "label": "Meta Image",
+          "constraint": {
+            "height": 630,
+            "width": 1200
+          },
           "thumbnails": []
         },
         "type": "Image"
@@ -83,6 +93,13 @@
               }
             }
           }
+        }
+      },
+      "meta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Meta URL",
+          "placeholder": ""
         }
       }
     }

@@ -1,4 +1,3 @@
-"use client";
 import React from 'react';
 import { PrismicRichText } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
@@ -6,21 +5,49 @@ import type { Content } from '@prismicio/client';
 import { asText } from '@prismicio/helpers';
 
 // Import the icons 
-import { 
-  UserStar, 
-  Cpu, 
-  Kanban, 
+import {
+  UserStar,
+  PersonStanding,
+  Cpu,
+  Kanban,
   Images,
-  LucideProps,
-  HelpCircle 
+  Network,
+  FileText,
+  Coins,
+  LockKeyhole,
+  Route,
+  Mouse,
+  BookOpen,
+  Stamp,
+  CircleUserRound,
+  HelpCircle,
+  Blocks,
+  Glasses,
+  Frame,
+  Sun,
+  type LucideProps,
 } from 'lucide-react';
 
 // Map the text from Prismic to the actual icon components
 const iconComponents: { [key: string]: React.ComponentType<LucideProps> } = {
   UserStar: UserStar,
+  PersonStanding: PersonStanding,
   Cpu: Cpu,
   Kanban: Kanban,
+  Network: Network,
+  FileText: FileText,
+  Coins: Coins,
+  LockKeyhole: LockKeyhole,
+  Route: Route,
+  BookOpen: BookOpen,
+  Stamp: Stamp,
+  CircleUserRound: CircleUserRound,
   Images: Images,
+  Frame: Frame,
+  Mouse: Mouse,
+  Blocks: Blocks,
+  Glasses: Glasses,
+  Sun: Sun,
 };
 
 type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
@@ -28,7 +55,7 @@ type ServiceGridSectionProps = SliceComponentProps<Content.ServiceGridSlice>;
 const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
   const columns = slice.primary.columns || 4;
   const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${columns === 4 ? 'md:grid-cols-4' : ''} gap-10`;
-  const items = slice.items as Content.ServiceGridSliceDefaultItem[];
+  const items = (slice.items as any[]) ?? [];
   
   return (
     // Use the section_id directly from the Key Text field
@@ -38,7 +65,7 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
             <PrismicRichText field={slice.primary.title} />
         </div>
         <div className={gridClass}>
-          {items.map((item, index) => {
+          {items.map((item: any, index: number) => {
             const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
             
             return (

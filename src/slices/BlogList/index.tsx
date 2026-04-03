@@ -2,13 +2,16 @@
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content, KeyTextField, RichTextField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { KeyTextField, RichTextField } from "@prismicio/types";
 import { asText } from "@prismicio/helpers";
 
 import { createClient } from "@/prismicio";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";
+import { JsonLdServer } from "@/components/JsonLdServer";
+import type { ItemList, Person, WithContext } from "schema-dts";
 
 /** Slice context passed from the page (we read search params here). */
 type BlogListSliceContext = {
@@ -16,6 +19,10 @@ type BlogListSliceContext = {
 };
 
 type Props = SliceComponentProps<Content.BlogListSlice, BlogListSliceContext>;
+
+const DEFAULT_SITE_URL = "https://lunim.io";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
 
 function getFirstParam(
   value: string | string[] | undefined
@@ -38,26 +45,80 @@ function extractCategoryText(
   return field.trim();
 }
 
+const resolveDocumentUrl = (
+  doc: Content.BlogPostDocument
+): string | null => {
+  if (doc.url) return doc.url;
+  const uid = doc.uid?.trim();
+  if (!uid) return null;
+  return `${SITE_URL}/blog/${uid}`;
+};
+
+function formatAuthorNames(authors: { name: string }[]): string {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0].name;
+  if (authors.length === 2) return `${authors[0].name} & ${authors[1].name}`;
+  // 3+ authors: "Name1, Name2 +X more"
+  const remaining = authors.length - 2;
+  return `${authors[0].name}, ${authors[1].name} +${remaining} more`;
+}
+
+// Helper to get initials from name
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+// Helper to generate consistent color from name
+function getColorFromName(name: string): string {
+  const colors = [
+    "bg-blue-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-red-500",
+    "bg-teal-500",
+  ];
+  const hash = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+}
+
 function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
   const d = doc.data;
   const title = asText(d.blog_article_heading) || doc.uid || "Untitled";
   const img = d.article_main_image;
   const articleImageField =
     img && !img.alt ? { ...img, alt: title } : img ?? null;
-  // Resolve linked author document details.
-  const authorInfo = d.author_info;
-  const authorData = authorInfo && "data" in authorInfo ? authorInfo.data : null;
-  const rawAuthorName = authorData?.author_name?.trim() ?? "";
-  const authorName = rawAuthorName || (authorInfo && "uid" in authorInfo ? authorInfo.uid ?? "" : "");
-  const authorImage = authorData?.author_image ?? null;
-  const authorImageField =
-    authorImage && !authorImage.alt
-      ? { ...authorImage, alt: authorName || "Author" }
-      : authorImage;
+
+  // Parse multiple authors from the authors group field (maintains Prismic order)
+  const authorsGroup = d.authors || [];
+  const authors = authorsGroup.map((authorItem: any) => {
+    const authorInfo = authorItem.author_info;
+    const authorData =
+      authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+        ? authorInfo.data
+        : null;
+    const authorName = authorData?.author_name?.trim() || "";
+    const authorImage = authorData?.author_image ?? null;
+    const authorImageField =
+      authorImage && !authorImage.alt
+        ? { ...authorImage, alt: authorName || "Author" }
+        : authorImage;
+    return {
+      name: authorName,
+      image: authorImageField,
+    };
+  }).filter((author: any) => author.name);
+
+  const authorDisplayNames = formatAuthorNames(authors);
   const readingTime: number = calculateReadingTime(d.main_article_content);
 
   return (
-    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+    <PrismicNextLink document={doc} className="block rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10 transition-colors no-underline">
       {articleImageField?.url ? (
         <PrismicNextImage
           field={articleImageField}
@@ -78,19 +139,46 @@ function BlogCard({ doc }: { doc: Content.BlogPostDocument }) {
           {readingTime ? <span>• {readingTime >= 10 ? `${readingTime}+` : readingTime} min read</span> : null}
         </div>
 
-        {(authorName || authorImageField?.url) ? (
+        {authors.length > 0 ? (
           <div className="flex items-center gap-3 mb-4">
-            {authorImageField?.url ? (
-              <PrismicNextImage
-                field={authorImageField}
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full object-cover"
-              />
+            {authors.length === 1 ? (
+              authors[0].image?.url ? (
+                <PrismicNextImage
+                  field={authors[0].image}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div
+                  className={`w-8 h-8 rounded-full ${getColorFromName(authors[0].name)} flex items-center justify-center text-white font-semibold text-xs`}
+                >
+                  {getInitials(authors[0].name)}
+                </div>
+              )
+            ) : authors.length > 1 ? (
+              <div className="flex -space-x-2">
+                {authors.slice(0, 2).map((author: any, index: number) => (
+                  <div key={index} className="border-2 border-black rounded-full">
+                    {author.image?.url ? (
+                      <PrismicNextImage
+                        field={author.image}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className={`w-8 h-8 rounded-full ${getColorFromName(author.name)} flex items-center justify-center text-white font-semibold text-xs`}
+                      >
+                        {getInitials(author.name)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             ) : null}
-            {authorName ? (
-              <span className="text-white/90 text-sm">{authorName}</span>
-            ) : null}
+            <span className="text-white/90 text-sm">{authorDisplayNames}</span>
           </div>
         ) : null}
       </div>
@@ -159,10 +247,9 @@ export default async function BlogList({ slice, context }: Props) {
 
   // ----- Visible posts -----
   const visiblePosts = effectiveFilter
-    ? posts.filter(
-        (doc) =>
-          normalizeCategory(extractCategoryText(doc.data.category)) ===
-          effectiveFilter
+    ? posts.filter((doc: Content.BlogPostDocument) =>
+        normalizeCategory(extractCategoryText(doc.data.category)) ===
+        effectiveFilter
       )
     : posts;
 
@@ -188,8 +275,63 @@ export default async function BlogList({ slice, context }: Props) {
       ? withParams({ page: currentPage + 1, cat: effectiveFilter || undefined })
       : null;
 
+  const blogListJsonLd: WithContext<ItemList> | null = visiblePosts.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: visiblePosts.map(
+          (doc: Content.BlogPostDocument, index: number) => {
+          const data = doc.data;
+          const title =
+            asText(data.blog_article_heading) ||
+            doc.uid ||
+            `Article ${index + 1}`;
+          const url = resolveDocumentUrl(doc);
+          const description =
+            data.meta_description || asText(data.main_article_content);
+          const image = data.article_main_image?.url || undefined;
+          const datePublished = data.publication_date || undefined;
+
+          // Parse multiple authors for JSON-LD
+          const authorsGroup = data.authors || [];
+          const authorsList = authorsGroup.map((authorItem: any) => {
+            const authorInfo = authorItem.author_info;
+            const authorData =
+              authorInfo && typeof authorInfo === "object" && "data" in authorInfo
+                ? authorInfo.data
+                : null;
+            const authorName = authorData?.author_name?.trim() || "";
+            return authorName;
+          }).filter(Boolean);
+
+          const author: Person | Person[] | undefined =
+            authorsList.length === 1
+              ? { "@type": "Person", name: authorsList[0] }
+              : authorsList.length > 1
+              ? authorsList.map((name: string) => ({ "@type": "Person" as const, name }))
+              : undefined;
+
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "Article",
+              headline: title,
+              ...(description ? { description } : {}),
+              ...(url ? { url } : {}),
+              ...(image ? { image } : {}),
+              ...(datePublished ? { datePublished } : {}),
+              ...(author ? { author } : {}),
+            },
+          };
+        }),
+      }
+    : null;
+
   return (
-    <section className="py-16 bg-black">
+    <>
+      {blogListJsonLd ? <JsonLdServer data={blogListJsonLd} /> : null}
+      <section className="py-16 bg-black">
       <div className="max-w-7xl mx-auto px-6">
         {slice.primary.heading?.length ? (
           <h2 className="text-3xl font-bold text-white mb-3">
@@ -207,7 +349,7 @@ export default async function BlogList({ slice, context }: Props) {
         <div className="flex flex-wrap items-center gap-2 mb-8">
           <a
             href={withParams({ page: 1 })}
-            className={`px-3 py-1 rounded-full text-sm border ${
+            className={`px-3 py-1 rounded-full text-sm border no-underline ${
               !effectiveFilter
                 ? "bg-cyan-300 text-black border-cyan-300"
                 : "border-white/20 text-white/80 hover:text-white"
@@ -219,7 +361,7 @@ export default async function BlogList({ slice, context }: Props) {
             <a
               key={normalizedCat}
               href={withParams({ page: 1, cat: normalizedCat })}
-              className={`px-3 py-1 rounded-full text-sm border ${
+              className={`px-3 py-1 rounded-full text-sm border no-underline ${
                 normalizedCat === effectiveFilter
                   ? "bg-cyan-300 text-black border-cyan-300"
                   : "border-white/20 text-white/80 hover:text-white"
@@ -233,7 +375,7 @@ export default async function BlogList({ slice, context }: Props) {
         {/* Grid / empty state */}
         {visiblePosts.length ? (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {visiblePosts.map((doc) => (
+            {visiblePosts.map((doc: Content.BlogPostDocument) => (
               <BlogCard key={doc.id} doc={doc} />
             ))}
           </div>
@@ -275,5 +417,6 @@ export default async function BlogList({ slice, context }: Props) {
         </div>
       </div>
     </section>
+    </>
   );
 }

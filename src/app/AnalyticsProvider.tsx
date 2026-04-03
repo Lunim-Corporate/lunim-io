@@ -8,7 +8,7 @@ export default function AnalyticsProvider({
   children,
   disabled = false,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   disabled?: boolean;
 }) {
   const pathname = usePathname();

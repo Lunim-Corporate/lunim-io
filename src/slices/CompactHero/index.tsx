@@ -1,10 +1,18 @@
-"use client";
-
-import { FC } from "react";
-import type { Content, ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/client";
+import type { FC } from "react";
+import { PrismicNextImage, type PrismicNextImageProps } from "@prismicio/next";
+import type { Content } from "@prismicio/client";
+import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";
+import AskLunaButton from "@/components/AskLunaButton";
+
+const HERO_IMGIX_PARAMS: PrismicNextImageProps["imgixParams"] = {
+  auto: ["format", "compress"],
+  fit: "crop",
+  q: 60,
+  sat: -5,
+};
 
 /**
  * Props for `CompactHero`.
@@ -27,8 +35,11 @@ type CompactHeroPrimary = Content.CompactHeroSlice["primary"] & LegacyHomepageHe
  */
 export const pickMetaFromCompactHero = (slice: Content.CompactHeroSlice) => {
   const primary: CompactHeroPrimary = slice.primary;
-  const heroTitleText = asText(primary.hero_title).trim();
-  const splitTitleText = [asText(primary.hero_title_part1), asText(primary.hero_title_part2)]
+  const heroTitleText = (asText(primary.hero_title || []) || "").trim();
+  const splitTitleText = [
+    asText(primary.hero_title_part1 || []) || "",
+    asText(primary.hero_title_part2 || []) || "",
+  ]
     .filter(Boolean)
     .join(" ")
     .trim();
@@ -60,24 +71,33 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
   const title1Old = primary.hero_title_part1;
   const title2Old = primary.hero_title_part2;
   const description = primary.hero_description;
-  const ctaLink = primary.button_1_link;
-  const ctaLabel = primary.button_1_label;
+  const legacyCtaLink = primary.button_1_link;
+  const legacyCtaLabel = primary.button_1_label;
+  const primaryCtaLink = primary.button_link;
+  const showMainCta = primary.show_main_cta ?? true;
+  const showAskLuna = primary.show_ask_luna ?? true;
+  const resolvedCtaLink = primaryCtaLink?.url ? primaryCtaLink : legacyCtaLink;
+  const resolvedCtaLabel = primaryCtaLink?.text || legacyCtaLabel || "Learn more";
+  const canShowMainCta = showMainCta && Boolean(resolvedCtaLink?.url);
+  const shouldShowCtaRow = canShowMainCta || showAskLuna;
 
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="relative min-h-[56vh] flex items-center overflow-hidden bg-black"
-      style={
-        bg
-          ? {
-              backgroundImage: `url(${bg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : undefined
-      }
     >
+      {bg ? (
+        <PrismicNextImage
+          field={primary.hero_image?.url ? primary.hero_image : primary.background_image}
+          fill
+          priority
+          sizes="100vw"
+          imgixParams={HERO_IMGIX_PARAMS}
+          className="object-cover object-center"
+          alt=""
+        />
+      ) : null}
       {/* dark overlay to ensure text contrast */}
       <div className="absolute inset-0 bg-black/60" />
 
@@ -103,15 +123,22 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
             </div>
           ) : null}
 
-          {/* Optional CTA (legacy) */}
-          {ctaLink && ctaLabel ? (
-            <div className="flex justify-center">
-              <PrismicLink
-                field={ctaLink}
-                className="inline-flex items-center justify-center px-8 py-4 rounded-md font-semibold shadow-lg transition-colors duration-300 bg-[#BBFEFF] text-black hover:bg-cyan-300"
-              >
-                {ctaLabel}
-              </PrismicLink>
+          {/* CTA row */}
+          {shouldShowCtaRow ? (
+            <div className="flex flex-col gap-4 items-center justify-center sm:flex-row">
+              {canShowMainCta && resolvedCtaLink ? (
+                <PrismicLink
+                  field={resolvedCtaLink}
+                  className="max-w-xs bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
+                >
+                  {resolvedCtaLabel}
+                </PrismicLink>
+              ) : null}
+              {showAskLuna ? (
+                <AskLunaButton
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white/20 text-white font-semibold bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg backdrop-blur-sm cursor-pointer no-underline"
+                />
+              ) : null}
             </div>
           ) : null}
         </div>

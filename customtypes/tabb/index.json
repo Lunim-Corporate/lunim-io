@@ -18,6 +18,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
             "compact_hero": {
               "type": "SharedSlice"
             },
@@ -72,11 +75,11 @@
       },
       "meta_image": {
         "config": {
-          "constraint": {
-            "height": 1260,
-            "width": 2400
-          },
           "label": "Meta Image",
+          "constraint": {
+            "height": 630,
+            "width": 1200
+          },
           "thumbnails": []
         },
         "type": "Image"
@@ -102,6 +105,13 @@
               }
             }
           }
+        }
+      },
+      "meta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Meta URL",
+          "placeholder": ""
         }
       }
     }

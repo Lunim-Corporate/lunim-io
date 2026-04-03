@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ view_count: data?.view_count || 0 });
   } catch (error) {
+    console.error(error);
     console.error("Error fetching views:", error);
     return NextResponse.json({ error: "Failed to fetch views" }, { status: 500 });
   }
@@ -102,6 +103,7 @@ export async function POST(request: NextRequest) {
       success: true,
     });
   } catch (error) {
+    console.error(error);
     console.error("Error incrementing views:", error);
     return NextResponse.json({ error: "Failed to increment views" }, { status: 500 });
   }

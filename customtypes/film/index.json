@@ -18,6 +18,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "breadcrumbs": {
+              "type": "SharedSlice"
+            },
             "compact_hero": {
               "type": "SharedSlice"
             },
@@ -50,6 +53,24 @@
             },
             "Expertiseareas": {
               "type": "SharedSlice"
+            },
+            "transmedia_hero": {
+              "type": "SharedSlice"
+            },
+            "global_community": {
+              "type": "SharedSlice"
+            },
+            "virtual_team_circle": {
+              "type": "SharedSlice"
+            },
+            "collectibles": {
+              "type": "SharedSlice"
+            },
+            "parallax_text_image": {
+              "type": "SharedSlice"
+            },
+            "parallax_line": {
+              "type": "SharedSlice"
             }
           }
         }
@@ -72,11 +93,11 @@
       },
       "meta_image": {
         "config": {
-          "constraint": {
-            "height": 1260,
-            "width": 2400
-          },
           "label": "Meta Image",
+          "constraint": {
+            "height": 630,
+            "width": 1200
+          },
           "thumbnails": []
         },
         "type": "Image"
@@ -102,6 +123,13 @@
               }
             }
           }
+        }
+      },
+      "meta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Meta URL",
+          "placeholder": ""
         }
       }
     }

@@ -1,5 +1,6 @@
 import type { SliceComponentProps } from "@prismicio/react";
-import type { Content, LinkField, KeyTextField } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import type { LinkField, KeyTextField } from "@prismicio/types";
 import { createClient } from "@/prismicio";
 
 // ⬇️ import only the client component, no types
@@ -42,13 +43,13 @@ export default async function NavigationMenuServer({
     : null;
 
   // --- Resolve referenced Nav Section documents in authored order ---
-  const sectionsGroup = Array.isArray(slice.primary.sections)
-    ? slice.primary.sections
+  const sectionsGroup: any[] = Array.isArray(slice.primary.sections)
+    ? (slice.primary.sections as any[])
     : [];
 
   const ids = sectionsGroup
-    .map((row) => row.section_ref)
-    .map((ref) =>
+    .map((row: any) => row.section_ref)
+    .map((ref: any) =>
       ref && ref.link_type === "Document" && typeof ref.id === "string"
         ? ref.id
         : null
@@ -58,8 +59,8 @@ export default async function NavigationMenuServer({
   let orderedDocs: Content.NavSectionDocument[] = [];
   if (ids.length) {
     try {
-      const fetched = await client.getAllByIDs<Content.NavSectionDocument>(ids);
-      const byId = new Map(fetched.map((d) => [d.id, d]));
+      const fetched = (await client.getAllByIDs(ids as any)) as any[];
+      const byId = new Map(fetched.map((d: any) => [d.id, d]));
       orderedDocs = ids
         .map((id) => byId.get(id))
         .filter((d): d is Content.NavSectionDocument => !!d);
@@ -70,14 +71,14 @@ export default async function NavigationMenuServer({
 
   // --- Build payload that matches the client’s types (no null links) ---
   const sections: Section[] = orderedDocs
-    .map((doc) => {
+    .map((doc: any) => {
       const data = doc.data;
 
       // children: keep only rows with a usable link
       const children: ChildLink[] = (
         Array.isArray(data.child_links) ? data.child_links : []
       )
-        .map((row, idx) => {
+        .map((row: any, idx: number) => {
           const label =
             typeof row.child_label === "string" && row.child_label.trim()
               ? row.child_label.trim()
@@ -85,7 +86,7 @@ export default async function NavigationMenuServer({
           const link = isUsableLink(row.child_link) ? row.child_link : null;
           return { label, link: link as LinkField };
         })
-        .filter((r): r is ChildLink => !!r.link);
+        .filter((r: any): r is ChildLink => !!r.link);
 
       // section link: require non-null; if empty, fall back to first child link
       const topLink = isUsableLink(data.section_link)

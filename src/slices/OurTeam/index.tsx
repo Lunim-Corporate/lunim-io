@@ -1,12 +1,16 @@
-"use client"
+"use client";
 import Avatar from "boring-avatars";
 // React
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 // Prismic
-import { asText, Content } from "@prismicio/client";
+import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/helpers";
 import { SliceComponentProps } from "@prismicio/react";
 // Next
 import Image from "next/image";
+import { JsonLd } from "@/components/JsonLd";
+import type { ItemList, ListItem, Person, WithContext } from "schema-dts";
+
 
 /**
  * Props for `OurTeam`.
@@ -19,22 +23,62 @@ export type OurTeamProps = SliceComponentProps<Content.OurTeamSlice>;
 const OurTeam: FC<OurTeamProps> = ({ slice }) => {
   const [active, setActive] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const members = useMemo(() => (slice.primary.team_member as any[]) ?? [], [slice.primary.team_member]);
 
   // Check if device is mobile
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+          ScrollTrigger.normalizeScroll(true);
+        });
+      }
     };
 
     checkIsMobile();
     window.addEventListener("resize", checkIsMobile);
 
     return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
+  }, [isMobile]);
+
+  const teamJsonLd = useMemo<WithContext<ItemList> | null>(() => {
+    if (!members.length) return null;
+    const itemListElement: ListItem[] = [];
+    members.forEach((member: any, index: number) => {
+      const name = asText(member?.name);
+      if (!name) {
+        return;
+      }
+      const person: Person = {
+        "@type": "Person",
+        name,
+        ...(member?.role ? { jobTitle: member.role } : {}),
+        ...(member?.description ? { description: member.description } : {}),
+        ...(member?.headshot?.url ? { image: member.headshot.url } : {}),
+      };
+      itemListElement.push({
+        "@type": "ListItem",
+        position: index + 1,
+        item: person,
+      });
+    });
+
+    if (!itemListElement.length) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement,
+    };
+  }, [members]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200">
-      <div className="w-full max-w-6xl px-4 mx-auto py-16">
+    <>
+      {teamJsonLd ? <JsonLd data={teamJsonLd} id="team-schema" /> : null}
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200">
+        <div className="w-full max-w-6xl px-4 mx-auto py-16">
         <div className="mb-12 mt-12 text-center">
         {/* Start header */}
         <header className="text-center mb-12 px-4">
@@ -49,33 +93,62 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
 
         {/* Team Section */}
         <section className="max-w-6xl mx-auto px-4">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {(slice.primary.team_member as Content.OurTeamSliceDefaultPrimaryTeamMemberItem[]).map((member, i) => {
-              const memberName = asText(member?.name);
-              return (
-                <div
-                  key={i}
-                  className={`transition duration-300 ${
-                    active && active !== memberName && !isMobile
-                      ? "blur-sm opacity-70"
-                      : ""
-                  }`}
+          {/* First two members: 2 columns on large screens */}
+          {members.length > 0 && (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 mb-8">
+              {members.slice(0, 2).map((member: any, i: number) => {
+                const memberName = asText(member?.name);
+                return (
+                  <div
+                    key={i}
+                    className={`transition duration-300 ${
+                      active && active !== memberName && !isMobile
+                        ? "blur-sm opacity-70"
+                        : ""
+                    }`}
                   >
-                  <TeamMember
-                    member={member}
-                    isActive={active === memberName}
-                    setActive={setActive}
-                    isMobile={isMobile}
-                  />
-                </div>
-              )
-          })}
-          </div>
+                    <TeamMember
+                      member={member}
+                      isActive={active === memberName}
+                      setActive={setActive}
+                      isMobile={isMobile}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {/* Remaining members: 3 columns on large screens */}
+          {members.length > 2 && (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {members.slice(2).map((member: any, i: number) => {
+                const memberName = asText(member?.name);
+                return (
+                  <div
+                    key={i + 2}
+                    className={`transition duration-300 ${
+                      active && active !== memberName && !isMobile
+                        ? "blur-sm opacity-70"
+                        : ""
+                    }`}
+                  >
+                    <TeamMember
+                      member={member}
+                      isActive={active === memberName}
+                      setActive={setActive}
+                      isMobile={isMobile}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </section>
         {/* End Team Section */}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -85,13 +158,13 @@ export default OurTeam;
  * Team Member Component
  */
 const TeamMember: FC<{
-  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
+  member: any;
   isActive: boolean;
   setActive: (name: string | null) => void;
   isMobile: boolean;
 }> = ({ member, isActive, setActive, isMobile }) => {
   const [imageError, setImageError] = useState(false);
-  const memberName = asText(member?.name)
+  const memberName = asText(member?.name);
    // Fallback image if `member.headshot.url` is null or undefined
   const imageUrl = member?.headshot?.url || "/placeholder-image.png";
 
@@ -147,7 +220,7 @@ const TeamMember: FC<{
 //   isMobile: boolean;
 // }> = ({ member, isMobile }) => {
 const BioCard: FC<{
-  member: Content.OurTeamSliceDefaultPrimaryTeamMemberItem;
+  member: any;
 }> = ({ member }) => {
   return (
     // <div
@@ -164,7 +237,12 @@ const BioCard: FC<{
 
       <div className="text-slate-200 text-sm py-2">
         {/* Keeps the formatting the same as it is in Prismic */}
-        <p className="whitespace-pre-wrap">{member?.description}</p>
+        {member?.description
+          ?.split(/\n/)
+          .filter((line: string) => line.trim())
+          .map((line: string, index: number) => (
+            <p key={index}>{line.trim()}</p>
+          ))}
       </div>
     </div>
   );
