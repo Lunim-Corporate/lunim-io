@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
     try {
       supabase = supabaseServer();
     } catch (error) {
+      console.error(error);
       console.error('[Luna Conversation] Failed to init Supabase client:', error);
       return NextResponse.json({
         success: true,
@@ -92,6 +93,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      console.error(new Error(error.message));
       console.error('[Luna Conversation] Failed to persist conversation:', error);
       return NextResponse.json(
         {
@@ -109,6 +111,7 @@ export async function POST(request: NextRequest) {
       sessionId,
     });
   } catch (error) {
+    console.error(error);
     console.error('[Luna Conversation] Unexpected error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

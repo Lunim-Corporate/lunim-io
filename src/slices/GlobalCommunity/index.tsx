@@ -6,13 +6,7 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import { withImageAlt } from "@/lib/prismicImage";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SphereImageGrid from "@/components/ui/img-sphere";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 /**
  * Props for `GlobalCommunity`.
@@ -58,48 +52,40 @@ const GlobalCommunity = ({ slice }: GlobalCommunityProps) => {
   }, [slice.primary]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Scrubbed reveal for eyebrow, heading, body
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: sectionRef.current, start: "top 85%", end: "top 35%", scrub: 0.6 },
-      });
-      tl.from(eyebrowRef.current, { opacity: 0, y: 24, filter: "blur(4px)" })
-        .from(headingRef.current, { opacity: 0, x: -40, filter: "blur(6px)" }, "-=0.2")
-        .from(bodyRef.current, { opacity: 0, y: 28, filter: "blur(6px)" }, "-=0.1");
+    let ctx: any;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          const tl = gsap.timeline({
+            scrollTrigger: { trigger: sectionRef.current, start: "top 85%", end: "top 35%", scrub: 0.6 },
+          });
+          tl.from(eyebrowRef.current, { opacity: 0, y: 24, filter: "blur(4px)" })
+            .from(headingRef.current, { opacity: 0, x: -40, filter: "blur(6px)" }, "-=0.2")
+            .from(bodyRef.current, { opacity: 0, y: 28, filter: "blur(6px)" }, "-=0.1");
 
-      // Logo parallax
-      gsap.to(logoRef.current, {
-        y: -30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
+          gsap.to(logoRef.current, {
+            y: -30,
+            ease: "none",
+            scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 1 },
+          });
 
-      // Face grid stagger animation
-      if (gridRef.current) {
-        const faces = gridRef.current.querySelectorAll(".face-item");
-        gsap.from(faces, {
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.6,
-          stagger: {
-            amount: 1.5,
-            from: "random",
-          },
-          ease: "back.out(1.2)",
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: "top 80%",
-          },
-        });
+          if (gridRef.current) {
+            const faces = gridRef.current.querySelectorAll(".face-item");
+            gsap.from(faces, {
+              opacity: 0,
+              scale: 0.8,
+              duration: 0.6,
+              stagger: { amount: 1.5, from: "random" },
+              ease: "back.out(1.2)",
+              scrollTrigger: { trigger: gridRef.current, start: "top 80%" },
+            });
+          }
+        }, sectionRef);
       }
-    }, sectionRef);
+    );
 
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, []);
 
   // Be tolerant of partially populated image fields so background always shows when a URL is present

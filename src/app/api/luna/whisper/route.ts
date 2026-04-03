@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(new Error(`Whisper API error ${response.status}: ${errorText}`));
       console.error('Whisper API error:', response.status, errorText);
       return NextResponse.json(
         { error: 'Failed to transcribe audio' },
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest) {
       text: data.text ?? '',
     });
   } catch (error) {
+    console.error(error);
     console.error('Error in Whisper endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

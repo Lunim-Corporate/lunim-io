@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { asLink } from "@prismicio/helpers";
 import type { LinkField } from "@prismicio/types";
 import { JsonLd } from "@/components/JsonLd";
+import { SITE_CONFIG, type SiteKey } from "@/lib/siteContent";
 import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
 
 type ChildLink = {
@@ -22,13 +23,23 @@ type Section = {
 };
 
 type BreadcrumbsClientProps = {
-  sections: Section[];
-  hiddenSegments?: string[];
+  siteData: Record<
+    SiteKey,
+    {
+      sections: Section[];
+      hiddenSegments: string[];
+    }
+  >;
 };
 
 const DEFAULT_SITE_URL = "https://lunim.io";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || DEFAULT_SITE_URL;
+const INTERNAL_PREFIX_BY_SITE: Partial<Record<SiteKey, string>> = {
+  ai: "/ai-automation",
+  ux: "/ux",
+  video: "/video",
+};
 
 const resolveLinkField = (link: LinkField | null | undefined): string | null => {
   if (!link) return null;
@@ -75,11 +86,33 @@ const labelFromSegment = (segment: string): string => {
 };
 
 export default function BreadcrumbsClient({
-  sections,
-  hiddenSegments,
+  siteData,
 }: BreadcrumbsClientProps) {
   const pathname = usePathname();
   const currentPath = normalizePath(pathname) ?? "/";
+  const hostInfo = useMemo(() => {
+    if (typeof window === "undefined") {
+      return {
+        hostname: "",
+        siteKey: null as SiteKey | null,
+      };
+    }
+
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split(".")[0];
+
+    if (subdomain === "ai" && !hostname.startsWith("www")) {
+      return { hostname, siteKey: "ai" as SiteKey };
+    }
+    if (subdomain === "ux" && !hostname.startsWith("www")) {
+      return { hostname, siteKey: "ux" as SiteKey };
+    }
+    if (subdomain === "video-next" && !hostname.startsWith("www")) {
+      return { hostname, siteKey: "video" as SiteKey };
+    }
+
+    return { hostname, siteKey: null };
+  }, []);
 
   const segments = useMemo(() => {
     if (currentPath === "/") {
@@ -88,6 +121,41 @@ export default function BreadcrumbsClient({
     return currentPath.split("/").filter(Boolean);
   }, [currentPath]);
 
+  const resolvedSiteKey = useMemo<SiteKey>(() => {
+    if (hostInfo.siteKey) {
+      return hostInfo.siteKey;
+    }
+
+    if (currentPath === "/ai-automation" || currentPath.startsWith("/ai-automation/")) {
+      return "ai";
+    }
+    if (currentPath === "/ux" || currentPath.startsWith("/ux/")) {
+      return "ux";
+    }
+    if (currentPath === "/video" || currentPath.startsWith("/video/")) {
+      return "video";
+    }
+
+    return "main";
+  }, [currentPath, hostInfo.siteKey]);
+
+  const { sections, hiddenSegments } = siteData[resolvedSiteKey];
+  const isSubdomainHost = hostInfo.siteKey === resolvedSiteKey && resolvedSiteKey !== "main";
+  const internalPrefix = INTERNAL_PREFIX_BY_SITE[resolvedSiteKey] ?? "";
+
+  const toPublicPath = useMemo(
+    () => (path: string | null): string | null => {
+      if (!path) return null;
+      if (!isSubdomainHost || !internalPrefix) return path;
+      if (path === internalPrefix) return "/";
+      if (path.startsWith(`${internalPrefix}/`)) {
+        return path.slice(internalPrefix.length) || "/";
+      }
+      return path;
+    },
+    [internalPrefix, isSubdomainHost]
+  );
+
   const hiddenSet = useMemo(
     () => new Set((hiddenSegments ?? []).map((s) => s.toLowerCase())),
     [hiddenSegments]
@@ -95,18 +163,36 @@ export default function BreadcrumbsClient({
 
   const showBreadcrumbs = segments.length >= 1;
 
+  // Determine home path and label based on site context
+  const homeConfig = useMemo(() => {
+    if (resolvedSiteKey === "ai") {
+      return { href: isSubdomainHost ? "/" : "/ai-automation", label: "Home" };
+    }
+    if (resolvedSiteKey === "ux") {
+      return { href: isSubdomainHost ? "/" : "/ux", label: "Home" };
+    }
+    if (resolvedSiteKey === "video") {
+      return { href: isSubdomainHost ? "/" : "/video", label: "Home" };
+    }
+    return { href: "/", label: "Home" };
+  }, [isSubdomainHost, resolvedSiteKey]);
+
   // Build a path -> label map from navigation
   const pathLabelMap = useMemo(() => {
     const map = new Map<string, string>();
 
     sections.forEach((section) => {
-      const sectionPath = normalizePath(resolveLinkField(section.link));
+      const sectionPath = normalizePath(
+        toPublicPath(resolveLinkField(section.link))
+      );
       if (sectionPath) {
         map.set(sectionPath, section.label);
       }
 
       section.children.forEach((child) => {
-        const childPath = normalizePath(resolveLinkField(child.link));
+        const childPath = normalizePath(
+          toPublicPath(resolveLinkField(child.link))
+        );
         if (childPath) {
           map.set(childPath, child.label);
         }
@@ -114,7 +200,7 @@ export default function BreadcrumbsClient({
     });
 
     return map;
-  }, [sections]);
+  }, [sections, toPublicPath]);
 
   const crumbs = useMemo(() => {
     const items: { href: string; label: string }[] = [];
@@ -146,11 +232,12 @@ export default function BreadcrumbsClient({
   }, [segments, pathLabelMap, hiddenSet]);
 
   const breadcrumbJsonLd = useMemo<WithContext<BreadcrumbList>>(() => {
+    const siteBaseUrl = SITE_CONFIG[resolvedSiteKey].baseUrl || SITE_URL;
     const toAbsoluteUrl = (path: string): string => {
       if (!path || path === "/") {
-        return SITE_URL;
+        return siteBaseUrl;
       }
-      return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+      return `${siteBaseUrl}${path.startsWith("/") ? path : `/${path}`}`;
     };
 
     const itemListElement: ListItem[] = crumbs.map((crumb, index) => ({
@@ -165,7 +252,7 @@ export default function BreadcrumbsClient({
       "@type": "BreadcrumbList",
       itemListElement,
     };
-  }, [crumbs]);
+  }, [crumbs, resolvedSiteKey]);
 
   if (!showBreadcrumbs) {
     return null;

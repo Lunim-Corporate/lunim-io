@@ -27,7 +27,6 @@ export class SpeechErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error details for debugging
     console.error('[SpeechErrorBoundary] Error caught:', error, errorInfo);
   }
 

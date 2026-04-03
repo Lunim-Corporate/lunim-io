@@ -59,6 +59,7 @@ export async function POST(request: NextRequest) {
       tokensUsed: llmResponse.tokensUsed,
     });
   } catch (error) {
+    console.error(error);
     console.error('Error in clarify endpoint:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

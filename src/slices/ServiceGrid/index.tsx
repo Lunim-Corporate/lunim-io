@@ -1,4 +1,3 @@
-"use client";
 import React from 'react';
 import { PrismicRichText } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
@@ -67,7 +66,6 @@ const ServiceGridSection: React.FC<ServiceGridSectionProps> = ({ slice }) => {
         </div>
         <div className={gridClass}>
           {items.map((item: any, index: number) => {
-            console.log(item.icon_name);
             const Icon = iconComponents[item.icon_name || ''] || HelpCircle;
             
             return (

@@ -43,7 +43,14 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+<<<<<<< HEAD
 
 #claude
 .claude/
 tmpclaude-*
+=======
+.cursor/debug.log
+
+# Sentry Config File
+.env.sentry-build-plugin
+>>>>>>> 3b11b6df58cf25fa1e6fc0482de88e3c34e5e1d7

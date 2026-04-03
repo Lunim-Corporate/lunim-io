@@ -1,49 +1,16 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
-// React
 import { Suspense } from "react";
-// Next
 import Script from "next/script";
-import { draftMode } from "next/headers";
-import { Metadata } from "next";
-// Prismic
-import { createClient, repositoryName } from "@/prismicio";
+import type { Metadata } from "next";
+import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
-import NavigationMenu from "@/slices/NavigationMenu";
-import Footer from "@/slices/Footer";
-import { Content } from "@prismicio/client";
-// Styles
 import "./globals.css";
-// Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
-
 export const metadata: Metadata = {
-  title: {
-    template: "%s | Lunim",
-    default: "Lunim", // Fall back when no title is provided
-  },
-  // Default description
-  description: "Lunim website page",
-  keywords: "technology, innovation, software, development, lunim",
-  // Base URL prefix for metadata fields that require a fully qualified URL
-  metadataBase: new URL(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim-v3-progress.netlify.app/"),
-  openGraph: {
-    type: "website",
-    locale: "en_GB",
-    siteName: "Lunim",
-  },
-  
-  twitter: {
-    card: "summary_large_image",
-    title: "Lunim.io – Innovative Digital Solutions",
-    description: "Lunim.io creates seamless digital experiences with cutting-edge technology and design.",
-    images: [
-      "https://www.lunim.io/assets/images/og-image.jpg" 
-      // Replace with your actual image path
-    ],
-  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim.io"),
 };
 
 export default async function RootLayout({
@@ -51,34 +18,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isEnabled: isDraft } = await draftMode();
-  const client = createClient();
-  const primaryNav = (await (client as any)
-    .getSingle("primary_navigation")
-    .catch(() => null)) as Content.PrimaryNavigationDocument | null;
-  // Extract the navigation_menu slice from the slices array
-  const navigationMenu = primaryNav?.data?.slices.find(
-    (slice: any) => slice.slice_type === "navigation_menu"
-  );
-  // Fetch the footer slice
-  const footer = (await (client as any)
-    .getSingle("footer")
-    .catch(() => null)) as Content.FooterDocument | null;
-  const footerSlice = footer?.data?.slices.find(
-    (slice: any) => slice.slice_type === "footer"
-  );
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {!isDraft && GA_ID ? (
+        {GA_ID ? (
           <>
-            {/* gtag loader */}
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
               strategy="afterInteractive"
             />
-            {/* init gtag */}
             <Script id="gtag-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
@@ -92,11 +40,6 @@ export default async function RootLayout({
             </Script>
           </>
         ) : null}
-        <script
-          async
-          defer
-          src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
-        ></script>
       </head>
       <body className="bg-black">
         <ScrollManager />
@@ -104,27 +47,10 @@ export default async function RootLayout({
           <SmoothScroll />
         </Suspense>
         <PrismicPreview repositoryName={repositoryName}>
-          {navigationMenu && (
-            <NavigationMenu
-              slice={navigationMenu}
-              index={0} // Default index
-              slices={primaryNav?.data?.slices || []} // Pass the full slices array
-              context={{}} // Provide an empty context object
-            />
-          )}
           <Suspense fallback={null}>
-            <AnalyticsProvider disabled={isDraft || !GA_ID}>
-              {children}
-            </AnalyticsProvider>
+            <AnalyticsProvider disabled={!GA_ID} />
           </Suspense>
-          {footerSlice && (
-            <Footer
-              slice={footerSlice}
-              index={0}
-              slices={footer?.data?.slices || []}
-              context={{}}
-            />
-          )}
+          {children}
         </PrismicPreview>
       </body>
     </html>

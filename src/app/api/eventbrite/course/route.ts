@@ -149,6 +149,7 @@ export async function GET(request: Request) {
         ticketData = (await ticketResponse.json()) as TicketClassesResponse;
       }
     } catch (ticketError) {
+      console.error(ticketError);
       console.error("Unable to fetch Eventbrite ticket classes", ticketError);
     }
 
@@ -169,6 +170,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, data: normalized });
   } catch (error) {
+    console.error(error);
     console.error("Eventbrite API request failed", error);
     return NextResponse.json(
       { success: false, message: "Failed to load Eventbrite data." },

@@ -68,6 +68,7 @@ export async function POST(request: Request) {
     supabaseStatus.success = true;
     supabaseStatus.recordId = data?.id ?? null;
   } catch (error) {
+    console.error(error);
     supabaseStatus.error =
       error instanceof Error ? error.message : "Unable to store contact submission.";
   }

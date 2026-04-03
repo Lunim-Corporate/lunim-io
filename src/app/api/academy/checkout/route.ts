@@ -70,6 +70,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, url: session.url });
   } catch (error) {
+    console.error(error);
     const message =
       error instanceof Error ? error.message : "Unknown Stripe error.";
     return NextResponse.json(

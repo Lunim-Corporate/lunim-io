@@ -11,6 +11,7 @@ import Image from "next/image";
 import { JsonLd } from "@/components/JsonLd";
 import type { ItemList, ListItem, Person, WithContext } from "schema-dts";
 
+
 /**
  * Props for `OurTeam`.
  */
@@ -27,9 +28,12 @@ const OurTeam: FC<OurTeamProps> = ({ slice }) => {
   // Check if device is mobile
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (isMobile) {
-        ScrollTrigger.normalizeScroll(true);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+          ScrollTrigger.normalizeScroll(true);
+        });
       }
     };
 

@@ -10,6 +10,8 @@ import type { AiAutomationPageDocument } from "../../../../../prismicio-types";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
 
+export const revalidate = false;
+
 type Params = { uid: string };
 
 export default async function AiAutomationDynamicPage({
@@ -38,14 +40,14 @@ export default async function AiAutomationDynamicPage({
 export async function generateStaticParams() {
   const client = createClient();
   const docs = (await client.getAllByType(
-    "ai_automation_page"
+    "ai_automation_page",
   )) as unknown as AiAutomationPageDocument[];
   return docs.map((d: AiAutomationPageDocument) => ({ uid: d.uid! }));
 }
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> },
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
