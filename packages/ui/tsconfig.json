@@ -1,0 +1,7 @@
+{
+  "extends": "@lunim/config/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,47 @@
+
+> @lunim/ai@0.0.1 build C:\Users\johnu\Desktop\lunim\lunim-io\apps\ai
+> next build
+
+   ▲ Next.js 15.5.7
+
+   Creating an optimized production build ...
+Failed to compile.
+
+../../packages/ui/src/AskLunaButton.tsx
+Module not found: Can't resolve '../Luna'
+
+https://nextjs.org/docs/messages/module-not-found
+
+../../packages/ui/src/ContactForm.tsx
+Module not found: Can't resolve '../hooks/useContactForm'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+../../packages/ui/src/slices/Contact/index.tsx
+
+../../packages/ui/src/EventbriteSection.tsx
+Module not found: Can't resolve '../JsonLd'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+../../packages/ui/src/slices/Eventbrite/index.tsx
+
+./src/app/page.tsx
+Module not found: Can't resolve '../../prismicio'
+
+https://nextjs.org/docs/messages/module-not-found
+
+../../packages/utils/src/homeData.ts
+Module not found: Can't resolve '../assets/ai-agent-listing.png'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+../../packages/utils/src/index.ts
+./src/app/page.tsx
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.

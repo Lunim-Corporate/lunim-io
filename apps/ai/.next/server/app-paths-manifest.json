@@ -1,0 +1,12 @@
+{
+  "/api/ai-quiz/submit/route": "app/api/ai-quiz/submit/route.js",
+  "/api/preview/route": "app/api/preview/route.js",
+  "/api/exit-preview/route": "app/api/exit-preview/route.js",
+  "/api/revalidate/route": "app/api/revalidate/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/discovery/page": "app/discovery/page.js",
+  "/[uid]/page": "app/[uid]/page.js",
+  "/quiz/page": "app/quiz/page.js",
+  "/our-team/page": "app/our-team/page.js",
+  "/page": "app/page.js"
+}

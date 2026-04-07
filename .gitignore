@@ -1,7 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules/
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -43,14 +44,16 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
-<<<<<<< HEAD
 
-#claude
+# Claude
 .claude/
 tmpclaude-*
-=======
+
+# Cursor
 .cursor/debug.log
 
 # Sentry Config File
 .env.sentry-build-plugin
->>>>>>> 3b11b6df58cf25fa1e6fc0482de88e3c34e5e1d7
+
+# pnpm
+.pnpm-store/

@@ -9,3 +9,4 @@ export default async function Breadcrumbs({}: BreadcrumbsProps) {
 
   return <BreadcrumbsClient siteData={siteData} />;
 }
+
