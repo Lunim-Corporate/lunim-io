@@ -18,6 +18,21 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
+/**
+ * Paths handled by plug-and-play modules that manage their own chrome.
+ * When a request matches, the Prismic nav + footer are suppressed so the
+ * module can render its own standalone UI.
+ *
+ * To add a new module: just append its base path here.
+ */
+const MODULE_PATHS = ["/deal-room", "/confirm-email"];
+
+function isModulePath(pathname: string): boolean {
+  return MODULE_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(p + "/")
+  );
+}
+
 const SITE_META: Record<SiteKey, { siteName: string; siteTitle: string; siteDescription: string }> = {
   ai: {
     siteName: "Lunim AI Automation",
@@ -83,8 +98,15 @@ export default async function RootLayout({
   const { isEnabled: isDraft } = await draftMode();
   const headersList = await headers();
   const siteKey = (headersList.get("x-site-key") as SiteKey) ?? "main";
+  const pathname = headersList.get("x-pathname") ?? "";
+
+  // Module routes manage their own chrome — skip Prismic nav/footer entirely
+  const isModule = isModulePath(pathname);
+
   const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
-    await getLayoutContent(siteKey);
+    isModule
+      ? { navigationMenu: null, navigationSlices: [], footerSlice: null, footerSlices: [] }
+      : await getLayoutContent(siteKey);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -118,11 +140,13 @@ export default async function RootLayout({
           ></script>
         ) : null}
       </head>
-      <body className="bg-black">
-        <ScrollManager />
-        <Suspense fallback={null}>
-          <SmoothScroll />
-        </Suspense>
+      <body className={isModule ? "" : "bg-black"}>
+        {!isModule && <ScrollManager />}
+        {!isModule && (
+          <Suspense fallback={null}>
+            <SmoothScroll />
+          </Suspense>
+        )}
         <PrismicPreview repositoryName={repositoryName}>
           {navigationMenu && (
             <NavigationMenu
