@@ -187,3 +187,121 @@
     stroke-dashoffset: 0;
   }
 }
+
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Deal Room CSS variables + utility classes
+───────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  /* Force dark background — overrides Tailwind's base reset */
+  html {
+    background-color: #0a0a0a !important;
+    color: #f1f5f9;
+  }
+  body {
+    background-color: #0a0a0a !important;
+    color: #f1f5f9;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
+:root {
+  --dr-accent:           #06b6d4;
+  --dr-accent-hover:     #0891b2;
+  --dr-accent-fg:        #000000;
+
+  --dr-bg-page:          #0a0a0a;
+  --dr-bg-card:          #141414;
+  --dr-bg-nav:           rgba(10,10,10,0.88);
+  --dr-bg-doc-row:       rgba(255,255,255,0.03);
+  --dr-bg-doc-row-hover: rgba(255,255,255,0.07);
+  --dr-bg-doc-locked:    rgba(255,255,255,0.015);
+
+  --dr-text:             #f1f5f9;
+  --dr-text-muted:       #64748b;
+  --dr-text-disabled:    #334155;
+  --dr-link-text:        var(--dr-accent);
+
+  --dr-border:           rgba(255,255,255,0.08);
+
+  --dr-success-icon-bg:  rgba(34,197,94,0.15);
+  --dr-success-icon-fg:  #22c55e;
+  --dr-error-icon-bg:    rgba(239,68,68,0.15);
+  --dr-error-icon-fg:    #ef4444;
+  --dr-warning-bg:       rgba(234,179,8,0.12);
+  --dr-warning-border:   rgba(234,179,8,0.25);
+  --dr-warning-fg:       #fde047;
+
+  --dr-padding-top:      5rem;
+  --dr-max-width:        1200px;
+
+  --dr-input-bg:         #0d0d0d;
+  --dr-input-border:     rgba(255,255,255,0.12);
+  --dr-input-text:       var(--dr-text);
+  --dr-input-focus:      var(--dr-accent);
+}
+
+.dr-page-bg      { background-color: var(--dr-bg-page) !important; }
+.dr-card         { background-color: var(--dr-bg-card) !important; color: var(--dr-text); }
+.dr-border       { border-color: var(--dr-border) !important; }
+
+.dr-text         { color: var(--dr-text); }
+.dr-text-muted   { color: var(--dr-text-muted); }
+.dr-text-disabled{ color: var(--dr-text-disabled); }
+.dr-link         { color: var(--dr-accent); }
+.dr-link-text    { color: var(--dr-accent) !important; }
+
+.dr-btn-primary {
+  background-color: var(--dr-accent) !important;
+  color: var(--dr-accent-fg) !important;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+.dr-btn-primary:hover:not(:disabled) { background-color: var(--dr-accent-hover) !important; }
+
+.dr-btn-secondary {
+  background-color: transparent !important;
+  color: var(--dr-text-muted);
+  border: 1px solid var(--dr-border);
+  transition: border-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.dr-btn-secondary:hover:not(:disabled) {
+  border-color: var(--dr-accent) !important;
+  color: var(--dr-accent);
+}
+
+.dr-tab-active   { background-color: var(--dr-accent) !important; color: var(--dr-accent-fg) !important; }
+.dr-tab-inactive { background-color: transparent !important; color: var(--dr-text-muted); border: 1px solid var(--dr-border); }
+.dr-tab-inactive:hover { border-color: var(--dr-accent); color: var(--dr-accent); }
+
+.dr-input {
+  background-color: var(--dr-input-bg) !important;
+  border-color: var(--dr-input-border) !important;
+  color: var(--dr-input-text) !important;
+}
+.dr-input:focus {
+  outline: none;
+  border-color: var(--dr-input-focus) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--dr-input-focus) 20%, transparent);
+}
+
+.dr-alert-warning { background-color: var(--dr-warning-bg); border-color: var(--dr-warning-border); color: var(--dr-warning-fg); }
+
+.dr-doc-row        { background-color: var(--dr-bg-doc-row); }
+.dr-doc-row-hover  { background-color: var(--dr-bg-doc-row-hover); }
+.dr-doc-locked     { background-color: var(--dr-bg-doc-locked); }
+.dr-toc-active     { color: var(--dr-accent); }
+
+.dr-spinner { border-color: var(--dr-border); border-top-color: var(--dr-accent); }
+
+.dr-icon-success { background-color: var(--dr-success-icon-bg); color: var(--dr-success-icon-fg); }
+.dr-icon-error   { background-color: var(--dr-error-icon-bg);   color: var(--dr-error-icon-fg); }
+.dr-icon-warning { background-color: var(--dr-warning-bg);      color: var(--dr-warning-fg); }
+
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
