@@ -1,20 +1,11 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
-import { getLayoutContent, type SiteKey } from "@/lib/siteContent";
-// React
 import { Suspense } from "react";
-// Next
 import Script from "next/script";
-import { draftMode, headers } from "next/headers";
-import { Metadata } from "next";
-// Prismic
+import type { Metadata } from "next";
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
-import NavigationMenu from "@/slices/NavigationMenu";
-import Footer from "@/slices/Footer";
-// Styles
 import "./globals.css";
-// Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
@@ -111,14 +102,12 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {!isDraft && GA_ID ? (
+        {GA_ID ? (
           <>
-            {/* gtag loader */}
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
               strategy="afterInteractive"
             />
-            {/* init gtag */}
             <Script id="gtag-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
@@ -132,13 +121,6 @@ export default async function RootLayout({
             </Script>
           </>
         ) : null}
-        {isDraft ? (
-          <script
-            async
-            defer
-            src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
-          ></script>
-        ) : null}
       </head>
       <body className={isModule ? "" : "bg-black"}>
         {!isModule && <ScrollManager />}
@@ -148,27 +130,10 @@ export default async function RootLayout({
           </Suspense>
         )}
         <PrismicPreview repositoryName={repositoryName}>
-          {navigationMenu && (
-            <NavigationMenu
-              slice={navigationMenu}
-              index={0}
-              slices={navigationSlices}
-              context={{}}
-            />
-          )}
           <Suspense fallback={null}>
-            <AnalyticsProvider disabled={isDraft || !GA_ID}>
-              {children}
-            </AnalyticsProvider>
+            <AnalyticsProvider disabled={!GA_ID} />
           </Suspense>
-          {footerSlice && (
-            <Footer
-              slice={footerSlice}
-              index={0}
-              slices={footerSlices}
-              context={{}}
-            />
-          )}
+          {children}
         </PrismicPreview>
       </body>
     </html>
