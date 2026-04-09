@@ -1,11 +1,21 @@
 import AnalyticsProvider from "./AnalyticsProvider";
 import { GA_ID } from "@/lib/gtag";
+//import { getLayoutContent, type SiteKey } from "@/lib/siteContent";
+import { getMainLayoutContent, getAiLayoutContent, getUxLayoutContent, getVideoLayoutContent, type SiteKey } from "@/lib/siteContent";
+// React
 import { Suspense } from "react";
+// Next
 import Script from "next/script";
-import type { Metadata } from "next";
+import { draftMode, headers } from "next/headers";
+import { Metadata } from "next";
+// Prismic
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
+import NavigationMenu from "@/slices/NavigationMenu";
+import Footer from "@/slices/Footer";
+// Styles
 import "./globals.css";
+// Components
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollManager from "@/components/ScrollManager";
 
@@ -16,7 +26,7 @@ import ScrollManager from "@/components/ScrollManager";
  *
  * To add a new module: just append its base path here.
  */
-const MODULE_PATHS = ["/confirm-email"];
+const MODULE_PATHS = ["/deal-room", "/confirm-email"];
 
 function isModulePath(pathname: string): boolean {
   return MODULE_PATHS.some(
@@ -94,20 +104,34 @@ export default async function RootLayout({
   // Module routes manage their own chrome — skip Prismic nav/footer entirely
   const isModule = isModulePath(pathname);
 
+  // const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
+  //   isModule
+  //     ? { navigationMenu: null, navigationSlices: [], footerSlice: null, footerSlices: [] }
+  //     : await getLayoutContent(siteKey);
+
+  const getContent = () => {
+    if (isModule) return Promise.resolve({ navigationMenu: null, navigationSlices: [], footerSlice: null, footerSlices: [] });
+    if (siteKey === "ai") return getAiLayoutContent();
+    if (siteKey === "ux") return getUxLayoutContent();
+    if (siteKey === "video") return getVideoLayoutContent();
+    return getMainLayoutContent();
+  };
+
   const { navigationMenu, navigationSlices, footerSlice, footerSlices } =
-    isModule
-      ? { navigationMenu: null, navigationSlices: [], footerSlice: null, footerSlices: [] }
-      : await getLayoutContent(siteKey);
+    await getContent();
+      
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {GA_ID ? (
+        {!isDraft && GA_ID ? (
           <>
+            {/* gtag loader */}
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
               strategy="afterInteractive"
             />
+            {/* init gtag */}
             <Script id="gtag-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
@@ -121,6 +145,13 @@ export default async function RootLayout({
             </Script>
           </>
         ) : null}
+        {isDraft ? (
+          <script
+            async
+            defer
+            src="https://static.cdn.prismic.io/prismic.js?new=true&repo=lunim-v3"
+          ></script>
+        ) : null}
       </head>
       <body className={isModule ? "" : "bg-black"}>
         {!isModule && <ScrollManager />}
@@ -130,10 +161,27 @@ export default async function RootLayout({
           </Suspense>
         )}
         <PrismicPreview repositoryName={repositoryName}>
+          {navigationMenu && (
+            <NavigationMenu
+              slice={navigationMenu}
+              index={0}
+              slices={navigationSlices}
+              context={{}}
+            />
+          )}
           <Suspense fallback={null}>
-            <AnalyticsProvider disabled={!GA_ID} />
+            <AnalyticsProvider disabled={isDraft || !GA_ID}>
+              {children}
+            </AnalyticsProvider>
           </Suspense>
-          {children}
+          {footerSlice && (
+            <Footer
+              slice={footerSlice}
+              index={0}
+              slices={footerSlices}
+              context={{}}
+            />
+          )}
         </PrismicPreview>
       </body>
     </html>
