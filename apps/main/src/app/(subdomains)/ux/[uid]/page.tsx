@@ -6,7 +6,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import type { UxDocument } from "../../../../../prismicio-types";
+type UxDocument = any;
 
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";

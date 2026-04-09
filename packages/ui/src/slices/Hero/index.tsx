@@ -25,9 +25,9 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
 const Hero: FC<HeroProps> = ({ slice }) => {
   const showAskLuna = slice.primary.show_ask_luna ?? true;
   const showMainCta = slice.primary.show_main_cta ?? true;
-  const hasMainCta = showMainCta && Boolean(slice.primary.button_link?.url);
+  const hasMainCta = showMainCta && Boolean((slice.primary.button_link as any)?.url);
   const shouldRenderCtas = hasMainCta || showAskLuna;
-  const primaryCtaText = slice.primary.button_link?.text || "Learn more"
+  const primaryCtaText = (slice.primary.button_link as any)?.text || "Learn more"
   const showDownScroll = slice.primary.show_down_scroll ?? true;
 
   return (
@@ -65,7 +65,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
             <div className="flex flex-col gap-4 items-center justify-center mb-16 sm:flex-row">
               {hasMainCta ? (
                 <PrismicLink
-                  field={slice.primary.button_link}
+                  field={slice.primary.button_link as any}
                   className="max-w-xs bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
                 >
                   {primaryCtaText}

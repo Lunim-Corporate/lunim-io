@@ -12,7 +12,7 @@
     ".next/types/**/*.ts",
     "next-env.d.ts",
     "src/prismicio-types.d.ts",
-    "types/**/*.d.ts"
+    "../../prismicio-types.d.ts"
   ],
   "exclude": ["node_modules"]
 }

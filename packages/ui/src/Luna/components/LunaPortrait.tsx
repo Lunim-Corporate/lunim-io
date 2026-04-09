@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { LunaState } from '../types';
-import lunaImage from '@/assets/luna.png';
+import lunaImage from '../../assets/luna.png';
 
 interface LunaPortraitProps {
   state: LunaState;

@@ -1,4 +1,4 @@
-import type { ImageField, ImageFieldImage } from "@prismicio/types";
+import type { ImageField, ImageFieldImage } from "@prismicio/client";
 
 type ImageLike = (ImageField | ImageFieldImage) & {
   alt?: string | null;

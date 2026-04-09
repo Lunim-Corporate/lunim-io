@@ -1,7 +1,7 @@
 import type { StaticImageData } from "next/image";
-import peterPonton from "../assets/Peter-headshot.png";
-import peteFrancomb from "../assets/pete-headshot.png";
-import nickCurum from "../assets/nick-headshot.png";
+import peterPonton from "./assets/Peter-headshot.png";
+import peteFrancomb from "./assets/pete-headshot.png";
+import nickCurum from "./assets/nick-headshot.png";
 
 export interface SocialLink {
   icon: string;

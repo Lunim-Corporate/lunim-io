@@ -43,13 +43,13 @@ export async function generateStaticParams() {
   const docs = await client.getAllByType<CaseStudySmDocumentWithLegacy>("case_study_sm");
 
   return docs
-    .map((doc) => {
+    .map((doc: CaseStudySmDocumentWithLegacy) => {
       const categorySlug = digitalCategoryToSlug(doc.data.digital_category);
       const caseStudyUid = doc.uid ?? undefined;
       if (!categorySlug || !caseStudyUid) return null;
       return { uid: categorySlug, caseStudyUid };
     })
-    .filter((value): value is { uid: string; caseStudyUid: string } => Boolean(value));
+    .filter((value: { uid: string; caseStudyUid: string } | null): value is { uid: string; caseStudyUid: string } => Boolean(value));
 }
 
 export async function generateMetadata(
@@ -74,8 +74,8 @@ export async function generateMetadata(
 
   const parentKeywords = parentMetaData.keywords || "";
   const keywords =
-    doc.data?.meta_keywords.filter((val) => Boolean(val.meta_keywords_text)).length >= 1
-      ? `${doc.data.meta_keywords.map((k) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}`
+    doc.data?.meta_keywords.filter((val: { meta_keywords_text?: string | null }) => Boolean(val.meta_keywords_text)).length >= 1
+      ? `${doc.data.meta_keywords.map((k: { meta_keywords_text?: string | null }) => k.meta_keywords_text?.toLowerCase()).join(", ")}, ${parentKeywords}`
       : parentKeywords;
   const title = doc.data?.meta_title || parentMetaData.title;
   const description = doc.data?.meta_description || parentMetaData.description;

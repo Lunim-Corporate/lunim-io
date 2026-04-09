@@ -1,6 +1,9 @@
 // Compatibility shims for legacy slice component typings using Content namespace.
 // These provide loose types so production builds succeed even if prismic-ts-codegen
 // does not augment the Content namespace.
+// NOTE: export {} makes this a module file, so `declare module` is a module augmentation
+// (not an ambient declaration that would replace @prismicio/client's exports).
+export {};
 
 declare module "@prismicio/client" {
   export namespace Content {

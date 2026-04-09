@@ -6,14 +6,16 @@ import type { Metadata, ResolvingMetadata } from "next";
 // Prismicio
 import { createClient } from "@/prismicio";
 import { asText } from "@prismicio/helpers";
-import type { BlogPostDocument, BlogPostDocumentData, BlogPostDocumentDataSlicesSlice } from "../../../../../prismicio-types";
+import type { Content } from "@prismicio/client";
+type BlogPostDocument = Content.BlogPostDocument;
+type BlogPostDocumentData = Content.BlogPostDocumentData;
+type BlogPostDocumentDataSlicesSlice = Content.BlogPostDocumentDataSlicesSlice;
+type Simplify<T> = { [K in keyof T]: T[K] };
 import { PrismicRichText } from "@prismicio/react";
-import { RichTextField, SliceZone } from "@prismicio/types";
+import type { RichTextField, SliceZone } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 // Icons
 import { ChevronDown, Eye } from "lucide-react";
-// Types
-import { Simplify } from "../../../../../prismicio-types";
 // Utils
 import { createID } from "@/utils/createId";
 import { calculateReadingTime } from "@/utils/calcReadingTime";
@@ -84,7 +86,7 @@ function AuthorAvatar({ name, image, size = 40 }: { name: string; image: ImageLi
   if (imageWithAlt?.url) {
     return (
       <PrismicNextImage
-        field={imageWithAlt}
+        field={imageWithAlt as any}
         className={`rounded-full inline-block object-cover`}
         style={{ width: size, height: size }}
       />

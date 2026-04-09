@@ -23,7 +23,7 @@ export const generateMetaDataInfo = (
   // Helpers
   const getSiteUrl = () => {
     return process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_WEBSITE_URL
+      ? (process.env.NEXT_PUBLIC_WEBSITE_URL || "https://lunim.io")
       : "http://localhost:3000";
   };
 

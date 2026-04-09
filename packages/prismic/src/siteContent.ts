@@ -1,5 +1,5 @@
 import { cache } from "react";
-import type { Content } from "@prismicio/client";
+import type { NavigationMenuSlice, FooterSlice } from "../prismicio-types";
 import type { LinkField } from "@prismicio/types";
 import { createBaseClient } from "./client";
 
@@ -20,9 +20,9 @@ export type Section = {
 };
 
 type LayoutContent = {
-  navigationMenu: Content.NavigationMenuSlice | null;
+  navigationMenu: NavigationMenuSlice | null;
   navigationSlices: any[];
-  footerSlice: Content.FooterSlice | null;
+  footerSlice: FooterSlice | null;
   footerSlices: any[];
 };
 
@@ -151,7 +151,7 @@ function isUsableLink(link: LinkField | null | undefined): link is LinkField {
 function getNavSectionIds(navDoc: any): string[] {
   const navigationMenu = navDoc?.data?.slices?.find(
     (slice: any) => slice.slice_type === "navigation_menu",
-  ) as Content.NavigationMenuSlice | undefined;
+  ) as NavigationMenuSlice | undefined;
 
   if (!navigationMenu) return [];
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PrismicNextLink } from "@prismicio/next";
 import { Menu, X, ChevronDown } from "lucide-react";
-import type { LinkField } from "@prismicio/types";
+import type { LinkField } from "@prismicio/client";
 import { asLink } from "@prismicio/helpers";
 import { usePathname } from "next/navigation";
 

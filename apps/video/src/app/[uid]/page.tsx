@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@lunim/utils";
 import { generateMetaDataInfo } from "@lunim/utils";
-import type { VideoPageDocument } from "../../../../../prismicio-types";
-
 export const revalidate = false;
 
 type Params = { uid: string };
@@ -18,7 +16,7 @@ export default async function VideoDynamicPage({
 }) {
   const { uid } = await params;
   const client = createClient();
-  const doc = await client.getByUID("video_page", uid).catch(() => null);
+  const doc = await (client as any).getByUID("video_page", uid).catch(() => null);
 
   if (!doc) notFound();
 
@@ -31,8 +29,8 @@ export default async function VideoDynamicPage({
 
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = await client.getAllByType("video_page");
-  return docs.map((d: VideoPageDocument) => ({ uid: d.uid! }));
+  const docs = await (client as any).getAllByType("video_page");
+  return docs.map((d: any) => ({ uid: d.uid! }));
 }
 
 export async function generateMetadata(
@@ -42,7 +40,7 @@ export async function generateMetadata(
   const { uid } = await params;
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client.getByUID("video_page", uid).catch(() => null);
+  const doc = await (client as any).getByUID("video_page", uid).catch(() => null);
 
   if (!doc) {
     return {

@@ -5,43 +5,40 @@
    ▲ Next.js 15.5.7
 
    Creating an optimized production build ...
+ ✓ Compiled successfully in 8.2s
+   Linting and checking validity of types ...
+
+./src/app/quiz/AIReadinessQuiz.tsx
+177:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+242:9  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+263:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
 Failed to compile.
 
-../../packages/ui/src/AskLunaButton.tsx
-Module not found: Can't resolve '../Luna'
+../../packages/ui/src/slices/BlogList/index.tsx:250:20
+Type error: No overload matches this call.
+  Overload 1 of 2, '(predicate: (value: PrismicDocument<Record<string, any>, string, string>, index: number, array: PrismicDocument<Record<string, any>, string, string>[]) => value is PrismicDocument<...>, thisArg?: any): PrismicDocument<...>[]', gave the following error.
+    Argument of type '(doc: Content.BlogPostDocument) => boolean' is not assignable to parameter of type '(value: PrismicDocument<Record<string, any>, string, string>, index: number, array: PrismicDocument<Record<string, any>, string, string>[]) => value is PrismicDocument<...>'.
+      Types of parameters 'doc' and 'value' are incompatible.
+        Type 'PrismicDocument<Record<string, any>, string, string>' is not assignable to type 'BlogPostDocument'.
+          Types of property 'uid' are incompatible.
+            Type 'string | null' is not assignable to type 'string'.
+              Type 'null' is not assignable to type 'string'.
+  Overload 2 of 2, '(predicate: (value: PrismicDocument<Record<string, any>, string, string>, index: number, array: PrismicDocument<Record<string, any>, string, string>[]) => unknown, thisArg?: any): PrismicDocument<...>[]', gave the following error.
+    Argument of type '(doc: Content.BlogPostDocument) => boolean' is not assignable to parameter of type '(value: PrismicDocument<Record<string, any>, string, string>, index: number, array: PrismicDocument<Record<string, any>, string, string>[]) => unknown'.
+      Types of parameters 'doc' and 'value' are incompatible.
+        Type 'PrismicDocument<Record<string, any>, string, string>' is not assignable to type 'BlogPostDocument'.
+          Types of property 'uid' are incompatible.
+            Type 'string | null' is not assignable to type 'string'.
+              Type 'null' is not assignable to type 'string'.
 
-https://nextjs.org/docs/messages/module-not-found
-
-../../packages/ui/src/ContactForm.tsx
-Module not found: Can't resolve '../hooks/useContactForm'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-../../packages/ui/src/slices/Contact/index.tsx
-
-../../packages/ui/src/EventbriteSection.tsx
-Module not found: Can't resolve '../JsonLd'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-../../packages/ui/src/slices/Eventbrite/index.tsx
-
-./src/app/page.tsx
-Module not found: Can't resolve '../../prismicio'
-
-https://nextjs.org/docs/messages/module-not-found
-
-../../packages/utils/src/homeData.ts
-Module not found: Can't resolve '../assets/ai-agent-listing.png'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-../../packages/utils/src/index.ts
-./src/app/page.tsx
-
-
-> Build failed because of webpack errors
+[0m [90m 248 |[39m   [90m// ----- Visible posts -----[39m
+ [90m 249 |[39m   [36mconst[39m visiblePosts [33m=[39m effectiveFilter
+[31m[1m>[22m[39m[90m 250 |[39m     [33m?[39m posts[33m.[39mfilter((doc[33m:[39m [33mContent[39m[33m.[39m[33mBlogPostDocument[39m) [33m=>[39m
+ [90m     |[39m                    [31m[1m^[22m[39m
+ [90m 251 |[39m         normalizeCategory(extractCategoryText(doc[33m.[39mdata[33m.[39mcategory)) [33m===[39m
+ [90m 252 |[39m         effectiveFilter
+ [90m 253 |[39m       )[0m
+Next.js build worker exited with code: 1 and signal: null
  ELIFECYCLE  Command failed with exit code 1.

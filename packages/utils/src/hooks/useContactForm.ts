@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 type ContactFormStatus = "idle" | "submitting" | "success" | "error";

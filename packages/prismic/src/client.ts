@@ -1,9 +1,9 @@
-import * as prismic from "@prismicio/client";
+import { Client } from "@prismicio/client";
+import type { ClientConfig } from "@prismicio/client";
 import { enableAutoPreviews } from "@prismicio/next";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type ClientConfig = Parameters<typeof prismic.createClient>[1];
 type Route = { type: string; path: string; resolvers?: Record<string, string> };
 type LinkResolverFunction = (link: any) => string | null | undefined;
 
@@ -135,7 +135,7 @@ export const mainLinkResolver: LinkResolverFunction = (link) => {
  */
 export function createPrismicClientFactory(routes: Route[]) {
   return function createClient(config: ClientConfig = {}) {
-    const client = prismic.createClient(repositoryName, {
+    const client = new Client(repositoryName, {
       routes,
       fetchOptions:
         process.env.NODE_ENV === "production"
@@ -144,7 +144,7 @@ export function createPrismicClientFactory(routes: Route[]) {
       ...config,
     });
 
-    enableAutoPreviews({ client, ...config });
+    enableAutoPreviews({ client });
 
     return client;
   };

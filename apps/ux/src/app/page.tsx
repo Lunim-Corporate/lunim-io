@@ -1,5 +1,5 @@
 // Prismic
-import { createClient } from "../../prismicio";
+import { createClient } from "../prismicio";
 import { SliceZone } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
 import { components } from "@lunim/ui/slices";

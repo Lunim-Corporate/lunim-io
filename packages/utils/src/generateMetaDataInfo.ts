@@ -22,9 +22,10 @@ export const generateMetaDataInfo = (
 
   // Helpers
   const getSiteUrl = () => {
-    return process.env.NODE_ENV === "production"
+    const url = process.env.NODE_ENV === "production"
       ? process.env.NEXT_PUBLIC_WEBSITE_URL
       : "http://localhost:3000";
+    return url || "http://localhost:3000";
   };
 
   const getImageAlt = () => {

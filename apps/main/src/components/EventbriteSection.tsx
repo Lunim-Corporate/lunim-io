@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
 import { PrismicRichText } from "@prismicio/react";
-import type { RichTextField } from "@prismicio/types";
+import type { RichTextField } from "@prismicio/client";
 import { JsonLd } from "@/components/JsonLd";
 import type { Event as SchemaEvent, WithContext } from "schema-dts";
 

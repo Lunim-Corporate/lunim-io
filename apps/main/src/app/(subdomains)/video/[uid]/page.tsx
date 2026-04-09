@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";
-import type { VideoPageDocument } from "../../../../../prismicio-types";
+type VideoPageDocument = any;
 
 export const revalidate = false;
 

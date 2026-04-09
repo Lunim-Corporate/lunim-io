@@ -7,7 +7,7 @@ import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { createClient } from "@/prismicio";
 import { asText, isFilled } from "@prismicio/helpers";
 import type { Content } from "@prismicio/client";
-import type { LinkField } from "@prismicio/types";
+import type { LinkField } from "@prismicio/client";
 // Utils
 import { calculateReadingTime } from "@/utils/calcReadingTime";
 import { formatDate } from "@/utils/formatDate";

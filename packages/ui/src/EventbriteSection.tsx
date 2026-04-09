@@ -5,7 +5,7 @@ import { Lock } from "lucide-react";
 import EventbriteWidget from "./EventbriteWidget";
 import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/types";
-import { JsonLd } from "../JsonLd";
+import { JsonLd } from "./JsonLd";
 import type { Event as SchemaEvent, WithContext } from "schema-dts";
 
 const DEFAULT_EVENT_ID =

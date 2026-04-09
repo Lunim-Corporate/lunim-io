@@ -8,7 +8,8 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import type { DigitalPageDocument } from "../../../../../prismicio-types";
+import type { Content } from "@prismicio/client";
+type DigitalPageDocument = Content.DigitalPageDocument;
 
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";

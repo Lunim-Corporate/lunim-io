@@ -13,7 +13,7 @@ import {
   Mic,
 } from 'lucide-react';
 import Image from 'next/image';
-import lunaImage from '@/assets/luna.png';
+import lunaImage from '../assets/luna.png';
 import { lunaReducer, initialLunaState } from './lunaReducer';
 import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';

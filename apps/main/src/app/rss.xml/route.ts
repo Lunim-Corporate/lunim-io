@@ -1,6 +1,7 @@
 import { createClient } from "@/prismicio";
 import { asText, asHTML } from "@prismicio/helpers";
-import type { BlogPostDocument } from "../../../prismicio-types";
+import type { Content } from "@prismicio/client";
+type BlogPostDocument = Content.BlogPostDocument;
 
 const DEFAULT_HOST = "https://lunim.io";
 const SITE_URL = getBaseUrl();
@@ -25,21 +26,23 @@ export async function GET() {
     blogPosts.map(async (post) => {
       const uid = post.uid;
       if (!uid) return null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const postData = post.data as any;
 
-      const title = asText(post.data.blog_article_heading || []) || uid;
-      const rawArticleText = asText(post.data.main_article_content || []) || "";
+      const title = asText(postData.blog_article_heading || []) || uid;
+      const rawArticleText = asText(postData.main_article_content || []) || "";
       const description =
-        post.data.meta_description ||
+        postData.meta_description ||
         rawArticleText.slice(0, 320) ||
         "";
       const contentHtmlRaw =
-        asHTML(post.data.main_article_content || []) || "";
+        asHTML(postData.main_article_content || []) || "";
       const contentHtml = absolutizeUrls(contentHtmlRaw);
       const link = `${SITE_URL}/blog/${encodeURIComponent(uid)}`;
 
       // Use first_publication_date if publication_date is in the future or missing
-      const publicationDate = post.data.publication_date
-        ? new Date(post.data.publication_date)
+      const publicationDate = postData.publication_date
+        ? new Date(postData.publication_date)
         : new Date(post.first_publication_date);
 
       const now = new Date();
@@ -48,7 +51,7 @@ export async function GET() {
         : publicationDate.toUTCString();
 
       // Get author name
-      const authorInfo = post.data.author_info;
+      const authorInfo = postData.author_info;
       const authorData =
         authorInfo && "data" in authorInfo ? authorInfo.data : undefined;
       const authorName =
@@ -57,7 +60,7 @@ export async function GET() {
           : "") || "Lunim";
 
       // Get image URL and fetch content length for enclosure
-      const imageField = post.data.article_main_image;
+      const imageField = postData.article_main_image;
       const imageUrl = imageField?.url || "";
       let imageLength = 0;
       let imageType = "image/jpeg";
@@ -75,7 +78,7 @@ export async function GET() {
         }
       }
 
-      const categoryText = asText(post.data.category || []);
+      const categoryText = asText(postData.category || []);
       const imageAlt = imageField?.alt || title;
       const imageWidth = imageField?.dimensions?.width;
       const imageHeight = imageField?.dimensions?.height;

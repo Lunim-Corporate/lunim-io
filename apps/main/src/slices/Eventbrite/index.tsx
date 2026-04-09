@@ -6,8 +6,8 @@ import type { Content } from "@prismicio/client";
 import EventbriteSection from "@/components/EventbriteSection";
 type EventbriteProps = SliceComponentProps<Content.EventbriteSlice>;
 const Eventbrite: FC<EventbriteProps> = ({ slice }) => {
-  const heading = asText(slice.primary.heading) || null;
-  const description = asText(slice.primary.description) || null;
+  const heading = asText(slice.primary.heading) || undefined;
+  const description = asText(slice.primary.description) || undefined;
   const eventId = slice.primary.eventbrite_event_id || "";
   const locationOverride = slice.primary.location_override || null;
   return (

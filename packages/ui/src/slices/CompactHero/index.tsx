@@ -76,9 +76,9 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
   const primaryCtaLink = primary.button_link;
   const showMainCta = primary.show_main_cta ?? true;
   const showAskLuna = primary.show_ask_luna ?? true;
-  const resolvedCtaLink = primaryCtaLink?.url ? primaryCtaLink : legacyCtaLink;
-  const resolvedCtaLabel = primaryCtaLink?.text || legacyCtaLabel || "Learn more";
-  const canShowMainCta = showMainCta && Boolean(resolvedCtaLink?.url);
+  const resolvedCtaLink = (primaryCtaLink as any)?.url ? primaryCtaLink : legacyCtaLink;
+  const resolvedCtaLabel = (primaryCtaLink as any)?.text || legacyCtaLabel || "Learn more";
+  const canShowMainCta = showMainCta && Boolean((resolvedCtaLink as any)?.url);
   const shouldShowCtaRow = canShowMainCta || showAskLuna;
 
   return (
@@ -128,7 +128,7 @@ const CompactHero: FC<CompactHeroProps> = ({ slice }) => {
             <div className="flex flex-col gap-4 items-center justify-center sm:flex-row">
               {canShowMainCta && resolvedCtaLink ? (
                 <PrismicLink
-                  field={resolvedCtaLink}
+                  field={resolvedCtaLink as any}
                   className="max-w-xs bg-[#BBFEFF] text-black px-8 py-4 rounded-[0.3rem] font-semibold hover:from-[#a0f5f7] hover:to-cyan-400 transition-colors duration-300 shadow-lg items-center justify-center space-x-2 no-underline"
                 >
                   {resolvedCtaLabel}

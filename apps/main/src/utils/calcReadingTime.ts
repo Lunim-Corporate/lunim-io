@@ -1,6 +1,6 @@
 // Prismic
 import { asText } from "@prismicio/helpers";
-import { RichTextField } from "@prismicio/types";
+import type { RichTextField } from "@prismicio/client";
 
 export const calculateReadingTime = (articleMainContent: RichTextField): number => {
     const averageNumOfWordsHumanReadsPerMinute: number = 250;

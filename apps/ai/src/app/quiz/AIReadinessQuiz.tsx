@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import './quiz-styles.css';
 
 const QUIZ_QUESTIONS = [
@@ -198,9 +199,9 @@ const handleSubmit = async () => {
             <a href="https://lunim.io" className="btn btn-primary">
               Return to Lunim
             </a>
-            <a href="/ai-marketing-toolkit" className="btn btn-secondary">
+            <Link href="/ai-marketing-toolkit" className="btn btn-secondary">
               Download Toolkit
-            </a>
+            </Link>
           </div>
 
           <p className="email-check">

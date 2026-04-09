@@ -5,7 +5,8 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import type { AiAutomationPageDocument } from "../../../../../prismicio-types";
+import type { Content } from "@prismicio/client";
+type AiAutomationPageDocument = Content.AiAutomationDocument;
 // Utils
 import { pickBaseMetadata } from "@/utils/metadata";
 import { generateMetaDataInfo } from "@/utils/generateMetaDataInfo";

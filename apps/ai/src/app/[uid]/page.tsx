@@ -5,7 +5,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "../../prismicio";
 import { components } from "@lunim/ui/slices";
-import type { AiAutomationPageDocument } from "../../../../../prismicio-types";
+import type { AiAutomationDocument } from "../../../../../prismicio-types";
 // Utils
 import { pickBaseMetadata } from "@lunim/utils";
 import { generateMetaDataInfo } from "@lunim/utils";
@@ -23,8 +23,8 @@ export default async function AiAutomationDynamicPage({
 
   const client = createClient();
   const doc = (await (client as any)
-    .getByUID("ai_automation_page", uid)
-    .catch(() => null)) as AiAutomationPageDocument | null;
+    .getByUID("ai_automation", uid)
+    .catch(() => null)) as AiAutomationDocument | null;
 
   if (!doc) notFound();
 
@@ -40,9 +40,9 @@ export default async function AiAutomationDynamicPage({
 export async function generateStaticParams() {
   const client = createClient();
   const docs = (await client.getAllByType(
-    "ai_automation_page",
-  )) as unknown as AiAutomationPageDocument[];
-  return docs.map((d: AiAutomationPageDocument) => ({ uid: d.uid! }));
+    "ai_automation",
+  )) as unknown as AiAutomationDocument[];
+  return docs.map((d: AiAutomationDocument) => ({ uid: d.uid! }));
 }
 
 export async function generateMetadata(
@@ -53,8 +53,8 @@ export async function generateMetadata(
   const parentMetaData = await pickBaseMetadata(parent);
   const { uid } = await params;
   const doc = (await (client as any)
-    .getByUID("ai_automation_page", uid)
-    .catch(() => null)) as AiAutomationPageDocument | null;
+    .getByUID("ai_automation", uid)
+    .catch(() => null)) as AiAutomationDocument | null;
 
   if (!doc) {
     return {

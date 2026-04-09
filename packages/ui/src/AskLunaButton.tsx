@@ -4,7 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 
 const LunaPortal = dynamic(
-  () => import("../Luna").then((mod) => mod.LunaPortal),
+  () => import("./Luna").then((mod) => mod.LunaPortal),
   { ssr: false },
 );
 

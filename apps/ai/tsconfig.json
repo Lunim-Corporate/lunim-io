@@ -10,7 +10,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "../../prismicio-types.d.ts"
   ],
   "exclude": ["node_modules"]
 }

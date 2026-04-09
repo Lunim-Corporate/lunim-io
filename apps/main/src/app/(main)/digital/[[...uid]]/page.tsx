@@ -14,10 +14,10 @@
  */
 // Prismic
 import { SliceZone } from "@prismicio/react";
-import Head from "next/head";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import { DigitalPageDocument } from "../../../../../prismicio-types";
+import type { Content } from "@prismicio/client";
+type DigitalPageDocument = Content.DigitalPageDocument;
 import CaseStudies from "@/components/CaseStudies";
 import { CaseStudySmDocumentWithLegacy } from "../case-studies/types";
 // Next
@@ -77,7 +77,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     else if (uid.length === 2) {
         // console.log("2", uid);
         if (uid[1] !== "case-studies") notFound();
-        const allCaseStudies = (await (client as any).getAllByType("case_study_sm")) as CaseStudySmDocumentWithLegacy[];
+        const allCaseStudies = (await (client as any).getAllByType("case_study_sm").catch(() => [])) as CaseStudySmDocumentWithLegacy[];
         const filteredCaseStudies = allCaseStudies.filter((cs: any) => cs.data.digital_category === uid[0]);
         const caseStudyPage = await (client as any).getSingle("case_studies").catch(() => null);
         return <CaseStudies filteredCaseStudies={filteredCaseStudies} caseStudyPage={caseStudyPage} />;
@@ -124,12 +124,10 @@ export default async function Page({ params }: { params: Promise<Params> }) {
         
         return (
           <main className="bg-black text-white min-h-screen">
-            <Head>
-              <script type="application/ld+json">
-                {JSON.stringify(jsonLD)}
-              </script>
-            </Head>
-        
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLD) }}
+            />
             <SliceZone slices={slices} components={components} />
           </main>
         );

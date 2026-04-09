@@ -6,8 +6,6 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "../../prismicio";
 import { components } from "@lunim/ui/slices";
-import type { UxDocument } from "../../../../../prismicio-types";
-
 // Utils
 import { pickBaseMetadata } from "@lunim/utils";
 import { generateMetaDataInfo } from "@lunim/utils";
@@ -26,7 +24,7 @@ export default async function UxDynamicPage({
   const client = createClient();
   const doc = (await (client as any)
     .getByUID("ux_page", uid)
-    .catch(() => null)) as UxDocument | null;
+    .catch(() => null)) as any | null;
 
   if (!doc) notFound();
 
@@ -42,9 +40,7 @@ export default async function UxDynamicPage({
 /* ---------- Static Params ---------- */
 export async function generateStaticParams() {
   const client = createClient();
-  const docs = (await client.getAllByType(
-    "ux_page",
-  )) as unknown as UxDocument[];
+  const docs = (await (client as any).getAllByType("ux_page")) as any[];
 
   return docs.map((d) => ({
     uid: d.uid!,
@@ -62,7 +58,7 @@ export async function generateMetadata(
 
   const doc = (await (client as any)
     .getByUID("ux_page", uid)
-    .catch(() => null)) as UxDocument | null;
+    .catch(() => null)) as any | null;
 
   if (!doc) {
     return {

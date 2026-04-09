@@ -151,7 +151,7 @@ export async function POST(request: Request) {
         "The Automation Architect": `Impressive. You're an Automation Architect, ${body.name}`
       };
 
-      const { data: emailData, error: emailError } = await resend.emails.send({
+      const { error: emailError } = await resend.emails.send({
         from: `Luna from Lunim AI <${fromEmail}>`,
         to: [body.email],
         subject: subjectLines[result.category], 

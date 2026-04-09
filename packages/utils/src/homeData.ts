@@ -13,12 +13,12 @@ import {
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
 
-import aiAgentImage from "../assets/ai-agent-listing.png";
-import aiWhatsAppImage from "../assets/ai-whatsapp-listing.png";
-import nftCollectionImage from "../assets/nft-collection-listing.png";
-import pizzaHutImage from "../assets/pizza-hut-listing.png";
-import toucanBoxImage from "../assets/toucanbox-listing.png";
-import winnerTakesAllImage from "../assets/winner-takes-all-listing.png";
+import aiAgentImage from "./assets/ai-agent-listing.png";
+import aiWhatsAppImage from "./assets/ai-whatsapp-listing.png";
+import nftCollectionImage from "./assets/nft-collection-listing.png";
+import pizzaHutImage from "./assets/pizza-hut-listing.png";
+import toucanBoxImage from "./assets/toucanbox-listing.png";
+import winnerTakesAllImage from "./assets/winner-takes-all-listing.png";
 
 
 // Shared data structures

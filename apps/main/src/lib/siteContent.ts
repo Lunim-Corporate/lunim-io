@@ -1,6 +1,6 @@
 import { cache } from "react";
 import type { Content } from "@prismicio/client";
-import type { LinkField } from "@prismicio/types";
+import type { LinkField } from "@prismicio/client";
 import { createClient } from "@/prismicio";
 
 export type SiteKey = "main" | "ai" | "ux" | "video";

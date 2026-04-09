@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Loader2 } from "lucide-react";
-import { useContactForm, type ContactVariant } from "../hooks/useContactForm";
+import { useContactForm, type ContactVariant } from "@lunim/utils";
 import { asText } from "@prismicio/helpers";
 import type { RichTextField } from "@prismicio/types";
 

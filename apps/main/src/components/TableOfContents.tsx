@@ -1,6 +1,6 @@
 'use client';
 // Prismic
-import { RichTextField } from "@prismicio/types"
+import type { RichTextField } from "@prismicio/client"
 // React
 import { useEffect, useRef, useState } from "react";
 // Utils

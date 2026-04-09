@@ -246,12 +246,12 @@ export default async function BlogList({ slice, context }: Props) {
   const effectiveFilter = filterExistsOnPage ? normalizedRequested : "";
 
   // ----- Visible posts -----
-  const visiblePosts = effectiveFilter
-    ? posts.filter((doc: Content.BlogPostDocument) =>
-        normalizeCategory(extractCategoryText(doc.data.category)) ===
+  const visiblePosts = (effectiveFilter
+    ? posts.filter((doc) =>
+        normalizeCategory(extractCategoryText((doc.data as Content.BlogPostDocumentData).category)) ===
         effectiveFilter
       )
-    : posts;
+    : posts) as Content.BlogPostDocument[];
 
   // ----- Helper to build query strings for pagination & filters -----
   const withParams = (params: {

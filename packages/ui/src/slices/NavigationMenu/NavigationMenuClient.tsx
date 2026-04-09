@@ -220,7 +220,7 @@ export function NavigationMenuClient({
               <div key={section.id} className="relative group">
                 {section.link ? (
                   <PrismicNextLink
-                    field={section.link}
+                    field={section.link as any}
                     className="flex items-center gap-4 px-4 py-3 text-white/80 hover:text-white transition-colors no-underline"
                   >
                     <span>{section.label}</span>
@@ -242,7 +242,7 @@ export function NavigationMenuClient({
                       {children.map((child, idx) => (
                         <li key={`${section.id}-${idx}`} className="mb-0">
                           <PrismicNextLink
-                            field={child.link}
+                            field={child.link as any}
                             className="block px-4 py-3 text-base text-white/80 hover:text-white hover:bg-white/5 transition-colors no-underline"
                           >
                             {child.label}
@@ -331,7 +331,7 @@ export function NavigationMenuClient({
                   >
                     {section.link ? (
                       <PrismicNextLink
-                        field={section.link}
+                        field={section.link as any}
                         className="flex-1 text-white/90 hover:text-white font-medium text-left p-4 no-underline"
                         onClick={() => setIsMenuOpen(false)}
                       >
@@ -369,7 +369,7 @@ export function NavigationMenuClient({
                     {children.map((child, idx) => (
                       <li key={`${section.id}-m-${idx}`} className="mb-0">
                         <PrismicNextLink
-                          field={child.link}
+                          field={child.link as any}
                           className="block px-4 py-3 text-white/85 hover:text-white hover:bg-white/10 rounded-lg text-[14px] no-underline"
                           onClick={() => setIsMenuOpen(false)}
                         >

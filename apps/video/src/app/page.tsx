@@ -1,4 +1,4 @@
-import { createClient } from "../../prismicio";
+import { createClient } from "../prismicio";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@lunim/ui/slices";
 import { notFound } from "next/navigation";
@@ -8,7 +8,7 @@ import { pickBaseMetadata } from "@lunim/utils";
 
 export default async function VideoPage() {
   const client = createClient();
-  const doc = await client.getSingle("video").catch(() => null);
+  const doc = await (client as any).getSingle("video").catch(() => null);
 
   if (!doc) {
     notFound();
@@ -27,7 +27,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const client = createClient();
   const parentMetaData = await pickBaseMetadata(parent);
-  const doc = await client.getSingle("video").catch(() => null);
+  const doc = await (client as any).getSingle("video").catch(() => null);
 
   if (!doc) {
     return {

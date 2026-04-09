@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { asLink } from "@prismicio/helpers";
-import type { LinkField } from "@prismicio/types";
+import type { LinkField } from "@prismicio/client";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE_CONFIG, type SiteKey } from "@/lib/siteContent";
 import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";

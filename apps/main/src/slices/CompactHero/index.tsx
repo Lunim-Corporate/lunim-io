@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { PrismicNextImage, type PrismicNextImageProps } from "@prismicio/next";
 import type { Content } from "@prismicio/client";
-import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/types";
+import type { ImageField, RichTextField, LinkField, KeyTextField } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText, PrismicLink } from "@prismicio/react";
 import { asText } from "@prismicio/helpers";

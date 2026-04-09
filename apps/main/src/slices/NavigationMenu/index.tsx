@@ -1,6 +1,6 @@
 import type { SliceComponentProps } from "@prismicio/react";
 import type { Content } from "@prismicio/client";
-import type { LinkField, KeyTextField } from "@prismicio/types";
+import type { LinkField, KeyTextField } from "@prismicio/client";
 import { createClient } from "@/prismicio";
 
 // ⬇️ import only the client component, no types
