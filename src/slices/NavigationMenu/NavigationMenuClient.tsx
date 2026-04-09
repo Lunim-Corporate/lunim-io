@@ -17,6 +17,13 @@ type Section = {
   children: ChildLink[];
 };
 
+type ModuleNavItem = {
+  id: string;
+  label: string;
+  href: string;
+  enabled: boolean;
+};
+
 export function NavigationMenuClient({
   data,
 }: {
@@ -26,6 +33,7 @@ export function NavigationMenuClient({
     ctaLabel: string | null;
     ctaLink: LinkField | null;
     sections: Section[];
+    moduleNavItems?: ModuleNavItem[];
   };
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,6 +44,8 @@ export function NavigationMenuClient({
   const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
   const [hasOnPageContactForm, setHasOnPageContactForm] = useState(false);
   const toggleMobileSection = (id: string) => setOpenMobileSections((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const moduleNavItems = (data.moduleNavItems ?? []).filter((i) => i.enabled);
 
   useEffect(() => {
     const handleScroll = () => setIsAtTop(window.scrollY < 10);
@@ -143,7 +153,7 @@ export function NavigationMenuClient({
 
     const requiresDigitalFallback = Boolean(
       destination &&
-        digitalFallbackRoots.some((root) =>
+        digitalFallbackRoots.some((root) => 
           destination === root || destination.startsWith(`${root}/`)
         )
     );
@@ -207,12 +217,12 @@ export function NavigationMenuClient({
         <nav className="hidden md:flex items-center gap-2">
           {data.sections.map((section) => {
             const children = section.children.filter((c) => {
-              const hasLabel =
-                typeof c.label === "string" && c.label.trim().length > 0;
+              const hasLabel = 
+              typeof c.label === "string" && c.label.trim().length > 0;
               // some Prismic groups may include an empty row; treat missing/empty link as falsy
-              const hasLink =
-                (c.link as unknown) !== null &&
-                (c.link as unknown) !== undefined;
+              const hasLink = 
+              (c.link as unknown) !== null && 
+              (c.link as unknown) !== undefined;
               return hasLabel && hasLink;
             });
             const hasRealChildren = children.length > 0;
@@ -253,6 +263,32 @@ export function NavigationMenuClient({
                   </div>
                 )}
               </div>
+            );
+          })}
+
+          {/* Module-injected nav items */}
+          {moduleNavItems.map((item) => {
+            const isActive =
+              pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex items-center gap-4 px-4 py-3 transition-colors no-underline"
+                style={{
+                  color: isActive ? "var(--dr-accent, #06b6d4)" : "rgba(255,255,255,0.8)",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLAnchorElement).style.color = "white")
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLAnchorElement).style.color = isActive
+                    ? "var(--dr-accent, #06b6d4)"
+                    : "rgba(255,255,255,0.8)")
+                }
+              >
+                {item.label}
+              </Link>
             );
           })}
         </nav>
@@ -310,11 +346,11 @@ export function NavigationMenuClient({
         <div className="w-full max-w-xs space-y-2">
           {data.sections.map((section) => {
             const children = section.children.filter((c) => {
-              const hasLabel =
-                typeof c.label === "string" && c.label.trim().length > 0;
-              const hasLink =
-                (c.link as unknown) !== null &&
-                (c.link as unknown) !== undefined;
+              const hasLabel = 
+              typeof c.label === "string" && c.label.trim().length > 0;
+              const hasLink = 
+              (c.link as unknown) !== null &&
+              (c.link as unknown) !== undefined;
               return hasLabel && hasLink;
             });
             const hasRealChildren = children.length > 0;
@@ -379,6 +415,29 @@ export function NavigationMenuClient({
                     ))}
                   </ul>
                 )}
+              </div>
+            );
+          })}
+
+          {/* Module-injected items in mobile */}
+          {moduleNavItems.map((item) => {
+            const isActive =
+              pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <div
+                key={item.id}
+                className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
+              >
+                <Link
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block p-4 no-underline"
+                  style={{
+                    color: isActive ? "#06b6d4" : "rgba(255,255,255,0.9)",
+                  }}
+                >
+                  {item.label}
+                </Link>
               </div>
             );
           })}
