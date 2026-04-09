@@ -61,3 +61,22 @@ export function getDealRoomConfig(): DealRoomConfig {
     },
   };
 }
+
+// ── Nav self-registration ──────────────────────────────────────────────────
+/**
+ * The nav item this module injects into the host app's navigation.
+ *
+ * To show/hide the Deal Room link in the nav:
+ *   - Set enabled: true  → link appears automatically
+ *   - Set enabled: false → link is hidden (module still works at /deal-room)
+ *
+ * label and href can be overridden here without touching any nav component.
+ */
+export const DEAL_ROOM_NAV_ITEM = {
+  id: "deal-room",
+  label: process.env.NEXT_PUBLIC_DEAL_ROOM_NAV_LABEL ?? "Deal Room",
+  href: "/deal-room",
+  enabled: process.env.NEXT_PUBLIC_DEAL_ROOM_NAV_ENABLED !== "false", // default ON
+} as const;
+
+export type ModuleNavItem = typeof DEAL_ROOM_NAV_ITEM;

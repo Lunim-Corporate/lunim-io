@@ -25,7 +25,7 @@ import ScrollManager from "@/components/ScrollManager";
  *
  * To add a new module: just append its base path here.
  */
-const MODULE_PATHS = ["/deal-room", "/confirm-email"];
+const MODULE_PATHS = ["/confirm-email"];
 
 function isModulePath(pathname: string): boolean {
   return MODULE_PATHS.some(

@@ -25,11 +25,16 @@ export default async function DealRoomPage() {
   );
 
   // ── 1. Unauthenticated ──────────────────────────────────────────────────────
+  // Lunim nav is fixed at 64px. No deal-room bar. Content starts at 64px.
   if (!session) {
     return (
       <>
         {pageBg}
-        <main className="min-h-screen flex items-center justify-center px-5 py-16">
+        {/* DealRoomNav renders null when no session — included for layout consistency */}
+        <DealRoomNav />
+        <main className="min-h-screen flex items-center justify-center px-5 pb-16"
+          style={{ paddingTop: "80px" }}
+        >
           <div className="w-full max-w-lg">
             {/* Header above form */}
             <div className="text-center mb-8">
@@ -43,10 +48,10 @@ export default async function DealRoomPage() {
               >
                 Investor Portal
               </div>
-              <h1
-                className="text-3xl font-bold mb-2"
+              <h1 
+                className="text-3xl font-bold mb-2" 
                 style={{ color: "var(--dr-text)" }}
-              >
+                >
                 Deal Room
               </h1>
               <p className="text-sm" style={{ color: "var(--dr-text-muted)" }}>
@@ -67,7 +72,8 @@ export default async function DealRoomPage() {
     return (
       <>
         {pageBg}
-        <main className="min-h-screen flex items-center justify-center px-5 py-16">
+        <DealRoomNav />
+        <main className="min-h-screen flex items-center justify-center px-5 pb-16" style={{ paddingTop: "80px" }}>
           <div className="w-full max-w-lg">
             <div className="text-center mb-8">
               <div
@@ -105,14 +111,14 @@ export default async function DealRoomPage() {
 
   const userName = session.user?.name || session.user?.email || "Investor";
 
-  // ── 5. Render authenticated deal room ───────────────────────────────────────
+  // ── 5. Authenticated: lunim nav (64px) + deal-room bar (40px) = 104px top ──
   return (
     <>
       {pageBg}
       <DealRoomNav />
       <main
-        className="min-h-screen px-5 sm:px-8"
-        style={{ paddingTop: "var(--dr-padding-top, 5rem)" }}
+        className="min-h-screen px-5 sm:px-8 pb-16"
+        style={{ paddingTop: "112px" }}
       >
         <div style={{ maxWidth: "var(--dr-max-width, 1200px)", margin: "0 auto" }}>
           {/* Page header */}
@@ -121,7 +127,7 @@ export default async function DealRoomPage() {
               Welcome back,{" "}
               <span style={{ color: "var(--dr-accent)" }}>
                 {userName}
-              </span>
+                </span>
             </p>
             <h1 className="text-2xl font-bold" style={{ color: "var(--dr-text)" }}>
               Investor Deal Room
@@ -136,9 +142,9 @@ export default async function DealRoomPage() {
           </div>
 
           {/* Divider */}
-          <div
-            className="mb-8 h-px"
-            style={{ background: "var(--dr-border)" }}
+          <div 
+          className="mb-8 h-px" 
+          style={{ background: "var(--dr-border)" }} 
           />
 
           <DealRoomContent

@@ -6,10 +6,23 @@ import { createClient } from "@/prismicio";
 // ⬇️ import only the client component, no types
 import { NavigationMenuClient } from "./NavigationMenuClient";
 
+// ── Module self-registration ───────────────────────────────────────────────
+// Each plug-and-play module can export a nav item here.
+// To add a new module: import its NAV_ITEM and add it to MODULE_NAV_ITEMS.
+import { DEAL_ROOM_NAV_ITEM } from "@/app/(modules)/deal-room/config";
+
+/**
+ * Nav items injected by plug-and-play modules.
+ * These appear after the CMS-driven sections, before the CTA button.
+ * Set enabled: false (or remove the entry) to hide a module from the nav.
+ */
+const MODULE_NAV_ITEMS = [DEAL_ROOM_NAV_ITEM];
+
+// ──────────────────────────────────────────────────────────────────────────
 // local type definitions for ChildLink and Section
 type ChildLink = {
-  label: string;
-  link: LinkField;
+  label: string; 
+  link: LinkField; 
 };
 
 type Section = {
@@ -106,14 +119,18 @@ export default async function NavigationMenuServer({
     })
     .filter((s): s is Section => !!s);
 
+  // Filter to only enabled module items
+  const moduleItems = MODULE_NAV_ITEMS.filter((item) => item.enabled);
+
   return (
     <NavigationMenuClient
       data={{
         logoUrl,
         logoAlt,
         ctaLabel: typeof ctaLabel === "string" ? ctaLabel : null,
-        ctaLink, // LinkField | null (the client likely allows null here)
-        sections, // strictly typed to local Section[]
+        ctaLink,
+        sections, 
+        moduleNavItems: moduleItems,
       }}
     />
   );
