@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
   images: {
@@ -11,10 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
     qualities: [85, 90],
-  },
-
-  turbopack: {
-    root: path.resolve(__dirname),
   },
 
   async redirects() {
